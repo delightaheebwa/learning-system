@@ -20,3 +20,9 @@ This folder contains the active Obsidian-style learning system for Zo.
 - Keep archive content separate from active learning history
 - Prefer small, targeted edits to existing notes instead of wholesale renames
 - The active tutor protocol is now v3: use `pending_mastery`, ask for confidence before evaluation, cap review sessions at 5 concepts, and use mixed practice periodically to improve transfer
+
+## Version control
+
+- This folder + `Knowledge Wiki/` are tracked in the Git repo at the workspace root, pushed to GitHub `delightaheebwa/learning-system` (public, branch `main`).
+- After any session that edits these folders, commit and push (see the Git Sync rule): `git add "Learning System" "Knowledge Wiki" && git commit && git push`.
+- The root `.gitignore` allowlists only these two directories — never commit anything else.

@@ -24,3 +24,9 @@ Maintain a Karpathy-style persistent wiki from raw sources.
   - Every new wiki page appears in `index.md` under Concepts (using the `[[Page name]]` format).
   - `log.md` has an entry for today with the concepts that were added.
   - If missing, fix immediately — do not leave the wiki in an inconsistent state.
+
+## Version control
+
+- This folder + `Learning System/` are tracked in the Git repo at the workspace root, pushed to GitHub `delightaheebwa/learning-system` (public, branch `main`).
+- After any session that edits these folders, commit and push (see the Git Sync rule): `git add "Learning System" "Knowledge Wiki" && git commit && git push`.
+- The root `.gitignore` allowlists only these two directories — never commit anything else.
