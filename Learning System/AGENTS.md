@@ -26,3 +26,11 @@ This folder contains the active Obsidian-style learning system for Zo.
 - This folder + `Knowledge Wiki/` are tracked in the Git repo at the workspace root, pushed to GitHub `delightaheebwa/learning-system` (public, branch `main`).
 - After any session that edits these folders, commit and push (see the Git Sync rule): `git add "Learning System" "Knowledge Wiki" && git commit && git push`.
 - The root `.gitignore` allowlists only these two directories — never commit anything else.
+
+## Handwritten notes ingestion (vision delegation)
+
+When the user shares images of handwritten notes (or any image as learning source material) during an ingest session, the active agent delegates text extraction to the Mimo v2.5 custom model via the Zo Ask API — regardless of whether the active model has vision. See the **Handwritten Notes Ingest — Mimo v2.5 Vision Delegation** rule for the exact steps and prompt.
+
+- Model: `byok:77723e9c-69c1-4fb1-9284-045c4e3f0ee8` (Mimo v2.5)
+- Endpoint: `POST https://api.zo.computer/zo/ask` with `Authorization: Bearer $ZO_CLIENT_IDENTITY_TOKEN`
+- Mimo transcribes verbatim (light cleanup only); the active agent does concept extraction, wiki updates, and the rest of the ingest pipeline.
