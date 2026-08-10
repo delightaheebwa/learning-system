@@ -374,3 +374,11 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Wiki pages created (3):** C Pointers (&, *, ->), C Preprocessor Macros, Acutest Unit Testing
 - **Session note:** Session — Acutest & C Pointers Ingest — 2026-08-08.md
 - **Learning-review gate:** C Pointers PASS (c1); enrichments PASS (c1); C Preprocessor Macros PASS (c2); Acutest Unit Testing PASS (c2) — factual gate PASS (variadic macros vs GCC docs, Acutest claims vs README). Full detail in session note.
+
+## 2026-08-11 — Enrichment: awk (lecture-1 quiz notes photo)
+- **Sources:** Handwritten lecture-1 quiz notes (photo 2026-08-10, transcribed via Mimo v2.5 vision delegation); MIT Missing Semester — Shell (https://missing.csail.mit.edu/2026/course-shell/)
+- **Enriched (1, SWE track):** awk — FS/OFS (input/output field separators), FPAT for quoted-CSV fields, `~`/`!~` match operators, pattern/action structure (bare pattern = implicit `$0` filter), `$0`/`$1`/`NF` built-ins, `BEGIN {}` blocks, `/etc/passwd` example; added source-scope note distinguishing lecture-taught vs beyond-source expansion
+- **Wiki page updated:** MIT Missing Semester — Shell
+- **Active Concepts:** awk row enriched; `last_reviewed` 2026-08-11, `next_review` 2026-08-18 (interval 3d→7d)
+- **Session note:** Session — awk Enrichment — 2026-08-11.md
+- **Learning-review gate:** quality gate (enrichment) — awk flag resolved pass 2 via source-scope note; remaining flags are pre-existing sections outside this session (GNU Make HIGH; permissions/globs/quoting/built-ins/jobs/parameter-expansion medium) surfaced to user

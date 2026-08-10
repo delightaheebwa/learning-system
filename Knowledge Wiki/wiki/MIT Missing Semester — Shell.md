@@ -106,10 +106,27 @@ The shell needs to find the program file when you type a name like `date`.
 
 `awk` is a programming language for parsing structured text data (like CSVs and log files). Unlike `sed` which edits files, `awk` extracts and processes data by columns.
 
+> **Source scope:** the lecture teaches only `{print $2}` and `-F,` (and points to the exercises for more). Everything below beyond those two — pattern/action pairs, built-in variables, FS/OFS, match operators, FPAT — is expansion from the lecture exercises and practice notes, not verbatim lecture content.
+
 - `awk '{print $2}' file` — prints the second whitespace-separated column of every line
 - `awk -F, '{print $1}' file` — comma-separated (CSV) parsing with `-F,`
 - `awk '$3 ~ /pattern/ {$4=""; print}'` — filter lines where column 3 matches a pattern, omit column 4
 - `awk '$2 > 100 {print $1, $3}'` — filter by numeric column value, reorder output
+
+**Program structure — pattern/action pairs:** `awk '/pattern/ { action }'` — a condition (regex or expression) in front, an action block after. No condition → action runs on every line.
+
+**Built-in variables:** `$0` = the entire line, `$1`, `$2`, … = individual fields, `NF` = number of fields in the current record (so `$NF` is the last field).
+
+**Match operators:** `~` matches a regex (`$1 ~ /pattern/`), `!~` does not match.
+
+**FS vs OFS:** `FS` (input field separator) defines how each line is split into fields — same as `-F,`. `OFS` (output field separator) defines the separator between printed fields — set it in a `BEGIN` block: `awk 'BEGIN { OFS="," } { print $1, $2 }'` prints the two fields joined by a comma.
+
+**FPAT — fields containing the delimiter:** when fields themselves contain the delimiter (e.g. quoted CSV), `FS` breaks. `FPAT` defines what a *field looks like* instead of what splits it:
+```bash
+awk -v FPAT='[^,]+|"[^"]*"' '{ for(i=1;i<=NF;i++) print $i }'
+```
+
+**Classic examples:** `awk -F: '{ print $1 }' /etc/passwd` prints the first field of each `/etc/passwd` line (username); `awk 'BEGIN { OFS="," } { print $1, $2 }'` comma-separates the first two fields of every line.
 
 `awk` can do filtering, aggregation, column reordering, and pattern matching in one pass.
 
