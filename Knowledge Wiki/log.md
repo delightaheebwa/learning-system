@@ -373,4 +373,4 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enriched (4):** Testable Seam (concrete read/parse seam split, vendored single-header framework keeps tests reproducible); Red-Green-Refactor (compile-time Red as interface spec, missing-field practice loop); Sentinel Values vs Presence Flags (Lesson 3 practice fix = the naive two-field check); Make Variables (CPPFLAGS `-I` include paths, test-target pattern) on MIT Missing Semester — Shell page
 - **Wiki pages created (3):** C Pointers (&, *, ->), C Preprocessor Macros, Acutest Unit Testing
 - **Session note:** Session — Acutest & C Pointers Ingest — 2026-08-08.md
-- **Learning-review gate:** see session note
+- **Learning-review gate:** C Pointers PASS (c1); enrichments PASS (c1); C Preprocessor Macros PASS (c2); Acutest Unit Testing PASS (c2) — factual gate PASS (variadic macros vs GCC docs, Acutest claims vs README). Full detail in session note.

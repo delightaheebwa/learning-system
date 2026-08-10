@@ -52,6 +52,9 @@ cc -Wall -Wextra -std=c17 -g -Ithird_party -Isrc \
 `-Ithird_party -Isrc` are the include search paths that let `#include "acutest.h"` and `#include "meminfo.h"` resolve. Start with a failing test (the function doesn't exist yet) — the missing symbol is a useful Red, and the test states the interface before implementation details distract.
 
 ## Key Insight
+
+TEST_CHECK vs TEST_ASSERT is a judgment call: CHECK gathers all failures and lets the test finish; ASSERT stops immediately when continuing would crash. Prefer CHECK by default; reserve ASSERT for guard conditions.
+
 ## Beyond the C Lesson (Optional Reading)
 
 The README covers more than the C course uses:
@@ -60,8 +63,6 @@ The README covers more than the C course uses:
 - **C++ exceptions:** any exception thrown from a test is caught and treated as a failure; for `std::exception`-derived types, `what()` is printed.
 - **TAP & XML:** `--tap` emits Test Anything Protocol output; `--xml-output=FILE` writes xUnit-compatible XML.
 - **Debuggers:** when a debugger is detected, the per-test child-process isolation is suppressed to make debugging easier.
-
-TEST_CHECK vs TEST_ASSERT is a judgment call: CHECK gathers all failures and lets the test finish; ASSERT stops immediately when continuing would crash. Prefer CHECK by default; reserve ASSERT for guard conditions.
 
 ## Sources
 
