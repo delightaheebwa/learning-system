@@ -1,36 +1,28 @@
-# Learning System Workspace Notes
+# Learning System — Agent Conventions
 
-This folder contains the active Obsidian-style learning system for Zo.
+This folder + `Knowledge Wiki/` are the active learning system. The operating procedure lives in `Skills/learning-system/SKILL.md` — that skill is the authority for review/ingest flows and file layout. This file holds only behavioral conventions.
 
-## Current structure
+## Multi-File Consistency Check
 
-- `🧭 SYSTEM PROMPT — AI Tutor.md` is the operating protocol
-- `Templates/💡 Learning Profile.md` stores learner preferences
-- `Templates/📚 Knowledge Base.md` stores the persistent concept memory
-- `Sessions/` stores completed learning sessions
-- `Reviews/` stores spaced-repetition review notes
-- `Concept Notes/` stores reusable atomic concept pages
-- `Archive/` stores reference-only historical material
+After any multi-file session (wiki page + index + log + Active Concepts + session note), re-read all touched files and verify:
 
-## Maintenance rules
+- Wiki page created → in `Knowledge Wiki/index.md` under Concepts
+- Ingest → `Knowledge Wiki/log.md` has today's entry
+- Concept reviewed/added → `last_reviewed` = today in `Core/📚 Active Concepts.md`
+- Concept reviewed/added → `next_review` calculated from current interval
+- Wiki link in table → points to existing wiki page
+- Session note → exists in `Sessions/` with today's date
 
-- Keep the live system local-first and Obsidian-friendly
-- Preserve existing note names where possible
-- Update the Knowledge Base after sessions and reviews
-- Keep archive content separate from active learning history
-- Prefer small, targeted edits to existing notes instead of wholesale renames
-- The active tutor protocol is now v3: use `pending_mastery`, ask for confidence before evaluation, cap review sessions at 5 concepts, and use mixed practice periodically to improve transfer
+Report ✅/❌ per item. Fix failures immediately.
 
-## Version control
+## Git Sync
 
-- This folder + `Knowledge Wiki/` are tracked in the Git repo at the workspace root, pushed to GitHub `delightaheebwa/learning-system` (public, branch `main`).
-- After any session that edits these folders, commit and push (see the Git Sync rule): `git add "Learning System" "Knowledge Wiki" && git commit && git push`.
-- The root `.gitignore` allowlists only these two directories — never commit anything else.
+The learning system lives in the Git repo at the workspace root, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers ONLY `Learning System/` and `Knowledge Wiki/` — the root `.gitignore` allowlists everything else.
 
-## Handwritten notes ingestion (vision delegation)
+After final edits in a session (consistency checks pass, writes complete), ALWAYS commit and push:
 
-When the user shares images of handwritten notes (or any image as learning source material) during an ingest session, the active agent delegates text extraction to the Mimo v2.5 custom model via the Zo Ask API — regardless of whether the active model has vision. See the **Handwritten Notes Ingest — Mimo v2.5 Vision Delegation** rule for the exact steps and prompt.
+1. `cd /home/workspace && git add "Learning System" "Knowledge Wiki"`
+2. `git commit -m "<short summary of session changes>"`
+3. `git push`
 
-- Model: `byok:77723e9c-69c1-4fb1-9284-045c4e3f0ee8` (Mimo v2.5)
-- Endpoint: `POST https://api.zo.computer/zo/ask` with `Authorization: Bearer $ZO_CLIENT_IDENTITY_TOKEN`
-- Mimo transcribes verbatim (light cleanup only); the active agent does concept extraction, wiki updates, and the rest of the ingest pipeline.
+Verify with `git status` (clean) and `git log --oneline -1`. If push fails, run `gh auth setup-git` once and retry. Never commit files outside the two directories (the allowlist prevents this).

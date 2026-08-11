@@ -1,8 +1,8 @@
 # KNOWLEDGE BASE — Active Concepts
 
 > Purpose: Active learning record for the current focus area. Zo reads this at the start of learning sessions.
-> Paused/archived concepts: `Learning System/Templates/📦 Concept Archive.md` (searched on demand, not auto-loaded)
-> Scripture memory: `Learning System/Templates/📖 Scripture Memory.md`
+> Paused/archived concepts: `Learning System/Core/📦 Concept Archive.md` (searched on demand, not auto-loaded)
+> Scripture memory: `Learning System/Core/📖 Scripture Memory.md`
 
 ## Metadata
 

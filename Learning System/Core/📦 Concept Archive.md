@@ -1,8 +1,8 @@
 # Concept Archive
 > Reference-only. Paused concepts, excluded NLP, session log, resolved questions.
 > NOT loaded during learning sessions — searched on demand via grep when needed.
-> Active concepts: `Learning System/Templates/📚 Active Concepts.md`
-> Scripture memory: `Learning System/Templates/📖 Scripture Memory.md`
+> Active concepts: `Learning System/Core/📚 Active Concepts.md`
+> Scripture memory: `Learning System/Core/📖 Scripture Memory.md`
 
 ## Metadata
 - **Created:** 2026-06-03 (split from 📚 Knowledge Base.md)
