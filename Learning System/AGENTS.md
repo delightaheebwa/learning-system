@@ -1,6 +1,6 @@
 # Learning System — Agent Conventions
 
-This folder + `Knowledge Wiki/` are the active learning system. The operating procedure lives in `Skills/learning-system/SKILL.md` — that skill is the authority for review/ingest flows and file layout. This file holds only behavioral conventions.
+This folder + `Knowledge Wiki/` are the active learning system. The operating procedure lives in `file Skills/learning-system/SKILL.md` — that skill is the authority for review/ingest flows and file layout. This file holds only behavioral conventions.
 
 ## Multi-File Consistency Check
 
