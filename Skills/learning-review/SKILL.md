@@ -41,22 +41,25 @@ From the session note and Active Concepts changes:
 
 ### 2. Quality gate (always, independent review agent)
 
-Call the Open WebUI review-gate tool, passing ONLY the source URL, concept names, and the file paths you wrote. The tool owns the review prompt (static template), fetches the source itself, reads the wiki files itself, and calls the configured review model:
+Call the **terminal CLI runner** (`Skills/learning-review/openwebui/gate_cli.py`), which fetches the source, reads the wiki files, and calls a SECOND model (Mimo v2.5 by default) in Open WebUI — the reviewer is genuinely independent of the chat model. Pass ONLY the source URL, concept names, and the file paths you wrote:
 
+```bash
+python3 Skills/learning-review/openwebui/gate_cli.py \
+  --source "<source URL the ingest came from>" \
+  --concepts "Concept One,Concept Two" \
+  --wiki "Knowledge Wiki/wiki/Concept One.md,Knowledge Wiki/wiki/Concept Two.md" \
+  --model "mimo-v2.5" \
+  --base-url "http://host.docker.internal:3000" \
+  --pass-number 1
 ```
-Tool: review_gate
-  source      = "<source URL the ingest came from>"
-  concepts    = "Concept One,Concept Two"
-  wiki_paths  = "Knowledge Wiki/wiki/Concept One.md,Knowledge Wiki/wiki/Concept Two.md"
-  pass_number = 1
-```
 
-- The tool validates that every wiki path exists BEFORE calling the review model. If a path is wrong, it fails fast — fix the path and re-run. Never pass a path you have not actually written.
-- The tool fetches `source` itself; a dead URL aborts the review (no verdict written). Use a stable URL (raw GitHub, course page), not a workspace path.
-- The verdict JSON is returned to the chat. Save it to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
-- `pass_number` is the cycle number (1 or 2) — it goes into the filename only; it does NOT soften the review.
+- The API key is read from the env var `OPENWEBUI_API_KEY` or `~/.config/learning-system/openwebui_key` (0600) — never passed on the command line.
+- The runner validates that every wiki path exists BEFORE calling the review model. If a path is wrong, it fails fast (exit 2) — fix the path and re-run. Never pass a path you have not actually written.
+- It fetches `source` itself; a dead URL aborts the review (exit 2, no verdict written). Use a stable URL (raw GitHub, course page), not a workspace path.
+- The verdict JSON is printed to stdout. Save it to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
+- `--pass-number` is the cycle number (1 or 2) — it goes into the filename only; it does NOT soften the review. Exit code: 0 = PASS, 1 = ISSUES, 2 = error.
 
-**In-chat fallback (Tool not installed):** the implementer acts as the independent reviewer using the fixed template in `templates/review.template.md` against the fetched source text and the wiki text, then reports issues with severity. Same rules below, same 2-cycle cap.
+**In-chat fallback (CLI unavailable):** the implementer acts as the independent reviewer using the fixed template in `templates/review.template.md` against the fetched source text and the wiki text, then reports issues with severity. Same rules below, same 2-cycle cap.
 
 ### 3. Factual gate (new concepts only, same session)
 

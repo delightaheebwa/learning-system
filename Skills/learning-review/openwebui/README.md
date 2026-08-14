@@ -29,18 +29,34 @@ It does the same job with Open WebUI-native parts:
    prefer not to use Valves: `OPENWEBUI_BASE_URL`, `OPENWEBUI_API_KEY`,
    `REVIEW_GATE_MODEL`, `LEARNING_REPO_PATH`.
 
-## Usage
+## Usage — terminal CLI (preferred: independent second model)
 
-After any **ingest** session, the learning-system skill delegates to this gate.
-The model will call the tool automatically with the source URL, concept names,
-and wiki paths from the session. You can also trigger it manually:
+`gate_cli.py` runs the same gate from the terminal, calling a second model
+(Mimo v2.5 by default) in Open WebUI — so the reviewer is independent of the
+chat model:
 
-> "Run the review gate on that ingest" — or —
-> "review_gate: source=https://missing.csail.mit.edu/2026/course-shell/, concepts=awk, wiki_paths=Knowledge Wiki/wiki/MIT Missing Semester — Shell.md, pass_number=1"
+```bash
+python3 Skills/learning-review/openwebui/gate_cli.py \
+  --source "https://missing.csail.mit.edu/2026/course-shell/" \
+  --concepts "awk,Pipes" \
+  --wiki "Knowledge Wiki/wiki/MIT Missing Semester — Shell.md" \
+  --model "mimo-v2.5" \
+  --base-url "http://host.docker.internal:3000" \
+  --pass-number 1
+```
 
-The returned verdict JSON is saved to
-`Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json`
-(match the naming of the existing files in that folder).
+- API key: env `OPENWEBUI_API_KEY`, or a file `~/.config/learning-system/openwebui_key`
+  (0600). Never on the command line.
+- Exit codes: 0 = PASS, 1 = ISSUES, 2 = error/no verdict.
+- Save the printed verdict to
+  `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json`
+  (match the naming of the existing files in that folder).
+
+## Usage — Tool (optional, same logic in-chat)
+
+You can also call the `review_gate` tool from chat with the same arguments
+(source, concepts, wiki_paths, pass_number). The Tool reads the same key
+(Valve `openwebui_api_key` or env `OPENWEBUI_API_KEY`) and returns the same JSON.
 
 ## If the tool cannot be installed
 

@@ -85,12 +85,12 @@ Mechanical date updates and review session notes are out of scope.
 - Output ONLY valid JSON with this schema:
 
 ```json
-{
+{{
   "verdict": "PASS" | "ISSUES",
   "issues": [
-    { "severity": "high|medium|low", "location": "...", "issue": "..." }
+    {{ "severity": "high|medium|low", "location": "...", "issue": "..." }}
   ]
-}
+}}
 ```
 
 - `"verdict": "PASS"` only when there are no high/medium issues."""

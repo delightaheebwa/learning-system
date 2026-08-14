@@ -65,5 +65,5 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 ## Open WebUI adaptation
 
 - **Source of truth:** this GitHub repo. Load state files from the repo before every flow; keep Open WebUI Notes/Knowledge in sync with the repo, never the other way around.
-- **Review gate (ingest step 7):** run the Open WebUI review-gate tool from `Skills/learning-review/openwebui/review_gate.py` (install once in Admin → Workspace → Tools). If it isn't installed, use the in-chat fallback defined in `Skills/learning-review/SKILL.md` (same rules, same template).
+- **Review gate (ingest step 7):** run the terminal CLI `Skills/learning-review/openwebui/gate_cli.py`, which calls a SECOND model (Mimo v2.5) in Open WebUI as the independent reviewer. In-chat review is only permitted when the gate runs through the terminal with that second model. See `Skills/learning-review/openwebui/README.md`.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (now including `Skills/`).
