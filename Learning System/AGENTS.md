@@ -17,12 +17,12 @@ Report ✅/❌ per item. Fix failures immediately.
 
 ## Git Sync
 
-The learning system lives in the Git repo at the workspace root, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers ONLY `Learning System/` and `Knowledge Wiki/` — the root `.gitignore` allowlists everything else.
+The learning system lives in the Git repo at the workspace root, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers `Learning System/`, `Knowledge Wiki/`, and `Skills/` (the Open WebUI-tuned operating rules, including the review-gate tool).
 
 After final edits in a session (consistency checks pass, writes complete), ALWAYS commit and push:
 
-1. `cd /home/workspace && git add "Learning System" "Knowledge Wiki"`
+1. `cd /home/workspace && git add "Learning System" "Knowledge Wiki" "Skills"`
 2. `git commit -m "<short summary of session changes>"`
 3. `git push`
 
-Verify with `git status` (clean) and `git log --oneline -1`. If push fails, run `gh auth setup-git` once and retry. Never commit files outside the two directories (the allowlist prevents this).
+Verify with `git status` (clean) and `git log --oneline -1`. If push fails, authenticate (`gh auth login` or a PAT in `GITHUB_TOKEN`) and retry. Never commit files outside the three directories.

@@ -1,0 +1,5 @@
+{
+  "review_model": "your-openwebui-model-id",
+  "api_base": "http://localhost:3000/api/chat/completions",
+  "api_key_env": "OPENWEBUI_API_KEY"
+}

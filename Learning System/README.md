@@ -1,10 +1,10 @@
-# 📚 Zo + Obsidian Learning System
+# 📚 Learning System (Open WebUI)
 
-A local-first, spaced-repetition learning system that turns Zo into a rigorous tutor. It forces retrieval instead of passive reading, checks prerequisites, and preserves memory across sessions.
+A local-first, spaced-repetition learning system that turns your Open WebUI assistant into a rigorous tutor. It forces retrieval instead of passive reading, checks prerequisites, and preserves memory across sessions. Originally built with Zo + Obsidian; adapted for self-hosted Open WebUI.
 
 ## How it works
 
-Say a track ("aie", "swe"), "ingest", "review", or anything like "teach me X" — Zo runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. Scripture memory runs through `Skills/scripture-memory` ("meditate").
+Say "swe", "ingest", "review", or anything like "teach me X" — the assistant runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. The review gate lives in `Skills/learning-review/` (Open WebUI tool + in-chat fallback; see `Skills/learning-review/openwebui/README.md`).
 
 Agent behavioral conventions (consistency checks, git sync) live in `AGENTS.md`.
 
@@ -16,6 +16,7 @@ Agent behavioral conventions (consistency checks, git sync) live in `AGENTS.md`.
 - `Concept Notes/` — atomic concept pages
 - `Archive/` — reference-only historical material
 - `Knowledge Wiki/` (sibling folder) — curated wiki pages, `index.md`, `log.md`
+- `Skills/` (repo root) — Open WebUI-tuned operating rules: `learning-system`, `learning-review` (quality gate), `llm-wiki`
 
 ## Principles
 
