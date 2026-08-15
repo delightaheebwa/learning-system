@@ -27,7 +27,8 @@
 - \[\[2026-06-06 - waterbed-theory-runtime-components\]\] — user-provided notes about Waterbed Theory and runtime components (engine vs environment)
 - \[\[2026-06-09 - lexer-tokens\]\] — user-provided notes about lexical analyzers, token structure, and lexeme-vs-literal distinction
 - \[\[2026-06-10 - orthogonality-decorator-shy-code-globals-self-contained-strategy\]\] — user-provided notes about Orthogonality, Decorator Pattern, Shy Code (Law of Demeter), Global Data Avoidance, Self-Contained Components, and Strategy Pattern
-- \[\[2026-06-10 - single-responsibility-delegation-convenience-methods\]\] — user-provided notes about SRP, Delegation Pattern, and Convenience Methods
+- \[\[2026-06-10 - single-responsibility-delegation-convenience-methods\]\] — user-provided notes about SRP, Delegation Pattern, and Convenience Method
+- \[\[2026-08-15 - gemini-meminfo-smoke-test\]\] — Gemini Socratic session: building a robust /proc/meminfo smoke test (bounds invariants, divide-by-zero guard, ULONG_MAX sentinel, smoke vs fixture tests, feature probing vs version checks)s
 
 ## Concepts
 - [[AI Engineering Roadmap v2]]
@@ -146,6 +147,7 @@
 [[C Pointers (&, *, ->)]]
 [[C Preprocessor Macros]]
 [[Acutest Unit Testing]]
+[[Feature Probing vs Kernel Version Checking]]
 
 [[Tensors (PyTorch)]]
 [[PyTorch Model Building]]

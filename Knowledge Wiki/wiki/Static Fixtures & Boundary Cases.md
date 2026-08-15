@@ -20,11 +20,32 @@ A parser tested only against real files is tested against whatever the machine h
 
 Fixture assumptions break in production: a kernel update adds or drops stats, a locale changes formatting, a user's config differs. The parser made assumptions that held for *one* fixture but failed on varied inputs. Test with many fixtures — including hostile ones — not one happy path.
 
+## Fixture Tests vs Smoke Tests (2026-08-15)
+
+Two distinct layers for testing a parser that reads live OS files (see [[Testable Seam]]):
+
+- **Fixture tests (deterministic):** feed known static text into the pure parser (`parse_meminfo`) and assert *exact* values — `assert(mem.total_kb == 16384256)`. The input never changes, so the output must be exact.
+- **Smoke tests (live/system):** run against the real `/proc/meminfo` via the I/O layer (`read_meminfo`) and assert *range/sanity bounds*, not exact numbers — memory fluctuates between clock cycles, so exact asserts would be flaky. A smoke test is a sanity shield: "did the system layer succeed and return plausible physical bounds?"
+
+Smoke-test invariant pattern (see [[Sentinel Values vs Presence Flags]]):
+
+```c
+TEST_CHECK((read_meminfo("/proc/meminfo", &memory) == 0) &&
+           (memory.total_kb > 0) &&
+           (memory.available_kb <= memory.total_kb));
+```
+
+Boundary lessons from this pattern:
+- **`total_kb > 0`** guards a downstream divide-by-zero (`100.0 * used_kb / total_kb` crashes when total is 0).
+- **`available_kb <= total_kb`** is the true invariant — strict `<` is brittle because `==` is reachable on fresh/controlled systems (no reclaimable overhead).
+- A **missing key** (`MemAvailable` absent) with a `{0}` default silently passes `<=` — the missing-field check belongs in the smoke test too.
+
 ## One Line Summary
 
-One happy-path fixture proves nothing about production; boundary fixtures prove the parser fails *safely* and *precisely*.
+One happy-path fixture proves nothing about production; boundary fixtures prove the parser fails *safely* and *precisely*; smoke tests prove live reads stay within physical sanity bounds.
 
 ## Sources
 
 - Teach C Course — Lesson 2: Your First Tests
 - Gemini Socratic tutoring on fixtures (notebook: https://gemini.google.com/app/e21b1624e3b156a0)
+- Gemini Socratic session — robust `/proc/meminfo` smoke test (notebook: https://gemini.google.com/app/e338aa05afbec7a2)

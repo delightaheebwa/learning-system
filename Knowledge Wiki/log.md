@@ -1,3 +1,19 @@
+## 2026-08-15 — Ingest: meminfo Smoke Test (Gemini Socratic tutoring)
+
+**Source:** https://gemini.google.com/app/e338aa05afbec7a2 (Gemini conversation notebook, 12 messages)
+
+**Concepts enriched (2, SWE track):**
+- Sentinel Values vs Presence Flags — `{0}` default silently passing `available <= total` on missing MemAvailable; `ULONG_MAX` sentinel pattern; three-fact smoke assertion; sentinel valid only outside the legitimate domain. `last_reviewed` 2026-08-15, `next_review` 2026-08-22 (3d→7d)
+- Static Fixtures & Boundary Cases — fixture tests (deterministic exact asserts) vs smoke tests (live range/sanity bounds); `total_kb > 0` divide-by-zero guard; `<=` is the true invariant (`<` brittle since `==` reachable). `last_reviewed` 2026-08-15, `next_review` 2026-08-29 (7d→14d)
+
+**Concepts added (1 new, SWE track, developing):**
+- Feature Probing vs Kernel Version Checking — runtime feature presence vs version checks (backports, spoofable uname); sentinel-as-feature-probe; `MemAvailable` added in Linux 3.14; pre-3.14 fallback ≈ MemFree + Buffers + Cached. `next_review` 2026-08-18 (+3d), Last Q Type definitional
+
+**Wiki pages:** Sentinel Values vs Presence Flags (enriched), Static Fixtures & Boundary Cases (enriched), Feature Probing vs Kernel Version Checking (created), raw source note added (2026-08-15 - gemini-meminfo-smoke-test)
+
+**Session note:** Session — meminfo Smoke Test Ingest — 2026-08-15.md
+**Mastery Summary:** SWE 46 developing.
+
 ## 2026-08-06 — Ingest: Software Testing (Teach C Lesson 2 + Gemini tutoring + cstack Part 4 + Bill Wake 3A)
 
 **Sources:**
