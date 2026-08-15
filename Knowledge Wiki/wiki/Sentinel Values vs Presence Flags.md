@@ -2,6 +2,8 @@
 
 ## Overview
 
+*(Scope: base content ingested 2026-08-07 from Teach C Lesson 3 + Gemini notebook 8870dcd71e2919f5; the "Sentinel in the Smoke Test" section (2026-08-15) is from notebook e338aa05afbec7a2.)*
+
 A **sentinel value** is a payload value reused to mean "absent" (e.g. `0` or `-1` meaning "not found"). The trap: if that value is also a legitimate domain value, you can't tell a real zero from a missing field.
 
 ## The Trap
@@ -20,6 +22,8 @@ Two failure modes:
 Reusing payload values to represent *structural* status (present vs missing) is a classic systems-programming trap: `0` is simultaneously a valid quantity and an absence marker — ambiguous.
 ## The Naive Fix the Lesson Teaches (Teach C Lesson 3)
 
+*(Scope: this section documents the Teach C Lesson 3 practice exercise from an earlier ingest — external to the Gemini session reviewed in this update.)*
+
 The lesson's practice fix is the two-field sentinel check this page replaces:
 
 ```c
@@ -31,6 +35,8 @@ return (out->total_kb != 0 && out->available_kb != 0) ? 0 : -1;
 Requiring both fields is better than one, but both are sentinel checks on payload values — the presence-flag version below is the robust replacement.
 
 ## The Fix: Separate Presence from Value
+
+*(Scope: this section is from Teach C Lesson 3 + Gemini notebook 8870dcd71e2919f5 (2026-08-07 ingest) — external to the 2026-08-15 session.)*
 
 **Explicit presence flags:**
 
@@ -91,7 +97,7 @@ TEST_CHECK((read_meminfo("/proc/meminfo", &memory) == 0) &&
 - Decouple *structural presence* from *numeric payload*. Presence is tracked by flags; the value stores only the quantity.
 - A sentinel works when the sentinel value is outside the legitimate domain (`ULONG_MAX`); `0` fails because it is a valid quantity.
 - A `{0}` default silently turns "field missing" into "zero", which can pass `<=` sanity bounds — green tests on fake data.
-- In C, explicit comparisons like `x != false` simplify to `x`.
+- In C, `x != false` is equivalent to `x != 0` — true for any nonzero value (including a negative `int`); the expression's value is an `int`, not a `bool`. *(from Teach C Lesson 3 notes, 2026-08-07)*
 
 ## Sources
 

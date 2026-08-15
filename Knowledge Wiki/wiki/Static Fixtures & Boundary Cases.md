@@ -2,6 +2,8 @@
 
 ## Overview
 
+*(Scope: 'Overview' through 'Boundary Fixture Classes' were ingested 2026-08-06 from Teach C Lesson 2 + Gemini notebook e21b1624e3b156a0. The 'Fixture Tests vs Smoke Tests' section (2026-08-15) is from Gemini notebook e338aa05afbec7a2.)*
+
 A **fixture** is controlled, predictable sample data used as test input. It turns a moving target (live OS text, real user input) into a fixed puzzle. **Boundary/adversarial fixtures** deliberately push the parser outside its happy path to prove it fails cleanly instead of crashing or corrupting.
 
 ## Why Fixtures
