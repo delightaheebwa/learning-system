@@ -13,7 +13,7 @@
 
 **Session note:** Session — meminfo Smoke Test Ingest — 2026-08-15.md
 **Mastery Summary:** SWE 46 developing.
-**Learning-review gate (Mimo v2.5 via terminal CLI):** pass 1 — 3 medium issues (x != false wording; missing scope notes on Teach C Lesson 3 section and Static Fixtures' earlier sections) → fixed. Pass 2 — 3 medium flags on pre-existing Sentinel-page sections (Overview, The Fix, Key Insight, from the 2026-08-07 ingest) → hard stop at 2 cycles; surfaced to user; scope notes added by implementer (no third pass). Verdicts: Quality Gates/…-pass1-2026-08-15.json, …-pass2-2026-08-15.json. Factual gate (new concept): MemAvailable Linux 3.14 + fallback formula consistent with kernel history / classic free.
+**Learning-review gate (Mimo v2.5 via terminal CLI):** pass 1 — 3 medium issues (x != false wording; missing scope notes on Teach C Lesson 3 section and Static Fixtures' earlier sections) → fixed. Pass 2 — 3 medium flags on pre-existing Sentinel-page sections (Overview, The Fix, Key Insight, from the 2026-08-07 ingest) → hard stop at 2 cycles; surfaced to user. Post-ingest (user-approved): implementer fixed all three — Overview reworded (dropped "payload value" jargon), The Fix scope note corrected (2026-08-15 source does name presence flags as pattern #2), Key Insight bullet rewritten as precise clarification. No third LLM pass [2]. Verdicts: Quality Gates/…-pass1-2026-08-15.json, …-pass2-2026-08-15.json. Factual gate (new concept): MemAvailable Linux 3.14 + fallback formula consistent with kernel history / classic free.
 
 ## 2026-08-06 — Ingest: Software Testing (Teach C Lesson 2 + Gemini tutoring + cstack Part 4 + Bill Wake 3A)
 

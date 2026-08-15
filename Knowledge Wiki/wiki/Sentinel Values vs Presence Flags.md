@@ -4,7 +4,7 @@
 
 *(Scope: base content ingested 2026-08-07 from Teach C Lesson 3 + Gemini notebook 8870dcd71e2919f5; the "Sentinel in the Smoke Test" section (2026-08-15) is from notebook e338aa05afbec7a2.)*
 
-A **sentinel value** is a payload value reused to mean "absent" (e.g. `0` or `-1` meaning "not found"). The trap: if that value is also a legitimate domain value, you can't tell a real zero from a missing field.
+A **sentinel value** is a special value chosen to mark "absent" or "not found" (e.g. `0` or `-1` meaning "missing"). The trap: if that value is also a legitimate value in the domain, you can't tell a real zero from a missing field.
 
 ## The Trap
 
@@ -19,7 +19,7 @@ Two failure modes:
 1. **Valid zeroes:** `MemAvailable: 0 kB` (an out-of-memory container) is a *successful parse* of zero, but the check treats it as a parsing failure (false negative).
 2. **Accidental true negative:** a field never present stays `0` (thanks to `struct memory memory = {0}`), which happens to satisfy the error branch — but only because `0` was recycled to mean both "uninitialized" and "zero memory". The check is correct *by coincidence*, not by design.
 
-Reusing payload values to represent *structural* status (present vs missing) is a classic systems-programming trap: `0` is simultaneously a valid quantity and an absence marker — ambiguous.
+Reusing an ordinary value to represent *structural* status (present vs missing) is a classic systems-programming trap: `0` is simultaneously a valid quantity and an absence marker — ambiguous.
 ## The Naive Fix the Lesson Teaches (Teach C Lesson 3)
 
 *(Scope: this section documents the Teach C Lesson 3 practice exercise from an earlier ingest — external to the Gemini session reviewed in this update.)*
@@ -36,7 +36,7 @@ Requiring both fields is better than one, but both are sentinel checks on payloa
 
 ## The Fix: Separate Presence from Value
 
-*(Scope: this section is from Teach C Lesson 3 + Gemini notebook 8870dcd71e2919f5 (2026-08-07 ingest) — external to the 2026-08-15 session.)*
+*(Scope: the Gemini 2026-08-15 session names presence flags as one of the two standard patterns — "Sentinel Values" vs "Presence Flags: track explicitly whether the key was found (e.g. `bool has_available`)". The detailed struct/code implementation below is an expansion written by the implementer on top of that mention, plus the Teach C Lesson 3 seam context.)*
 
 **Explicit presence flags:**
 
@@ -97,7 +97,7 @@ TEST_CHECK((read_meminfo("/proc/meminfo", &memory) == 0) &&
 - Decouple *structural presence* from *numeric payload*. Presence is tracked by flags; the value stores only the quantity.
 - A sentinel works when the sentinel value is outside the legitimate domain (`ULONG_MAX`); `0` fails because it is a valid quantity.
 - A `{0}` default silently turns "field missing" into "zero", which can pass `<=` sanity bounds — green tests on fake data.
-- In C, `x != false` is equivalent to `x != 0` — true for any nonzero value (including a negative `int`); the expression's value is an `int`, not a `bool`. *(from Teach C Lesson 3 notes, 2026-08-07)*
+- C `bool` is `int` under the hood, so `x != false` is exactly `x != 0` — true for any nonzero value (including a negative `int`), and the expression evaluates to `int`, not `bool`. *(clarification added by implementer; `true`/`false` checks discussed in Teach C Lesson 3)*
 
 ## Sources
 
