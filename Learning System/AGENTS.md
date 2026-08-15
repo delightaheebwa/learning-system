@@ -25,4 +25,8 @@ After final edits in a session (consistency checks pass, writes complete), ALWAY
 2. `git commit -m "<short summary of session changes>"`
 3. `git push`
 
-Verify with `git status` (clean) and `git log --oneline -1`. If push fails, authenticate (`gh auth login` or a PAT in `GITHUB_TOKEN`) and retry. Never commit files outside the three directories.
+Verify with `git status` (clean) and `git log --oneline -1`. Never commit files outside the three directories.
+
+### Git auth (automated)
+
+Credentials are stored on this machine at `~/.git-credentials` (0600) with `credential.helper store` configured — `git push` works without interactive auth. If a push ever fails with auth errors, re-run the device-flow login once (`gh auth login` or a PAT stored the same way) to refresh the credential; no need to do it per-commit.
