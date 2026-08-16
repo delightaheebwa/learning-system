@@ -32,6 +32,7 @@
 
 ## Concepts
 - [[AI Engineering Roadmap v2]]
+- [[SWE Primary Colors & Roadmap]]
 
 - \[\[AI Engineering - Dev Environment Stack\]\]
 - \[\[AI Engineering - Debugging and Profiling\]\]

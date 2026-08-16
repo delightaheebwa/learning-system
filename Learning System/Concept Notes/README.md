@@ -1,12 +1,6 @@
 # Concept Notes
 
-This folder is for reusable, atomic concept pages.
+> **Status: legacy / frozen (2026-08-16).**
+> Reference pages now live in the **Knowledge Wiki** (`Knowledge Wiki/wiki/`) — the single reference store the Active Concepts table links into. Concept Notes is retained as read-only history; do not add new notes here.
 
-Use one note per concept when a topic deserves a durable reference page separate from a session note or review note.
-
-Suggested pattern:
-
-- `Concept Name.md`
-- include definition, prerequisites, examples, common mistakes, and links to related concepts
-
-These notes are part of the live system and can be linked from sessions and the knowledge base.
+The files below are the surviving AIE-era atomic notes (autodiff, calculus for ML, etc.). See `Knowledge Wiki/index.md` for the live catalog.

@@ -19,6 +19,7 @@
 ## Live System Notes
 
 - Use **"swe"** to trigger Software Engineering track reviews
+- Use **"lesson"/"continue"** to run the next Stage-0 curriculum lesson (see `Learning System/CURRICULUM.md`; delegated to the `learning-teach` skill — probe → plan → teach, live fact-checking, no Mimo gate on teaching)
 - Each trigger runs a separate review session limited to that track's due concepts (cap of 5 per session)
 - `Sessions/` is the session history for the active learning system
 - `Reviews/` stores spaced-repetition review notes
@@ -88,6 +89,14 @@
 | C Preprocessor Macros | developing | None | 2026-08-12 | 2026-08-19 | https://gemini.google.com/app/8870dcd71e2919f5 | discriminative | `#define` = dumb text substitution before compilation (automatic Find & Replace). Object-like (BUFFER_SIZE → 1024) vs function-like (SQUARE(x) → ((x)*(x))). Can capture source metadata (__FILE__/__LINE__) — that's how TEST_CHECK reports file:line. No type checking; side-effect hazard: SQUARE(x++) expands to ((x++)*(x++)) — increments twice. Variadic macros (C99 `...`/`__VA_ARGS__`) power TEST_MSG. Smarter alternatives: inline, constexpr/templates (C++), hygienic AST macros (Rust, Lisp, Elixir, Julia). Wiki: [[C Preprocessor Macros]]. |
 | Acutest Unit Testing | developing | None | 2026-08-15 | 2026-08-18 | https://github.com/mity/acutest | discriminative | Single-header C test runner (vendor acutest.h; auto-generates main()). TEST_LIST = {name, function} pairs + mandatory {NULL, NULL} sentinel. TEST_CHECK logs failure and continues; TEST_ASSERT aborts the current test — safe because each test runs in its own child process (OS reclaims on abort). TEST_MSG/TEST_DUMP add printf-style diagnostics on failure (variadic, C99+). CLI: --list/-l, --verbose, run-by-name filter, --exclude; exit 0 = pass, 1 = fail. Wiki: [[Acutest Unit Testing]]. |
 
+### Curriculum covered-markers (Stage 0)
+
+> Lessons already covered by live concepts below — marked `done` in `CURRICULUM.md`. When the curriculum reaches a covered lesson, run a **retrieval check** to verify (never re-teach); on failure, demote the lesson back to `in-progress` and correct the concept status.
+>
+> **A1 First compile (make)** ↔ Makefile: Targets/Prerequisites/Recipes, Make Variables (CC, CFLAGS), Clean Targets & .PHONY, GCC Compilation Stages, Intermediate Object Files
+> **A2 First tests (AAA)** ↔ Arrange-Act-Assert (AAA), Red-Green-Refactor
+> **A3 Acutest + parser seam** ↔ Acutest Unit Testing, Testable Seam, Static Fixtures & Boundary Cases
+> **A4 Read real memory** ↔ Sentinel Values vs Presence Flags, Feature Probing vs Kernel Version Checking, sscanf %n & Line Advancement, C Pointers (&, *, ->), C String Buffer Boundaries
 
 ---
 

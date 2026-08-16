@@ -1,6 +1,6 @@
 ---
 name: learning-system
-description: Run the spaced-repetition learning system. Triggers — "swe" (review the swe track), "ingest" (ingest new content), or "learn"/"study"/"teach me"/"review" (start a review session). Loads the Core state files, executes the review or ingest flow, and persists session notes, wiki updates, and Active Concepts changes.
+description: Run the spaced-repetition learning system. Triggers — "swe" (review the swe track), "ingest" (ingest new content), "learn"/"study"/"teach me"/"review" (start a review session), "lesson"/"continue" (next curriculum lesson, delegating to the learning-teach skill). Loads the Core state files, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
 compatibility: Open WebUI (self-hosted)
 metadata:
   author: delight
@@ -9,7 +9,9 @@ metadata:
 
 # Learning System
 
-The active learning system. Trigger by saying a track ("swe"), "ingest", or a learning intent.
+The active learning system. Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
+
+Teaching intents ("teach me X", "lesson", "continue") are handled by the **`Skills/learning-teach/SKILL.md`** skill — see below.
 
 ## State files
 
@@ -18,6 +20,15 @@ The active learning system. Trigger by saying a track ("swe"), "ingest", or a le
 - `Learning System/Core/📦 Concept Archive.md` — paused/archived concepts. Grep on demand; never auto-load.
 - `Learning System/Core/📖 Scripture Memory.md` — handled by the scripture-memory skill, not this one.
 - `Learning System/Sessions/`, `Learning System/Reviews/`, `Learning System/Concept Notes/`, `Learning System/Archive/` — writes land here.
+
+## Teaching flow (delegation)
+
+Trigger: "teach me X", "lesson", or "continue".
+
+1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
+2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s deterministic two-strand rotation; if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
+3. **`teach me X`:** in Stage-0 scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. The Mimo review gate is **ingest-only**; teaching uses live background fact-checking instead.
 
 ## Review flow
 

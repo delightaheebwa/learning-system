@@ -1,3 +1,12 @@
+## 2026-08-16 — Add teaching capability (probe → plan → teach) + Stage-0 curriculum
+
+**What changed (system upgrade, not an ingest):**
+- **New `Skills/learning-teach/SKILL.md`** — the teaching loop: probe (3–8 graded MCQs, reads only relevant state) → plan (Mermaid graph + live background fact-check) → teach (one reasoning step at a time, unconditional truths + motivated discovery, guided Socratic, Bloom climb, hook-in/wonder-out, fuzziness inference, Feynman explain-back gate). Two-tier end quiz (retrieval + higher-order). Automatic interleaving at 3 levels. Mimo review gate is ingest-only; teaching uses live fact-checking.
+- **New state files:** `Learning System/MISSION.md` (Stage 0 — SWE Foundations), `CURRICULUM.md` (integrated MIT + Terminal System Monitor map, color-tagged, deterministic strand rotation), `RESOURCES.md` (primary readings), `GLOSSARY.md` (workspace glossary).
+- **New folders:** `Lessons/`, `Learning Records/`, `Curriculum/sources/terminal-system-monitor/` (8 immutable HTML lesson files).
+- **Wiki page created:** [[SWE Primary Colors & Roadmap]] (filed from user attachment; Stage-0 spine; C chosen over Python for CLI strand).
+- **Concept Notes frozen as legacy** (reference store = Knowledge Wiki); `Learning Profile.md` re-pointed to SWOT Stage 0 (AI Engineering paused); `Active Concepts.md` gained Stage-0 covered-markers A1–A4 (retrieval-verify, never re-teach); AGENTS.md consistency check extended for teaching sessions.
+
 ## 2026-08-15 — Ingest: meminfo Smoke Test (Gemini Socratic tutoring)
 
 **Source:** https://gemini.google.com/app/e338aa05afbec7a2 (Gemini conversation notebook, 12 messages)

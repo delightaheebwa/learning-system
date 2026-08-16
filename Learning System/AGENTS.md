@@ -13,6 +13,14 @@ After any multi-file session (wiki page + index + log + Active Concepts + sessio
 - Wiki link in table → points to existing wiki page
 - Session note → exists in `Sessions/` with today's date
 
+Teaching sessions additionally verify (per `Skills/learning-teach/SKILL.md`):
+
+- Lesson file → exists in `Learning System/Lessons/` with today's date
+- Learning record → numbered `highest + 1` in `Learning System/Learning Records/`, with Bloom level + Feynman explain-back in Evidence
+- Curriculum lesson advanced → only if practice + retrieval pass + Feynman pass; status in `Learning System/CURRICULUM.md` matches reality
+- New concepts from teaching → `developing` with `last_reviewed` = today, `next_review` = +3d
+- Glossary additions → promoted only with user approval
+
 Report ✅/❌ per item. Fix failures immediately.
 
 ## Git Sync

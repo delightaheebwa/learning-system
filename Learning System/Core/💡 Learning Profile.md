@@ -8,28 +8,23 @@
 - **Handle:** delight
 - **Personality:** ISFP-T (Turbulent Adventurer)
 - **Created:** 2026-04-13
-- **Last Updated:** 2026-07-22
+- **Last Updated:** 2026-08-16
 
 ## Academic Context
 
 - **Year:** 2nd Year University Student
 - **Field:** AI/ML (Artificial Intelligence / Machine Learning)
-- **Current Focus:** Data Science — learning and building data science projects
+- **Current Focus:** SWE Foundations — Stage 0 (Fluency & Tools); AI/ML roadmap paused
 
 ## Current Roadmap
 
-- **Active Roadmap:** AI Engineering — Primary Colors Roadmap v2
-- **Goal:** Learn the primitives (autodiff, transformers, post-training, inference, RAG/agents) by building everything from scratch
-- **Source:** https://karpathy.ai/zero-to-hero.html → https://github.com/rasbt/LLMs-from-scratch → TRL → hardware → mini-vllm → llm-zoomcamp
-- **Current Position:** C1 (Spine) — halfway through Karpathy's nn-zero-to-hero
-  - ✅ micrograd (Lecture 1) — complete
-  - ✅ makemore Part 1 (bigram) — complete
-  - ▶️ makemore Part 2 (MLP) — next
-  - Remaining: RNN/WaveNet/Transformer lectures, then Raschka LLMs-from-scratch
-- **Roadmap stored at:** `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
-- **Previous roadmap:** AI Engineering from Scratch (archived 2026-07-22)
-- **Estimated completion:** ~10–12 weeks for core strands
-- **Sequencing:** C1 (weeks 1–5) → C2 (week 6) → C3 (week 7) → C4 (weeks 8–9) → C5 (weeks 10–12)
+- **Active Roadmap:** SWE Foundations — Stage 0 (Fluency & Tools)
+- **Goal:** Make the base reflexive — shell, git, debugging, C builds, testing — per the SWE Primary Colors roadmap
+- **Source:** MIT Missing Semester (https://missing.csail.mit.edu/2026/) + Terminal System Monitor course (C) + SWE Primary Colors roadmap
+- **Roadmap stored at:** `Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
+- **Current Position:** Stage 0 — MIT Strand in progress · Monitor A5 (CPU from two samples) next · CLI tools #2/#3 TBD
+- **Previous roadmap:** AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
+- **Sequencing:** Stage 0 (current) → Stage 1 Computation → Stage 2 Systems → Stage 3 Abstraction → Stage 4 State → Stage 5 Interaction → Stage 6 White Light
 
 ## Learning Style Preferences
 
