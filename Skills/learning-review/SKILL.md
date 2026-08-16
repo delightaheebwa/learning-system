@@ -1,6 +1,6 @@
 ---
 name: learning-review
-description: "Quality-gate and fact-check learning system ingest output before it is finalized. Runs after every ingest session: an independent review agent (configurable model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user. Verification gate for learning system ingest output."
+description: "Quality-gate and fact-check learning system ingest output before it is finalized. Runs after every ingest session: an independent review agent (configurable model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user. Verification gate for learning system ingest output. Does NOT gate teaching artifacts — those are verified live by the learning-teach skill (background fact-checking)."
 compatibility: Open WebUI (self-hosted)
 metadata:
   author: delight
@@ -11,7 +11,9 @@ metadata:
 
 Verification gate for the learning system. Runs automatically at the end of every **ingest** session (delegated from the Learning System rule), or on demand.
 
-Scope: **ingest outputs only** — wiki pages, Active Concepts insight rows, question seeds. Review sessions and mechanical date updates are NOT gated.
+Scope: **ingest outputs only** — wiki pages, Active Concepts insight rows, question seeds. Review sessions, mechanical date updates, and **teaching artifacts** are NOT gated.
+
+Teaching artifacts (lesson files under `Learning System/Lessons/`, learning records, glossary entries promoted by lessons) are verified **live, in-stream** by the `learning-teach` skill — a background sub-agent fact-checks claims during plan/teach against `RESOURCES.md` + web, before they reach the user. They do **not** go through this gate. See `Skills/learning-teach/SKILL.md`.
 
 ## Config
 
@@ -90,6 +92,7 @@ Tell the user concisely:
 - Hard stop after 2 cycles. Remaining flags go to the user, always.
 - Factual gate runs on new concepts only — enrichments have survived at least one human review.
 - Never skip the gates silently. If a gate can't run (e.g. tool call fails), say so and surface what was unverified.
+- Never run this gate on teaching artifacts. Teaching uses live background fact-checking (`learning-teach`), not this Mimo gate; the two verification paths are deliberately separate.
 
 ## Manual trigger
 
