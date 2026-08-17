@@ -18,8 +18,9 @@ The teaching half of the learning system, running in Open WebUI on the tutor mod
 
 ## Multiple-choice integrity (applies to the probe AND the end-of-lesson quiz)
 
-These rules stop the correct answer from being guessable by its presentation.
-The user must earn the answer by knowledge, never by noticing a pattern:
+These rules stop the correct answer from being guessable by its presentation or
+by the distractors. The user must earn the answer by knowledge, never by noticing
+a pattern:
 
 - **Balance option length and structure.** The correct option must not be the
   longest (or shortest) or the only one with extra detail. Rewrite options so
@@ -35,8 +36,20 @@ The user must earn the answer by knowledge, never by noticing a pattern:
   answer in the question stem.
 - **Do not reuse the exact textbook sentence** for the correct option while
   paraphrasing the distractors.
+- **Make the correct answer subtle — not a neon sign.** The correct option must
+  not be the only defensible one. Build the distractors so a person who knows the
+  material still has to think: mix in *almost right* (one term swapped, one step
+  off), *right in another context* (true elsewhere but wrong here), *right under
+  a narrower/wider condition*, and *right by nuance* (missing a qualifier). An
+  expert should recognize the correct answer; a guesser should not. No option may
+  be eliminated just because it is worded differently.
+- **Never leak the answer key in the instructions.** Do not give the user an
+  example answer string that encodes the correct positions (e.g. "reply '1b, 2b,
+  3c'"). Ask for answers without revealing which slot is correct, or omit the
+  example entirely.
 - Before presenting a question, self-check: cover the options and ask "could the
-  answer be inferred from length/position/format alone?" If yes, rewrite.
+  answer be inferred from length/position/format alone, or is any distractor so
+  weak it can be discarded without knowledge?" If yes, rewrite.
 
 ## The loop (probe → plan → teach)
 
