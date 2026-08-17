@@ -42,6 +42,34 @@ Boundary lessons from this pattern:
 - **`available_kb <= total_kb`** is the true invariant — strict `<` is brittle because `==` is reachable on fresh/controlled systems (no reclaimable overhead).
 - A **missing key** (`MemAvailable` absent) with a `{0}` default silently passes `<=` — the missing-field check belongs in the smoke test too.
 
+### Why Exact Live Values Are Flaky (2026-08-18)
+
+`/proc/meminfo` is an **active kernel interface**, not a static config file — background processes allocate memory, release cache, and swap pages every microsecond, and even `MemTotal` can change if memory is hot-plugged in a VM. Across machines/runs (CI runners vs local dev), hardcoding `assert(memory.total_kb == 16384256)` fails on virtually every other machine, even when the code is correct. A smoke test therefore asserts *sanity bounds* (non-zero total, available ≤ total), while deterministic parsing gets exact asserts on fixed **fixtures**.
+
+### Swap Invariant & Edge Case (2026-08-18)
+
+Extending the parser to monitor `SwapTotal:` / `SwapFree:` needs two more rules (added from Gemini notebook ed55c6cdf10c8c2a):
+
+1. **Logical invariant:** `swap_free_kb <= swap_total_kb` — you can never have more free swap than configured total swap (mirrors the RAM invariant).
+2. **Zero-swap edge case (disabled swap, `SwapTotal: 0 kB`):** guard `swap_total_kb > 0` before any percentage math, or you get a **division-by-zero** crash computing `100.0 * swap_used_kb / swap_total_kb`. When swap is disabled, skip the percentage (report `0.0% / Not Configured`) — don't crash or falsely fail.
+
+A complete guard block:
+
+```c
+// RAM
+if (memory.total_kb == 0 || memory.available_kb > memory.total_kb) return TEST_FAILED;
+// Swap
+if (memory.swap_free_kb > memory.swap_total_kb) return TEST_FAILED;  // corruption
+
+double swap_used_pct = 0.0;
+if (memory.swap_total_kb > 0) {
+    unsigned long swap_used_kb = memory.swap_total_kb - memory.swap_free_kb;
+    swap_used_pct = 100.0 * swap_used_kb / memory.swap_total_kb;
+}
+```
+
+**Avoid the redundant check:** because `total_kb` is an `unsigned long`, `total_kb >= 0` is *always true* by definition — it passes even when `total_kb` is accidentally 0, so it's a useless guard. The meaningful guards are `total_kb > 0`, `available_kb <= total_kb`, `swap_free_kb <= swap_total_kb`, and `swap_total_kb > 0`.
+
 ## One Line Summary
 
 One happy-path fixture proves nothing about production; boundary fixtures prove the parser fails *safely* and *precisely*; smoke tests prove live reads stay within physical sanity bounds.
@@ -51,3 +79,4 @@ One happy-path fixture proves nothing about production; boundary fixtures prove 
 - Teach C Course — Lesson 2: Your First Tests
 - Gemini Socratic tutoring on fixtures (notebook: https://gemini.google.com/app/e21b1624e3b156a0)
 - Gemini Socratic session — robust `/proc/meminfo` smoke test (notebook: https://gemini.google.com/app/e338aa05afbec7a2)
+- Gemini C tutoring — swap invariants, flaky exact-value asserts (notebook: https://gemini.google.com/app/ed55c6cdf10c8c2a)

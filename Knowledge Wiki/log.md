@@ -1,3 +1,22 @@
+## 2026-08-18 — Ingest: C Integer Mechanics & C Memory Regions (Gemini C tutoring)
+
+**Source:** https://gemini.google.com/app/ed55c6cdf10c8c2a (Gemini conversation notebook, 20 messages)
+
+**Concepts added (2 new, SWE track, `developing`, staggered):**
+- C Integer Mechanics (Underflow & Type Promotion) — unsigned can't be negative → wrapping underflow on `total - available` when `available > total` (~quadrillions kB); guard catches corrupt state before math (`invalid memory totals` to stderr, return 1); `100.0 * used_kb / total_kb` (float literal promotes) vs `(used_kb/total_kb)*100` (integer division truncates → 0.0% for any usage <100%). `next_review` 2026-08-21 (+3d), Last Q Type definitional
+- C Memory Regions (Stack vs Heap vs Swap) — stack (auto scratchpad, frames wiped on return, caller's stack outlives callee, fixed ~few MB) vs heap (`malloc`/`realloc`, persists until `free`, leaks) vs swap (disk overflow, slow); `char *buf = malloc(4096)` → `buf` on stack, block on heap; returning a stack array's address → dangling pointer (UB; stack can't leak — only heap); buffer-passing trade-off (zero malloc overhead + leak-proof vs fixed capacity truncates /proc/meminfo). `next_review` 2026-08-22 (+4d, staggered), Last Q Type definitional
+
+**Concepts enriched (3, SWE track):**
+- Static Fixtures & Boundary Cases — exact-live asserts are flaky (`/proc/meminfo` volatile, MemTotal can hot-plug in VM); swap invariants (`swap_free_kb <= swap_total_kb`; disabled-swap guard `swap_total_kb > 0` vs divide-by-zero; `unsigned >= 0` is redundant). `last_reviewed` 2026-08-18
+- Feature Probing vs Kernel Version Checking — MemFree (strictly unused) vs MemAvailable (kernel estimate incl. reclaimable cache/buffers) vs SwapFree (disk, not RAM); answer to "which field for available-to-start-app" is MemAvailable. `last_reviewed` 2026-08-18
+- C Pointers (&, *, ->) — pointer validity depends on memory region lifetime; dangling pointer from returning stack array (compiler warning); stack can't leak, heap can (memory leak). `last_reviewed` 2026-08-18
+
+**Wiki pages:** C Integer Mechanics (Underflow & Type Promotion) (created), C Memory Regions (Stack vs Heap vs Swap) (created), Static Fixtures & Boundary Cases (enriched), Feature Probing vs Kernel Version Checking (enriched), C Pointers (&, *, ->) (enriched); raw source note added (2026-08-18 - gemini-c-memory-integer-mechanics)
+
+**Session note:** Session — C Memory & Integer Mechanics Ingest — 2026-08-18.md
+**Mastery Summary:** SWE 46 → 48 developing.
+**Learning-review gate (Mimo v2.5 via terminal CLI):** (to be added after gate).
+
 ## 2026-08-16 — Add teaching capability (probe → plan → teach) + Stage-0 curriculum
 
 **What changed (system upgrade, not an ingest):**

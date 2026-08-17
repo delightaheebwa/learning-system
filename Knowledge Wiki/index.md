@@ -29,6 +29,8 @@
 - \[\[2026-06-10 - orthogonality-decorator-shy-code-globals-self-contained-strategy\]\] — user-provided notes about Orthogonality, Decorator Pattern, Shy Code (Law of Demeter), Global Data Avoidance, Self-Contained Components, and Strategy Pattern
 - \[\[2026-06-10 - single-responsibility-delegation-convenience-methods\]\] — user-provided notes about SRP, Delegation Pattern, and Convenience Method
 - \[\[2026-08-15 - gemini-meminfo-smoke-test\]\] — Gemini Socratic session: building a robust /proc/meminfo smoke test (bounds invariants, divide-by-zero guard, ULONG_MAX sentinel, smoke vs fixture tests, feature probing vs version checks)s
+- \[\[2026-08-18 - gemini-c-memory-integer-mechanics\]\] — Gemini C tutoring: unsigned underflow + integer-division truncation traps, flaky exact-live asserts, swap invariants, MemFree/MemAvailable/SwapFree semantics, stack vs heap vs swap memory regions, dangling pointers
+
 
 ## Concepts
 - [[AI Engineering Roadmap v2]]
@@ -149,6 +151,8 @@
 [[C Preprocessor Macros]]
 [[Acutest Unit Testing]]
 [[Feature Probing vs Kernel Version Checking]]
+[[C Integer Mechanics (Underflow & Type Promotion)]]
+[[C Memory Regions (Stack vs Heap vs Swap)]]
 
 [[Tensors (PyTorch)]]
 [[PyTorch Model Building]]

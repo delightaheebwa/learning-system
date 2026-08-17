@@ -39,6 +39,16 @@ Not as precise as the kernel's internal estimation, but remarkably close for old
 - Degrade gracefully: use the real value when present, a documented fallback formula when not — never crash, never lie.
 - This is why the smoke test keeps the sentinel check (`available_kb != ULONG_MAX`): the sentinel is both a correctness check and the feature probe.
 
+## Which "Available" Field to Use (MemFree vs MemAvailable vs SwapFree)
+
+The retrieval-check question — "which is best for *memory available to start an app*?" — is `MemAvailable`, and the reason is the kernel semantics behind each field (added 2026-08-18 from Gemini notebook ed55c6cdf10c8c2a):
+
+- **`MemFree`** is strictly the RAM that is *completely unused and untouched right now*. Linux intentionally keeps this low, because unused RAM is wasted RAM.
+- **`MemAvailable`** is a kernel **estimate** that combines `MemFree` with *reclaimable* memory — file caches and buffers the kernel can throw away or flush to disk *without swapping*, if a new app needs memory. This is what actually predicts "can I start an app without paging?"
+- **`SwapFree`** is only unused space on the secondary disk/swap partition, **not** main memory (RAM) at all.
+
+So `MemFree` undercounts headroom (ignores reclaimable cache) and `SwapFree` is the wrong axis (disk, not RAM). `MemAvailable` gives the truest picture of headroom before the system starts paging.
+
 ## Sources
 
 - Gemini Socratic session — robust `/proc/meminfo` smoke test (notebook: https://gemini.google.com/app/e338aa05afbec7a2)
