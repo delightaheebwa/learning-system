@@ -155,6 +155,9 @@ def _extract_json(text):
 
 
 class Tools:
+    def __init__(self):
+        self.valves = self.Valves()
+
     class Valves(_make_valves_class()):
         pass
 
