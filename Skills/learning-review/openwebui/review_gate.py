@@ -42,6 +42,31 @@ except Exception:
     def tools(fn):
         return fn
 
+
+def _make_valves_class():
+    """Build the Valves class. If pydantic is unavailable, fall back to a plain
+    dict-like so the tool still loads (valves simply won't be validated)."""
+    if BaseModel is not None and Field is not None:
+        class Valves(BaseModel):
+            openwebui_base_url: str = Field(
+                default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:8080"),
+                description="Open WebUI base URL as seen from inside this container, e.g. http://localhost:8080",
+            )
+            openwebui_api_key: str = Field(
+                default=os.environ.get("OPENWEBUI_API_KEY", ""),
+                description="API key (Admin → API Keys). Falls back to env OPENWEBUI_API_KEY.",
+            )
+            review_model: str = Field(
+                default=os.environ.get("REVIEW_GATE_MODEL", "mimo-v2.5"),
+                description="Review model id, e.g. mimo-v2.5. Must be a different model than the chat model.",
+            )
+            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+        return Valves
+
+    class Valves:  # noqa: F811
+        pass
+    return Valves
+
 # --------------------------------------------------------------------------
 # Fixed review prompt. Keep in sync with
 # Skills/learning-review/templates/review.template.md (the canonical copy).
@@ -147,21 +172,8 @@ def _extract_json(text):
 
 
 class Tools:
-    class Valves:
-        if BaseModel is not None and Field is not None:
-            openwebui_base_url: str = Field(
-                default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:8080"),
-                description="Open WebUI base URL as seen from inside this container, e.g. http://localhost:8080",
-            )
-            openwebui_api_key: str = Field(
-                default=os.environ.get("OPENWEBUI_API_KEY", ""),
-                description="API key (Admin → API Keys). Falls back to env OPENWEBUI_API_KEY.",
-            )
-            review_model: str = Field(
-                default=os.environ.get("REVIEW_GATE_MODEL", "mimo-v2.5"),
-                description="Review model id, e.g. mimo-v2.5. Must be a different model than the chat model.",
-            )
-            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+    class Valves(_make_valves_class()):
+        pass
 
     @tools
     def review_gate(self, source: str, concepts: str, wiki_content: str, pass_number: int = 1) -> str:

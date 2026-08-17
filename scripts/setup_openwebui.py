@@ -204,7 +204,7 @@ def main() -> int:
             "content": content,
             "meta": {"tags": []},
             "is_active": True,
-            "access_grants": None,
+            "access_grants": [],
         }
         status, resp = c.post("/api/v1/skills/create", payload, conflict_marker="ID_TAKEN")
         if resp is not None:
@@ -217,7 +217,7 @@ def main() -> int:
     for t in TOOLS:
         with open(os.path.join(REPO_ROOT, t["file"]), "r", encoding="utf-8") as f:
             content = f.read()
-        payload = {"id": t["id"], "name": t["name"], "content": content, "meta": {}, "access_grants": None}
+        payload = {"id": t["id"], "name": t["name"], "content": content, "meta": {}, "access_grants": []}
         status, resp = c.post("/api/v1/tools/create", payload, conflict_marker="ID_TAKEN")
         if resp is not None:
             print(f"  + created tool {t['id']}")
@@ -243,7 +243,7 @@ def main() -> int:
             "toolIds": MODEL["toolIds"],
             "knowledge": [],
         },
-        "access_grants": None,
+        "access_grants": [],
         "is_active": True,
     }
     status, resp = c.post("/api/v1/models/create", payload, conflict_marker="MODEL_ID_TAKEN")
@@ -255,7 +255,7 @@ def main() -> int:
 
     print("== Prompts ==")
     for p in PROMPTS:
-        payload = {"command": p["command"], "name": p["name"], "content": p["content"], "access_grants": None}
+        payload = {"command": p["command"], "name": p["name"], "content": p["content"], "access_grants": []}
         status, resp = c.post("/api/v1/prompts/create", payload, conflict_marker="ID_TAKEN")
         if resp is not None:
             print(f"  + created prompt /{p['command']}")

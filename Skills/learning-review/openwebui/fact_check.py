@@ -38,6 +38,31 @@ except Exception:
     def tools(fn):
         return fn
 
+
+def _make_valves_class():
+    """Build the Valves class. If pydantic is unavailable, fall back to a plain
+    dict-like so the tool still loads (valves simply won't be validated)."""
+    if BaseModel is not None and Field is not None:
+        class Valves(BaseModel):
+            openwebui_base_url: str = Field(
+                default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:8080"),
+                description="Open WebUI base URL as seen from inside this container, e.g. http://localhost:8080",
+            )
+            openwebui_api_key: str = Field(
+                default=os.environ.get("OPENWEBUI_API_KEY", ""),
+                description="API key (Admin → API Keys). Falls back to env OPENWEBUI_API_KEY.",
+            )
+            fact_check_model: str = Field(
+                default=os.environ.get("FACT_CHECK_MODEL", "deepseek-v4-flash"),
+                description="Fact-check model id, e.g. deepseek-v4-flash. Should be a different model than the tutor.",
+            )
+            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+        return Valves
+
+    class Valves:  # noqa: F811
+        pass
+    return Valves
+
 FACT_CHECK_TEMPLATE = """# Learning System — Fact Check (fixed template)
 
 You are an independent fact-checker for a learning system. A tutor is about to
@@ -130,21 +155,8 @@ def _extract_json(text):
 
 
 class Tools:
-    class Valves:
-        if BaseModel is not None and Field is not None:
-            openwebui_base_url: str = Field(
-                default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:8080"),
-                description="Open WebUI base URL as seen from inside this container, e.g. http://localhost:8080",
-            )
-            openwebui_api_key: str = Field(
-                default=os.environ.get("OPENWEBUI_API_KEY", ""),
-                description="API key (Admin → API Keys). Falls back to env OPENWEBUI_API_KEY.",
-            )
-            fact_check_model: str = Field(
-                default=os.environ.get("FACT_CHECK_MODEL", "deepseek-v4-flash"),
-                description="Fact-check model id, e.g. deepseek-v4-flash. Should be a different model than the tutor.",
-            )
-            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+    class Valves(_make_valves_class()):
+        pass
 
     @tools
     def fact_check(self, claim: str, reference: str = "", source_url: str = "", context: str = "") -> str:
