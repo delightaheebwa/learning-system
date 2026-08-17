@@ -1,6 +1,6 @@
 ---
 name: learning-system
-description: Run the spaced-repetition learning system. Triggers — "swe" (review the swe track), "ingest" (ingest new content), "learn"/"study"/"teach me"/"review" (start a review session), "lesson"/"continue" (next curriculum lesson, delegating to the learning-teach skill). Loads the Core state files, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
+description: Run the spaced-repetition learning system. Triggers — "swe"/"review" (review the swe track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
 compatibility: Open WebUI (self-hosted)
 metadata:
   author: delight
@@ -10,6 +10,11 @@ metadata:
 # Learning System
 
 The active learning system. Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
+
+**Trigger routing (read first):**
+- **"swe" / "review" → review flow** (this file, below).
+- **"teach me X" / "learn" / "study" → teaching loop** — `Skills/learning-teach/SKILL.md`, NOT a review. "review" alone means the review flow.
+- **"lesson" / "continue" → next curriculum lesson** — `Skills/learning-teach/SKILL.md`.
 
 Teaching intents ("teach me X", "lesson", "continue") are handled by the **`Skills/learning-teach/SKILL.md`** skill — see below.
 

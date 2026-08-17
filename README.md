@@ -33,8 +33,12 @@ Skills/                   operating rules for the assistant (Open WebUI-tuned)
 
 ## Setup in Open WebUI (one time)
 
-1. **Workspace → Knowledge**: optionally create a collection "Learning System Skills"
-   and upload the three `Skills/*/SKILL.md` files so any chat can pull them.
+1. **Workspace → Knowledge**: create a collection "Learning System Skills"
+   and upload the **four** `Skills/*/SKILL.md` files so any chat can pull them:
+   `learning-system`, `learning-teach`, `learning-review`, `llm-wiki`.
+   (`learning-teach` is the teaching loop — probe → plan → teach — and MUST be
+   attached for `teach me X` / `lesson` / `continue` to work; without it chats
+   have no teaching rules and will respond blankly.)
 2. **Workspace → Tools**: install the review gate — paste
    `Skills/learning-review/openwebui/review_gate.py` into a new Tool, set the
    Valves (base URL, API key, review model, optional repo path).
