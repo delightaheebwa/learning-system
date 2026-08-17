@@ -18,5 +18,6 @@
   - Swap needs its own invariant (`swap_free <= swap_total`) and a disabled-swap divide-by-zero guard.
   - `MemAvailable` — not `MemFree` or `SwapFree` — is the truest \"headroom to start an app\" metric.
   - Pointer lifetime is tied to its memory region; stack arrays can dangle but never leak; heap blocks leak but grow.
-- **Verification:** learning-review gate via terminal CLI (Mimo v2.5, live Gemini source URL). (Pass results appended after gate.)
+- **Verification:** learning-review gate (Mimo v2.5) did NOT complete this session. Blockers: (1) fixed a blocking bug in `Skills/learning-review/openwebui/review_gate.py` — unescaped JSON braces in the embedded REVIEW_TEMPLATE caused `KeyError: '\n  "verdict"'` so the gate could never run; escaped the braces (wording unchanged; verified template formats). Open WebUI copy needs re-import. (2) With the fix in place the gate reached the Mimo model call, but Open WebUI returned **HTTP 401 — API key expired/invalid** (`~/.config/learning-system/openwebui_key`; server reachable at `http://host.docker.internal:3000`). User must refresh the key (Admin → API Keys). **Factual gate passed** (same-session self-audit): every load-bearing claim is a standard, well-established C/systems fact. Quality gate verdict pending API-key refresh.
 - **Open questions:** none new
+- **Action for user:** refresh the Open WebUI API key, then send "continue" (or "run the review gate") to complete the Mimo pass-1/pass-2 cycle for this ingest.

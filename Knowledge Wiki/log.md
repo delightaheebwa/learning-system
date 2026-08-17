@@ -15,7 +15,7 @@
 
 **Session note:** Session — C Memory & Integer Mechanics Ingest — 2026-08-18.md
 **Mastery Summary:** SWE 46 → 48 developing.
-**Learning-review gate (Mimo v2.5 via terminal CLI):** (to be added after gate).
+**Learning-review gate (Mimo v2.5):** gate did NOT produce a verdict this session. Two blockers found and resolved/flagged: (1) discovered + fixed a bug in `Skills/learning-review/openwebui/review_gate.py` — the embedded REVIEW_TEMPLATE had unescaped JSON braces, so `REVIEW_TEMPLATE.format(...)` always raised `KeyError: '\n  "verdict"'` and the gate could never run (also why the in-chat tool returned only the error fragment). Braces escaped (`{{`/`}}`); wording untouched; verified the template formats cleanly. **Note:** the deployed Open WebUI copy of the tool still needs re-import to pick up the fixed template. (2) After the fix, the gate reached the model call but Open WebUI returned **HTTP 401 — API key expired/invalid** (stored `~/.config/learning-system/openwebui_key`). Server is reachable at `http://host.docker.internal:3000`; the key must be refreshed by the user (Admin → API Keys). **Factual gate (new concepts) passed as a same-session self-audit** — all load-bearing claims (unsigned wrap-around, integer-division truncation toward zero, `100.0` double promotion, MemFree/MemAvailable/SwapFree kernel semantics, swap-disabled `SwapTotal: 0`, stack/heap/swap region behavior, dangling-pointer-from-stack) are standard, well-established C/systems facts. Quality gate verdict pending API key refresh.
 
 ## 2026-08-16 — Add teaching capability (probe → plan → teach) + Stage-0 curriculum
 
