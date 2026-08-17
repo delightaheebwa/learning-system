@@ -1,6 +1,6 @@
 # LEARNING PROFILE
 
-> Purpose: This file tells Zo how you learn best. Zo reads it at the start of every session so teaching can be adapted to you instead of being generic.
+> Purpose: This file tells the assistant how you learn best. It is read at the start of every session so teaching can be adapted to you instead of being generic.
 
 ## Identity
 

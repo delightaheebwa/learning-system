@@ -1,51 +1,49 @@
 # Learning System + Knowledge Wiki (Open WebUI)
 
 A local-first, spaced-repetition learning system and Karpathy-style personal wiki,
-originally built with Zo + Obsidian, now adapted to run in **self-hosted Open WebUI**.
+built to run in **self-hosted Open WebUI** using native features (Skills, Tools,
+a Model preset, and Prompts) with the repo as the source of truth.
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
 - **Track:** SWE (Software Engineering Fundamentals) — Shell & Terminal, Makefiles, C, testing. AI Engineering (aie) archived.
-- **Scheduling:** manual — say `swe` or `review` to run a review session; `ingest` to add new content.
+- **Scheduling:** manual — say `/swe` or `/review` to run a review session; `/ingest` to add content; `/teach` / `/lesson` to learn.
 
 ## Layout
 
 ```
+OPENWEBUI.md              setup + operating guide (read this first)
+scripts/setup_openwebui.py  one-shot installer: skills, tools, model preset, prompts
 Learning System/          live state + history
   Core/                     💡 Learning Profile, 📚 Active Concepts (the review schedule),
-                            📦 Concept Archive, 📖 Scripture Memory, templates
-  Sessions/                 session notes
-  Reviews/                  spaced-repetition review notes (+ Quality Gates/ verdicts)
-  Concept Notes/            atomic concept pages
-  Archive/                  reference-only history
+                            📦 Concept Archive, templates
+  Sessions/  Reviews/  Concept Notes/  Archive/   session notes, review notes, atomic pages, history
   AGENTS.md                 behavioral conventions (consistency checks, git sync)
-Knowledge Wiki/           curated wiki
-  raw/sources/  raw/assets/  immutable raw layer
-  wiki/                     short single-idea pages, aggressively cross-linked
-  index.md  log.md  AGENTS.md
-Skills/                   operating rules for the assistant (Open WebUI-tuned)
-  learning-system/SKILL.md          ingest + review flows
-  learning-review/SKILL.md          quality gate (verification of ingest output)
-  learning-review/templates/        fixed review prompt template
-  learning-review/model-config.json review model config
-  learning-review/openwebui/        Open WebUI review-gate Tool + install guide
-  llm-wiki/SKILL.md                 wiki building/maintenance rules
+Knowledge Wiki/           curated wiki (raw/sources, raw/assets, wiki/, index.md, log.md, AGENTS.md)
+Skills/                   operating rules, imported into Open WebUI as Skills
+  learning-system/SKILL.md        review + ingest flows
+  learning-teach/SKILL.md         probe → plan → teach loop (+ fact_check tool)
+  learning-review/SKILL.md        ingest quality gate (review_gate tool)
+  llm-wiki/SKILL.md               wiki building/maintenance rules
+  learning-review/openwebui/      review_gate.py (mimo-v2.5) · fact_check.py (deepseek-v4-flash) · templates/
 ```
 
 ## Setup in Open WebUI (one time)
 
-1. **Workspace → Knowledge**: create a collection "Learning System Skills"
-   and upload the **four** `Skills/*/SKILL.md` files so any chat can pull them:
-   `learning-system`, `learning-teach`, `learning-review`, `llm-wiki`.
-   (`learning-teach` is the teaching loop — probe → plan → teach — and MUST be
-   attached for `teach me X` / `lesson` / `continue` to work; without it chats
-   have no teaching rules and will respond blankly.)
-2. **Workspace → Tools**: install the review gate — paste
-   `Skills/learning-review/openwebui/review_gate.py` into a new Tool, set the
-   Valves (base URL, API key, review model, optional repo path).
-   Full guide: `Skills/learning-review/openwebui/README.md`.
-3. **Chat**: trigger the system by saying `swe`, `ingest <content>`, or `review`.
-   The assistant loads the state from this repo, follows `Skills/learning-system`,
-   runs the gate after every ingest, and commits/pushes changes.
+Run the installer, then start chatting:
+
+```bash
+OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
+```
+
+That creates/updates: the 4 Skills, the `review_gate` + `fact_check` Tools
+(with model Valves `mimo-v2.5` / `deepseek-v4-flash`), the **Learning Tutor**
+Model preset on `deepseek-v4-pro`, and the 6 Prompts (`/swe`, `/review`,
+`/ingest`, `/teach`, `/lesson`, `/continue`). See `OPENWEBUI.md` for the full
+walkthrough, the system prompt, and the prompt texts.
+
+The repo must also be present in the Open Terminal workspace at
+`/home/user/learning-system` (the model's file workspace) with git push wired —
+see `OPENWEBUI.md` and `Learning System/AGENTS.md`.
 
 ## Principles
 

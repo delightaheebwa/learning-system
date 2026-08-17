@@ -1,17 +1,13 @@
 ---
 name: learning-teach
-description: "Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), and the review-free live fact-checking rule. Triggers: 'teach me X', 'lesson', 'continue'."
-compatibility: Open WebUI (self-hosted)
-metadata:
-  author: Delight Aheebwa
-  home: https://github.com/delightaheebwa/learning-system
+description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), and live fact-checking via the fact_check tool (deepseek-v4-flash). Triggers: 'teach me X', 'lesson', 'continue'.
 ---
 
 # Learning Teach
 
-The teaching half of the learning system. Runs on whatever model the user picked in the picker that day — never hardcode a model id; the gate model (review) is separately configured in `learning-review`.
+The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, mimo-v2.5) is ingest-only; teaching verification uses the `fact_check` tool (`deepseek-v4-flash`).
 
-## Scope & state
+## Scope & state (repo root: `/home/user/learning-system`)
 
 - Mission: `Learning System/MISSION.md` (Stage 0 — SWE Foundations).
 - Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (two strands, deterministic rotation, colors as labels).
@@ -28,14 +24,14 @@ The teaching half of the learning system. Runs on whatever model the user picked
 - If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2).
 
 ### 2. Plan (force the reasoning)
-- Reason out the dependency path from current understanding → goal. Fire a **background fact-check sub-agent** (`deepseek-v4-flash`) against RESOURCES.md + web; correct anything before it reaches the user.
+- Reason out the dependency path from current understanding → goal. For load-bearing claims in the plan (definitions, formulas, mechanisms), call the `fact_check` tool (`deepseek-v4-flash`) with the claim and the relevant source text (from `RESOURCES.md`, the course source, or a fetched URL); correct anything before it reaches the user.
 - Present the plan as a **Mermaid graph** (renders in Open WebUI) and persist it in the session note. The graph must be a real dependency ordering — it forces reasoning out, not decoration.
 
 ### 3. Teach (one reasoning step at a time)
 - Each step: (a) unconditional truth (or "all X are Y"/definition) if the step has one, (b) motivated discovery — "why would anyone try this?", (c) **guided Socratic** question wherever the user has prior knowledge to connect to; tell the minimum hint/analogy the moment they stall (never pure Socratic — matches Learning Profile).
 - **Hook-in:** open with the mission-grounded "why this matters" hook. **Wonder-out:** close with open "what if…?" questions feeding the Open Questions principle.
 - **Bloom climb (phase-mapped):** introduction targets Remember/Understand; practice climbs Apply → Analyze → Evaluate; the capstone is Create. Every lesson climbs at least to Apply. Not every lesson reaches every level (short lessons).
-- Live background fact-checking runs during planning and teach; the Mimo review gate is **ingest-only** (do not invoke it on teaching artifacts).
+- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (`deepseek-v4-flash`) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
 
 ### 4. Lesson end (advancement gate)
 - **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify").

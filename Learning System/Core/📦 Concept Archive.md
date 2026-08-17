@@ -141,7 +141,7 @@
 > Questions from sessions on paused topics. Surface these when the topic is revived.
 
 
-> Questions that emerged during sessions but haven't been fully resolved yet. Zo surfaces these at the start of every session.
+> Questions that emerged during sessions but haven't been fully resolved yet. The assistant surfaces these at the start of every session.
 
 - Revisit Taylor series with the exact derivative-based coefficient formula.
 - Continue the robotics chapter with robot components and any remaining pages beyond the current section.
@@ -157,7 +157,7 @@
 > Full session history.
 
 
-> Brief record of each session. Zo updates this automatically.
+> Brief record of each session. The assistant updates this automatically.
 
 | Date | Session | Concepts Covered | Key Outcomes |
 |------|---------|-----------------|--------------|

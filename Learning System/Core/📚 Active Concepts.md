@@ -1,6 +1,6 @@
 # KNOWLEDGE BASE — Active Concepts
 
-> Purpose: Active learning record for the current focus area. Zo reads this at the start of learning sessions.
+> Purpose: Active learning record for the current focus area. The assistant reads this at the start of learning sessions.
 > Paused/archived concepts: `Learning System/Core/📦 Concept Archive.md` (searched on demand, not auto-loaded)
 > Scripture memory: `Learning System/Core/📖 Scripture Memory.md`
 
@@ -12,7 +12,7 @@
 - **Previous Track:** AI Engineering (aie) — archived 2026-07-28
 - **Last Updated:** 2026-08-17
 - **Interleaving:** Active (shuffle + adjacency constraint + alternating question types)
-- **System:** Zo + Obsidian Learning System v4
+- **System:** Open WebUI Learning System
 
 ---
 
@@ -112,6 +112,6 @@
 
 ## Open Questions
 
-> Questions that emerged during sessions but haven't been fully resolved yet. Zo surfaces these at the start of every session.
+> Questions that emerged during sessions but haven't been fully resolved yet. The assistant surfaces these at the start of every session.
 
 - None currently

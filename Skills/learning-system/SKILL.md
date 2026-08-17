@@ -1,30 +1,24 @@
 ---
 name: learning-system
-description: Run the spaced-repetition learning system. Triggers — "swe"/"review" (review the swe track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
-compatibility: Open WebUI (self-hosted)
-metadata:
-  author: delight
-  home: https://github.com/delightaheebwa/learning-system
+description: Run the spaced-repetition learning system in Open WebUI. Triggers — "swe"/"review" (review the swe track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files from the repo at /home/user/learning-system, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
 ---
 
 # Learning System
 
-The active learning system. Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
+The active learning system, running in Open WebUI against the repo at `/home/user/learning-system` (Open Terminal workspace). Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
 
 **Trigger routing (read first):**
-- **"swe" / "review" → review flow** (this file, below).
+- **"swe" / "review" → review flow** (below).
 - **"teach me X" / "learn" / "study" → teaching loop** — `Skills/learning-teach/SKILL.md`, NOT a review. "review" alone means the review flow.
 - **"lesson" / "continue" → next curriculum lesson** — `Skills/learning-teach/SKILL.md`.
 
-Teaching intents ("teach me X", "lesson", "continue") are handled by the **`Skills/learning-teach/SKILL.md`** skill — see below.
-
-## State files
+## State files (repo root: `/home/user/learning-system`)
 
 - `Learning System/Core/💡 Learning Profile.md` — learner preferences. Read at session start.
 - `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (aie, swe). The review schedule's sole source of truth. Grep/range only the needed track — never the whole file.
 - `Learning System/Core/📦 Concept Archive.md` — paused/archived concepts. Grep on demand; never auto-load.
-- `Learning System/Core/📖 Scripture Memory.md` — handled by the scripture-memory skill, not this one.
 - `Learning System/Sessions/`, `Learning System/Reviews/`, `Learning System/Concept Notes/`, `Learning System/Archive/` — writes land here.
+- `Learning System/MISSION.md`, `Learning System/CURRICULUM.md`, `Learning System/GLOSSARY.md`, `Learning System/RESOURCES.md` — mission, curriculum, glossary, curated readings.
 
 ## Teaching flow (delegation)
 
@@ -33,7 +27,7 @@ Trigger: "teach me X", "lesson", or "continue".
 1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
 2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s deterministic two-strand rotation; if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
 3. **`teach me X`:** in Stage-0 scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. The Mimo review gate is **ingest-only**; teaching uses live background fact-checking instead.
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`deepseek-v4-flash`); the `review_gate` tool (`mimo-v2.5`) is **ingest-only**.
 
 ## Review flow
 
@@ -60,7 +54,7 @@ Trigger: "ingest" with content to add (NOT a review).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
 6. Create/update the wiki page; update `Knowledge Wiki/index.md` and `Knowledge Wiki/log.md`; write a session note.
-7. Run the learning-review gate (`Skills/learning-review/SKILL.md`): an independent review flags accuracy/clarity/completeness issues with severity; implementer fixes; max 2 cycles; factual web-check on new concepts only. Do not finalize the ingest until the gate reports.
+7. Run the learning-review gate (`review_gate` tool, `mimo-v2.5`): read the wiki content you wrote via the terminal and pass it to the tool along with the source URL and concept names. An independent review flags accuracy/clarity/completeness issues with severity; you fix them; max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
 
@@ -80,6 +74,7 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 
 ## Open WebUI adaptation
 
-- **Source of truth:** this GitHub repo. Load state files from the repo before every flow; keep Open WebUI Notes/Knowledge in sync with the repo, never the other way around.
-- **Review gate (ingest step 7):** run the terminal CLI `Skills/learning-review/openwebui/gate_cli.py`, which calls a SECOND model (Mimo v2.5) in Open WebUI as the independent reviewer. In-chat review is only permitted when the gate runs through the terminal with that second model. See `Skills/learning-review/openwebui/README.md`.
-- **After writes:** commit and push per `Learning System/AGENTS.md` (now including `Skills/`).
+- **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
+- **Review gate (ingest step 7):** call the `review_gate` tool, which invokes a SECOND model (`mimo-v2.5`) as the independent reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). See `OPENWEBUI.md` at the repo root for setup.
+- **Teaching verification:** call the `fact_check` tool (`deepseek-v4-flash`) for load-bearing claims before presenting them.
+- **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

@@ -1,6 +1,6 @@
 # REVIEW: \[Concept\] — \[Date\]
 
-> **Purpose:** When a concept comes up for spaced repetition review, use this note to capture the review session. Zo will test you on the concept and the results update the Knowledge Base.
+> **Purpose:** When a concept comes up for spaced repetition review, use this note to capture the review session. The assistant tests you on the concept and the results update the Knowledge Base.
 
 ## Review Info
 
@@ -12,11 +12,11 @@
 
 ---
 
-## Zo's Prompt
+## Assistant's Prompt
 
-> Zo will ask you a question or give you a scenario. Record it here.
+> The assistant will ask you a question or give you a scenario. Record it here.
 
-> *"Zo asked: \[question\]"*
+> *"The assistant asked: \[question\]"*
 
 ---
 
@@ -30,10 +30,10 @@
 
 ---
 
-## Zo's Evaluation
+## Assistant's Evaluation
 
 - **Result:** \[Pass / Needs More Work\]
-- **Feedback:** \[What Zo said about your answer\]
+- **Feedback:** \[What the assistant said about your answer\]
 - **Status After Review:** \[developing | pending_mastery | mastered | consolidated\]
 
 ---

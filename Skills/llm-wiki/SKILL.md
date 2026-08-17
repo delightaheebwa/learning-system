@@ -1,9 +1,6 @@
 ---
 name: llm-wiki
-description: "Build and maintain a Karpathy-style personal LLM wiki from notes, screenshots, clipped pages, and other source files. Use when the user says \"Ingest\", wants to dump notes or screenshots into a persistent wiki, asks to implement an LLM wiki, or wants the wiki queried, linted, cross-linked, or updated."
-compatibility: Open WebUI (self-hosted)
-metadata:
-  home: https://github.com/delightaheebwa/learning-system
+description: Build and maintain a Karpathy-style personal LLM wiki from notes, screenshots, clipped pages, and other source files. Use when the user says "Ingest", wants to dump notes or screenshots into a persistent wiki, asks to implement an LLM wiki, or wants the wiki queried, linted, cross-linked, or updated.
 ---
 
 # LLM Wiki
@@ -12,9 +9,7 @@ metadata:
 
 Turn raw sources into a persistent markdown wiki. Keep the source layer immutable, the wiki layer curated, and the index/log updated on every ingest.
 
-## Standard layout
-
-Use this workspace layout unless the user already has a better one:
+## Standard layout (repo root: `/home/user/learning-system`)
 
 - `Knowledge Wiki/raw/sources/` for source notes and clipped text
 - `Knowledge Wiki/raw/assets/` for screenshots and other attachments
@@ -75,5 +70,5 @@ Periodically check for:
 ## Open WebUI adaptation
 
 - The wiki lives in `Knowledge Wiki/` inside the repo — that is authoritative.
-- In Open WebUI you may also mirror pages into Knowledge/Notes for retrieval, but the repo copy wins; update both, never just one.
+- In Open WebUI you may mirror pages into a Knowledge base for retrieval, but the repo copy wins; update both, never just one.
 - `index.md` and `log.md` are updated on every ingest (see the learning-system skill).

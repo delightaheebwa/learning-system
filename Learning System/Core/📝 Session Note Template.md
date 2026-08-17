@@ -1,6 +1,6 @@
 # SESSION: [Topic] — [Date]
 
-> **Purpose:** Capture what happened in this learning session. Zo will use this to update the Knowledge Base at the end of the session.
+> **Purpose:** Capture what happened in this learning session. The assistant uses this to update the Knowledge Base at the end of the session.
 
 ## Session Info
 
@@ -31,12 +31,12 @@
 
 ## Demonstrations of Understanding
 
-> Proof that you could explain / apply the concepts. Zo will ask you to demonstrate — record the results here.
+> Proof that you could explain / apply the concepts. The assistant will ask you to demonstrate — record the results here.
 
 - **Concept:** [Concept name]
   - **Your confidence before evaluation:** [confident / uncertain / don't know]
   - **Your explanation:** [What you said]
-  - **Zo evaluated:** [Pass / Needs review]
+  - **Assistant evaluated:** [Pass / Needs review]
   - **Mastery type:** [pending_mastery / provisional_mastery / true_mastery]
 
 ---
@@ -65,7 +65,7 @@
 
 ---
 
-## Zo's Summary
+## Assistant's Summary
 
-> Zo will write a brief summary here at the end of the session.
+> The assistant will write a brief summary here at the end of the session.
 
