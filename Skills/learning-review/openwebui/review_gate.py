@@ -25,6 +25,7 @@ Then after an ingest, say: run the review gate on <concepts> from <source>.
 The model passes the wiki content it wrote (read via the terminal).
 """
 
+import asyncio
 import json
 import os
 import re
@@ -60,7 +61,7 @@ def _make_valves_class():
                 default=os.environ.get("REVIEW_GATE_MODEL", "minimax-m3"),
                 description="Review model id, e.g. minimax-m3. Must be a different model than the chat model.",
             )
-            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+            timeout: int = Field(default=150, description="HTTP timeout in seconds.")
         return Valves
 
     class Valves:  # noqa: F811
@@ -216,7 +217,7 @@ class Tools:
         pass
 
     @tools
-    def review_gate(self, source: str, concepts: str, wiki_content: str, pass_number: int = 1) -> str:
+    async def review_gate(self, source: str, concepts: str, wiki_content: str, pass_number: int = 1) -> str:
         """
         Run the independent review gate on learning-system ingest output.
         source: URL the ingest came from (must be a live, stable URL).
@@ -241,7 +242,7 @@ class Tools:
 
         # 1. Fetch source (dead URL aborts — no verdict written).
         try:
-            status, source_content = _http_get(source, timeout)
+            status, source_content = await asyncio.to_thread(_http_get, source, timeout)
             if status >= 400:
                 return json.dumps(
                     {"error": f"source URL returned HTTP {status} — aborting, no verdict written", "source": source},
@@ -271,7 +272,10 @@ class Tools:
         url = base_url.rstrip("/") + "/api/chat/completions"
         payload = {"model": model, "messages": [{"role": "user", "content": prompt}]}
         try:
-            status, resp_text = _http_post_json(url, payload, api_key, timeout)
+            # Run the blocking HTTP call in a worker thread so the event loop stays
+            # free to serve the nested /api/chat/completions request (avoids a
+            # self-call deadlock where the tool waits on its own worker).
+            status, resp_text = await asyncio.to_thread(_http_post_json, url, payload, api_key, timeout)
         except Exception as e:
             return json.dumps({"error": f"review model call failed: {e}"}, indent=2)
         if status >= 400:

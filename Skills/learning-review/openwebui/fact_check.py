@@ -21,6 +21,7 @@ INSTALL
 4. Set the Valves: base URL, API key, fact_check_model (default deepseek-v4-flash).
 """
 
+import asyncio
 import json
 import os
 import re
@@ -56,7 +57,7 @@ def _make_valves_class():
                 default=os.environ.get("FACT_CHECK_MODEL", "deepseek-v4-flash"),
                 description="Fact-check model id, e.g. deepseek-v4-flash. Should be a different model than the tutor.",
             )
-            timeout: int = Field(default=90, description="HTTP timeout in seconds.")
+            timeout: int = Field(default=150, description="HTTP timeout in seconds.")
         return Valves
 
     class Valves:  # noqa: F811
@@ -196,7 +197,7 @@ class Tools:
         pass
 
     @tools
-    def fact_check(self, claim: str, reference: str = "", source_url: str = "", context: str = "") -> str:
+    async def fact_check(self, claim: str, reference: str = "", source_url: str = "", context: str = "") -> str:
         """
         Verify a load-bearing claim before teaching it.
         claim: the exact claim to verify (required).
@@ -217,7 +218,7 @@ class Tools:
         source_content = ""
         if source_url:
             try:
-                status, content = _http_get(source_url, timeout)
+                status, content = await asyncio.to_thread(_http_get, source_url, timeout)
                 if status < 400:
                     source_content = f"\n- FETCHED SOURCE CONTENT (HTTP {status}):\n{content[:20000]}"
                 else:
@@ -241,7 +242,10 @@ class Tools:
         url = base_url.rstrip("/") + "/api/chat/completions"
         payload = {"model": model, "messages": [{"role": "user", "content": prompt}]}
         try:
-            status, resp_text = _http_post_json(url, payload, api_key, timeout)
+            # Run the blocking HTTP call in a worker thread so the event loop stays
+            # free to serve the nested /api/chat/completions request (avoids a
+            # self-call deadlock where the tool waits on its own worker).
+            status, resp_text = await asyncio.to_thread(_http_post_json, url, payload, api_key, timeout)
         except Exception as e:
             return json.dumps({"error": f"fact-check model call failed: {e}"}, indent=2)
         if status >= 400:
