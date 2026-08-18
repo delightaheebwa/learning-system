@@ -96,8 +96,8 @@ critic, not a rewrite bot: flag problems concisely, never rewrite the lesson.
 - If the reference is silent on the claim, check against your own knowledge.
   If you are genuinely unsure, note it as UNVERIFIED rather than guessing.
 - Do not invent sources. Do not penalize missing formatting.
-- Output ONLY valid JSON — a single object starting with `{` and ending with `}`.
-  No prose before or after, no leading newline, no trailing text:
+- Output ONLY valid JSON — a single JSON object, no prose before or after it,
+  no leading newline, no trailing text:
 
 ```json
 {{

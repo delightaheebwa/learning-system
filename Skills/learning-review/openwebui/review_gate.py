@@ -110,7 +110,7 @@ Mechanical date updates and review session notes are out of scope.
 - Only flag issues worth fixing. High/medium severity only; low-severity nits get one combined note.
 - Each issue: severity (high | medium | low), location (file/section), issue (specific and actionable).
 - Material in the wiki content that is NOT present in the source must be flagged as a scope problem unless a scope note explains the addition.
-- Output ONLY valid JSON — a single object starting with `{` and ending with `}`.
+- Output ONLY valid JSON — a single JSON object
   No prose before or after, no leading newline, no trailing text. Schema:
 
 ```json
