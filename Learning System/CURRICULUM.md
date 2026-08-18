@@ -25,7 +25,7 @@
 | # | Lesson | Colors | Est. time | Prereqs | Status | Notes |
 |---|--------|--------|-----------|---------|--------|-------|
 | B1 | Course Overview + Shell | Process | ~1h | none | done | Shell fluencies already in Active Concepts (What is the Shell, Navigation, PATH…) |
-| B2 | Command-line Environment | Process | ~1–2h | B1 | not-started | job control, tmux, aliases, dotfiles |
+| B2 | Command-line Environment | Process | ~1–2h | B1 | done | job control, signals, tmux, aliases, dotfiles |
 | B3 | Development Environment & Tools | Process | ~1–2h | B2 | not-started | editors, Vim, customizing, shell scripting |
 | B4 | Debugging and Profiling | Process | ~1–2h | B3 | not-started | gdb, strace, perf; syscall-level debugging |
 | B5 | Version Control and Git | Process | ~1–2h | B4 | not-started | git internals; deepens Git commit conventions concept |

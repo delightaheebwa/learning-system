@@ -1,3 +1,21 @@
+## 2026-08-18 — Teach: Command-line Environment (B2) — signals & job control
+
+**Source:** https://missing.csail.mit.edu/2026/command-line-environment/ (MIT Missing Semester 2026; teaching flow via `learning-teach` skill)
+
+**Lesson taught:** B2 Command-line Environment. Probe located the edge precisely (2/2 signal questions missed; env vars/return codes/tmux/aliases/dotfiles already solid). Taught signals-as-software-interrupts fresh + verified the rest. End quiz 5/5; Feynman explain-back passed (driving/officer analogy). Fact-check (deepseek-v4-flash): 3/3 PASS.
+
+**Concepts added (2 new, SWE track, `developing`):**
+- Signals (Software Interrupts) — async kernel message a process can catch/ignore; SIGINT (Ctrl-C) → SIGTERM (`kill`) → SIGKILL (`kill -9`, uncatchable). `next_review` 2026-08-21 (+3d), Last Q Type definitional
+- Job Control (Ctrl-Z, fg/bg, nohup/disown) — SIGTSTP suspend, fg/bg/jobs, &/$!, SIGHUP on terminal close → nohup/disown. `next_review` 2026-08-21 (+3d), Last Q Type discriminative
+
+**Curriculum:** B2 → `done` in CURRICULUM.md.
+
+**Wiki page created:** MIT Missing Semester — Command-line Environment; index + log updated.
+
+**Learning record:** 0001-signals-and-job-control.md (first record). **Lesson:** Lessons/Lesson — Command-line Environment — 2026-08-18.md. **Session note:** Session — Command-line Environment (B2) — 2026-08-18.md.
+
+**Mastery Summary:** SWE 48 → 50 developing.
+
 ## 2026-08-18 — Ingest: C Integer Mechanics & C Memory Regions (Gemini C tutoring)
 
 **Source:** https://gemini.google.com/app/ed55c6cdf10c8c2a (Gemini conversation notebook, 20 messages)

@@ -163,6 +163,7 @@
 [[Convolution Operation]]
 [[Convolution Parameters]]
 [[MIT Missing Semester — Shell]]
+[[MIT Missing Semester — Command-line Environment]]
 [[Pooling (MaxPool2d)]]
 [[CNN Architecture Pattern]]
 [[Data Augmentation (torchvision)]]
