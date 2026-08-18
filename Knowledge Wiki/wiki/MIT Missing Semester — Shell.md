@@ -148,6 +148,8 @@ journalctl | grep "error" | tail -n 10
 
 The program before `|` writes to stdout, which becomes the stdin of the program after `|`. Most CLI programs read from stdin when no file argument is given, which is what makes pipes work.
 
+**Pipes run in parallel, not in sequence:** every command in a pipeline is started at once and they run *concurrently*. As one program writes a line, it's consumed immediately by the next command's stdin — you don't wait for the first program to finish before the next starts, so output streams through the pipeline as it's produced.
+
 ### Putting It Together
 
 A full pipeline example (SSH log analysis):
@@ -160,6 +162,8 @@ ssh myserver 'journalctl -u sshd -b-1 | grep "Disconnected from"' \
 ```
 
 This extracts the top 10 usernames disconnected from an SSH server, comma-separated — all in one line.
+
+**Where the pipe runs (local vs remote):** with `ssh myserver 'journalctl ... | grep ...' \` followed by a local pipe, the part *inside* single quotes runs remotely, and the `| sed ... | sort ...` chain after the backslash runs **locally** on the streamed remote output. Quoting decides which stages execute on which machine — see [[SSH — Public-Key Auth & Remote Commands]].
 
 **Top-counts pattern:** `sort | uniq -c | sort -nr | head -n 5` — `uniq -c` only counts *consecutive* duplicates, so you must `sort` first. Then `sort -nr` orders by count descending (numeric, reverse). Note `head -n 5` (or `head -5`); plain `head 5` looks for a file named `5`.
 

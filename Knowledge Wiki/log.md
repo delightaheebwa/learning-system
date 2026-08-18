@@ -1,3 +1,20 @@
+## 2026-08-18 — Ingest: SSH Public-Key Auth & Remote Commands (MIT Missing Semester YouTube, Lecture 2)
+
+**Source:** https://missing.csail.mit.edu/2026/command-line-environment/ (MIT Missing Semester — SSH + shell env content)
+
+**Concept added (1 new, SWE track, `developing`):**
+- SSH: Public-Key Auth & Remote Commands — public key (shareable; server uses it to verify you) vs private key (your secret, NEVER share ≈ password); `ssh host cmd` runs a command remotely with stdout streaming back; quoting decides where the pipe runs: `ssh host ls | wc -l` = run `ls` remotely + count locally, `ssh host 'ls | wc -l'` = entire pipeline remote (only result crosses the wire — run heavy stages where the data is). `next_review` 2026-08-21 (+3d, staggered with Pipes/Signals), Last Q Type definitional
+
+**Concepts enriched (2, SWE track):**
+- Pipes (`|`) & Pipeline Composition — pipeline stages run in **parallel** (all start at once, stream line-by-line; `grep | head` stops early once `head` has enough). `last_reviewed` 2026-08-18, `next_review` 2026-09-01 (7d→14d)
+- Signals (Software Interrupts) — in practice only a handful of the ~30 signals are used (SIGINT/Ctrl-C, SIGTERM, SIGKILL, SIGTSTP, SIGHUP, SIGPIPE); know the common set, not the whole list. `last_reviewed` 2026-08-18
+
+**Wiki pages:** SSH — Public-Key Auth & Remote Commands (created); MIT Missing Semester — Shell (enriched: pipe parallelism + local-vs-remote pipe placement); MIT Missing Semester — Command-line Environment (enriched: per-command `VAR=val cmd` prefix, `bash -c` to inspect a var, few-signals note, SSH section now links the dedicated page); index + log updated.
+
+**Session note:** Session — SSH & Pipeline Parallelism Ingest — 2026-08-18.md
+**Mastery Summary:** SWE 50 → 51 developing.
+**Learning-review gate:** PASS on pass 2 (verdict JSONs in `Reviews/Quality Gates/SSH_Public-Key_Auth_and_Remote_Commands-Pipes-Signals-Env_Vars-pass{1,2}-2026-08-18.json`; model `minimax-m3`). Pass 1 flagged 2 medium + 1 low source-fidelity issues — removed the editorial 'run stages remotely' advice, removed the `grep | head` early-termination claim (kept the source-backed parallel-streaming fact), dropped SIGPIPE + the `~30 signals` count, and reframed password auth as an alternative (not a fallback). Pass 2 returned PASS; two low notes (pedagogical lock-and-key metaphor, missing SIGQUIT) were also addressed — added a scope note and added SIGQUIT to the signals list. **Factual gate passed (same-session audit):** public/private key semantics, `ssh host 'ls | wc -l'` quote behavior, and pipe parallelism are standard, well-established systems facts.
+
 ## 2026-08-18 — Teach: Command-line Environment (B2) — signals & job control
 
 **Source:** https://missing.csail.mit.edu/2026/command-line-environment/ (MIT Missing Semester 2026; teaching flow via `learning-teach` skill)

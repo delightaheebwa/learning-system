@@ -18,6 +18,8 @@ A **signal** is a short asynchronous message the kernel (or another process) del
 
 Rule of thumb: try Ctrl-C → `kill` (SIGTERM) → only if it still won't die, `kill -9`. SIGKILL's cost is no cleanup: orphaned child processes, unsaved state.
 
+**You only use a few in practice:** there are many signals, but everyday work touches only a small set — `SIGINT` (interrupt, Ctrl-C — the one you reach for most), `SIGQUIT` (Ctrl-\, quit + core dump), `SIGTERM` (graceful kill), `SIGKILL` (force kill), `SIGTSTP` (suspend, Ctrl-Z), `SIGHUP` (hangup on terminal close). Don't memorize the whole list — know the small common set and that the rest exist.
+
 ## Job Control
 
 - `Ctrl-Z` sends **SIGTSTP** (terminal stop) — *suspends*, doesn't kill.
@@ -33,6 +35,9 @@ Rule of thumb: try Ctrl-C → `kill` (SIGTERM) → only if it still won't die, `
 - `export FOO=bar` — puts `FOO` in the environment block every child process inherits.
 - `printenv` lists current env vars; `unset FOO` removes one.
 - Convention: env vars are ALL_CAPS (`HOME`, `PATH`, `DEBUG`); local shell vars are lowercase.
+- **Per-command prefix (no `export` needed):** `DEBUG=1 command` — putting an assignment *before* a command sets that variable in that single command's environment only, without touching the current shell. `DEBUG=1 DEBUG_LOG=on ./prog` launches the program with both vars set just for that run.
+- **Spawn-a-shell to inspect a var:** `bash -c 'echo $DEBUG'` starts a fresh shell, prints `$DEBUG`, and exits — a quick way to confirm what value a variable has in a subprocess's environment. Prefix `DEBUG=1` when you launch it and the spawned shell sees that value: `DEBUG=1 bash -c 'echo $DEBUG'` → `1`.
+- These two ideas meet in debugging: `bash -c` gives you an isolated shell to check a variable, and the `VAR=val cmd` prefix lets you inject a value for one invocation instead of exporting it globally.
 
 ## Return Codes & Boolean Operators
 
@@ -54,9 +59,9 @@ Plain-text config files whose names start with `.` (e.g. `~/.bashrc`, `~/.gitcon
 
 tmux runs several shell sessions in one terminal via **sessions → windows → panes**, and lets you **detach** (`<C-b> d`) and **reattach** (`tmux a`) later — invaluable on remote machines (replaces `nohup` tricks).
 
-## SSH (brief)
+## SSH
 
-`ssh alice@server` opens a remote shell; key-based auth (public-key crypto) is preferred over passwords. `scp`/`rsync` copy files; `~/.ssh/config` stores per-host defaults.
+`ssh alice@server` opens a remote shell; key-based auth (public-key crypto) is preferred over passwords. SSH runs commands on remote machines and can be piped like any command — quoting decides whether a pipe runs locally or remotely. See the dedicated page: [[SSH — Public-Key Auth & Remote Commands]]. `scp`/`rsync` copy files; `~/.ssh/config` stores per-host defaults.
 
 ## Key Takeaways
 
