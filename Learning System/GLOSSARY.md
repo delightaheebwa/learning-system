@@ -12,6 +12,8 @@
 - **Arrange–Act–Assert (AAA)**: Three recognizable test phases — arrange inputs, act on the behavior under test, assert the observable result. If you can't point to the Act, the test checks too much.
 - **Red–green–refactor**: The TDD loop — fail for a meaningful reason, make it pass, improve design without changing protected behavior.
 - **Make**: A build tool, not a compiler — checks prerequisites and runs a recipe when a target is out of date (timestamp comparison).
+- **Signal**: An asynchronous message the kernel delivers to a process (a "software interrupt") that it may catch, ignore, or default-handle — the mechanism behind Ctrl-C (SIGINT), Ctrl-Z (SIGTSTP), and `kill` (SIGTERM/SIGKILL).
+- **Job control**: The shell's toolkit for pausing and resuming processes — `Ctrl-Z` suspends, `fg`/`bg` resume, `jobs` lists; background jobs die with the terminal (SIGHUP) unless `nohup`/`disown` protect them.
 - **`is_pid_name`**: A predicate that accepts names made entirely of digits, rejecting `self`, `thread-self`, and other kernel entries; validate the string, don't use `atoi==0` to mean "not a PID".
 
 ## Color taxonomy (Primary Colors) — see `Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md`
