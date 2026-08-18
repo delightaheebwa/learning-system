@@ -5,7 +5,7 @@ description: Teach the user through the probe → plan → teach loop, applying 
 
 # Learning Teach
 
-The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, mimo-v2.5) is ingest-only; teaching verification uses the `fact_check` tool (`deepseek-v4-flash`).
+The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, minimax-m3) is ingest-only; teaching verification uses the `fact_check` tool (`deepseek-v4-flash`).
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 

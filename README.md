@@ -24,7 +24,7 @@ Skills/                   operating rules, imported into Open WebUI as Skills
   learning-teach/SKILL.md         probe → plan → teach loop (+ fact_check tool)
   learning-review/SKILL.md        ingest quality gate (review_gate tool)
   llm-wiki/SKILL.md               wiki building/maintenance rules
-  learning-review/openwebui/      review_gate.py (mimo-v2.5) · fact_check.py (deepseek-v4-flash) · templates/
+  learning-review/openwebui/      review_gate.py (minimax-m3) · fact_check.py (deepseek-v4-flash) · templates/
 ```
 
 ## Setup in Open WebUI (one time)
@@ -36,7 +36,7 @@ OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
 That creates/updates: the 4 Skills, the `review_gate` + `fact_check` Tools
-(with model Valves `mimo-v2.5` / `deepseek-v4-flash`), the **Learning Tutor**
+(with model Valves `minimax-m3` / `deepseek-v4-flash`), the **Learning Tutor**
 Model preset on `deepseek-v4-pro`, and the 6 Prompts (`/swe`, `/review`,
 `/ingest`, `/teach`, `/lesson`, `/continue`). See `OPENWEBUI.md` for the full
 walkthrough, the system prompt, and the prompt texts.

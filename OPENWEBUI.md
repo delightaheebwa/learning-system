@@ -12,12 +12,12 @@ layer (skills, tools, model preset, prompts) that routes triggers.
 | Trigger → task routing + operating rules | 4 imported **Skills** + the "Learning Tutor" **Model preset** | `deepseek-v4-pro` |
 | Slash-command triggers | **Prompts** (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) | — |
 | Teaching fact-check (load-bearing claims) | `fact_check` **Tool** (synchronous, independent) | `deepseek-v4-flash` |
-| Ingest quality gate | `review_gate` **Tool** (independent) | `mimo-v2.5` |
+| Ingest quality gate | `review_gate` **Tool** (independent) | `minimax-m3` |
 | Repo + git | **Open Terminal** sandbox `/home/user/learning-system` | — |
 | Web search / grounding | **Web Search** (SearXNG) | — |
 
 Model IDs: tutor `deepseek-v4-pro` · fact-check `deepseek-v4-flash` ·
-ingest gate `mimo-v2.5`. All lowercase.
+ingest gate `minimax-m3`. All lowercase.
 
 ## One-time setup
 
@@ -33,7 +33,7 @@ reproduced manually) creates everything in Open WebUI:
    `Skills/learning-review/openwebui/review_gate.py`) and `fact_check` (paste
    `Skills/learning-review/openwebui/fact_check.py`). Set each tool's Valves:
    base URL (inside the Open WebUI container, `http://localhost:8080`), API key
-   (Admin → API Keys), and the review/fact-check model (`mimo-v2.5` /
+   (Admin → API Keys), and the review/fact-check model (`minimax-m3` /
    `deepseek-v4-flash`).
 3. **Workspace → Models** — create the **Learning Tutor** preset on base model
    `deepseek-v4-pro`:
@@ -59,7 +59,7 @@ Routing (when a trigger fires, load the matching skill with view_skill and
 follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
 - "ingest <content>" → ingest flow → view_skill "learning-system", then run the
-  review_gate tool (mimo-v2.5) on the wiki content you wrote, then commit + push
+  review_gate tool (minimax-m3) on the wiki content you wrote, then commit + push
 - "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow →
   view_skill "learning-teach"; verify load-bearing claims with the fact_check
   tool (deepseek-v4-flash) before presenting them
@@ -68,7 +68,7 @@ follow it — do not improvise the workflow):
 Models in this system:
 - You (tutor): deepseek-v4-pro
 - Teaching fact-check: fact_check tool → deepseek-v4-flash
-- Ingest quality gate: review_gate tool → mimo-v2.5
+- Ingest quality gate: review_gate tool → minimax-m3
 ```
 
 ### Prompts
@@ -92,7 +92,7 @@ Ingest the following content into the learning system:
 
 Load the learning-system skill (view_skill "learning-system"), follow its
 Ingest flow, read the wiki pages you wrote via the terminal, run the
-review_gate tool (mimo-v2.5), then commit and push.
+review_gate tool (minimax-m3), then commit and push.
 ```
 
 `/teach`

@@ -5,7 +5,7 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 2 Tools         review_gate (mimo-v2.5) + fact_check (deepseek-v4-flash)
+  - 2 Tools         review_gate (minimax-m3) + fact_check (deepseek-v4-flash)
   - 1 Model preset  "Learning Tutor" on base model deepseek-v4-pro
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
 
@@ -41,7 +41,7 @@ TOOLS = [
         "id": "review_gate",
         "name": "review_gate",
         "file": "Skills/learning-review/openwebui/review_gate.py",
-        "valves": {"review_model": "mimo-v2.5"},
+        "valves": {"review_model": "minimax-m3"},
     },
     {
         "id": "fact_check",
@@ -80,14 +80,14 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
-- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (mimo-v2.5) on the wiki content you wrote, then commit + push
+- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (minimax-m3) on the wiki content you wrote, then commit + push
 - "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (deepseek-v4-flash) before presenting them
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
 Models in this system:
 - You (tutor): deepseek-v4-pro
 - Teaching fact-check: fact_check tool → deepseek-v4-flash
-- Ingest quality gate: review_gate tool → mimo-v2.5"""
+- Ingest quality gate: review_gate tool → minimax-m3"""
 
 PROMPTS = [
     {
@@ -103,7 +103,7 @@ PROMPTS = [
     {
         "command": "ingest",
         "name": "Ingest Content",
-        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (mimo-v2.5), then commit and push.",
+        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (minimax-m3), then commit and push.",
     },
     {
         "command": "teach",

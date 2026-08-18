@@ -4,7 +4,7 @@ review_gate — Learning System ingest quality gate for Open WebUI.
 Runs the independent review gate defined in Skills/learning-review/SKILL.md:
   - fetches the source URL itself (dead URL aborts with an error)
   - builds the review prompt from a FIXED template (never editable at runtime)
-  - calls a SECOND model (mimo-v2.5 by default) via the Open WebUI
+  - calls a SECOND model (minimax-m3 by default) via the Open WebUI
     chat-completions API as the independent reviewer
   - returns the verdict JSON, which the chat saves to
     Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json
@@ -19,7 +19,7 @@ INSTALL
 2. Paste this whole file, name it "review_gate", Save.
 3. Enable the tool for the Learning Tutor model (Workspace → Models → Edit → Tools).
 4. Set the Valves (gear icon): base URL, an API key, and the review model id
-   (default mimo-v2.5).
+   (default minimax-m3).
 
 Then after an ingest, say: run the review gate on <concepts> from <source>.
 The model passes the wiki content it wrote (read via the terminal).
@@ -57,8 +57,8 @@ def _make_valves_class():
                 description="API key (Admin → API Keys). Falls back to env OPENWEBUI_API_KEY.",
             )
             review_model: str = Field(
-                default=os.environ.get("REVIEW_GATE_MODEL", "mimo-v2.5"),
-                description="Review model id, e.g. mimo-v2.5. Must be a different model than the chat model.",
+                default=os.environ.get("REVIEW_GATE_MODEL", "minimax-m3"),
+                description="Review model id, e.g. minimax-m3. Must be a different model than the chat model.",
             )
             timeout: int = Field(default=90, description="HTTP timeout in seconds.")
         return Valves
@@ -110,7 +110,8 @@ Mechanical date updates and review session notes are out of scope.
 - Only flag issues worth fixing. High/medium severity only; low-severity nits get one combined note.
 - Each issue: severity (high | medium | low), location (file/section), issue (specific and actionable).
 - Material in the wiki content that is NOT present in the source must be flagged as a scope problem unless a scope note explains the addition.
-- Output ONLY valid JSON with this schema:
+- Output ONLY valid JSON — a single object starting with `{` and ending with `}`.
+  No prose before or after, no leading newline, no trailing text. Schema:
 
 ```json
 {{
@@ -156,19 +157,55 @@ def _http_post_json(url, payload, api_key, timeout):
 
 
 def _extract_json(text):
-    """Pull a JSON object out of a model response (handles code fences/prose)."""
+    """Pull a JSON object out of a model response.
+
+    Handles: clean JSON, code-fenced JSON, prose around JSON, and the common
+    failure where the model returns a bare fragment like
+        \\n"verdict": "ISSUES", "issues": [...]
+    (no wrapping braces). The fragment is wrapped and repaired so the gate
+    still gets a usable verdict.
+    """
     text = text.strip()
-    fence = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-    if fence:
-        text = fence.group(1)
-    else:
-        start, end = text.find("{"), text.rfind("}")
-        if start != -1 and end > start:
-            text = text[start:end + 1]
+
+    # 1. Clean JSON on its own.
     try:
         return json.loads(text)
     except Exception:
-        raise ValueError(f"Review model did not return valid JSON: {text[:500]}")
+        pass
+
+    # 2. Code-fenced JSON.
+    fence = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
+    if fence:
+        try:
+            return json.loads(fence.group(1))
+        except Exception:
+            pass
+
+    # 3. A real `{...}` object somewhere in the text (either wrapped by the
+    #    model or embedded in prose). Skip this when the text is a bare JSON
+    #    fragment that starts with `"` — there the first `{` belongs to a nested
+    #    array, not the object root.
+    if not text.startswith('"'):
+        start, end = text.find("{"), text.rfind("}")
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except Exception:
+                pass
+
+    # 4. Bare fragment without wrapping braces, e.g. a leading newline then
+    #    `"verdict": "..."`. Wrap it in braces and ensure it closes.
+    fragment = text.strip()
+    if fragment:
+        wrapped = "{" + fragment
+        if not wrapped.rstrip().endswith("}"):
+            wrapped = wrapped.rstrip().rstrip(",") + "}"
+        try:
+            return json.loads(wrapped)
+        except Exception:
+            pass
+
+    raise ValueError(f"Review model did not return valid JSON: {text[:500]}")
 
 
 class Tools:
@@ -192,7 +229,7 @@ class Tools:
         valves = getattr(self, "valves", None)
         base_url = getattr(valves, "openwebui_base_url", "") or os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:8080")
         api_key = getattr(valves, "openwebui_api_key", "") or os.environ.get("OPENWEBUI_API_KEY", "")
-        model = getattr(valves, "review_model", "") or os.environ.get("REVIEW_GATE_MODEL", "mimo-v2.5")
+        model = getattr(valves, "review_model", "") or os.environ.get("REVIEW_GATE_MODEL", "minimax-m3")
         timeout = getattr(valves, "timeout", 90)
 
         concept_list = [c.strip() for c in concepts.split(",") if c.strip()]

@@ -1,6 +1,6 @@
 ---
 name: learning-review
-description: Quality-gate learning system ingest output before it is finalized. Runs after every ingest session: the review_gate tool calls an independent review model (mimo-v2.5) that flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user. Does NOT gate teaching artifacts — those are verified live by the learning-teach skill via the fact_check tool (deepseek-v4-flash).
+description: Quality-gate learning system ingest output before it is finalized. Runs after every ingest session: the review_gate tool calls an independent review model (minimax-m3) that flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user. Does NOT gate teaching artifacts — those are verified live by the learning-teach skill via the fact_check tool (deepseek-v4-flash).
 ---
 
 # Learning System Review Gate
@@ -13,7 +13,7 @@ Teaching artifacts (lesson files under `Learning System/Lessons/`, learning reco
 
 ## Config
 
-- Review model: **`mimo-v2.5`** — set as the `review_model` Valve on the `review_gate` tool.
+- Review model: **`minimax-m3`** — set as the `review_model` Valve on the `review_gate` tool.
 - The gate owns the review prompt. Do not weaken the reviewer by editing the prompt or the model valve to soften reviews.
 
 ## Steps
@@ -34,7 +34,7 @@ Call the **`review_gate` tool** with:
 - `wiki_content` — the full text of the wiki page(s) you wrote, read via the terminal.
 - `pass_number` — the cycle number (1 or 2). Filename only; it does NOT soften the review.
 
-The tool fetches the source itself (a dead URL aborts with an error — no verdict), builds the fixed review prompt, and calls **`mimo-v2.5`** in Open WebUI as the independent reviewer. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
+The tool fetches the source itself (a dead URL aborts with an error — no verdict), builds the fixed review prompt, and calls **`minimax-m3`** in Open WebUI as the independent reviewer. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
 
 ### 3. Factual gate (new concepts only, same session)
 
@@ -65,7 +65,7 @@ Tell the user concisely:
 - Hard stop after 2 cycles. Remaining flags go to the user, always.
 - Factual gate runs on new concepts only — enrichments have survived at least one human review.
 - Never skip the gates silently. If a gate can't run (e.g. tool call fails), say so and surface what was unverified.
-- Never run this gate on teaching artifacts. Teaching uses the `fact_check` tool (`deepseek-v4-flash`) via `learning-teach`, not this `mimo-v2.5` gate; the two verification paths are deliberately separate.
+- Never run this gate on teaching artifacts. Teaching uses the `fact_check` tool (`deepseek-v4-flash`) via `learning-teach`, not this `minimax-m3` gate; the two verification paths are deliberately separate.
 
 ## Manual trigger
 

@@ -11,7 +11,7 @@ RESOURCES.md, the course source, or a fetched URL). The checker returns a
 verdict plus a corrected version when the claim is wrong.
 
 This is the teaching-path verifier. The ingest quality gate is the separate
-`review_gate` tool (mimo-v2.5) — the two verification paths stay separate.
+`review_gate` tool (minimax-m3) — the two verification paths stay separate.
 
 INSTALL
 -------
@@ -96,7 +96,8 @@ critic, not a rewrite bot: flag problems concisely, never rewrite the lesson.
 - If the reference is silent on the claim, check against your own knowledge.
   If you are genuinely unsure, note it as UNVERIFIED rather than guessing.
 - Do not invent sources. Do not penalize missing formatting.
-- Output ONLY valid JSON:
+- Output ONLY valid JSON — a single object starting with `{` and ending with `}`.
+  No prose before or after, no leading newline, no trailing text:
 
 ```json
 {{
@@ -139,19 +140,52 @@ def _http_post_json(url, payload, api_key, timeout):
 
 
 def _extract_json(text):
-    """Pull a JSON object out of a model response (handles code fences/prose)."""
+    """Pull a JSON object out of a model response.
+
+    Handles: clean JSON, code-fenced JSON, prose around JSON, and the common
+    failure where the model returns a bare fragment like
+        \\n"verdict": "ISSUES", ...
+    (no wrapping braces). The fragment is wrapped and repaired.
+    """
     text = text.strip()
-    fence = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
-    if fence:
-        text = fence.group(1)
-    else:
-        start, end = text.find("{"), text.rfind("}")
-        if start != -1 and end > start:
-            text = text[start:end + 1]
+
+    # 1. Clean JSON on its own.
     try:
         return json.loads(text)
     except Exception:
-        raise ValueError(f"Fact-check model did not return valid JSON: {text[:500]}")
+        pass
+
+    # 2. Code-fenced JSON.
+    fence = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL)
+    if fence:
+        try:
+            return json.loads(fence.group(1))
+        except Exception:
+            pass
+
+    # 3. A real `{...}` object somewhere in the text (wrapped or in prose).
+    #    Skip when the text is a bare JSON fragment starting with `"`, where the
+    #    first `{` belongs to a nested array, not the object root.
+    if not text.startswith('"'):
+        start, end = text.find("{"), text.rfind("}")
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except Exception:
+                pass
+
+    # 4. Bare fragment without wrapping braces. Wrap and ensure it closes.
+    fragment = text.strip()
+    if fragment:
+        wrapped = "{" + fragment
+        if not wrapped.rstrip().endswith("}"):
+            wrapped = wrapped.rstrip().rstrip(",") + "}"
+        try:
+            return json.loads(wrapped)
+        except Exception:
+            pass
+
+    raise ValueError(f"Fact-check model did not return valid JSON: {text[:500]}")
 
 
 class Tools:
