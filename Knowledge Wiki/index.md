@@ -164,6 +164,7 @@
 [[Convolution Parameters]]
 [[MIT Missing Semester — Shell]]
 [[MIT Missing Semester — Command-line Environment]]
+[[MIT Missing Semester — Shell Configuration & Dotfiles]]
 [[SSH — Public-Key Auth & Remote Commands]]
 [[Pooling (MaxPool2d)]]
 [[CNN Architecture Pattern]]

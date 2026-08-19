@@ -4,7 +4,7 @@
 **Track:** SWE (Software Engineering Fundamentals)
 **Ingested:** 2026-08-18
 
-> **Scope note:** the core facts (key pairs, `ssh host cmd`, quoting) are from the MIT Missing Semester lecture; the lock-and-key metaphor, the "cryptographic challenge" phrasing, and the line about encrypting the connection are short, accurate clarifications added to aid understanding.
+> **Scope note:** the core facts (key pairs, `ssh host cmd`, quoting, `ssh-keygen -y` passphrase validation) are from the MIT Missing Semester lecture/page. The lock-and-key metaphor, the "cryptographic challenge" phrasing, the line about encrypting the connection, and the **passphrase explanation** (a passphrase encrypts the private key file; without one the key is a plain-text file anyone with file access can copy) are short, accurate clarifications — the passphrase rationale comes from the lecture video narration as captured in the learner's notes, matching standard SSH security behavior.
 
 ## What SSH is
 
@@ -22,6 +22,8 @@ A key pair has two halves that are mathematically linked:
 The server holds your public key (`~/.ssh/authorized_keys`). The client proves it holds the matching private key (via a cryptographic challenge — no password needed on the wire). The server *verifies* but never needs the private key itself.
 
 > The public key is shareable; the private key is equivalent to a password — never share it. Protecting the private key (`chmod 600 ~/.ssh/id_ed25519`) matters precisely because it's the secret.
+
+**Add a passphrase to the private key.** A passphrase **encrypts the private key file itself**. Without one, your private key is just a **plain-text file** — if anyone (or any malware) gains access to your computer's file system, they can copy that file and immediately use it to log into your remote servers, no password or permission needed. With a passphrase, the key file is useless without the passphrase, even if stolen. Generate with `ssh-keygen -a 100 -t ed25519 -f ~/.ssh/id_ed25519` (you'll be prompted for a passphrase); validate/check an existing one with `ssh-keygen -y -f /path/to/key`.
 
 ## Running commands remotely
 
@@ -64,3 +66,4 @@ ssh user@server 'ls | wc -l'
 2. The server verifies your identity using your public key — no password travels the network.
 3. `ssh host cmd` runs a command on the remote machine; its stdout streams back to you.
 4. Quoting decides where the pipe runs: unquoted pipe = local, quoted `'...'` = remote.
+5. A passphrase encrypts the private key file; without one the key is plain text, so anyone with file access can copy and use it.

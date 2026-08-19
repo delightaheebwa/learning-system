@@ -1,3 +1,19 @@
+## 2026-08-19 — Ingest: Shell Config & Dotfiles + SSH passphrase (MIT Missing Semester Lecture 2, second half)
+
+**Source:** https://missing.csail.mit.edu/2026/command-line-environment/ (MIT Missing Semester — shell customization + dotfiles + SSH)
+
+**Concept added (1 new, SWE track, `developing`):**
+- Shell Config & Dotfiles — hand-typed shell settings don't survive logout; persist them in `~/.bashrc` / `~/.bash_profile` (shell reads on startup). `source ~/.bashrc` evaluates the file line-by-line in the current shell (no re-login). `PS1` renders the left prompt (classic first dotfile tweak). Dotfiles = hidden plain-text config files (names start with `.`); collect them in one version-controlled folder (`~/.dotfiles`) and `ln -s` them into the standard locations via an install script → portable environment. Plugin frameworks (Oh My Zsh) can bloat/slow the shell — add one plugin at a time. `command-not-found.com` shows which package provides a command. `next_review` 2026-08-22 (+3d), Last Q Type definitional
+
+**Concept enriched (1, SWE track):**
+- SSH: Public-Key Auth & Remote Commands — passphrase point: a passphrase encrypts the private key FILE; without one the key is plain text, so anyone with filesystem access can copy and use it to log into your servers (no password needed). Validate with `ssh-keygen -y -f /path/to/key`. `last_reviewed` 2026-08-19, `next_review` 2026-08-22
+
+**Wiki pages:** MIT Missing Semester — Shell Configuration & Dotfiles (created); SSH — Public-Key Auth & Remote Commands (enriched: passphrase section + 5th takeaway); index + log updated.
+
+**Session note:** Session — Shell Config & Dotfiles Ingest — 2026-08-19.md
+**Mastery Summary:** SWE 51 → 52 developing.
+**Learning-review gate:** PASS on pass 2 (verdict JSONs in `Reviews/Quality Gates/Shell_Config_and_Dotfiles-SSH_Public-Key_Auth_and_Remote_Commands-pass{1,2}-2026-08-19.json`; model `minimax-m3`). Pass 1 flagged high/medium source-attribution concerns ($PS1/`ln -s`/`source`/Oh My Zsh/passphrase "not in source") — most of that material is genuinely in the static page (verified: `$PS1`, `ln -s`, `prezto`/`oh-my-zsh`, plugins) and the rest comes from the lecture video narration captured in the learner's notes, so the fix was a precise **scope/provenance note** distinguishing textbook-page content from lecture-video (learner-notes) content on both updated pages. Pass 2 returned PASS, 0 issues. **Factual gate passed:** bash config-file persistence, `source` line-by-line semantics, `$PS1` = primary prompt, the dotfile/symlink portable-environment convention, plugin-framework bloat, and the SSH-key passphrase-encrypts-the-file explanation are all standard, well-established shell facts.
+
 ## 2026-08-18 — Ingest: SSH Public-Key Auth & Remote Commands (MIT Missing Semester YouTube, Lecture 2)
 
 **Source:** https://missing.csail.mit.edu/2026/command-line-environment/ (MIT Missing Semester — SSH + shell env content)
