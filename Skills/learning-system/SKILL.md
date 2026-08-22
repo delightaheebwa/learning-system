@@ -48,12 +48,16 @@ Intervals: 3d → 7d → 14d → 30d → 90d → consolidated. No separate revie
 
 Trigger: "ingest" with content to add (NOT a review).
 
+> **Context budget — mandatory for large one-shot ingests (7k+ chars, future longer):**
+> Observed cutoff `a61ba9cb:41100 prompt_tokens` + `79a40002:36459` via `ox-alpha-free`/`hy3` (`zen` proxy) before any wiki write — model returns `done:false` empty `content`. Root cause: full reads of `📚 Active Concepts.md` (41k/122 lines) + `Knowledge Wiki/log.md` (81k/480 lines) + `Knowledge Wiki/index.md` (215 lines) blow prompt to ~70k chars.
+> **Rule:** NEVER `read_file` those three files without `start_line`/`end_line` or `grep`. Use targeted tools only. One-shot large ingests must stay under ~25k prompt tokens.
+
 1. Extract concepts from the content.
-2. For each: grep Active Concepts for overlap (same topic, same source, overlapping keywords).
+2. For each: **use `grep` (not `read_file`) on `Learning System/Core/📚 Active Concepts.md` for overlap** (same topic, same source, overlapping keywords like `Process Substitution`, `Environment Variables`, `rsync`, `SSH`). **Only if `grep` hits**, then `read_file` that exact row range (`start_line` = hit line ±3). Never `read_file` the full 122-line file.
 3. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
-6. Create/update the wiki page; update `Knowledge Wiki/index.md` and `Knowledge Wiki/log.md`; write a session note.
+6. Create/update the wiki page; **update `Knowledge Wiki/index.md` and `Knowledge Wiki/log.md` with tail/grep, not full reads:** for `log.md` use `read_file start_line=-20` (last entry) or `grep` date; for `index.md` use `grep` for page title or `read_file start_line=1 end_line=30`. Append, do not re-read full files. Write session note.
 7. Run the learning-review gate (`review_gate` tool, `minimax-m3`): read the wiki content you wrote via the terminal and pass it to the tool along with the source URL and concept names. An independent review flags accuracy/clarity/completeness issues with severity; you fix them; max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
@@ -69,7 +73,7 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 1. Update Active Concepts — statuses, dates, new concepts, open questions. Preserve existing rows.
 2. On `consolidated`: move to `Archive/Consolidated/[concept].md` (name, date, insight, wiki link, related), remove from Active, update Mastery Summary.
 3. Write `Sessions/Session — [Topic] — [Date].md` (date, topic, concepts, statuses, open questions) with a one-line interleaving summary, e.g. "Interleaving: 5 concepts shuffled, 3 discriminative / 2 definitional".
-4. Consistency check: re-read Active Concepts; verify every reviewed concept has today's `last_reviewed`, correct `next_review`, correct `Last Q Type`, all ingested concepts present, wiki pages in index.md, log.md has today's entry. Fix any discrepancy. If the user claims stale dates are wrong, cross-check session notes.
+4. Consistency check: **grep** `Learning System/Core/📚 Active Concepts.md` for each ingested/reviewed concept name (not full re-read) to verify `last_reviewed`=today, `next_review`, `Last Q Type`; **grep** `Knowledge Wiki/index.md` for wiki pages; **grep** `Knowledge Wiki/log.md` for today's date. Fix any discrepancy. If the user claims stale dates are wrong, cross-check session notes. Avoid full-file reads that re-bloat context.
 5. Confirm completion — what was saved, what's due next.
 
 ## Open WebUI adaptation
