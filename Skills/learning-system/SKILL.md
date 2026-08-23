@@ -12,6 +12,19 @@ The active learning system, running in Open WebUI against the repo at `/home/use
 - **"teach me X" / "learn" / "study" → teaching loop** — `Skills/learning-teach/SKILL.md`, NOT a review. "review" alone means the review flow.
 - **"lesson" / "continue" → next curriculum lesson** — `Skills/learning-teach/SKILL.md`.
 
+## Context discipline (hard rules — read first)
+
+Sessions die when the running conversation outgrows the model's context window: cutoffs hit mid-flow (~20 tool calls) because every tool output stays in the transcript forever. The fix is fewer, denser tool calls — not smaller messages.
+
+- **Batch all reads.** Never chain multiple full-file `read_file` calls for state. Use the batch tool ONCE instead (`run_command`, paths are repo-root-relative):
+  - Session start: `python3 /home/user/.ops/ops.py state <track>`
+  - Any mix of ranges/tails/greps: `python3 /home/user/.ops/ops.py bundle "PATH:N-M" "PATH:-N" "PATH@regex1|regex2"`
+- **Read wiki pages by section.** First `bundle "Knowledge Wiki/wiki/<page>.md@^## "` to list its headings, then fetch only the section you actually enrich.
+- **Batch all writes.** Persistence at session end = ONE apply call, not N `write_file` calls:
+  `python3 /home/user/.ops/ops.py apply <<'SPEC'` then a JSON spec, then `SPEC`.
+  Spec: `{"writes":[{"path","content"}],"appends":[{path,content}],"replaces":[{"path","find","replace_with"}]}`.
+- Target **≤12 tool calls per flow**. Never re-read a file already in context. Never dump whole files you only need one row of.
+
 ## State files (repo root: `/home/user/learning-system`)
 
 - `Learning System/Core/💡 Learning Profile.md` — learner preferences. Read at session start.
@@ -34,7 +47,7 @@ Trigger: "teach me X", "lesson", or "continue".
 Trigger: "swe", "review", or a learning request.
 
 1. Track selection: "swe" → swe table; "aie" → aie table (currently archived — ask the user before unarchiving); neither → ask which track.
-2. Load `💡 Learning Profile.md`; read only the relevant track's table from `📚 Active Concepts.md`.
+2. Session start — ONE call: `run_command` → `python3 /home/user/.ops/ops.py state <track>`. This returns Learning Profile + your track's Active Concepts rows. Do not read those files separately.
 3. Find rows with Next Review on/before today. Shuffle. Adjacency constraint: no two consecutive concepts from the same Source (if impossible, shuffle anyway).
 4. Per concept: one question, one answer (≤1 line), targeting the 20% insight worth 80%. Math: ask insight/result, never notation.
 5. Question type alternation by Last Q Type: blank/definitional → discriminative; discriminative → definitional.
@@ -48,17 +61,13 @@ Intervals: 3d → 7d → 14d → 30d → 90d → consolidated. No separate revie
 
 Trigger: "ingest" with content to add (NOT a review).
 
-> **Context budget — mandatory for large one-shot ingests (7k+ chars, future longer):**
-> Observed cutoff `a61ba9cb:41100 prompt_tokens` + `79a40002:36459` via `ox-alpha-free`/`hy3` (`zen` proxy) before any wiki write — model returns `done:false` empty `content`. Root cause: full reads of `📚 Active Concepts.md` (41k/122 lines) + `Knowledge Wiki/log.md` (81k/480 lines) + `Knowledge Wiki/index.md` (215 lines) blow prompt to ~70k chars.
-> **Rule:** NEVER `read_file` those three files without `start_line`/`end_line` or `grep`. Use targeted tools only. One-shot large ingests must stay under ~25k prompt tokens.
-
 1. Extract concepts from the content.
-2. For each: **use `grep` (not `read_file`) on `Learning System/Core/📚 Active Concepts.md` for overlap** (same topic, same source, overlapping keywords like `Process Substitution`, `Environment Variables`, `rsync`, `SSH`). **Only if `grep` hits**, then `read_file` that exact row range (`start_line` = hit line ±3). Never `read_file` the full 122-line file.
-3. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest).
+2. Overlap check — ONE bundle call with an alternation regex over candidate keywords: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@kw1|kw2|kw3"` (or `@^### ` to pull the full track section). No separate grep/read calls per keyword.
+3. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest). Read only the target page's relevant section (headings first via `@^## `).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
-6. Create/update the wiki page; **update `Knowledge Wiki/index.md` and `Knowledge Wiki/log.md` with tail/grep, not full reads:** for `log.md` use `read_file start_line=-20` (last entry) or `grep` date; for `index.md` use `grep` for page title or `read_file start_line=1 end_line=30`. Append, do not re-read full files. Write session note.
-7. Run the learning-review gate (`review_gate` tool, `minimax-m3`): read the wiki content you wrote via the terminal and pass it to the tool along with the source URL and concept names. An independent review flags accuracy/clarity/completeness issues with severity; you fix them; max 2 cycles. Do not finalize the ingest until the gate reports.
+6. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
+7. Run the learning-review gate (`review_gate` tool, `minimax-m3`) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
 
@@ -73,7 +82,7 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 1. Update Active Concepts — statuses, dates, new concepts, open questions. Preserve existing rows.
 2. On `consolidated`: move to `Archive/Consolidated/[concept].md` (name, date, insight, wiki link, related), remove from Active, update Mastery Summary.
 3. Write `Sessions/Session — [Topic] — [Date].md` (date, topic, concepts, statuses, open questions) with a one-line interleaving summary, e.g. "Interleaving: 5 concepts shuffled, 3 discriminative / 2 definitional".
-4. Consistency check: **grep** `Learning System/Core/📚 Active Concepts.md` for each ingested/reviewed concept name (not full re-read) to verify `last_reviewed`=today, `next_review`, `Last Q Type`; **grep** `Knowledge Wiki/index.md` for wiki pages; **grep** `Knowledge Wiki/log.md` for today's date. Fix any discrepancy. If the user claims stale dates are wrong, cross-check session notes. Avoid full-file reads that re-bloat context.
+4. Consistency check — ONE bundle call re-grepping only the touched rows: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@<concept1>|<concept2>" "Knowledge Wiki/index.md@<title>" "Knowledge Wiki/log.md:-3"`; verify today's `last_reviewed`, correct `next_review`, `Last Q Type`, all ingested concepts present, wiki pages in index.md, log entry present. Fix discrepancies in a single apply call. If the user claims stale dates are wrong, cross-check session notes.
 5. Confirm completion — what was saved, what's due next.
 
 ## Open WebUI adaptation
