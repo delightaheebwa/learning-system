@@ -67,3 +67,20 @@ ssh user@server 'ls | wc -l'
 3. `ssh host cmd` runs a command on the remote machine; its stdout streams back to you.
 4. Quoting decides where the pipe runs: unquoted pipe = local, quoted `'...'` = remote.
 5. A passphrase encrypts the private key file; without one the key is plain text, so anyone with file access can copy and use it.
+
+## The Key-Based Authentication Handshake (step-by-step)
+
+The lecture frames key-based SSH auth as a **challenge–response** proof that you hold the private key, without ever sending the key. The exchange:
+
+1. **Handshake / initiation.** The client tells the server which key-pair it wants to use, identifying itself with the **public key** it has placed in the server's `~/.ssh/authorized_keys`.
+2. **Challenge.** The server generates a **random string** (the challenge) and encrypts it with your **public key**. By the rules of asymmetric crypto, only the matching **private key** can decrypt it.
+3. **Response.** The client receives the encrypted challenge, decrypts it locally with the private key, builds a **cryptographic signature** from the challenge data, and sends the signature back.
+4. **Verification.** The server verifies the signature using your **public key**. If it checks out, the server knows you possess the private key and grants access.
+
+```text
+signature + public key  ──verify──▶  original challenge data
+   ⇒ if result matches the challenge the server sent, access granted ✓
+```
+
+- The private key is **never transmitted**; only a signature proving possession travels over the wire.
+- This is the "why no password" mechanism explained on [[SSH — Public-Key Auth & Remote Commands]] — the public key is shareable, the private key is your secret.

@@ -42,10 +42,15 @@ Rule of thumb: try Ctrl-C → `kill` (SIGTERM) → only if it still won't die, `
 ## Return Codes & Boolean Operators
 
 - Exit code `0` = success; nonzero = failure. `$?` holds the last command's code.
+- A successful command exits `0`; to **force a non-zero exit** yourself, use the `exit N` built-in (`N` defaults to `1` if omitted). This is how scripts abort on failure:
+  ```bash
+  mkdir /root/secret || exit 1   # if mkdir fails, leave with code 1
+  echo $?                        # prints 1
+  ```
 - `&&` / `||` are **short-circuiting** operators on return codes, not values:
   - `grep -q pat file && echo found` — runs only if grep succeeded (0).
   - `grep -q pat file || echo "not found"` — runs only if grep failed.
-- `if`/`while` also test return codes.
+- `if`/`while` also test return codes. See also [[Shell Positional & Special Shell Parameters]] for the special parameters a script receives.
 
 ## Aliases
 

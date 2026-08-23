@@ -478,3 +478,13 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Active Concepts:** awk row enriched; `last_reviewed` 2026-08-11, `next_review` 2026-08-18 (interval 3d→7d)
 - **Session note:** Session — awk Enrichment — 2026-08-11.md
 - **Learning-review gate:** quality gate (enrichment) — awk flag resolved pass 2 via source-scope note; remaining flags are pre-existing sections outside this session (GNU Make HIGH; permissions/globs/quoting/built-ins/jobs/parameter-expansion medium) surfaced to user
+
+## 2026-08-23 — Ingest: Shell Scripting & Script Arguments (Lecture 2 notes)
+- **Sources:** Furnished Lecture 2 notes (website, 2026-08-21); MIT Missing Semester — Shell Tools and Scripting (https://missing.csail.mit.edu/2020/shell-tools/ — the 2026 /shell-tools/ URL 404s, used stable 2020 mirror).
+- **New concepts (2, SWE track, both `developing`, staggered 2026-08-23 → 2026-08-26):** Shell Positional & Special Parameters, Process Substitution (<(CMD))
+- **New concept page (1):** Shell Arguments & the Untyped-Variable Model (consolidates "args are plain strings" + "shell vars have no types"; overlaps the terminology-focused Arguments and parameters page but is shell-syntax-specific)
+- **Enriched (3):** SSH — Public-Key Auth & Remote Commands (added step-by-step key-based auth handshake: challenge/response + signature verification; private key never on wire); MIT Missing Semester — Command-line Environment (Return Codes: added `exit N` built-in + `mkdir ... || exit 1` guard); index.md (3 new concept links)
+- **Wiki pages created (3):** Positional & Special Shell Parameters, Process Substitution, Shell Arguments & the Untyped-Variable Model
+- **Session note:** Session — Shell Scripting & Args Ingest — 2026-08-23.md
+- **Source contradiction flagged:** Lecture-2 notes' second "Process Substitution" paragraph wrongly states `<(CMD)` captures output *into a variable* — that is command substitution (`$(CMD)`). Captured the correct model in the wiki and noted the error.
+- **Learning-review gate:** quality gate (new concepts + enrichments) — see Quality Gates/Shell_Scripting_Args-*.json (run after this write).
