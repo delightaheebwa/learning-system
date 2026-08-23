@@ -488,3 +488,10 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Session note:** Session — Shell Scripting & Args Ingest — 2026-08-23.md
 - **Source contradiction flagged:** Lecture-2 notes' second "Process Substitution" paragraph wrongly states `<(CMD)` captures output *into a variable* — that is command substitution (`$(CMD)`). Captured the correct model in the wiki and noted the error.
 - **Learning-review gate:** quality gate (new concepts + enrichments) — see Quality Gates/Shell_Scripting_Args-*.json (run after this write).
+
+## 2026-08-23 (follow-up) — review_gate deferred + factual self-audit fixes
+- **Blocker:** `review_gate` (minimax-m3) could not be invoked from the Open Terminal sandbox — it is a native Open WebUI tool calling `localhost:8080`, unreachable from this separate container. No Quality Gates JSON produced.
+- **Factual self-audit (live MIT sources):** confirmed `$0/$1–$9/$@/$#` and process-substitution model vs MIT 2020 Shell Tools; confirmed SSH sign/verify handshake vs MIT 2020 Security (contradicts the lecture notes' encrypt-with-public-key framing).
+- **Fixed (HIGH):** SSH handshake corrected from "server encrypts challenge with public key / client decrypts" to sign/verify; updated wiki [[SSH — Public-Key Auth & Remote Commands]] + Active Concepts row 68 (`last_reviewed` 2026-08-23).
+- **Fixed (MEDIUM):** `MIT Missing Semester — Command-line Environment` return-code example — removed dead `echo $?` after `exit 1`, added a working `$?` read-back example.
+- **Not done:** independent minimax-m3 quality-gate verdict — requires running `review_gate` from inside Open WebUI.

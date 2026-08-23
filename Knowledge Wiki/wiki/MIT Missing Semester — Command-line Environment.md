@@ -44,8 +44,12 @@ Rule of thumb: try Ctrl-C → `kill` (SIGTERM) → only if it still won't die, `
 - Exit code `0` = success; nonzero = failure. `$?` holds the last command's code.
 - A successful command exits `0`; to **force a non-zero exit** yourself, use the `exit N` built-in (`N` defaults to `1` if omitted). This is how scripts abort on failure:
   ```bash
-  mkdir /root/secret || exit 1   # if mkdir fails, leave with code 1
-  echo $?                        # prints 1
+  mkdir /root/secret || exit 1   # if mkdir fails, the script exits with code 1 and the lines after it never run
+  ```
+  To *read back* `$?` after a command, check it on its own line **before** any other command runs — a later command overwrites it:
+  ```bash
+  grep -q "needle" file.txt
+  echo "grep exited with code $?"   # 0 if found, 1 if not
   ```
 - `&&` / `||` are **short-circuiting** operators on return codes, not values:
   - `grep -q pat file && echo found` — runs only if grep succeeded (0).

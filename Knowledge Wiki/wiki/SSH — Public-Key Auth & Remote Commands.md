@@ -73,8 +73,8 @@ ssh user@server 'ls | wc -l'
 The lecture frames key-based SSH auth as a **challenge–response** proof that you hold the private key, without ever sending the key. The exchange:
 
 1. **Handshake / initiation.** The client tells the server which key-pair it wants to use, identifying itself with the **public key** it has placed in the server's `~/.ssh/authorized_keys`.
-2. **Challenge.** The server generates a **random string** (the challenge) and encrypts it with your **public key**. By the rules of asymmetric crypto, only the matching **private key** can decrypt it.
-3. **Response.** The client receives the encrypted challenge, decrypts it locally with the private key, builds a **cryptographic signature** from the challenge data, and sends the signature back.
+2. **Challenge.** The server picks a **random value** (the challenge) and sends it to the client in the clear. No encryption is involved yet — the goal is a value only the client's **private key** can *sign*.
+3. **Response.** The client **signs** the challenge with its **private key** and sends the **signature** back to the server.
 4. **Verification.** The server verifies the signature using your **public key**. If it checks out, the server knows you possess the private key and grants access.
 
 ```text
@@ -82,5 +82,6 @@ signature + public key  ──verify──▶  original challenge data
    ⇒ if result matches the challenge the server sent, access granted ✓
 ```
 
+- **Mechanism note (corrected):** the real SSH handshake is **sign / verify**, *not* "encrypt-with-public-key, decrypt-with-private-key." The lecture notes framed it as the server encrypting the challenge with your public key; the canonical SSHv2 flow (and MIT's Security lecture) has the server send a *plaintext* random challenge that the client **signs** with its private key, and the server **verifies** that signature with the public key. Either way the **private key never leaves the client** — only a proof of possession crosses the wire.
 - The private key is **never transmitted**; only a signature proving possession travels over the wire.
 - This is the "why no password" mechanism explained on [[SSH — Public-Key Auth & Remote Commands]] — the public key is shareable, the private key is your secret.
