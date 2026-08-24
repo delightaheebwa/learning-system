@@ -64,3 +64,18 @@ Frameworks exist that load many plugins at once — e.g. **Oh My Zsh**. They're 
 3. `PS1` renders the left prompt — the classic first dotfile tweak.
 4. Dotfiles are hidden plain-text config files; collect them in one version-controlled folder and `ln -s` them into standard locations via an install script for portable setups.
 5. Load-everything plugin frameworks bloat and slow the shell — add plugins one at a time.
+
+---
+
+## Startup modes: which configs actually run
+
+Config files run in different orders — or get skipped entirely — depending on how the session started. Two axes decide:
+
+| Axis | Options | Effect |
+|---|---|---|
+| **Login vs non-login** | Login (SSH session, console login) | runs the *profile* flow: `/etc/profile`, then `~/.bash_profile` (fallbacks `~/.bash_login`, `~/.profile`) |
+| **Interactive vs non-interactive** | Interactive (human typing) vs scripted | interactive shells read `~/.bashrc`; **non-interactive shells skip user startup files** entirely — speed and clean, predictable runs |
+
+Practical consequence: cron jobs and non-interactive scripts don't load your `.bashrc` — aliases vanish and `$PATH` can differ from your terminal. (The lecture notes loosely claimed non-login shells “load the profile flow” — inverted for bash; the table above is the accurate model.)
+
+*(Enriched 2026-08-24 from Lecture 2 notes.)*

@@ -85,3 +85,21 @@ signature + public key  ──verify──▶  original challenge data
 - **Mechanism note (corrected):** the real SSH handshake is **sign / verify**, *not* "encrypt-with-public-key, decrypt-with-private-key." The lecture notes framed it as the server encrypting the challenge with your public key; the canonical SSHv2 flow (and MIT's Security lecture) has the server send a *plaintext* random challenge that the client **signs** with its private key, and the server **verifies** that signature with the public key. Either way the **private key never leaves the client** — only a proof of possession crosses the wire.
 - The private key is **never transmitted**; only a signature proving possession travels over the wire.
 - This is the "why no password" mechanism explained on [[SSH — Public-Key Auth & Remote Commands]] — the public key is shareable, the private key is your secret.
+
+---
+
+## Client configuration: ~/.ssh/config
+
+Declare hosts once with defaults instead of typing flags (or maintaining shell aliases):
+
+```ssh-config
+Host myserver
+    HostName remote.server.com
+    User foobar
+    IdentityFile ~/.ssh/id_ed25519
+    LocalForward 9999 localhost:8888
+```
+
+`ssh myserver` now carries all of it. Bonus: the file is read not only by `ssh` but also `scp`, `rsync`, `mosh`, &c., which convert the settings into their corresponding flags — an edge shell aliases can't offer. *(Added 2026-08-24 from Lecture 2 notes; verified against MIT Missing Semester 2020 Command-line Environment.)*
+
+> Note (2026-08-24): fresh lecture notes again described the server *encrypting the challenge with the public key*. That framing does not match how SSH proves key possession — see the sign/verify handshake above.

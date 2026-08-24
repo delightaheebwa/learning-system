@@ -191,6 +191,19 @@ curl -s https://missing.csail.mit.edu/ | grep -c 'href="/2026/'
 - `grep -c pattern` counts matching lines directly (equivalent to `grep pattern | wc -l`)
 - Standard `grep` is line-by-line, so multiline HTML tags break patterns like `<h3>.*</h3>` (and greedy matching collapses multiple matches on one line). Target a unique single-line attribute instead — e.g. each lecture link appears exactly once as `href="/2026/..."`
 
+
+#### `curl URL | bash` — the risky convenience
+
+Downloading a script and immediately executing it is convenient but dangerous: unaudited code runs with your user's privileges. Safer: download, review, then execute.
+
+```bash
+curl -fsSL https://example.com/install.sh -o install.sh
+less install.sh   # inspect before trusting it
+bash install.sh
+```
+
+Some installers use `bash -c "$(curl -fsSL https://URL)"` — marginally safer in that `bash` interprets the script rather than whatever shell you happen to run, so Bash-specific syntax ("bashisms") won't misfire — but it is still blind execution. Inspection is the actual safety step.
+
 ### jq — JSON Processing
 
 `jq` is a dedicated JSON processor for the shell — line-based tools like grep/sed/awk struggle with JSON because objects span multiple lines and nest.

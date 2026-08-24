@@ -495,3 +495,14 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Fixed (HIGH):** SSH handshake corrected from "server encrypts challenge with public key / client decrypts" to sign/verify; updated wiki [[SSH — Public-Key Auth & Remote Commands]] + Active Concepts row 68 (`last_reviewed` 2026-08-23).
 - **Fixed (MEDIUM):** `MIT Missing Semester — Command-line Environment` return-code example — removed dead `echo $?` after `exit 1`, added a working `$?` read-back example.
 - **Not done:** independent minimax-m3 quality-gate verdict — requires running `review_gate` from inside Open WebUI.
+
+## 2026-08-24 — Ingest: CLI Environment batch 2 (env vars, exit codes, tmux, file transfer — Lecture 2 notes cont.)
+- **Sources:** Furnished transcription of handwritten Lecture 2 website notes (Fri 2026-08-21 + Sat 2026-08-22); cross-checked live against https://missing.csail.mit.edu/2020/command-line/ and /2020/security/.
+- **New concepts (4, SWE track, developing, next_review staggered 2026-08-27 → 2026-08-30):** Environment Variables (Shell); Exit Codes & Short-Circuit Control Flow; tmux — Sessions, Windows & Panes; File Transfers over SSH — scp, rsync & ssh_config
+- **New wiki pages (4):** same titles.
+- **Enriched (3 rows, 2 pages):** SSH row + page (~/.ssh/config section; flagged the notes' recurring encrypt-the-challenge framing vs the wiki's sign/verify model); curl row + [[MIT Missing Semester — Shell]] (`curl \| bash` download-inspect-run pattern); Shell Config & Dotfiles row + page (login × interactive startup-mode table; fixed the notes' inverted non-login/profile-flow claim).
+- **Duplicates skipped:** positional params, process substitution, untyped vars, SSH handshake — ingested 2026-08-23.
+- **Source corrections:** "rsync builds on scp" → improves-on-scp; `-P` = `--partial --progress`; aliases-append-args caveat kept.
+- **Tooling note:** `fact_check` returned HTTP 500 all attempts; verified load-bearing claims directly against live MIT pages (sign/verify primitives, rsync --partial/-P, ssh-config readers).
+- **Review gate:** BLOCKED (pass 1) — transport OK (review_gate.py driven from terminal against http://host.docker.internal:3000, reachable), but stored API key returned HTTP 401 (expired/invalid token). No independent verdict; see Quality Gates/CLI_Env_Batch2-pass1-2026-08-24.json (GATE_NOT_RUN + compensating checks). Re-run after the user regenerates the key.
+- **Session note:** Learning System/Sessions/Session — CLI Environment Batch 2 Ingest — 2026-08-24.md
