@@ -4,7 +4,7 @@ A local-first, spaced-repetition learning system that turns your Open WebUI assi
 
 ## How it works
 
-Say "swe", "ingest", "review", or anything like "teach me X" — the assistant runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. The review gate is the `review_gate` tool (`muse-spark-1.2-contributor`); teaching verification is the `fact_check` tool (`muse-spark-1.2-contributor`). See `OPENWEBUI.md` at the repo root for the full setup.
+Say "swe", "ingest", "review", or anything like "teach me X" — the assistant runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. The review gate is the `review_gate` tool (`ox-alpha-free`); teaching verification is the `fact_check` tool (`ox-alpha-free`). See `OPENWEBUI.md` at the repo root for the full setup.
 
 Agent behavioral conventions (consistency checks, git sync) live in `AGENTS.md`.
 

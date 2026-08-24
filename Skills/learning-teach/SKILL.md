@@ -1,11 +1,11 @@
 ---
 name: learning-teach
-description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), and live fact-checking via the fact_check tool (muse-spark-1.2-contributor). Triggers: 'teach me X', 'lesson', 'continue'.
+description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), and live fact-checking via the fact_check tool (ox-alpha-free). Triggers: 'teach me X', 'lesson', 'continue'.
 ---
 
 # Learning Teach
 
-The teaching half of the learning system, running in Open WebUI on the tutor model (ox-alpha-free). The review gate (`review_gate`, muse-spark-1.2-contributor) is ingest-only; teaching verification uses the `fact_check` tool (`muse-spark-1.2-contributor`).
+The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, ox-alpha-free) is ingest-only; teaching verification uses the `fact_check` tool (`ox-alpha-free`).
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 
@@ -59,14 +59,14 @@ a pattern:
 - If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2).
 
 ### 2. Plan (force the reasoning)
-- Reason out the dependency path from current understanding → goal. For load-bearing claims in the plan (definitions, formulas, mechanisms), call the `fact_check` tool (`muse-spark-1.2-contributor`) with the claim and the relevant source text (from `RESOURCES.md`, the course source, or a fetched URL); correct anything before it reaches the user.
+- Reason out the dependency path from current understanding → goal. For load-bearing claims in the plan (definitions, formulas, mechanisms), call the `fact_check` tool (`ox-alpha-free`) with the claim and the relevant source text (from `RESOURCES.md`, the course source, or a fetched URL); correct anything before it reaches the user.
 - Present the plan as a **Mermaid graph** (renders in Open WebUI) and persist it in the session note. The graph must be a real dependency ordering — it forces reasoning out, not decoration.
 
 ### 3. Teach (one reasoning step at a time)
 - Each step: (a) unconditional truth (or "all X are Y"/definition) if the step has one, (b) motivated discovery — "why would anyone try this?", (c) **guided Socratic** question wherever the user has prior knowledge to connect to; tell the minimum hint/analogy the moment they stall (never pure Socratic — matches Learning Profile).
 - **Hook-in:** open with the mission-grounded "why this matters" hook. **Wonder-out:** close with open "what if…?" questions feeding the Open Questions principle.
 - **Bloom climb (phase-mapped):** introduction targets Remember/Understand; practice climbs Apply → Analyze → Evaluate; the capstone is Create. Every lesson climbs at least to Apply. Not every lesson reaches every level (short lessons).
-- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (`muse-spark-1.2-contributor`) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
+- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (`ox-alpha-free`) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
 
 ### 4. Lesson end (advancement gate)
 - **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify"). For any multiple-choice item, follow **Multiple-choice integrity**.
