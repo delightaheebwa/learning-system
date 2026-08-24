@@ -29,7 +29,7 @@ Report ✅/❌ per item. Fix failures immediately.
 
 ## Git Sync
 
-The working copy is the Git repo at `/home/user/learning-system`, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers `Learning System/`, `Knowledge Wiki/`, and `Skills/` (the Open WebUI-tuned operating rules, including the review-gate and fact-check tools), plus `OPENWEBUI.md` and `scripts/`.
+The working copy is the Git repo at `/home/user/learning-system`, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers `Learning System/`, `Knowledge Wiki/`, and `Skills/` (the Open WebUI-tuned operating rules, with all verification gates running as subagent tasks via `delegate_task` — fact-check, quiz-audit, review-gate), plus `OPENWEBUI.md` and `scripts/`.
 
 After final edits in a session (consistency checks pass, writes complete), ALWAYS commit and push:
 

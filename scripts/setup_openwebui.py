@@ -5,17 +5,20 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 3 Tools         review_gate + fact_check + quiz_gate
   - 1 Model preset  "Learning Tutor"
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
 
+All verification gates run as background subagent tasks (`delegate_task`) on
+Open WebUI's subagent default model — no Tools are installed or bound. The
+legacy review_gate/fact_check/quiz_gate Tools are dormant; their .py files stay
+in Skills/learning-review/openwebui/ as fallbacks only (see OPENWEBUI.md).
+
 Models are configured AFTER install in the Open WebUI UI (one field per task —
 see OPENWEBUI.md). The values below are FIRST-INSTALL BOOTSTRAP defaults only:
-the installer reads each tool's current model valve and the Learning Tutor's
-current base model first, and PRESERVES any non-empty value already set in the
-UI. Re-running this script (e.g. after editing a skill) therefore never resets
-your models — change models exclusively in the UI. The --*-model flags / env
-vars only matter on a fresh install or when a valve is empty.
+the installer reads the Learning Tutor's current base model first and PRESERVES
+any non-empty value already set in the UI. Re-running this script (e.g. after
+editing a skill) therefore never resets your models — change models exclusively
+in the UI.
 
 Usage:
   OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py [--base-url http://localhost:3000]
@@ -24,8 +27,9 @@ Requirements: Python 3 stdlib only. Run on the host (or anywhere the Open WebUI
 API is reachable). Idempotent: existing items are updated, not duplicated.
 
 Values:
-  - Tool valves are set to call the API from inside the Open WebUI container
-    (http://localhost:8080). If your deployment differs, pass --tool-base-url.
+  - (Legacy note: the dormant review_gate/fact_check/quiz_gate Tools are NOT
+    installed by this script. If you ever need them again, their .py files are
+    in Skills/learning-review/openwebui/.)
 """
 
 import argparse
@@ -44,35 +48,6 @@ SKILLS = [
     "Skills/learning-review/SKILL.md",
     "Skills/llm-wiki/SKILL.md",
 ]
-TOOLS = [
-    {
-        "id": "review_gate",
-        "name": "review_gate",
-        "file": "Skills/learning-review/openwebui/review_gate.py",
-        "valve_key": "review_model",
-        "flag": "--review-model",
-        "env": "OPENWEBUI_REVIEW_MODEL",
-        "bootstrap_default": "ox-alpha-free",
-    },
-    {
-        "id": "fact_check",
-        "name": "fact_check",
-        "file": "Skills/learning-review/openwebui/fact_check.py",
-        "valve_key": "fact_check_model",
-        "flag": "--fact-check-model",
-        "env": "OPENWEBUI_FACT_CHECK_MODEL",
-        "bootstrap_default": "ox-alpha-free",
-    },
-    {
-        "id": "quiz_gate",
-        "name": "quiz_gate",
-        "file": "Skills/learning-review/openwebui/quiz_gate.py",
-        "valve_key": "quiz_model",
-        "flag": "--quiz-model",
-        "env": "OPENWEBUI_QUIZ_MODEL",
-        "bootstrap_default": "ox-alpha-free",
-    },
-]
 
 TUTOR_FLAG = "--tutor-model"
 TUTOR_ENV = "OPENWEBUI_TUTOR_MODEL"
@@ -83,7 +58,6 @@ MODEL = {
     "name": "Learning Tutor",
     "description": "Delight's spaced-repetition learning system: swe/review, ingest, teach/lesson, and the Karpathy-style wiki.",
     "skillIds": ["learning-system", "learning-teach", "learning-review", "llm-wiki"],
-    "toolIds": ["review_gate", "fact_check", "quiz_gate"],
     "capabilities": {
         "file_context": True,
         "file_upload": True,
@@ -106,11 +80,11 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
-- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool on the wiki content you wrote, then commit + push
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool before presenting them, audit every question batch (probe and end-of-lesson quiz) with the quiz_gate tool before showing it to the learner, and run the review_gate tool on any wiki content or Active Concepts rows the lesson produced before finalizing
+- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review-gate subagent task (delegate_task) on the wiki content you wrote, then commit + push
+- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify batched load-bearing claims with a fact-check subagent task before presenting them, audit every question batch (probe and end-of-lesson quiz) with a quiz-audit subagent task before showing it to the learner, and run the review-gate subagent task on any wiki content or Active Concepts rows the lesson produced before finalizing
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
-Each gate/fact-check model is whatever is set on that tool's Valves; you are running on the Learning Tutor preset's base model. To change any model, see the model-per-task table in OPENWEBUI.md."""
+All verification gates run as background subagent tasks (`delegate_task`) on Open WebUI's subagent default model; you are running on the Learning Tutor preset's base model. To change any model, see the model-per-task table in OPENWEBUI.md."""
 
 PROMPTS = [
     {
@@ -126,12 +100,12 @@ PROMPTS = [
     {
         "command": "ingest",
         "name": "Ingest Content",
-        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool, then commit and push.",
+        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review-gate subagent task (delegate_task), then commit and push.",
     },
     {
         "command": "teach",
         "name": "Teach Me",
-        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool before presenting them, and audit every question batch with the quiz_gate tool before showing it.",
+        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify batched load-bearing claims with a fact-check subagent task before presenting them, and audit every question batch with a quiz-audit subagent task before showing it.",
     },
     {
         "command": "lesson",
@@ -204,13 +178,9 @@ def parse_skill_md(path):
 def main() -> int:
     ap = argparse.ArgumentParser(description="Install the Learning System into Open WebUI.")
     ap.add_argument("--base-url", default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:3000"))
-    ap.add_argument("--tool-base-url", default=os.environ.get("OPENWEBUI_TOOL_BASE_URL", "http://localhost:8080"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
     ap.add_argument(TUTOR_FLAG, default=os.environ.get(TUTOR_ENV, TUTOR_BOOTSTRAP_DEFAULT),
                     help="first-install bootstrap tutor base model (existing UI value is preserved)")
-    for t in TOOLS:
-        ap.add_argument(t["flag"], default=os.environ.get(t["env"], t["bootstrap_default"]),
-                        help=f"first-install bootstrap model for {t['id']} (existing UI valve is preserved)")
     args = ap.parse_args()
 
     if not args.api_key:
@@ -222,8 +192,6 @@ def main() -> int:
         return 2
 
     c = Client(args.base_url, args.api_key)
-    api_key = args.api_key
-    tool_valves_common = {"openwebui_base_url": args.tool_base_url, "openwebui_api_key": api_key}
 
     print("== Skills ==")
     for rel in SKILLS:
@@ -244,36 +212,6 @@ def main() -> int:
             status2, _ = c.post(f"/api/v1/skills/id/{skill_id}/update", payload)
             print(f"  ~ updated skill {skill_id}" if status2 == 200 else f"  ! failed to update {skill_id}")
 
-    print("== Tools ==")
-    tool_model_by_id = {t["id"]: getattr(args, t["flag"].lstrip("-").replace("-", "_")) for t in TOOLS}
-    for t in TOOLS:
-        with open(os.path.join(REPO_ROOT, t["file"]), "r", encoding="utf-8") as f:
-            content = f.read()
-        payload = {"id": t["id"], "name": t["name"], "content": content, "meta": {}, "access_grants": []}
-        status, resp = c.post("/api/v1/tools/create", payload, conflict_marker="ID_TAKEN")
-        if resp is not None:
-            print(f"  + created tool {t['id']}")
-        elif status == 400:
-            status2, _ = c.post(f"/api/v1/tools/id/{t['id']}/update", payload)
-            print(f"  ~ updated tool {t['id']}" if status2 == 200 else f"  ! failed to update {t['id']}")
-
-        # Valves: NEVER overwrite a model the user already configured (UI is the
-        # source of truth after first install). Only fill in missing/empty values.
-        existing = {}
-        estatus, eresp = c.get(f"/api/v1/tools/id/{t['id']}/valves")
-        if estatus == 200 and isinstance(eresp, dict):
-            existing = eresp
-        valves = {**tool_valves_common}
-        model_valve = (existing.get(t["valve_key"]) or "").strip() if isinstance(existing.get(t["valve_key"]), str) else ""
-        if model_valve:
-            valves[t["valve_key"]] = model_valve
-            print(f"  = preserved {t['id']}.{t['valve_key']} = {model_valve} (set in UI)")
-        else:
-            valves[t["valve_key"]] = tool_model_by_id[t["id"]]
-        vstatus, vresp = c.post(f"/api/v1/tools/id/{t['id']}/valves/update", valves)
-        if vresp is not None and not model_valve:
-            print(f"  + set valves on {t['id']} ({t['valve_key']}={valves[t['valve_key']]})")
-
     print("== Model preset ==")
     # Preserve an already-configured tutor base model (UI is the source of truth).
     tutor_base = args.tutor_model
@@ -293,7 +231,6 @@ def main() -> int:
             "description": MODEL["description"],
             "capabilities": MODEL["capabilities"],
             "skillIds": MODEL["skillIds"],
-            "toolIds": MODEL["toolIds"],
             "knowledge": [],
         },
         "access_grants": [],
