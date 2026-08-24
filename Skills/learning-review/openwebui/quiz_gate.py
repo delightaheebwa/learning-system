@@ -5,8 +5,8 @@ Runs the independent quiz audit defined in Skills/learning-teach/SKILL.md:
   - validates the submitted question batch mechanically (schema, option count,
     correct-index bounds) BEFORE spending a model call
   - builds the audit prompt from a FIXED template (never editable at runtime)
-  - calls a SECOND model (ox-alpha-free by default) via the Open WebUI
-    chat-completions API as the independent quiz auditor
+  - calls a SECOND model — whatever is set on this tool's `quiz_model` Valve —
+    via the Open WebUI chat-completions API as the independent quiz auditor
   - returns the verdict JSON to the chat
 
 Used for BOTH the probe (find-the-edge phase) and the end-of-lesson quiz.
@@ -16,13 +16,16 @@ leak an answer key into the conversation.
 The repo lives in the Open Terminal sandbox (/home/user/learning-system), a
 different container from this one, so the source excerpt is passed in directly.
 
+MODELS: after install, the quiz-audit model is changed in ONE place — this
+tool's Valves (Workspace → Tools → quiz_gate → ⚙). See OPENWEBUI.md. The
+hardcoded id below is a bootstrap fallback only (env QUIZ_GATE_MODEL overrides).
+
 INSTALL
 -------
 1. Open WebUI → Workspace → Tools → "+" (Create Tool).
 2. Paste this whole file, name it "quiz_gate", Save.
 3. Enable the tool for the Learning Tutor model (Workspace → Models → Edit → Tools).
-4. Set the Valves (gear icon): base URL, an API key, and the quiz model id
-   (default ox-alpha-free).
+4. Set the Valves (gear icon): base URL, an API key, and the quiz model id.
 
 Then during probing (or before the end-of-lesson quiz): build the full question
 batch as JSON and call quiz_gate before showing anything to the user.
@@ -62,7 +65,7 @@ def _make_valves_class():
             )
             quiz_model: str = Field(
                 default=os.environ.get("QUIZ_GATE_MODEL", "ox-alpha-free"),
-                description="Quiz-audit model id, e.g. ox-alpha-free. Must be a different model than the chat model.",
+                description="Quiz-audit model id (bootstrap fallback — change in UI Valves). Must be a different model than the chat model.",
             )
             timeout: int = Field(default=150, description="HTTP timeout in seconds.")
         return Valves
@@ -87,7 +90,7 @@ suggest concrete fixes; never rewrite the whole batch yourself.
 ## Inputs
 
 - PURPOSE (probe find-the-edge | end-of-lesson quiz): {purpose}
-- CONCEPT / STRAND: {concept}
+- CONCEPT / TOPIC: {concept}
 - TARGET BLOOM LEVELS: {bloom_levels}
 - SOURCE EXCERPT (what the questions should be grounded in):
 {source_excerpt}
@@ -127,7 +130,7 @@ suggest concrete fixes; never rewrite the whole batch yourself.
     flag if one position holds noticeably more than chance across the batch.
 12. **Difficulty vs Bloom level** — items targeting Apply+ should not be simple
     definitional recall dressed as MCQ.
-13. **Coverage** — do the items actually triangulate the stated concept/strand?
+13. **Coverage** — do the items actually triangulate the stated concept/topic?
 
 ## Guessability
 
@@ -287,7 +290,7 @@ class Tools:
             "options":[...],"correct_index":<int>,"target_bloom":"..."}. Free-recall item:
             {"id","type":"free_recall","question":"...","target_bloom":"..."}.
         purpose: "probe" or "end-of-lesson quiz".
-        concept: concept or strand being probed. bloom_levels: targeted Bloom levels.
+        concept: concept or topic being probed. bloom_levels: targeted Bloom levels.
         source_excerpt: source text the questions should be grounded in.
         Returns verdict JSON (PASS / ISSUES with per-item fixes). Fix high/medium
         issues and re-run; max 2 cycles before surfacing to the user.

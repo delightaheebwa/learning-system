@@ -2,23 +2,27 @@
 fact_check — Learning System teaching fact-check tool for Open WebUI.
 
 Verifies load-bearing factual claims before the tutor presents them during a
-teaching session (/lesson, teach me X). Calls a SECOND, cheaper model
-(ox-alpha-free by default) so the tutor model (deepseek-v4-pro) does not
-grade its own claims.
+teaching session (/lesson, teach me X). Calls a SECOND, cheaper model —
+whatever is set on this tool's `fact_check_model` Valve — so the tutor model
+does not grade its own claims.
 
 The tutor passes the claim plus the source it is teaching from (an excerpt of
 RESOURCES.md, the course source, or a fetched URL). The checker returns a
 verdict plus a corrected version when the claim is wrong.
 
 This is the teaching-path verifier. The ingest quality gate is the separate
-`review_gate` tool (ox-alpha-free) — the two verification paths stay separate.
+`review_gate` tool — the two verification paths stay separate.
+
+MODELS: after install, the fact-check model is changed in ONE place — this
+tool's Valves (Workspace → Tools → fact_check → ⚙). See OPENWEBUI.md. The
+hardcoded id below is a bootstrap fallback only (env FACT_CHECK_MODEL overrides).
 
 INSTALL
 -------
 1. Open WebUI → Workspace → Tools → "+" (Create Tool).
 2. Paste this whole file, name it "fact_check", Save.
 3. Enable the tool for the Learning Tutor model (Workspace → Models → Edit → Tools).
-4. Set the Valves: base URL, API key, fact_check_model (default ox-alpha-free).
+4. Set the Valves: base URL, API key, fact_check_model.
 """
 
 import asyncio
@@ -55,7 +59,7 @@ def _make_valves_class():
             )
             fact_check_model: str = Field(
                 default=os.environ.get("FACT_CHECK_MODEL", "ox-alpha-free"),
-                description="Fact-check model id, e.g. ox-alpha-free. Should be a different model than the tutor.",
+                description="Fact-check model id (bootstrap fallback — change in UI Valves). Should be a different model than the tutor.",
             )
             timeout: int = Field(default=150, description="HTTP timeout in seconds.")
         return Valves

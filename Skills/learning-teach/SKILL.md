@@ -1,17 +1,17 @@
 ---
 name: learning-teach
-description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), live fact-checking via the fact_check tool (ox-alpha-free), and independent question-batch audits via the quiz_gate tool (ox-alpha-free). Triggers: 'teach me X', 'lesson', 'continue'.
+description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back), live fact-checking via the fact_check tool, and independent question-batch audits via the quiz_gate tool. Triggers: 'teach me X', 'lesson', 'continue'.
 ---
 
 # Learning Teach
 
-The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, ox-alpha-free) is ingest-only; teaching verification uses the `fact_check` tool (`ox-alpha-free`); question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool (`ox-alpha-free`) before the learner sees them.
+The teaching half of the learning system, running in Open WebUI on the tutor model (the Learning Tutor preset's base model — see `OPENWEBUI.md` for the model-per-task table). Teaching verification uses the `fact_check` tool; question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool before the learner sees them; wiki content and Active Concepts rows produced at lesson end are gated by the `review_gate` tool (all gate models are set on each tool's Valves).
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 
-- Mission: `Learning System/MISSION.md` (Stage 0 — SWE Foundations).
-- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (two strands, deterministic rotation, colors as labels).
-- Sources: `Learning System/Curriculum/sources/terminal-system-monitor/` (immutable HTML course) + MIT Missing Semester + `Learning System/RESOURCES.md` (curated primary readings).
+- Mission: `Learning System/MISSION.md`.
+- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (roadmap-aligned missions, sequential lessons).
+- Sources: MIT Missing Semester + `Learning System/RESOURCES.md` (curated primary readings) + the sources named by the current curriculum stage. Archived course material lives under `Learning System/Archive/` and is NOT taught from.
 - Glossary: `Learning System/GLOSSARY.md`. Learning records: `Learning System/Learning Records/`. Lessons: `Learning System/Lessons/`.
 - Learner state: `Learning System/Core/📚 Active Concepts.md` → grep/range the **relevant** track and concepts only. Never read the whole file per concept during probing (user constraint).
 - You teach **from** the sources (derive fresh markdown lessons), you do not reformat the HTML into markdown.
@@ -21,7 +21,7 @@ The teaching half of the learning system, running in Open WebUI on the tutor mod
 These rules stop the correct answer from being guessable by its presentation or
 by the distractors. The user must earn the answer by knowledge, never by noticing
 a pattern. The rules are enforced two ways: you follow them while writing items,
-and the **`quiz_gate` tool (`ox-alpha-free`) independently audits every batch
+and the **`quiz_gate` tool (its Valve-configured model) independently audits every batch
 before the learner sees it** — see "Gate protocol" below.
 
 - **Balance option length and structure.** The correct option must not be the
@@ -56,7 +56,7 @@ before the learner sees it** — see "Gate protocol" below.
 ### Gate protocol (quiz_gate — mandatory for probe AND end-of-lesson quiz)
 
 1. Write the full batch first: all MCQs plus one free-recall item per strand.
-2. Call `quiz_gate` (`ox-alpha-free`) with `questions_json` (each item: id,
+2. Call `quiz_gate` (its Valve-configured model) with `questions_json` (each item: id,
    type mcq|free_recall, question, options + correct_index for MCQs,
    target_bloom), `purpose` ("probe" or "end-of-lesson quiz"), `concept`,
    `bloom_levels`, and `source_excerpt`. The tool mechanically rejects
@@ -80,14 +80,14 @@ before the learner sees it** — see "Gate protocol" below.
 - If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2).
 
 ### 2. Plan (force the reasoning)
-- Reason out the dependency path from current understanding → goal. For load-bearing claims in the plan (definitions, formulas, mechanisms), call the `fact_check` tool (`ox-alpha-free`) with the claim and the relevant source text (from `RESOURCES.md`, the course source, or a fetched URL); correct anything before it reaches the user.
+- Reason out the dependency path from current understanding → goal. For load-bearing claims in the plan (definitions, formulas, mechanisms), call the `fact_check` tool (its Valve-configured model) with the claim and the relevant source text (from `RESOURCES.md`, the course source, or a fetched URL); correct anything before it reaches the user.
 - Present the plan as a **Mermaid graph** (renders in Open WebUI) and persist it in the session note. The graph must be a real dependency ordering — it forces reasoning out, not decoration.
 
 ### 3. Teach (one reasoning step at a time)
 - Each step: (a) unconditional truth (or "all X are Y"/definition) if the step has one, (b) motivated discovery — "why would anyone try this?", (c) **guided Socratic** question wherever the user has prior knowledge to connect to; tell the minimum hint/analogy the moment they stall (never pure Socratic — matches Learning Profile).
 - **Hook-in:** open with the mission-grounded "why this matters" hook. **Wonder-out:** close with open "what if…?" questions feeding the Open Questions principle.
 - **Bloom climb (phase-mapped):** introduction targets Remember/Understand; practice climbs Apply → Analyze → Evaluate; the capstone is Create. Every lesson climbs at least to Apply. Not every lesson reaches every level (short lessons).
-- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (`ox-alpha-free`) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
+- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (its Valve-configured model) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
 
 ### 4. Lesson end (advancement gate)
 - **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify"). For any multiple-choice item, follow **Multiple-choice integrity** and pass the full batch through **quiz_gate** before presenting it. Confidence tagging applies here too: a correct `hunch` does not count as retrieval success — re-check that item with an isomorphic variant.
@@ -95,14 +95,11 @@ before the learner sees it** — see "Gate protocol" below.
 - **Fuzziness inference (no self-rating):** deduce from answers — "I don't know", hedging/vague phrasing, self-corrections, wrong answers on already-reviewed concepts, fluent explain-back but failed retrieval. High fuzziness → drop a rung (analogy, smaller step, re-probe). Low → climb.
 - Write a **Learning Record** (trigger 1) with the highest Bloom level demonstrated in **Evidence**; note a corrected misconception (trigger 3) when it happens.
 - If the lesson corresponds to an existing curriculum row: advance it only when practice complete + retrieval pass + Feynman pass; write the session note (`Sessions/Session — … — date.md`) and a lesson file (`Lessons/Lesson — … — date.md`).
+- **Lesson-end ingest gate:** if the lesson wrote wiki pages and/or Active Concepts rows (first introduction or enrichment), run the `review_gate` tool on exactly that content before finalizing — same protocol as a standalone ingest: `source` = the lesson's curriculum source URL, `concepts`, `wiki_content` (you already have it from your own writes — do NOT re-read from disk), max 2 fix cycles. Lesson files, learning records, and glossary promotions are NOT gated (those stay under live `fact_check` verification). See `Skills/learning-review/SKILL.md`.
 
-## Interleaving (automatic)
+## Interleaving
 
-1. **Curriculum level:** next lesson follows CURRICULUM.md's deterministic strand rotation (A ↔ B).
-2. **Retrieval level:** each lesson's end quiz mixes 1–2 prior related concepts from the *other* strand.
-3. **Review level:** unchanged (the existing SRS shuffle/adjacency/alternation) — not this skill's job.
-
-Within a lesson, **introduction stays sequential** (one color at a time). Interleaving is for practice and retrieval.
+Interleaving lives in the **review flow only** (the SRS shuffle + adjacency constraint + question-type alternation in the learning-system skill). Lessons are sequential: one concept, one reasoning step at a time. Do not mix other concepts into probes, practice, or end-of-lesson quizzes.
 
 ## SRS integration
 

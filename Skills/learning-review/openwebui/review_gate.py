@@ -4,8 +4,8 @@ review_gate — Learning System ingest quality gate for Open WebUI.
 Runs the independent review gate defined in Skills/learning-review/SKILL.md:
   - fetches the source URL itself (dead URL aborts with an error)
   - builds the review prompt from a FIXED template (never editable at runtime)
-  - calls a SECOND model (ox-alpha-free by default) via the Open WebUI
-    chat-completions API as the independent reviewer
+  - calls a SECOND model — whatever is set on this tool's `review_model`
+    Valve — via the Open WebUI chat-completions API as the independent reviewer
   - returns the verdict JSON, which the chat saves to
     Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json
 
@@ -13,15 +13,19 @@ The repo lives in the Open Terminal sandbox (/home/user/learning-system), a
 different container from this one, so the wiki text is passed in directly as
 `wiki_content` (the model reads the files via the terminal and passes them in).
 
+MODELS: after install, the reviewer model is changed in ONE place — this tool's
+Valves (Workspace → Tools → review_gate → ⚙). See OPENWEBUI.md. The hardcoded
+id below is a bootstrap fallback only (env REVIEW_GATE_MODEL overrides it).
+
 INSTALL
 -------
 1. Open WebUI → Workspace → Tools → "+" (Create Tool).
 2. Paste this whole file, name it "review_gate", Save.
 3. Enable the tool for the Learning Tutor model (Workspace → Models → Edit → Tools).
-4. Set the Valves (gear icon): base URL, an API key, and the review model id
-   (default ox-alpha-free).
+4. Set the Valves (gear icon): base URL, an API key, and the review model id.
 
-Then after an ingest, say: run the review gate on <concepts> from <source>.
+Then after an ingest (or at lesson end when the lesson wrote wiki content), say:
+run the review gate on <concepts> from <source>.
 The model passes the wiki content it wrote (read via the terminal).
 """
 
@@ -59,7 +63,7 @@ def _make_valves_class():
             )
             review_model: str = Field(
                 default=os.environ.get("REVIEW_GATE_MODEL", "ox-alpha-free"),
-                description="Review model id, e.g. ox-alpha-free. Must be a different model than the chat model.",
+                description="Review model id (bootstrap fallback — change in UI Valves). Must be a different model than the chat model.",
             )
             timeout: int = Field(default=150, description="HTTP timeout in seconds.")
         return Valves

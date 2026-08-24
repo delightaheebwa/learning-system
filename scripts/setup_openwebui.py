@@ -5,10 +5,15 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 3 Tools         review_gate (ox-alpha-free) + fact_check (ox-alpha-free)
-                    + quiz_gate (ox-alpha-free)
-  - 1 Model preset  "Learning Tutor" on base model deepseek-v4-pro
+  - 3 Tools         review_gate + fact_check + quiz_gate
+  - 1 Model preset  "Learning Tutor"
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
+
+Models are configured AFTER install in the Open WebUI UI (one field per task —
+see OPENWEBUI.md). The values below are BOOTSTRAP DEFAULTS applied at install
+time only; rerunning this script re-applies them and will overwrite any UI
+hot-swaps. Use the --*-model flags or env vars to set different bootstrap
+values without editing this file.
 
 Usage:
   OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py [--base-url http://localhost:3000]
@@ -42,25 +47,37 @@ TOOLS = [
         "id": "review_gate",
         "name": "review_gate",
         "file": "Skills/learning-review/openwebui/review_gate.py",
-        "valves": {"review_model": "ox-alpha-free"},
+        "valve_key": "review_model",
+        "flag": "--review-model",
+        "env": "OPENWEBUI_REVIEW_MODEL",
+        "bootstrap_default": "ox-alpha-free",
     },
     {
         "id": "fact_check",
         "name": "fact_check",
         "file": "Skills/learning-review/openwebui/fact_check.py",
-        "valves": {"fact_check_model": "ox-alpha-free"},
+        "valve_key": "fact_check_model",
+        "flag": "--fact-check-model",
+        "env": "OPENWEBUI_FACT_CHECK_MODEL",
+        "bootstrap_default": "ox-alpha-free",
     },
     {
         "id": "quiz_gate",
         "name": "quiz_gate",
         "file": "Skills/learning-review/openwebui/quiz_gate.py",
-        "valves": {"quiz_model": "ox-alpha-free"},
+        "valve_key": "quiz_model",
+        "flag": "--quiz-model",
+        "env": "OPENWEBUI_QUIZ_MODEL",
+        "bootstrap_default": "ox-alpha-free",
     },
 ]
 
+TUTOR_FLAG = "--tutor-model"
+TUTOR_ENV = "OPENWEBUI_TUTOR_MODEL"
+TUTOR_BOOTSTRAP_DEFAULT = "deepseek-v4-pro"
+
 MODEL = {
     "id": "learning-tutor",
-    "base_model_id": "deepseek-v4-pro",
     "name": "Learning Tutor",
     "description": "Delight's spaced-repetition learning system: swe/review, ingest, teach/lesson, and the Karpathy-style wiki.",
     "skillIds": ["learning-system", "learning-teach", "learning-review", "llm-wiki"],
@@ -87,15 +104,11 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
-- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (ox-alpha-free) on the wiki content you wrote, then commit + push
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them, and audit every question batch (probe and end-of-lesson quiz) with the quiz_gate tool (ox-alpha-free) before showing it to the learner
+- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool on the wiki content you wrote, then commit + push
+- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool before presenting them, audit every question batch (probe and end-of-lesson quiz) with the quiz_gate tool before showing it to the learner, and run the review_gate tool on any wiki content or Active Concepts rows the lesson produced before finalizing
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
-Models in this system:
-- You (tutor): deepseek-v4-pro
-- Teaching fact-check: fact_check tool → ox-alpha-free
-- Ingest quality gate: review_gate tool → ox-alpha-free
-- Question-batch audit: quiz_gate tool → ox-alpha-free"""
+Each gate/fact-check model is whatever is set on that tool's Valves; you are running on the Learning Tutor preset's base model. To change any model, see the model-per-task table in OPENWEBUI.md."""
 
 PROMPTS = [
     {
@@ -111,12 +124,12 @@ PROMPTS = [
     {
         "command": "ingest",
         "name": "Ingest Content",
-        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (ox-alpha-free), then commit and push.",
+        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool, then commit and push.",
     },
     {
         "command": "teach",
         "name": "Teach Me",
-        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them, and audit every question batch with the quiz_gate tool (ox-alpha-free) before showing it.",
+        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool before presenting them, and audit every question batch with the quiz_gate tool before showing it.",
     },
     {
         "command": "lesson",
@@ -188,6 +201,11 @@ def main() -> int:
     ap.add_argument("--base-url", default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:3000"))
     ap.add_argument("--tool-base-url", default=os.environ.get("OPENWEBUI_TOOL_BASE_URL", "http://localhost:8080"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
+    ap.add_argument(TUTOR_FLAG, default=os.environ.get(TUTOR_ENV, TUTOR_BOOTSTRAP_DEFAULT),
+                    help="bootstrap tutor base model (after install, change in UI: Learning Tutor preset)")
+    for t in TOOLS:
+        ap.add_argument(t["flag"], default=os.environ.get(t["env"], t["bootstrap_default"]),
+                        help=f"bootstrap model for {t['id']} (after install, change in UI: tool Valves)")
     args = ap.parse_args()
 
     if not args.api_key:
@@ -222,6 +240,7 @@ def main() -> int:
             print(f"  ~ updated skill {skill_id}" if status2 == 200 else f"  ! failed to update {skill_id}")
 
     print("== Tools ==")
+    tool_model_by_id = {t["id"]: getattr(args, t["flag"].lstrip("-").replace("-", "_")) for t in TOOLS}
     for t in TOOLS:
         with open(os.path.join(REPO_ROOT, t["file"]), "r", encoding="utf-8") as f:
             content = f.read()
@@ -232,16 +251,16 @@ def main() -> int:
         elif status == 400:
             status2, _ = c.post(f"/api/v1/tools/id/{t['id']}/update", payload)
             print(f"  ~ updated tool {t['id']}" if status2 == 200 else f"  ! failed to update {t['id']}")
-        # valves
-        valves = {**tool_valves_common, **t["valves"]}
+        # valves (bootstrap model values — after install, change models in the UI)
+        valves = {**tool_valves_common, t["valve_key"]: tool_model_by_id[t["id"]]}
         vstatus, vresp = c.post(f"/api/v1/tools/id/{t['id']}/valves/update", valves)
         if vresp is not None:
-            print(f"  + set valves on {t['id']}")
+            print(f"  + set valves on {t['id']} ({t['valve_key']}={valves[t['valve_key']]})")
 
     print("== Model preset ==")
     payload = {
         "id": MODEL["id"],
-        "base_model_id": MODEL["base_model_id"],
+        "base_model_id": args.tutor_model,
         "name": MODEL["name"],
         "params": {"system": SYSTEM_PROMPT},
         "meta": {
@@ -272,6 +291,7 @@ def main() -> int:
             print(f"  ~ updated prompt /{p['command']}" if status2 == 200 else f"  ! failed to update /{p['command']}")
 
     print("\nDone. Verify in Open WebUI → Workspace → Models → Learning Tutor.")
+    print("Models are now configured in the UI (one field per task) — see OPENWEBUI.md.")
     return 0
 
 

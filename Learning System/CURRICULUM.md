@@ -1,47 +1,57 @@
-# Curriculum: SWE Foundations — Stage 0 (Fluency & Tools)
+# Curriculum — SWE Primary Colors & Roadmap
 
-> Integrated Stage-0 map. Two strands interleave deterministically strand-by-strand:
-> **MIT Missing Semester** (Color 6 / Process) and the **Terminal System Monitor course** (mixed colors, C).
-> Rotation rule: alternate strands positionally (MIT → Monitor → MIT → …). Colors are labels for seeing the mix, not a mechanical carousel.
-> One curriculum lesson = one tangible-win unit (one monitor lesson, one MIT lecture). Lessons are resumable via `continue`.
-> Status legend: `not-started` → `in-progress` → `done`. A lesson is `done` only after demonstrating its skill (retrieval check + Feynman explain-back + practice complete).
+> Authoritative "what's next" map, aligned to the **SWE Primary Colors & Roadmap**
+> (canonical copy: `Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md`).
+> One mission per roadmap stage. Lessons within a mission are **sequential** —
+> one at a time, no strand rotation, no interleaving (interleaving lives in the
+> review flow only). One curriculum lesson = one tangible-win unit. Lessons are
+> resumable via `continue`. Status legend: `not-started` → `in-progress` → `done`.
+> A lesson is `done` only after demonstrating its skill (retrieval check +
+> Feynman explain-back + practice complete).
 
-## Strand A — Terminal System Monitor (C) — source: `Curriculum/sources/terminal-system-monitor/`
+## Mission 1 — Stage 0: Fluency & Tools *(Color 6 · Process · in progress)*
 
-| # | Lesson | Colors | Est. time | Prereqs | Status | Notes |
-|---|--------|--------|-----------|---------|--------|-------|
-| A1 | First compile (make) | Process + C [9] | 30–45m | shell + gcc | done | Mirrors Active Concepts: Makefile targets/prereqs/recipes |
-| A2 | First tests (hand-rolled runner) | Process [8] | 45–60m | A1 | done | Mirrors: AAA, Testable Seam |
-| A3 | Acutest + parser seam | Tests + Abstraction [7] | 60–90m | A2 | done | Mirrors: Acutest, fixtures, Static Fixtures & Boundary Cases |
-| A4 | Read real memory (/proc/meminfo) | Systems + State [6] | 60–90m | A3 | done | Mirrors: meminfo smoke test, Sentinel Values vs Presence Flags |
-| A5 | CPU from two samples (/proc/stat) | Computation + Systems [5] | 75–120m | A4 | not-started | Retrieval-verify prior concepts before teaching |
-| A6 | List processes (/proc, PIDs) | Interaction + Systems [4] | 60–90m | A5 | not-started | |
-| A7 | Live dashboard (termios, signals) | Interaction [3] | 90–150m | A6 | not-started | Capstone: Create level |
-| A8 | CLI tool #2 (file organizer) | Color 6 | TBD | A7 | not-started | TBD — pick with user; git + tests |
-| A9 | CLI tool #3 (TBD) | Color 6 | TBD | A8 | not-started | TBD — pick with user; git + tests |
+Goal: tooling becomes reflex, not friction.
 
-## Strand B — MIT Missing Semester (2026) — source: https://missing.csail.mit.edu/2026/
+- **Resource:** MIT Missing Semester (https://missing.csail.mit.edu/2026/) — shell, git, debugging, editors.
+- **Note:** the roadmap's Stage-0 Python CLI-tool projects are skipped by decision (2026-08-24); tooling fluency is built directly through the MIT material and daily use.
 
-| # | Lesson | Colors | Est. time | Prereqs | Status | Notes |
-|---|--------|--------|-----------|---------|--------|-------|
-| B1 | Course Overview + Shell | Process | ~1h | none | done | Shell fluencies already in Active Concepts (What is the Shell, Navigation, PATH…) |
-| B2 | Command-line Environment | Process | ~1–2h | B1 | done | job control, signals, tmux, aliases, dotfiles |
-| B3 | Development Environment & Tools | Process | ~1–2h | B2 | not-started | editors, Vim, customizing, shell scripting |
-| B4 | Debugging and Profiling | Process | ~1–2h | B3 | not-started | gdb, strace, perf; syscall-level debugging |
-| B5 | Version Control and Git | Process | ~1–2h | B4 | not-started | git internals; deepens Git commit conventions concept |
-| B6 | Data Wrangling | Process | ~1–2h | B5 | not-started | regex, sed, awk deeper; joints to xargs/awk/pipes |
-| B7 | Security and Cryptography | Process | ~1–2h | B6 | not-started | |
+| # | Lesson | Est. time | Prereqs | Status | Notes |
+|---|--------|-----------|---------|--------|-------|
+| 1 | Course Overview + Shell | ~1h | none | done | Shell fluencies in Active Concepts (What is the Shell, Navigation, PATH…) |
+| 2 | Command-line Environment | ~1–2h | 1 | done | job control, signals, tmux, aliases, dotfiles |
+| 3 | Development Environment & Tools | ~1–2h | 2 | not-started | editors, Vim, customizing, shell scripting |
+| 4 | Debugging and Profiling | ~1–2h | 3 | not-started | gdb, strace, perf; syscall-level debugging |
+| 5 | Version Control and Git | ~1–2h | 4 | not-started | git internals; deepens Git commit conventions concept |
+| 6 | Data Wrangling | ~1–2h | 5 | not-started | regex, sed, awk deeper; joints to xargs/awk/pipes |
+| 7 | Security and Cryptography | ~1–2h | 6 | not-started | |
 
-## Interleaving (automatic)
+**Exit:** shell, vim, git, and debugging hold no magic; you can profile a misbehaving program and read its syscalls.
 
-1. **Curriculum level (strand rotation):** alternate A ↔ B deterministically by position (e.g. A5 → B2 → A6 → B3 → …). The `lesson`/`continue` trigger returns the next lesson in the rotated order.
-2. **Retrieval level:** every lesson's end quiz pulls 1–2 prior related concepts from the *other* strand (mixing practice).
-3. **Review level:** unchanged — the existing SRS shuffle + adjacency + alternating types.
+## Mission 2 — Stage 1: Computation *(Color 1 · queued)*
 
-Rule of thumb: within a single lesson, introduction stays sequential (one reasoning step at a time); interleaving applies to practice and retrieval.
+Starts when Mission 1 completes.
 
-## How the map keeps honest
+- **Resource:** Berkeley CS61B (https://sp21.datastructur.es/, project-heavy) or _Grokking Algorithms_ for a gentler start.
+- **Flagship project:** Write Yourself a Git! (https://wyag.thb.lt/) or ugit (https://www.leshenko.net/p/ugit/) — hashing, trees, graphs, compression.
+- **Exit:** you can implement a nontrivial data structure cold.
 
-- New concepts from teaching enter `Core/📚 Active Concepts.md` on first introduction (status `developing`, `last_reviewed` today, `next_review` +3d), exactly like ingest.
-- Lessons A1–A4 are marked `done` because their concepts already live in Active Concepts. When the curriculum reaches a `done` lesson, the teacher runs a **retrieval check** (verify, don't re-teach); a failed check demotes the lesson back to `in-progress` and corrects the concept status.
-- Advancement requires: practice complete + retrieval check pass + Feynman explain-back (captured in a Learning Record, Bloom level noted).
+Lesson table to be drafted when this mission activates.
+
+## Future missions (not started)
+
+Per the roadmap, in order:
+
+- **Stage 2 — Systems:** nand2tetris + Build Your Own Text Editor (kilo)
+- **Stage 3 — Abstraction:** Crafting Interpreters (+ _A Philosophy of Software Design_)
+- **Stage 4 — State:** SQLBolt → Use The Index, Luke → Let's Build a Simple Database (or Redis from scratch)
+- **Stage 5 — Interaction:** Beej's Guide to Network Programming (TCP → HTTP → chat → mini-Redis protocol)
+- **Stage 6 — White Light:** containers-in-500-loc, Browser Engineering, MIT 6.824 distributed KV, real-codebase reading
+
+## Rules
+
+1. Lessons are strictly sequential within a mission; missions run in stage order.
+2. New concepts enter `Core/📚 Active Concepts.md` on first introduction (status `developing`, `last_reviewed` today, `next_review` +3d), exactly like ingest.
+3. A lesson marked `done` from prior learning is retrieval-checked, never re-taught; a failed check demotes it to `in-progress`.
+4. Advancement requires: practice complete + retrieval check pass + Feynman explain-back (captured in a Learning Record, Bloom level noted).
+5. Interleaving happens only in the review flow (SRS shuffle + adjacency + question-type alternation) — never inside lessons or quizzes.
