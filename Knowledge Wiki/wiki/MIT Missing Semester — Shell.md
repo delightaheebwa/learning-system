@@ -96,6 +96,7 @@ The shell needs to find the program file when you type a name like `date`.
 - `find . -name "*.py" -exec grep -l "TODO" {} \;` — find files and run a command on each
 - `find . -type f -name "*.*"` — only files with a dot in the name (excludes extensionless files like `README` or `build`)
 - `-print0` — print matches separated by NUL bytes instead of newlines; pairs with `xargs -0` for filenames containing spaces
+- `-exec CMD {} +` — batch form: ALL matching paths are substituted into ONE command invocation (e.g. `find . -name "*.txt" -exec wc -l {} +` counts lines across every match in a single `wc` run). Contrast the `\;` terminator, which runs the command once PER file — slower on large result sets
 - `-exec` runs a command on each matching file; `{}` is replaced by the file path
 - Install [`fd`](https://github.com/sharkdp/fd) for a more human-friendly `find`
 - fd is faster and has more intuitive defaults (but less portable)
@@ -233,11 +234,13 @@ Key redirect operators:
 - `2> file` — redirect stderr to a file
 - `2>&1` — redirect stderr to wherever stdout is going
 - `&> file` — redirect both stdout and stderr to a file (shorthand)
+- `> /dev/null` — send stdout to the **null device**: a special system file that discards everything written to it (reads return end-of-file). Silences output you don't care about; `2>/dev/null` drops just the error stream
 
 Example:
 ```bash
 ls /nonexistent /tmp > stdout.txt 2> stderr.txt
 ls /nonexistent /tmp &> both.txt
+find . -name "*.txt" -exec wc -l {} + 2>/dev/null   # batch line-count all matches, errors silenced
 ```
 
 **Why redirection order matters:**

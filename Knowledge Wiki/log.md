@@ -512,3 +512,10 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Overdue reviews:** File Permissions (ls -l) PASS (14d; owner/group/others chunking corrected) · PATH & Program Discovery FAIL (bare name → $PATH walk vs ./ → direct execution; retry 08-27) · Command Substitution & Arithmetic PASS (14d; subshell-splices-output vs bash-internal-arithmetic landed on scaffolded round 2).
 - **Writes:** Active Concepts 5 rows synced from Attempts.json; 🧯 Mistakes.md man row → review, find row re-attributed; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-24.md`.
 - **Surfaced:** Feynman explain-back debt on all concept items; scheduler drift (xargs/curl/jq/Parameter Expansion + 08-11 cohort stale next_review) to be folded into future queues.
+
+## 2026-08-24 — Ingest: /dev/null, find -exec batching (+), less
+- **Source:** Furnished transcription of handwritten lecture notes (Mon 2026-08-24); spot-checked live against https://missing.csail.mit.edu/2020/shell-tools/ (/dev/null discard idiom confirmed) and https://missing.csail.mit.edu/2026/course-shell/ (none of the three items present there).
+- **New concept (1):** less (Pager) — memory type, developing, next_review 2026-08-27. New page `Knowledge Wiki/wiki/less (Pager).md`.
+- **Enriched (2 rows, 1 page):** find row + [[MIT Missing Semester — Shell]] §find & fd (`-exec {} +` single-invocation batching vs per-file `\;`); Shell Redirections & Streams row + same page §Shell Redirections (`/dev/null` null device; added `2>/dev/null` to the worked example). Redirections last_reviewed → 2026-08-24 (next 08-25); find last_reviewed already 08-24 (glob-quoting mistake retry 08-27 stands).
+- **Review gate:** BLOCKED (pass 1) — terminal transport OK, but stored API key rejected again (HTTP 401, expired/invalid token; same blocker as CLI_Env_Batch2 earlier today). Record: Quality Gates/dev-null_find-exec-batching_less-pass1-2026-08-24.json (GATE_NOT_RUN + compensating checks). Re-run after the user regenerates the key.
+- **Session note:** Learning System/Sessions/Session — devnull exec-batching less Ingest — 2026-08-24.md
