@@ -27,8 +27,8 @@
 | Date | Concept | Question | Expected | Error Type | Self-Attribution | Status | Retries | Next Retry |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-08-21 | What is the Shell | What does `#` in prompt `missing:~#` mean? | root/superuser (max privileges, prompt warns danger) | deviation | Thought # = guest — inverted privilege meaning | active | 0 | 2026-08-24 |
-| 2026-08-19 | man & Documentation | What is the primary layer for authoritative command docs? | man (→ --help quick → tldr examples → LLM) | application | Had tldr/--help but missed man as primary | active | 0 | 2026-08-24 |
-| 2026-08-19 | find | Why quote "*.zip" in `find -name "*.zip"`? | Prevent GLOB expansion (shell would expand * before find) — opposite of word-splitting | deviation | Thought quotes prevent word-splitting, actually prevent glob | active | 0 | 2026-08-24 |
+| 2026-08-19 | man & Documentation | What is the primary layer for authoritative command docs? | man (→ --help quick → tldr examples → LLM) | application | Had tldr/--help but missed man as primary | review | 1 | 2026-09-07 |
+| 2026-08-19 | find | Why quote "*.zip" in `find -name "*.zip"`? | Prevent GLOB expansion (shell would expand * before find) — opposite of word-splitting | deviation | Retried 2026-08-24, failed INVERTED: claimed quotes enable glob expansion & unquoted hunts literal *.zip — actually the shell expands globs BEFORE find unless quoted (live-demo confirmed) | active | 0 | 2026-08-27 |
 | 2026-08-20 | Bash Quoting | Which quoting expands $ / $(cmd)? | Double "..." expands; single '...' literal; ANSI-C $'...' escapes only | structural | Flipped ANSI-C vs double-quote semantics | active | 0 | 2026-08-24 |
 | 2026-08-23 | sed (Stream Editor) | What does /g do in s/pat/rep/g? | Global: every match per line (not "do nothing else") | deviation | Misread /g as no-op | active | 0 | 2026-08-24 |
 

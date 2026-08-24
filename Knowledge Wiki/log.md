@@ -506,3 +506,9 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Tooling note:** `fact_check` returned HTTP 500 all attempts; verified load-bearing claims directly against live MIT pages (sign/verify primitives, rsync --partial/-P, ssh-config readers).
 - **Review gate:** BLOCKED (pass 1) — transport OK (review_gate.py driven from terminal against http://host.docker.internal:3000, reachable), but stored API key returned HTTP 401 (expired/invalid token). No independent verdict; see Quality Gates/CLI_Env_Batch2-pass1-2026-08-24.json (GATE_NOT_RUN + compensating checks). Re-run after the user regenerates the key.
 - **Session note:** Learning System/Sessions/Session — CLI Environment Batch 2 Ingest — 2026-08-24.md
+
+## 2026-08-24 (review) — SWE spaced-repetition review (5 slots)
+- **Mistake retries:** man & Documentation PASS — man→tldr→--help ladder rebuilt (review status; 1 more correct recall graduates) · find FAIL again — quoting model re-inverted (quotes *stop* shell glob expansion, don't enable it); fixed via live demo (`find: paths must precede expression`), new retry 2026-08-27.
+- **Overdue reviews:** File Permissions (ls -l) PASS (14d; owner/group/others chunking corrected) · PATH & Program Discovery FAIL (bare name → $PATH walk vs ./ → direct execution; retry 08-27) · Command Substitution & Arithmetic PASS (14d; subshell-splices-output vs bash-internal-arithmetic landed on scaffolded round 2).
+- **Writes:** Active Concepts 5 rows synced from Attempts.json; 🧯 Mistakes.md man row → review, find row re-attributed; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-24.md`.
+- **Surfaced:** Feynman explain-back debt on all concept items; scheduler drift (xargs/curl/jq/Parameter Expansion + 08-11 cohort stale next_review) to be folded into future queues.
