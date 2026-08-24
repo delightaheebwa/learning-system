@@ -31,6 +31,11 @@
 | 2026-08-19 | find | Why quote "*.zip" in `find -name "*.zip"`? | Prevent GLOB expansion (shell would expand * before find) — opposite of word-splitting | deviation | Thought quotes prevent word-splitting, actually prevent glob | active | 0 | 2026-08-24 |
 | 2026-08-20 | Bash Quoting | Which quoting expands $ / $(cmd)? | Double "..." expands; single '...' literal; ANSI-C $'...' escapes only | structural | Flipped ANSI-C vs double-quote semantics | active | 0 | 2026-08-24 |
 | 2026-08-23 | sed (Stream Editor) | What does /g do in s/pat/rep/g? | Global: every match per line (not "do nothing else") | deviation | Misread /g as no-op | active | 0 | 2026-08-24 |
+
+## Archived with C project (2026-08-25)
+
+> Rows paused when the C-project strand was archived; kept verbatim, no longer in the review queue.
+
 | 2026-08-20 | GCC Compilation Stages | Map flags to stages | -E preprocess, -S compile->asm, -c assemble->.o, link no-flag | structural | Mapped -r/-e, missed -E/-S/-c | active | 0 | 2026-08-24 |
 | 2026-08-21 | C Integer Mechanics (Underflow & Type Promotion) | Why does (used/total)*100 give 0% for 8M/16M? | Integer division truncates before float; lead with 100.0 * to promote | structural | Inverted cause/cure (called promotion the problem) | active | 0 | 2026-08-24 |
 | 2026-08-23 | C Memory Regions (Stack vs Heap vs Swap) | Does returning stack array leak or dangle? | Dangling (frame destroyed); stack cannot leak, only heap leaks | structural | Inverted dangling vs leak | active | 0 | 2026-08-24 |

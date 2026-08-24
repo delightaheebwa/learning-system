@@ -42,7 +42,7 @@ Trigger: "teach me X", "lesson", or "continue".
 1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
 2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s current mission (strictly sequential order); if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
 3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool; question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool; any wiki content or Active Concepts rows the lesson produces are gated by the `review_gate` tool at lesson end (see `Skills/learning-review/SKILL.md`).
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Claim verification runs via batched fact-check subagent tasks; question batches (probe and end-of-lesson quiz) are audited by quiz-audit subagent tasks; any wiki content or Active Concepts rows the lesson produces are gated by a review-gate subagent task at lesson end (see `Skills/learning-review/SKILL.md`).
 
 ## Review flow
 
@@ -71,7 +71,7 @@ Trigger: "ingest" with content to add (NOT a review).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
 6. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
-7. Run the learning-review gate (`review_gate` tool — the independent reviewer model set on its Valve) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
+7. Run the learning-review gate (ONE review-gate subagent task — the independent reviewer on Open WebUI's subagent default model) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
 
@@ -92,6 +92,6 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 ## Open WebUI adaptation
 
 - **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
-- **Review gate (ingest + lesson-end step):** call the `review_gate` tool, which invokes a SECOND model (the independent reviewer set on the tool's Valve) as the reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). Applies to standalone ingests AND to wiki/concept-row output produced at the end of a teaching lesson. See `OPENWEBUI.md` at the repo root for setup.
-- **Teaching verification:** call the `fact_check` tool (its Valve-configured model) for load-bearing claims before presenting them.
+- **Review gate (ingest + lesson-end step):** dispatch ONE review-gate subagent task (`delegate_task`, fixed template in `Skills/learning-review/SKILL.md`), which runs on a SECOND model (Open WebUI's subagent default model) as the reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). Applies to standalone ingests AND to wiki/concept-row output produced at the end of a teaching lesson. See `OPENWEBUI.md` at the repo root for setup.
+- **Teaching verification:** batch load-bearing claims into fact-check subagent tasks (template in `Skills/learning-teach/SKILL.md`) before presenting them; fold verdicts in before continuing.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).
