@@ -5,9 +5,17 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 2 Tools         review_gate (minimax-m3) + fact_check (deepseek-v4-flash)
-  - 1 Model preset  "Learning Tutor" on base model deepseek-v4-pro
+  - 3 Tools         review_gate + fact_check + quiz_gate
+  - 1 Model preset  "Learning Tutor"
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
+
+Models are configured AFTER install in the Open WebUI UI (one field per task —
+see OPENWEBUI.md). The values below are FIRST-INSTALL BOOTSTRAP defaults only:
+the installer reads each tool's current model valve and the Learning Tutor's
+current base model first, and PRESERVES any non-empty value already set in the
+UI. Re-running this script (e.g. after editing a skill) therefore never resets
+your models — change models exclusively in the UI. The --*-model flags / env
+vars only matter on a fresh install or when a valve is empty.
 
 Usage:
   OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py [--base-url http://localhost:3000]
@@ -41,23 +49,41 @@ TOOLS = [
         "id": "review_gate",
         "name": "review_gate",
         "file": "Skills/learning-review/openwebui/review_gate.py",
-        "valves": {"review_model": "minimax-m3"},
+        "valve_key": "review_model",
+        "flag": "--review-model",
+        "env": "OPENWEBUI_REVIEW_MODEL",
+        "bootstrap_default": "ox-alpha-free",
     },
     {
         "id": "fact_check",
         "name": "fact_check",
         "file": "Skills/learning-review/openwebui/fact_check.py",
-        "valves": {"fact_check_model": "deepseek-v4-flash"},
+        "valve_key": "fact_check_model",
+        "flag": "--fact-check-model",
+        "env": "OPENWEBUI_FACT_CHECK_MODEL",
+        "bootstrap_default": "ox-alpha-free",
+    },
+    {
+        "id": "quiz_gate",
+        "name": "quiz_gate",
+        "file": "Skills/learning-review/openwebui/quiz_gate.py",
+        "valve_key": "quiz_model",
+        "flag": "--quiz-model",
+        "env": "OPENWEBUI_QUIZ_MODEL",
+        "bootstrap_default": "ox-alpha-free",
     },
 ]
 
+TUTOR_FLAG = "--tutor-model"
+TUTOR_ENV = "OPENWEBUI_TUTOR_MODEL"
+TUTOR_BOOTSTRAP_DEFAULT = "deepseek-v4-pro"
+
 MODEL = {
     "id": "learning-tutor",
-    "base_model_id": "deepseek-v4-pro",
     "name": "Learning Tutor",
     "description": "Delight's spaced-repetition learning system: swe/review, ingest, teach/lesson, and the Karpathy-style wiki.",
     "skillIds": ["learning-system", "learning-teach", "learning-review", "llm-wiki"],
-    "toolIds": ["review_gate", "fact_check"],
+    "toolIds": ["review_gate", "fact_check", "quiz_gate"],
     "capabilities": {
         "file_context": True,
         "file_upload": True,
@@ -80,14 +106,11 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
-- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (minimax-m3) on the wiki content you wrote, then commit + push
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (deepseek-v4-flash) before presenting them
+- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool on the wiki content you wrote, then commit + push
+- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool before presenting them, audit every question batch (probe and end-of-lesson quiz) with the quiz_gate tool before showing it to the learner, and run the review_gate tool on any wiki content or Active Concepts rows the lesson produced before finalizing
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
-Models in this system:
-- You (tutor): deepseek-v4-pro
-- Teaching fact-check: fact_check tool → deepseek-v4-flash
-- Ingest quality gate: review_gate tool → minimax-m3"""
+Each gate/fact-check model is whatever is set on that tool's Valves; you are running on the Learning Tutor preset's base model. To change any model, see the model-per-task table in OPENWEBUI.md."""
 
 PROMPTS = [
     {
@@ -103,12 +126,12 @@ PROMPTS = [
     {
         "command": "ingest",
         "name": "Ingest Content",
-        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (minimax-m3), then commit and push.",
+        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool, then commit and push.",
     },
     {
         "command": "teach",
         "name": "Teach Me",
-        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (deepseek-v4-flash) before presenting them.",
+        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool before presenting them, and audit every question batch with the quiz_gate tool before showing it.",
     },
     {
         "command": "lesson",
@@ -153,6 +176,9 @@ class Client:
     def post(self, path, payload, conflict_marker=""):
         return self._request("POST", path, payload, conflict_marker)
 
+    def get(self, path):
+        return self._request("GET", path)
+
 
 def parse_skill_md(path):
     """Return (id, name, description, content) from a SKILL.md file."""
@@ -180,6 +206,11 @@ def main() -> int:
     ap.add_argument("--base-url", default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:3000"))
     ap.add_argument("--tool-base-url", default=os.environ.get("OPENWEBUI_TOOL_BASE_URL", "http://localhost:8080"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
+    ap.add_argument(TUTOR_FLAG, default=os.environ.get(TUTOR_ENV, TUTOR_BOOTSTRAP_DEFAULT),
+                    help="first-install bootstrap tutor base model (existing UI value is preserved)")
+    for t in TOOLS:
+        ap.add_argument(t["flag"], default=os.environ.get(t["env"], t["bootstrap_default"]),
+                        help=f"first-install bootstrap model for {t['id']} (existing UI valve is preserved)")
     args = ap.parse_args()
 
     if not args.api_key:
@@ -214,6 +245,7 @@ def main() -> int:
             print(f"  ~ updated skill {skill_id}" if status2 == 200 else f"  ! failed to update {skill_id}")
 
     print("== Tools ==")
+    tool_model_by_id = {t["id"]: getattr(args, t["flag"].lstrip("-").replace("-", "_")) for t in TOOLS}
     for t in TOOLS:
         with open(os.path.join(REPO_ROOT, t["file"]), "r", encoding="utf-8") as f:
             content = f.read()
@@ -224,16 +256,37 @@ def main() -> int:
         elif status == 400:
             status2, _ = c.post(f"/api/v1/tools/id/{t['id']}/update", payload)
             print(f"  ~ updated tool {t['id']}" if status2 == 200 else f"  ! failed to update {t['id']}")
-        # valves
-        valves = {**tool_valves_common, **t["valves"]}
+
+        # Valves: NEVER overwrite a model the user already configured (UI is the
+        # source of truth after first install). Only fill in missing/empty values.
+        existing = {}
+        estatus, eresp = c.get(f"/api/v1/tools/id/{t['id']}/valves")
+        if estatus == 200 and isinstance(eresp, dict):
+            existing = eresp
+        valves = {**tool_valves_common}
+        model_valve = (existing.get(t["valve_key"]) or "").strip() if isinstance(existing.get(t["valve_key"]), str) else ""
+        if model_valve:
+            valves[t["valve_key"]] = model_valve
+            print(f"  = preserved {t['id']}.{t['valve_key']} = {model_valve} (set in UI)")
+        else:
+            valves[t["valve_key"]] = tool_model_by_id[t["id"]]
         vstatus, vresp = c.post(f"/api/v1/tools/id/{t['id']}/valves/update", valves)
-        if vresp is not None:
-            print(f"  + set valves on {t['id']}")
+        if vresp is not None and not model_valve:
+            print(f"  + set valves on {t['id']} ({t['valve_key']}={valves[t['valve_key']]})")
 
     print("== Model preset ==")
+    # Preserve an already-configured tutor base model (UI is the source of truth).
+    tutor_base = args.tutor_model
+    mstatus, mresp = c.get(f"/api/v1/models/model?id={MODEL['id']}")
+    if mstatus == 200 and isinstance(mresp, dict):
+        current = ((mresp.get("base_model_id") or "").strip()
+                   or ((mresp.get("info") or {}).get("base_model_id") or "").strip())
+        if current:
+            tutor_base = current
+            print(f"  = preserved {MODEL['id']} base model = {current} (set in UI)")
     payload = {
         "id": MODEL["id"],
-        "base_model_id": MODEL["base_model_id"],
+        "base_model_id": tutor_base,
         "name": MODEL["name"],
         "params": {"system": SYSTEM_PROMPT},
         "meta": {
@@ -248,10 +301,10 @@ def main() -> int:
     }
     status, resp = c.post("/api/v1/models/create", payload, conflict_marker="MODEL_ID_TAKEN")
     if resp is not None:
-        print(f"  + created model {MODEL['id']}")
+        print(f"  + created model {MODEL['id']} (base: {tutor_base})")
     elif status == 400:
         status2, _ = c.post("/api/v1/models/model/update", payload)
-        print(f"  ~ updated model {MODEL['id']}" if status2 == 200 else f"  ! failed to update model {MODEL['id']}")
+        print(f"  ~ updated model {MODEL['id']} (base preserved: {tutor_base})" if status2 == 200 else f"  ! failed to update model {MODEL['id']}")
 
     print("== Prompts ==")
     for p in PROMPTS:
@@ -264,6 +317,8 @@ def main() -> int:
             print(f"  ~ updated prompt /{p['command']}" if status2 == 200 else f"  ! failed to update /{p['command']}")
 
     print("\nDone. Verify in Open WebUI → Workspace → Models → Learning Tutor.")
+    print("Models are configured in the UI only (one field per task) — see OPENWEBUI.md.")
+    print("Re-running this installer preserves your UI-chosen models.")
     return 0
 
 

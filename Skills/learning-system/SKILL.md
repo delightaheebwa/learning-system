@@ -28,7 +28,9 @@ Sessions die when the running conversation outgrows the model's context window: 
 ## State files (repo root: `/home/user/learning-system`)
 
 - `Learning System/Core/💡 Learning Profile.md` — learner preferences. Read at session start.
-- `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (aie, swe). The review schedule's sole source of truth. Grep/range only the needed track — never the whole file.
+- `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (aie, swe) with `Type` column (`memory | concept | procedure | design`). Type drives scheduler intervals. Grep/range only the needed track — never the whole file.
+- `Learning System/Core/Attempts.json` — evidence-based mastery sidecar (attempt history, interval_index state machine, Feynman pass). Bundled by `ops.py state`; report via `ops.py mastery <track>` — **advisory only** (scores shown, not blocking).
+- `Learning System/Core/🧯 Mistakes.md` — structured wrong-answer ledger (error_type + self-attribution). Due mistakes are priority-1 in review queue.
 - `Learning System/Core/📦 Concept Archive.md` — paused/archived concepts. Grep on demand; never auto-load.
 - `Learning System/Sessions/`, `Learning System/Reviews/`, `Learning System/Concept Notes/`, `Learning System/Archive/` — writes land here.
 - `Learning System/MISSION.md`, `Learning System/CURRICULUM.md`, `Learning System/GLOSSARY.md`, `Learning System/RESOURCES.md` — mission, curriculum, glossary, curated readings.
@@ -38,24 +40,26 @@ Sessions die when the running conversation outgrows the model's context window: 
 Trigger: "teach me X", "lesson", or "continue".
 
 1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
-2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s deterministic two-strand rotation; if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
-3. **`teach me X`:** in Stage-0 scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`deepseek-v4-flash`); the `review_gate` tool (`minimax-m3`) is **ingest-only**.
+2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s current mission (strictly sequential order); if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
+3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool; question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool; any wiki content or Active Concepts rows the lesson produces are gated by the `review_gate` tool at lesson end (see `Skills/learning-review/SKILL.md`).
 
 ## Review flow
 
 Trigger: "swe", "review", or a learning request.
 
 1. Track selection: "swe" → swe table; "aie" → aie table (currently archived — ask the user before unarchiving); neither → ask which track.
-2. Session start — ONE call: `run_command` → `python3 /home/user/.ops/ops.py state <track>`. This returns Learning Profile + your track's Active Concepts rows. Do not read those files separately.
-3. Find rows with Next Review on/before today. Shuffle. Adjacency constraint: no two consecutive concepts from the same Source (if impossible, shuffle anyway).
+2. Session start — ONE call: `run_command` → `python3 /home/user/.ops/ops.py state <track>`. This now returns Learning Profile + your track's Active Concepts rows + Attempts.json (advisory mastery scores) + 🧯 Mistakes.md. Do not read those files separately.
+3. Build the queue:
+   - Slots 1–2 = due mistakes from `🧯 Mistakes.md` where Next Retry ≤ today (`active`/`review`), oldest first (priority-1, DeepTutor pattern).
+   - Remaining 3 slots = type-aware due reviews (Next Review ≤ today), shuffled. Adjacency constraint: no two consecutive concepts from the same Source (if impossible, shuffle anyway).
 4. Per concept: one question, one answer (≤1 line), targeting the 20% insight worth 80%. Math: ask insight/result, never notation.
 5. Question type alternation by Last Q Type: blank/definitional → discriminative; discriminative → definitional.
-6. After each: write `Reviews/Review — [Concept] — [Date].md`; update `last_reviewed` (today), `next_review` (next interval), `Last Q Type` (type just asked).
+6. After each answer: grade pass/fail. Record via `python3 /home/user/.ops/ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail]` — this updates Attempts.json (recency-weighted mastery 0–1, confidence cap {1:0.5, 2:0.8}, interval_index +1 on pass / +2 on 2 consecutive passes / -1 on fail, next_review). On fail also append row to `🧯 Mistakes.md` with error_type (`structural|deviation|application|metacognitive`) and self-attribution; on next correct recall bump Retries, after 2 consecutive correct mark `graduated`. For `concept`/`design` types, elicit Feynman explain-back (own words, when/why, nearest-neighbor distinction, one example) and pass `feynman_pass`/`feynman_fail` — score shown but **not blocking** (advisory mode). Then write `Reviews/Review — [Concept] — [Date].md` and update Active Concepts `last_reviewed`/`next_review` (from Attempts.json) / `Last Q Type`.
 7. Cap 5. Then ask "Any you want to dig deeper on?" — if yes, deep-dive one concept.
-8. Surface open questions from Active Concepts.
+8. Surface open questions from Active Concepts. Also surface advisory mastery line for each concept (e.g. `mastery 0.50 — Feynman: —`) alongside Held/Advanced note for calibration.
 
-Intervals: 3d → 7d → 14d → 30d → 90d → consolidated. No separate review queue — compute from Next Review.
+Intervals (type-aware, from `mastery.py`): memory [0d,1d,3d,7d,14d,30d,60d] · concept [3d,7d,14d,30d] · procedure [3d,7d,14d] · design [14d,28d]. Mastery (advisory): memory/procedure ≥0.9 quantitative; concept/design require Feynman pass — display mastery 0.00–0.80 etc. alongside Held/Advanced for one review cycle, then gate becomes blocking.
 
 ## Ingest flow
 
@@ -67,7 +71,7 @@ Trigger: "ingest" with content to add (NOT a review).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
 6. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
-7. Run the learning-review gate (`review_gate` tool, `minimax-m3`) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
+7. Run the learning-review gate (`review_gate` tool — the independent reviewer model set on its Valve) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
 
@@ -88,6 +92,6 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 ## Open WebUI adaptation
 
 - **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
-- **Review gate (ingest step 7):** call the `review_gate` tool, which invokes a SECOND model (`minimax-m3`) as the independent reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). See `OPENWEBUI.md` at the repo root for setup.
-- **Teaching verification:** call the `fact_check` tool (`deepseek-v4-flash`) for load-bearing claims before presenting them.
+- **Review gate (ingest + lesson-end step):** call the `review_gate` tool, which invokes a SECOND model (the independent reviewer set on the tool's Valve) as the reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). Applies to standalone ingests AND to wiki/concept-row output produced at the end of a teaching lesson. See `OPENWEBUI.md` at the repo root for setup.
+- **Teaching verification:** call the `fact_check` tool (its Valve-configured model) for load-bearing claims before presenting them.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

@@ -4,7 +4,7 @@ A local-first, spaced-repetition learning system that turns your Open WebUI assi
 
 ## How it works
 
-Say "swe", "ingest", "review", or anything like "teach me X" — the assistant runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. The review gate is the `review_gate` tool (`minimax-m3`); teaching verification is the `fact_check` tool (`deepseek-v4-flash`). See `OPENWEBUI.md` at the repo root for the full setup.
+Say "swe", "ingest", "review", or anything like "teach me X" — the assistant runs the **`Skills/learning-system`** skill, which handles reviews, ingestion, and the writes below. The review gate is the `review_gate` tool (runs after standalone ingests AND at lesson end when a lesson wrote wiki content); teaching verification is the `fact_check` tool; question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool before the learner sees them. Each model is set in one place in Open WebUI — see `OPENWEBUI.md` at the repo root for the full setup and the model-per-task table.
 
 Agent behavioral conventions (consistency checks, git sync) live in `AGENTS.md`.
 
