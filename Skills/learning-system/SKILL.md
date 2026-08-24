@@ -40,7 +40,7 @@ Trigger: "teach me X", "lesson", or "continue".
 1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
 2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s deterministic two-strand rotation; if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
 3. **`teach me X`:** in Stage-0 scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`deepseek-v4-flash`); the `review_gate` tool (`minimax-m3`) is **ingest-only**.
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`muse-spark-1.2-contributor`); the `review_gate` tool (`muse-spark-1.2-contributor`) is **ingest-only**.
 
 ## Review flow
 
@@ -67,7 +67,7 @@ Trigger: "ingest" with content to add (NOT a review).
 4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
 6. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
-7. Run the learning-review gate (`review_gate` tool, `minimax-m3`) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
+7. Run the learning-review gate (`review_gate` tool, `muse-spark-1.2-contributor`) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
 
 ### Handwritten notes
 
@@ -88,6 +88,6 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 ## Open WebUI adaptation
 
 - **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
-- **Review gate (ingest step 7):** call the `review_gate` tool, which invokes a SECOND model (`minimax-m3`) as the independent reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). See `OPENWEBUI.md` at the repo root for setup.
-- **Teaching verification:** call the `fact_check` tool (`deepseek-v4-flash`) for load-bearing claims before presenting them.
+- **Review gate (ingest step 7):** call the `review_gate` tool, which invokes a SECOND model (`muse-spark-1.2-contributor`) as the independent reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). See `OPENWEBUI.md` at the repo root for setup.
+- **Teaching verification:** call the `fact_check` tool (`muse-spark-1.2-contributor`) for load-bearing claims before presenting them.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

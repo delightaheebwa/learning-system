@@ -5,8 +5,8 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 2 Tools         review_gate (minimax-m3) + fact_check (deepseek-v4-flash)
-  - 1 Model preset  "Learning Tutor" on base model deepseek-v4-pro
+  - 2 Tools         review_gate (muse-spark-1.2-contributor) + fact_check (muse-spark-1.2-contributor)
+  - 1 Model preset  "Learning Tutor" on base model ox-alpha-free
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
 
 Usage:
@@ -41,19 +41,19 @@ TOOLS = [
         "id": "review_gate",
         "name": "review_gate",
         "file": "Skills/learning-review/openwebui/review_gate.py",
-        "valves": {"review_model": "minimax-m3"},
+        "valves": {"review_model": "muse-spark-1.2-contributor"},
     },
     {
         "id": "fact_check",
         "name": "fact_check",
         "file": "Skills/learning-review/openwebui/fact_check.py",
-        "valves": {"fact_check_model": "deepseek-v4-flash"},
+        "valves": {"fact_check_model": "muse-spark-1.2-contributor"},
     },
 ]
 
 MODEL = {
     "id": "learning-tutor",
-    "base_model_id": "deepseek-v4-pro",
+    "base_model_id": "ox-alpha-free",
     "name": "Learning Tutor",
     "description": "Delight's spaced-repetition learning system: swe/review, ingest, teach/lesson, and the Karpathy-style wiki.",
     "skillIds": ["learning-system", "learning-teach", "learning-review", "llm-wiki"],
@@ -80,14 +80,14 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
-- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (minimax-m3) on the wiki content you wrote, then commit + push
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (deepseek-v4-flash) before presenting them
+- "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (muse-spark-1.2-contributor) on the wiki content you wrote, then commit + push
+- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (muse-spark-1.2-contributor) before presenting them
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
 Models in this system:
-- You (tutor): deepseek-v4-pro
-- Teaching fact-check: fact_check tool → deepseek-v4-flash
-- Ingest quality gate: review_gate tool → minimax-m3"""
+- You (tutor): ox-alpha-free
+- Teaching fact-check: fact_check tool → muse-spark-1.2-contributor
+- Ingest quality gate: review_gate tool → muse-spark-1.2-contributor"""
 
 PROMPTS = [
     {
@@ -103,12 +103,12 @@ PROMPTS = [
     {
         "command": "ingest",
         "name": "Ingest Content",
-        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (minimax-m3), then commit and push.",
+        "content": "Ingest the following content into the learning system:\n{{content | textarea:placeholder=\"Paste the content or a URL to ingest\"}}\n\nLoad the learning-system skill (view_skill \"learning-system\"), follow its Ingest flow, read the wiki pages you wrote via the terminal, run the review_gate tool (muse-spark-1.2-contributor), then commit and push.",
     },
     {
         "command": "teach",
         "name": "Teach Me",
-        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (deepseek-v4-flash) before presenting them.",
+        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (muse-spark-1.2-contributor) before presenting them.",
     },
     {
         "command": "lesson",
