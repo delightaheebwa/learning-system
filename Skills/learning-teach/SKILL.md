@@ -1,11 +1,11 @@
 ---
 name: learning-teach
-description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), and live fact-checking via the fact_check tool (ox-alpha-free). Triggers: 'teach me X', 'lesson', 'continue'.
+description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations (Stage 0) mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back, automatic interleaving), live fact-checking via the fact_check tool (ox-alpha-free), and independent question-batch audits via the quiz_gate tool (ox-alpha-free). Triggers: 'teach me X', 'lesson', 'continue'.
 ---
 
 # Learning Teach
 
-The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, ox-alpha-free) is ingest-only; teaching verification uses the `fact_check` tool (`ox-alpha-free`).
+The teaching half of the learning system, running in Open WebUI on the tutor model (deepseek-v4-pro). The review gate (`review_gate`, ox-alpha-free) is ingest-only; teaching verification uses the `fact_check` tool (`ox-alpha-free`); question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool (`ox-alpha-free`) before the learner sees them.
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 
@@ -20,7 +20,9 @@ The teaching half of the learning system, running in Open WebUI on the tutor mod
 
 These rules stop the correct answer from being guessable by its presentation or
 by the distractors. The user must earn the answer by knowledge, never by noticing
-a pattern:
+a pattern. The rules are enforced two ways: you follow them while writing items,
+and the **`quiz_gate` tool (`ox-alpha-free`) independently audits every batch
+before the learner sees it** — see "Gate protocol" below.
 
 - **Balance option length and structure.** The correct option must not be the
   longest (or shortest) or the only one with extra detail. Rewrite options so
@@ -51,11 +53,30 @@ a pattern:
   answer be inferred from length/position/format alone, or is any distractor so
   weak it can be discarded without knowledge?" If yes, rewrite.
 
+### Gate protocol (quiz_gate — mandatory for probe AND end-of-lesson quiz)
+
+1. Write the full batch first: all MCQs plus one free-recall item per strand.
+2. Call `quiz_gate` (`ox-alpha-free`) with `questions_json` (each item: id,
+   type mcq|free_recall, question, options + correct_index for MCQs,
+   target_bloom), `purpose` ("probe" or "end-of-lesson quiz"), `concept`,
+   `bloom_levels`, and `source_excerpt`. The tool mechanically rejects
+   malformed batches (too-few options, out-of-range correct index, all-correct-
+   answers-in-one-slot) before any model call.
+3. On `ISSUES`: fix every high/medium item per `suggested_fix`, then re-run.
+   Max 2 cycles; if it still fails, show remaining flags to the user.
+4. Never present a batch that has not passed the gate. The gate audits quality
+   only and never sees learner answers.
+
 ## The loop (probe → plan → teach)
 
 ### 1. Probe (find the edge)
 - Read only relevant state: the target lesson's dependent concepts (grep `📚 Active Concepts.md`), recent learning records, glossary terms. Never the whole file.
-- Ask 3–8 graded multiple-choice questions (always offer "I don't know"), broad → narrow, binary-searching each dependency strand to the boundary. Stop per-strand once the edge is found; hard cap 3–8. Follow **Multiple-choice integrity** for every question.
+- Ask 3–8 graded multiple-choice questions (always offer "I don't know"), broad → narrow, binary-searching each dependency strand to the boundary. Stop per-strand once the edge is found; hard cap 3–8. Follow **Multiple-choice integrity** and pass the whole strand's batch through **quiz_gate** before showing any of it.
+- Include exactly **one free-recall item per strand** ("explain in your own words…") — unguessable by construction; grade it against the source excerpt.
+- **Withheld feedback:** do NOT reveal right/wrong during a strand. Present the full batch, collect answers, only then reveal results. Feedback mid-strand lets the learner adapt-guess and contaminates the measurement.
+- **Confidence tagging:** require a tag on every answer: `sure` / `hunch` / `no idea`. Scoring rule: correct+`sure` = knows · correct+`hunch` = **unknown** (lucky guess — run an isomorphic re-probe of that concept with structurally different wording before counting it) · anything else = not known.
+- **Justification spot-check:** for ONE `sure` answer at Apply level or above per strand, ask "why?" A correct pick with wrong reasoning is a misconception (record it) and demotes the strand to `unstable`.
+- End the probe with a **structured probe verdict** in the session note: per-strand boundary state (`solid` / `unstable` / `unknown`) plus evidence rows (question id, answer, confidence tag, follow-up result). Every judgment must cite its evidence.
 - If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2).
 
 ### 2. Plan (force the reasoning)
@@ -69,7 +90,7 @@ a pattern:
 - Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), call the `fact_check` tool (`ox-alpha-free`) with the claim + the source you're teaching from. It runs synchronously and returns PASS/ISSUES; if ISSUES, correct before continuing. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
 
 ### 4. Lesson end (advancement gate)
-- **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify"). For any multiple-choice item, follow **Multiple-choice integrity**.
+- **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify"). For any multiple-choice item, follow **Multiple-choice integrity** and pass the full batch through **quiz_gate** before presenting it. Confidence tagging applies here too: a correct `hunch` does not count as retrieval success — re-check that item with an isomorphic variant.
 - **Feynman explain-back:** the user explains the idea back in plain terms (one short paragraph). The lesson is not `done` until this passes.
 - **Fuzziness inference (no self-rating):** deduce from answers — "I don't know", hedging/vague phrasing, self-corrections, wrong answers on already-reviewed concepts, fluent explain-back but failed retrieval. High fuzziness → drop a rung (analogy, smaller step, re-probe). Low → climb.
 - Write a **Learning Record** (trigger 1) with the highest Bloom level demonstrated in **Evidence**; note a corrected misconception (trigger 3) when it happens.

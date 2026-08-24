@@ -40,7 +40,7 @@ Trigger: "teach me X", "lesson", or "continue".
 1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
 2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s deterministic two-strand rotation; if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
 3. **`teach me X`:** in Stage-0 scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`ox-alpha-free`); the `review_gate` tool (`ox-alpha-free`) is **ingest-only**.
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Teaching verification is done live with the `fact_check` tool (`ox-alpha-free`); question batches (probe and end-of-lesson quiz) are audited by the `quiz_gate` tool (`ox-alpha-free`); the `review_gate` tool (`ox-alpha-free`) is **ingest-only**.
 
 ## Review flow
 

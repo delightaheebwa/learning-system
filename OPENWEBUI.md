@@ -13,11 +13,12 @@ layer (skills, tools, model preset, prompts) that routes triggers.
 | Slash-command triggers | **Prompts** (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) | — |
 | Teaching fact-check (load-bearing claims) | `fact_check` **Tool** (synchronous, independent) | `ox-alpha-free` |
 | Ingest quality gate | `review_gate` **Tool** (independent) | `ox-alpha-free` |
+| Question-batch audit (probe + end-of-lesson quiz) | `quiz_gate` **Tool** (independent, pre-presentation) | `ox-alpha-free` |
 | Repo + git | **Open Terminal** sandbox `/home/user/learning-system` | — |
 | Web search / grounding | **Web Search** (SearXNG) | — |
 
 Model IDs: tutor `deepseek-v4-pro` · fact-check `ox-alpha-free` ·
-ingest gate `ox-alpha-free`. All lowercase.
+ingest gate `ox-alpha-free` · quiz audit `ox-alpha-free`. All lowercase.
 
 ## One-time setup
 
@@ -30,16 +31,17 @@ reproduced manually) creates everything in Open WebUI:
    content. These are loaded on demand by the model via `view_skill`, so they do
    not bloat every message.
 2. **Workspace → Tools** — create `review_gate` (paste
-   `Skills/learning-review/openwebui/review_gate.py`) and `fact_check` (paste
-   `Skills/learning-review/openwebui/fact_check.py`). Set each tool's Valves:
+   `Skills/learning-review/openwebui/review_gate.py`), `fact_check` (paste
+   `Skills/learning-review/openwebui/fact_check.py`), and `quiz_gate` (paste
+   `Skills/learning-review/openwebui/quiz_gate.py`). Set each tool's Valves:
    base URL (inside the Open WebUI container, `http://localhost:8080`), API key
-   (Admin → API Keys), and the review/fact-check model (`ox-alpha-free` /
-   `ox-alpha-free`).
+   (Admin → API Keys), and the review/fact-check/quiz model (`ox-alpha-free`
+   for all three).
 3. **Workspace → Models** — create the **Learning Tutor** preset on base model
    `deepseek-v4-pro`:
    - System prompt: see below.
    - Skills: bind all 4.
-   - Tools: enable `review_gate` and `fact_check`.
+   - Tools: enable `review_gate`, `fact_check`, and `quiz_gate`.
    - Capabilities: enable Web Search, Memory, Task Management.
 4. **Workspace → Prompts** — create the 6 slash commands below.
 5. **Open Terminal** — the repo is cloned at `/home/user/learning-system`; git
@@ -62,13 +64,16 @@ follow it — do not improvise the workflow):
   review_gate tool (ox-alpha-free) on the wiki content you wrote, then commit + push
 - "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow →
   view_skill "learning-teach"; verify load-bearing claims with the fact_check
-  tool (ox-alpha-free) before presenting them
+  tool (ox-alpha-free) before presenting them, and audit every question batch
+  (probe and end-of-lesson quiz) with the quiz_gate tool (ox-alpha-free)
+  before showing it to the learner
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
 Models in this system:
 - You (tutor): deepseek-v4-pro
 - Teaching fact-check: fact_check tool → ox-alpha-free
 - Ingest quality gate: review_gate tool → ox-alpha-free
+- Question-batch audit: quiz_gate tool → ox-alpha-free
 ```
 
 ### Prompts
@@ -101,7 +106,8 @@ Teach me about: {{topic | text:placeholder="Topic to learn"}}
 
 Load the learning-teach skill (view_skill "learning-teach"), then run the
 probe → plan → teach loop. Verify load-bearing claims with the fact_check tool
-(ox-alpha-free) before presenting them.
+(ox-alpha-free) before presenting them, and audit every question batch with the
+quiz_gate tool (ox-alpha-free) before showing it.
 ```
 
 `/lesson`

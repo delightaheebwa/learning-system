@@ -5,7 +5,8 @@ setup_openwebui — one-shot installer for the Learning System in Open WebUI.
 Creates (or updates) everything the system needs, using the Open WebUI REST API:
 
   - 4 Skills        from Skills/*/SKILL.md
-  - 2 Tools         review_gate (ox-alpha-free) + fact_check (ox-alpha-free)
+  - 3 Tools         review_gate (ox-alpha-free) + fact_check (ox-alpha-free)
+                    + quiz_gate (ox-alpha-free)
   - 1 Model preset  "Learning Tutor" on base model deepseek-v4-pro
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
 
@@ -49,6 +50,12 @@ TOOLS = [
         "file": "Skills/learning-review/openwebui/fact_check.py",
         "valves": {"fact_check_model": "ox-alpha-free"},
     },
+    {
+        "id": "quiz_gate",
+        "name": "quiz_gate",
+        "file": "Skills/learning-review/openwebui/quiz_gate.py",
+        "valves": {"quiz_model": "ox-alpha-free"},
+    },
 ]
 
 MODEL = {
@@ -57,7 +64,7 @@ MODEL = {
     "name": "Learning Tutor",
     "description": "Delight's spaced-repetition learning system: swe/review, ingest, teach/lesson, and the Karpathy-style wiki.",
     "skillIds": ["learning-system", "learning-teach", "learning-review", "llm-wiki"],
-    "toolIds": ["review_gate", "fact_check"],
+    "toolIds": ["review_gate", "fact_check", "quiz_gate"],
     "capabilities": {
         "file_context": True,
         "file_upload": True,
@@ -81,13 +88,14 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise the workflow):
 - "swe" / "review" → review flow → view_skill "learning-system"
 - "ingest <content>" → ingest flow → view_skill "learning-system", then run the review_gate tool (ox-alpha-free) on the wiki content you wrote, then commit + push
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them
+- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them, and audit every question batch (probe and end-of-lesson quiz) with the quiz_gate tool (ox-alpha-free) before showing it to the learner
 - wiki work (Ingest/queries/lint) → view_skill "llm-wiki"
 
 Models in this system:
 - You (tutor): deepseek-v4-pro
 - Teaching fact-check: fact_check tool → ox-alpha-free
-- Ingest quality gate: review_gate tool → ox-alpha-free"""
+- Ingest quality gate: review_gate tool → ox-alpha-free
+- Question-batch audit: quiz_gate tool → ox-alpha-free"""
 
 PROMPTS = [
     {
@@ -108,7 +116,7 @@ PROMPTS = [
     {
         "command": "teach",
         "name": "Teach Me",
-        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them.",
+        "content": "Teach me about: {{topic | text:placeholder=\"Topic to learn\"}}\n\nLoad the learning-teach skill (view_skill \"learning-teach\"), then run the probe → plan → teach loop. Verify load-bearing claims with the fact_check tool (ox-alpha-free) before presenting them, and audit every question batch with the quiz_gate tool (ox-alpha-free) before showing it.",
     },
     {
         "command": "lesson",

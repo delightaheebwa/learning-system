@@ -21,10 +21,10 @@ Learning System/          live state + history
 Knowledge Wiki/           curated wiki (raw/sources, raw/assets, wiki/, index.md, log.md, AGENTS.md)
 Skills/                   operating rules, imported into Open WebUI as Skills
   learning-system/SKILL.md        review + ingest flows
-  learning-teach/SKILL.md         probe → plan → teach loop (+ fact_check tool)
+  learning-teach/SKILL.md         probe → plan → teach loop (+ fact_check, quiz_gate tools)
   learning-review/SKILL.md        ingest quality gate (review_gate tool)
   llm-wiki/SKILL.md               wiki building/maintenance rules
-  learning-review/openwebui/      review_gate.py (ox-alpha-free) · fact_check.py (ox-alpha-free) · templates/
+  learning-review/openwebui/      review_gate.py (ox-alpha-free) · fact_check.py (ox-alpha-free) · quiz_gate.py (ox-alpha-free) · templates/
 ```
 
 ## Setup in Open WebUI (one time)
@@ -35,8 +35,8 @@ Run the installer, then start chatting:
 OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
-That creates/updates: the 4 Skills, the `review_gate` + `fact_check` Tools
-(with model Valves `ox-alpha-free` / `ox-alpha-free`), the **Learning Tutor**
+That creates/updates: the 4 Skills, the `review_gate` + `fact_check` + `quiz_gate` Tools
+(with model Valves `ox-alpha-free`), the **Learning Tutor**
 Model preset on `deepseek-v4-pro`, and the 6 Prompts (`/swe`, `/review`,
 `/ingest`, `/teach`, `/lesson`, `/continue`). See `OPENWEBUI.md` for the full
 walkthrough, the system prompt, and the prompt texts.
