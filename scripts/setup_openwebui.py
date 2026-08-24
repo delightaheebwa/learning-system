@@ -10,10 +10,12 @@ Creates (or updates) everything the system needs, using the Open WebUI REST API:
   - 6 Prompts       /swe /review /ingest /teach /lesson /continue
 
 Models are configured AFTER install in the Open WebUI UI (one field per task —
-see OPENWEBUI.md). The values below are BOOTSTRAP DEFAULTS applied at install
-time only; rerunning this script re-applies them and will overwrite any UI
-hot-swaps. Use the --*-model flags or env vars to set different bootstrap
-values without editing this file.
+see OPENWEBUI.md). The values below are FIRST-INSTALL BOOTSTRAP defaults only:
+the installer reads each tool's current model valve and the Learning Tutor's
+current base model first, and PRESERVES any non-empty value already set in the
+UI. Re-running this script (e.g. after editing a skill) therefore never resets
+your models — change models exclusively in the UI. The --*-model flags / env
+vars only matter on a fresh install or when a valve is empty.
 
 Usage:
   OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py [--base-url http://localhost:3000]
@@ -174,6 +176,9 @@ class Client:
     def post(self, path, payload, conflict_marker=""):
         return self._request("POST", path, payload, conflict_marker)
 
+    def get(self, path):
+        return self._request("GET", path)
+
 
 def parse_skill_md(path):
     """Return (id, name, description, content) from a SKILL.md file."""
@@ -202,10 +207,10 @@ def main() -> int:
     ap.add_argument("--tool-base-url", default=os.environ.get("OPENWEBUI_TOOL_BASE_URL", "http://localhost:8080"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
     ap.add_argument(TUTOR_FLAG, default=os.environ.get(TUTOR_ENV, TUTOR_BOOTSTRAP_DEFAULT),
-                    help="bootstrap tutor base model (after install, change in UI: Learning Tutor preset)")
+                    help="first-install bootstrap tutor base model (existing UI value is preserved)")
     for t in TOOLS:
         ap.add_argument(t["flag"], default=os.environ.get(t["env"], t["bootstrap_default"]),
-                        help=f"bootstrap model for {t['id']} (after install, change in UI: tool Valves)")
+                        help=f"first-install bootstrap model for {t['id']} (existing UI valve is preserved)")
     args = ap.parse_args()
 
     if not args.api_key:
@@ -251,16 +256,37 @@ def main() -> int:
         elif status == 400:
             status2, _ = c.post(f"/api/v1/tools/id/{t['id']}/update", payload)
             print(f"  ~ updated tool {t['id']}" if status2 == 200 else f"  ! failed to update {t['id']}")
-        # valves (bootstrap model values — after install, change models in the UI)
-        valves = {**tool_valves_common, t["valve_key"]: tool_model_by_id[t["id"]]}
+
+        # Valves: NEVER overwrite a model the user already configured (UI is the
+        # source of truth after first install). Only fill in missing/empty values.
+        existing = {}
+        estatus, eresp = c.get(f"/api/v1/tools/id/{t['id']}/valves")
+        if estatus == 200 and isinstance(eresp, dict):
+            existing = eresp
+        valves = {**tool_valves_common}
+        model_valve = (existing.get(t["valve_key"]) or "").strip() if isinstance(existing.get(t["valve_key"]), str) else ""
+        if model_valve:
+            valves[t["valve_key"]] = model_valve
+            print(f"  = preserved {t['id']}.{t['valve_key']} = {model_valve} (set in UI)")
+        else:
+            valves[t["valve_key"]] = tool_model_by_id[t["id"]]
         vstatus, vresp = c.post(f"/api/v1/tools/id/{t['id']}/valves/update", valves)
-        if vresp is not None:
+        if vresp is not None and not model_valve:
             print(f"  + set valves on {t['id']} ({t['valve_key']}={valves[t['valve_key']]})")
 
     print("== Model preset ==")
+    # Preserve an already-configured tutor base model (UI is the source of truth).
+    tutor_base = args.tutor_model
+    mstatus, mresp = c.get(f"/api/v1/models/model?id={MODEL['id']}")
+    if mstatus == 200 and isinstance(mresp, dict):
+        current = ((mresp.get("base_model_id") or "").strip()
+                   or ((mresp.get("info") or {}).get("base_model_id") or "").strip())
+        if current:
+            tutor_base = current
+            print(f"  = preserved {MODEL['id']} base model = {current} (set in UI)")
     payload = {
         "id": MODEL["id"],
-        "base_model_id": args.tutor_model,
+        "base_model_id": tutor_base,
         "name": MODEL["name"],
         "params": {"system": SYSTEM_PROMPT},
         "meta": {
@@ -275,10 +301,10 @@ def main() -> int:
     }
     status, resp = c.post("/api/v1/models/create", payload, conflict_marker="MODEL_ID_TAKEN")
     if resp is not None:
-        print(f"  + created model {MODEL['id']}")
+        print(f"  + created model {MODEL['id']} (base: {tutor_base})")
     elif status == 400:
         status2, _ = c.post("/api/v1/models/model/update", payload)
-        print(f"  ~ updated model {MODEL['id']}" if status2 == 200 else f"  ! failed to update model {MODEL['id']}")
+        print(f"  ~ updated model {MODEL['id']} (base preserved: {tutor_base})" if status2 == 200 else f"  ! failed to update model {MODEL['id']}")
 
     print("== Prompts ==")
     for p in PROMPTS:
@@ -291,7 +317,8 @@ def main() -> int:
             print(f"  ~ updated prompt /{p['command']}" if status2 == 200 else f"  ! failed to update /{p['command']}")
 
     print("\nDone. Verify in Open WebUI → Workspace → Models → Learning Tutor.")
-    print("Models are now configured in the UI (one field per task) — see OPENWEBUI.md.")
+    print("Models are configured in the UI only (one field per task) — see OPENWEBUI.md.")
+    print("Re-running this installer preserves your UI-chosen models.")
     return 0
 
 

@@ -36,13 +36,12 @@ OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
 That creates/updates: the 4 Skills, the `review_gate` + `fact_check` + `quiz_gate`
-Tools (with bootstrap model Valves), the **Learning Tutor** Model preset, and
-the 6 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`).
+Tools, the **Learning Tutor** Model preset, and the 6 Prompts (`/swe`, `/review`,
+`/ingest`, `/teach`, `/lesson`, `/continue`).
 After install, models are changed in **one place each in the Open WebUI UI** —
-see `OPENWEBUI.md`. The installer's model values are bootstrap defaults only;
-re-running it re-applies them (use `--tutor-model` / `--review-model` /
-`--fact-check-model` / `--quiz-model` to override). See `OPENWEBUI.md` for the full
-walkthrough, the system prompt, and the prompt texts.
+see `OPENWEBUI.md`. The installer only applies model values on a **first
+install** (or when empty); re-running it preserves your UI-chosen models.
+See `OPENWEBUI.md` for the full walkthrough, the system prompt, and the prompt texts.
 
 The repo must also be present in the Open Terminal workspace at
 `/home/user/learning-system` (the model's file workspace) with git push wired —

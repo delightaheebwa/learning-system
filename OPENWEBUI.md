@@ -29,12 +29,11 @@ Rules:
 - The tutor model is whatever the **Learning Tutor preset's base model** is set to.
 - Each gate/fact-check model is whatever that **tool's Valve** is set to.
 - Gates/fact-check must use a model *different* from the tutor so the tutor never grades its own output.
-- `scripts/setup_openwebui.py` only applies **bootstrap defaults** at install
-  time (`--tutor-model`, `--review-model`, `--fact-check-model`,
-  `--quiz-model` flags / `OPENWEBUI_*_MODEL` env vars override them).
-  Re-running the installer re-applies those defaults and will overwrite UI
-  hot-swaps — so treat an installer re-run as "reset models to bootstrap", or
-  pass flags matching your current UI values.
+- `scripts/setup_openwebui.py` applies model values **only on first install** (or when a
+  valve/base-model is empty). It reads each tool's current valve and the preset's current
+  base model first and preserves any value already set in the UI — so re-running it after a
+  skill edit never resets your models. The `--tutor-model` / `--review-model` /
+  `--fact-check-model` / `--quiz-model` flags exist only for fresh installs.
 
 ## One-time setup
 
@@ -151,10 +150,9 @@ Continue the current lesson where we left off. Load the learning-teach skill
 
 ## Maintenance
 
-- **Model changes:** UI only (see "Models: one field per task" above). No repo edits, no installer re-run.
+- **Model changes:** UI only (see "Models: one field per task" above). No repo edits, no installer run, no flags.
 - The repo is canonical. After editing any `Skills/*/SKILL.md`, re-import the
   changed skill in Open WebUI (or re-run the setup script) — skills do not
-  auto-sync from the repo.
+  auto-sync from the repo. Re-running the script is safe: it preserves your UI-chosen models.
 - Re-run the setup script after adding/removing prompts, tools, or changing the
-  system prompt. Remember it re-applies bootstrap model defaults (pass the
-  `--*-model` flags to preserve your current choices).
+  system prompt.
