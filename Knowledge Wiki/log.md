@@ -525,3 +525,8 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Results:** 3 pass / 2 fail. find FAIL 3rd time (glob-quoting execution-movie still inverted; retry 08-28) · Bash Quoting PASS (mistake → review, 1 recall; advanced 30d) · Shell Redirections PASS + first Feynman ✓ (14d) · SSH PASS 4th straight, mastery 1.00 (14d) · Process Substitution FAIL ($() text vs <() path conflation; new mistake row, retry 08-28).
 - **Housekeeping:** folded uncommitted partial-session records from earlier today (Bash Quoting + Wildcards passes, Built-ins mistake row) into this persistence pass; surfaced Attempts.json xargs last_reviewed corruption + scheduler-drift cohort for future queues.
 - **Writes:** Active Concepts 5 rows synced from Attempts.json; 🧯 Mistakes.md (find rescheduled, Bash Quoting → review, +Process Substitution row); session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-25.md`.
+
+## 2026-08-25 (review cont.) — SWE gap-fill round (3 extra slots)
+- **Queue:** sed (oldest outstanding mistake retry), Shebang & Script Execution, Git commit message conventions — all from the scheduler-drift backlog (Make cluster deprioritized with C-project archive).
+- **Results:** 2 pass / 1 fail. sed PASS (mistake → review, retries 1; advanced 14d) · Shebang FAIL (kernel-executes vs bash-reads route split missing; new mistake row, retry 08-28) · Git conventions PASS (advanced to 14d slot; imperative-mood + scannability framing added).
+- **Writes:** Active Concepts 3 rows synced; 🧯 Mistakes.md (sed → review, +Shebang row); gap-fill section appended to the 2026-08-25 session note.

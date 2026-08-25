@@ -27,3 +27,23 @@ Interleaving: 5 concepts shuffled, 3 discriminative / 2 definitional (single sou
 - Scheduler-drift cohort still pending (fd, jq, curl, Parameter Expansion, Shebang, Git-commit conventions, Make cluster) — fold into upcoming queues.
 - Data bug: Attempts.json `xargs.last_reviewed` holds corrupted value "`) & Pipeline Composition" (string spill from the Pipes key) — needs repair.
 - Feynman explain-back: Redirections ✓ cleared today; remaining concept-type items still owe explain-backs.
+
+## Gap-fill round (same day, learner-requested continuation)
+
+Hypothetical: had the morning's 3 passes committed earlier, these 3 would have filled the queue — pulled from the scheduler-drift backlog.
+
+| # | Concept | Q Type | Result | New schedule |
+| --- | --- | --- | --- | --- |
+| 6 | sed (Stream Editor) · mistake retry #1 | definitional | ✅ PASS — mistake → review | 2026-09-08 |
+| 7 | Shebang & Script Execution | definitional | ❌ FAIL — two-route model missing | retry 2026-08-28 |
+| 8 | Git commit message conventions | discriminative | ✅ PASS | 2026-09-08 |
+
+Interleaving: 3 concepts, 2 definitional / 1 discriminative.
+
+### Coaching notes (gap-fill)
+
+- **sed:** /g semantics finally articulated correctly ('all occurrences IN THE LINE'). One more correct recall graduates the mistake.
+- **Shebang:** structural gap — didn't separate kernel-executes-file (./script: x bit, shebang = interpreter path) from bash-reads-file (bash script: r suffices, shebang = comment). Correction logged; retry 08-28 alongside find + Process Substitution + Shell Built-ins (busy mistake day).
+- **Git conventions:** recognition solid; nudged from specificity to machine-scannability + imperative mood. Still owes an applied check (writing his own subject line) at next review.
+
+Backlog remaining after this round: jq, curl, fd, Parameter Expansion, xargs, Shell Built-ins & Process Isolation (+ Make cluster, deprioritized with C-project archive).
