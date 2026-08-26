@@ -530,3 +530,9 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Queue:** sed (oldest outstanding mistake retry), Shebang & Script Execution, Git commit message conventions — all from the scheduler-drift backlog (Make cluster deprioritized with C-project archive).
 - **Results:** 2 pass / 1 fail. sed PASS (mistake → review, retries 1; advanced 14d) · Shebang FAIL (kernel-executes vs bash-reads route split missing; new mistake row, retry 08-28) · Git conventions PASS (advanced to 14d slot; imperative-mood + scannability framing added).
 - **Writes:** Active Concepts 3 rows synced; 🧯 Mistakes.md (sed → review, +Shebang row); gap-fill section appended to the 2026-08-25 session note.
+
+## 2026-08-26 (review) — SWE spaced-repetition review (5 slots)
+- **Mistake retry:** What is the Shell PASS — `#`=root / `$`=normal user privilege decode corrected (mistake → review, 1 correct recall; advanced 14d → next 2026-09-09).
+- **Due reviews (4):** Shell Positional & Special Parameters PASS (unquoted $@ word-splits; quote "$@"; advanced 7d → 2026-09-02) · jq PASS (jq filter must be one quoted arg; unquoted pipe hijacked by shell; advanced 7d → 2026-09-02) · Shell Built-ins & Process Isolation PASS (cd mutates shell state, child can't push cwd back via memory isolation; advanced 7d → 14d → 2026-09-09) · fd FAIL (recalled find-alternative identity but missed .gitignore-respecting default; new mistake row, retry 2026-08-29).
+- **Writes:** Active Concepts 5 rows synced from Attempts.json; 🧯 Mistakes.md (Shell → review, +fd row); session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-26.md`.
+- **Surfaced:** Feynman explain-back debt on all concept items; Source-adjacency guard largely unavoidable (6 of 7 due concepts share course-shell source).
