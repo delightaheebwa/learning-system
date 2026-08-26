@@ -35,14 +35,15 @@ Sessions die when the running conversation outgrows the model's context window: 
 - `Learning System/Sessions/`, `Learning System/Reviews/`, `Learning System/Concept Notes/`, `Learning System/Archive/` — writes land here.
 - `Learning System/MISSION.md`, `Learning System/CURRICULUM.md`, `Learning System/GLOSSARY.md`, `Learning System/RESOURCES.md` — mission, curriculum, glossary, curated readings.
 
-## Teaching flow (delegation)
+## Teaching flow (delegation) — Scout → Tutor → Clerk
 
-Trigger: "teach me X", "lesson", or "continue".
+Trigger: "teach me X", "lesson", or "continue". The pipeline runs in the **same chat**, switching presets.
 
-1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic).
+0. **Scout (if new lesson):** if no `Lessons/Lesson — <slug> — *.md` exists for the requested topic/lesson and no `.tmp/context-<chat_id>-<slug>.json` (7-day TTL) is present, switch to the **Scout** preset first. Scout reads `MISSION.md`, `CURRICULUM.md`, `RESOURCES.md`, relevant Active Concepts rows, and the curriculum source, then writes `Learning System/.tmp/context-<chat_id>-<slug>.json` + posts `SCOUT DIGEST:` in chat. The Tutor's gate Pipe requires this digest for new lessons (resume of an existing `Lessons/` file bypasses the check).
+1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic). If resuming (`Lessons/` file exists), the lesson file + last `Sessions/` note are the source of truth — no Scout digest needed.
 2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s current mission (strictly sequential order); if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
-3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Active Concepts + wiki, and surface the "switching focus?" question (mirrors the ingest flow).
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Claim verification runs via batched fact-check subagent tasks; question batches (probe and end-of-lesson quiz) are audited by quiz-audit subagent tasks; any wiki content or Active Concepts rows the lesson produces are gated by a review-gate subagent task at lesson end (see `Skills/learning-review/SKILL.md`).
+3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Pending Ingest for Clerk, and surface the "switching focus?" question.
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Claim verification runs via **foreground** `GATE:fact_check` envelopes (gate_pipe); question batches are audited via `GATE:quiz_audit` envelopes before showing. The Tutor **does not** write wiki pages/Active Concepts rows — it writes `Learning System/Core/Pending Ingest.json` and hands off to **Clerk** at lesson end (see `learning-teach`).
 
 ## Review flow
 
@@ -61,17 +62,18 @@ Trigger: "swe", "review", or a learning request.
 
 Intervals (type-aware, from `mastery.py`): memory [0d,1d,3d,7d,14d,30d,60d] · concept [3d,7d,14d,30d] · procedure [3d,7d,14d] · design [14d,28d]. Mastery (advisory): memory/procedure ≥0.9 quantitative; concept/design require Feynman pass — display mastery 0.00–0.80 etc. alongside Held/Advanced for one review cycle, then gate becomes blocking.
 
-## Ingest flow
+## Ingest flow — via Clerk (handoffs from Tutor and standalone `/ingest`)
 
-Trigger: "ingest" with content to add (NOT a review).
+Trigger: "ingest" with content to add (NOT a review). **Run on the Clerk preset** (reads `Pending Ingest.json` when the ingest originates from a lesson). Standalone `/ingest` also routes to Clerk.
 
-1. Extract concepts from the content.
-2. Overlap check — ONE bundle call with an alternation regex over candidate keywords: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@kw1|kw2|kw3"` (or `@^### ` to pull the full track section). No separate grep/read calls per keyword.
-3. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest). Read only the target page's relevant section (headings first via `@^## `).
-4. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
-5. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
-6. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
-7. Run the learning-review gate (ONE review-gate subagent task — the independent reviewer on Open WebUI's subagent default model) on the wiki content you just wrote (you already have it from your own spec — do NOT re-read it from disk). Pass the source URL and concept names too. An independent review flags accuracy/clarity/completeness issues with severity; you fix them (one more apply call); max 2 cycles. Do not finalize the ingest until the gate reports.
+1. If `Learning System/Core/Pending Ingest.json` exists (lesson handoff), read it — it contains `{lesson_file, session_file, concepts, source_url|source_file, created_at}`. Use `lesson_file` as the source of content to ingest.
+2. Otherwise extract concepts from the supplied content.
+3. Overlap check — ONE bundle call with an alternation regex over candidate keywords: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@kw1|kw2|kw3"` (or `@^### ` to pull the full track section). No separate grep/read calls per keyword.
+4. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest). Read only the target page's relevant section (headings first via `@^## `).
+5. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
+6. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
+7. Persist EVERYTHING in one apply call (`ops.py apply` heredoc): wiki page(s), index.md update, log.md entry, session note. Do not interleave write_file calls between reasoning steps.
+8. Dispatch ONE **foreground** `GATE:review` envelope via `delegate_task` on the wiki content you just wrote (you already have it from your own writes — do NOT re-read). The gate Pipe (`gate_pipe.py`) validates the receipt before the Clerk's final message renders. Pass `lesson_ref` when from a lesson. Fix flagged issues (one more apply call); max 2 cycles; on success delete the consumed `.tmp/context-*.json` digest and clear `Pending Ingest.json`, then commit + push.
 
 ### Handwritten notes
 
@@ -92,6 +94,8 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 ## Open WebUI adaptation
 
 - **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
-- **Review gate (ingest + lesson-end step):** dispatch ONE review-gate subagent task (`delegate_task`, fixed template in `Skills/learning-review/SKILL.md`), which runs on a SECOND model (Open WebUI's subagent default model) as the reviewer. Pass the source URL, concept names, and the wiki content (read via the terminal). Applies to standalone ingests AND to wiki/concept-row output produced at the end of a teaching lesson. See `OPENWEBUI.md` at the repo root for setup.
-- **Teaching verification:** batch load-bearing claims into fact-check subagent tasks (template in `Skills/learning-teach/SKILL.md`) before presenting them; fold verdicts in before continuing.
+- **Pipeline presets:** `Scout` → `Tutor` → `Clerk` in the same chat (switch preset per message). Scout writes the ephemeral digest; Tutor teaches; Clerk ingests. See `OPENWEBUI.md`.
+- **Gate Pipe:** `Skills/learning-review/openwebui/gate_pipe.py` (Filter, inlet/outlet) blocks Tutor/Clerk output without valid foreground `GATE:*` receipts and enforces Scout digest for new lessons (7-day TTL). Fixed verifier wording lives in global `subagents.system_prompt` — send data only.
+- **Review gate (Clerk):** dispatch ONE foreground `GATE:review` envelope on the wiki content you wrote. Applies to handoffs from Tutor and standalone `/ingest`.
+- **Teaching verification (Tutor):** batch load-bearing claims into foreground `GATE:fact_check` envelopes before presenting them; fold verdicts in before continuing.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

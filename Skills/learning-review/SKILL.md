@@ -17,12 +17,15 @@ Lesson files under `Learning System/Lessons/`, learning records, and glossary en
 ## Config
 
 - Reviewer model: Open WebUI's **subagent default model** (Settings → subagents) — always different from the tutor model so the tutor never reviews its own output. To change models, edit that one field in Open WebUI — see the model-per-task table in `OPENWEBUI.md`.
-- The gate owns the review prompt below (fixed template). Do not weaken the reviewer by editing the template or switching the subagent model to soften reviews.
+- Fixed verifier prompts now live in the global `subagents.system_prompt` (keyed by `GATE:`), not in this file. The envelope schemas are in `Skills/learning-review/openwebui/gate_schema.py`; the gate Pipe (`gate_pipe.py`) blocks Clerk output without a receipt. Do not bypass by editing the sysprompt.
+- This file's template below is the canonical reference for `GATE:review`; the live prompt is the `GATE:review` section of `subagents.system_prompt`.
 
-### Review prompt template (fixed)
+### Review prompt template (canonical — lives in subagents.system_prompt as GATE:review)
 
 ```
-# Learning System Review Gate — Review Prompt (fixed template)
+# GATE:review — same as below; subagent fetches SOURCE itself and Pipe checks substring
+# See gate_schema.GATEReviewEnvelope: {gate:"review", concepts[], wiki_content, source_url|source_file, lesson_ref, pass_number}
+# Verdict: {"verdict":"PASS|ISSUES","issues":[{"severity":"high|medium|low","location":"...","issue":"..."}]}
 
 You are an independent, critical reviewer for a spaced-repetition learning system.
 Your job is to catch problems in ingest output. You are a critic, not a rewrite bot:
@@ -30,35 +33,16 @@ never rewrite content, only flag issues with severity.
 
 ## Inputs
 
-- SOURCE URL: <stable source URL>
-- SOURCE CONTENT: <text fetched from the URL; if it could not be fetched, say so
-  and review for internal consistency only>
+- SOURCE URL: <stable source URL>  OR  SOURCE FILE: <repo path>
+- SOURCE CONTENT: <fetched; if empty, review for internal consistency>
 - CONCEPTS: <comma-separated concept names>
-- WIKI CONTENT (the ingest output being reviewed): <full text>
+- WIKI CONTENT: <full text>
 - PASS (cycle): <1 or 2>
+- LESSON REF: <Lessons/...md when from Tutor handoff>
 
-## Scope
-
-Review ONLY:
-1. The wiki content above.
-2. The Active Concepts insight rows / question seeds derived from this ingest.
-
-Mechanical date updates and review session notes are out of scope.
-
-## What to check
-
-1. **Accuracy / correctness** — claims that contradict the source content, wrong mechanisms, wrong formulas or definitions, invented facts.
-2. **Clarity** — phrasing that would mislead a learner or is so ambiguous it fails to teach.
-3. **Completeness** — load-bearing points from the source that were dropped or misrepresented.
-
-## Rules
-
-- Only flag issues worth fixing. High/medium severity only; low-severity nits get one combined note.
-- Each issue: severity (high | medium | low), location (file/section), issue (specific and actionable).
-- Material in the wiki content that is NOT present in the source must be flagged as a scope problem unless a scope note explains the addition.
-- Output ONLY valid JSON — a single JSON object, no prose before or after:
-  {"verdict": "PASS" | "ISSUES", "issues": [{"severity": "high|medium|low", "location": "...", "issue": "..."}]}
-- "verdict": "PASS" only when there are no high/medium issues.
+## Scope / What to check / Rules — as before:
+Review ONLY wiki content + Active Concepts rows; check accuracy/correctness, clarity, completeness;
+high/medium only; output ONLY valid JSON {"verdict":"PASS|ISSUES","issues":[...]}, PASS only when no high/medium.
 ```
 
 ## Steps
@@ -70,16 +54,15 @@ From the session note and Active Concepts changes:
 - **New concept** (no overlap existed) → run BOTH gates (quality + factual).
 - **Enrichment** (existing concept updated) → quality gate only.
 
-### 2. Quality gate (independent review subagent)
+### 2. Quality gate — foreground GATE:review envelope (Pipe-enforced)
 
-Dispatch ONE review-gate subagent task (`delegate_task`) built from the fixed template above:
+Dispatch ONE **foreground** `GATE:review` envelope via `delegate_task` (`background:false`) validated by `gate_pipe.py`:
 
-- `SOURCE URL` — the stable URL the ingest came from (raw GitHub, course page — never a workspace path). Fetch the source content first (terminal/web) and include it; a dead URL means abort the gate with an error — no verdict.
-- `CONCEPTS` — comma-separated concept names.
-- `WIKI CONTENT` — the full text of the wiki page(s) you wrote (you already have it from your own writes — do NOT re-read from disk).
-- `PASS (cycle)` — the cycle number (1 or 2).
+```json
+{"gate":"review","concepts":["Concept"],"wiki_content":"...","source_url":"https://...","lesson_ref":"Lessons/...md","pass_number":1}
+```
 
-The subagent runs on Open WebUI's subagent default model as the independent reviewer. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
+Use `source_file` instead of `source_url` when the source is a repo file. The Pipe verifies the child chat receipt (foreground, schema, verdict coverage) before the Clerk's final message renders; blocked drafts show `⛔ BLOCKED (<code>)` with fix instructions. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
 
 ### 3. Factual gate (new concepts only, same session)
 
@@ -109,8 +92,9 @@ Tell the user concisely:
 - Reviewer is a critic, not a rewrite bot.
 - Hard stop after 2 cycles. Remaining flags go to the user, always.
 - Factual gate runs on new concepts only — enrichments have survived at least one human review.
-- Never skip the gates silently. If a gate can't run (e.g. the subagent task fails), say so and surface what was unverified.
-- Never run this gate on lesson files, learning records, or glossary promotions. Those use batched fact-check subagent tasks via `learning-teach`, not this gate; the two verification paths are deliberately separate.
+- Never skip the gates silently. If a gate can't run (e.g. the subagent task fails), say so and surface what was unverified — the Pipe's `⛔ BLOCKED` is the enforcement, not a silent skip.
+- The Pipe caps retries at 2 per user turn; after cap the Clerk's output shows `⛔ Withheld` and requires a manual fix.
+- Never run this gate on lesson files, learning records, or glossary promotions. Those use foreground `GATE:fact_check` envelopes via `learning-teach`, not this gate; the two verification paths are deliberately separate.
 
 ## Manual trigger
 

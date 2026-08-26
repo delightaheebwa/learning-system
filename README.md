@@ -12,7 +12,7 @@ a Model preset, and Prompts) with the repo as the source of truth.
 
 ```
 OPENWEBUI.md              setup + operating guide (read this first)
-scripts/setup_openwebui.py  one-shot installer: skills, tools, model preset, prompts
+scripts/setup_openwebui.py  one-shot installer: skills, gate Pipe filter, model presets, prompts, subagent system prompt
 Learning System/          live state + history
   Core/                     💡 Learning Profile, 📚 Active Concepts (the review schedule),
                             📦 Concept Archive, templates
@@ -35,12 +35,8 @@ Run the installer, then start chatting:
 OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
-That creates/updates: the 4 Skills, the **Learning Tutor** Model preset, and the
-6 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`).
-Verification gates run as background subagent tasks (`delegate_task`) on Open
-WebUI's **subagent default model** — set that to a model different from the
-tutor. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools are dormant;
-do not bind them to the preset.)
+That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 6 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`).
+Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; the verifier runs on Open WebUI's **subagent default model** — set that to a model different from the tutor. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools are dormant; do not bind them.)
 After install, models are changed in **one place each in the Open WebUI UI** —
 see `OPENWEBUI.md`. The installer only applies model values on a **first
 install** (or when empty); re-running it preserves your UI-chosen models.
