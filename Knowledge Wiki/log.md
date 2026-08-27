@@ -536,3 +536,11 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Due reviews (4):** Shell Positional & Special Parameters PASS (unquoted $@ word-splits; quote "$@"; advanced 7d → 2026-09-02) · jq PASS (jq filter must be one quoted arg; unquoted pipe hijacked by shell; advanced 7d → 2026-09-02) · Shell Built-ins & Process Isolation PASS (cd mutates shell state, child can't push cwd back via memory isolation; advanced 7d → 14d → 2026-09-09) · fd FAIL (recalled find-alternative identity but missed .gitignore-respecting default; new mistake row, retry 2026-08-29).
 - **Writes:** Active Concepts 5 rows synced from Attempts.json; 🧯 Mistakes.md (Shell → review, +fd row); session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-26.md`.
 - **Surfaced:** Feynman explain-back debt on all concept items; Source-adjacency guard largely unavoidable (6 of 7 due concepts share course-shell source).
+
+## 2026-08-27 (review) — SWE spaced-repetition review (5 slots)
+- **Priority-1 mistakes due:** none (all `active` mistakes retry 2026-08-28; `review` rows are September). 5 slots = due reviews.
+- **Queue:** xargs · Environment Variables (Shell) · curl (Web Fetching) · Parameter Expansion · less (Pager) — shuffled, 2 discriminative / 3 definitional, Make cluster excluded per 2026-08-25 backlog.
+- **Results:** 3 pass / 2 fail. Environment Variables PASS (export→children; advanced 7d → 2026-09-03) · curl PASS (curl|sh hazard; advanced 14d → 2026-09-10) · less PASS (lazy read; row seeded into Attempts.json, advanced 14d → 2026-09-03) · xargs FAIL (`-0` flag placement + missed NUL guarantee; retry 2026-08-30) · Parameter Expansion FAIL (`##!.txt` "adds" extension misconception; retry 2026-08-30).
+- **Housekeeping:** seeded less (Pager) into Attempts.json (ingested 08-24 but never seeded). Surfaced 5 active mistakes due 2026-08-28 (find, Built-ins, Process Substitution, Shebang, fd) for next session.
+- **Writes:** Active Concepts 5 rows synced; Reviews/ 5 notes; Session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-27.md`.
+- **Review gate:** NOT run (terminal API key 401 blocker open).

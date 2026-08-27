@@ -249,12 +249,19 @@
     },
     "xargs": {
       "type": "concept",
-      "attempts": [],
+      "attempts": [
+        {
+          "date": "2026-08-27",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
+        }
+      ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 0,
-      "last_reviewed": "`) & Pipeline Composition",
-      "next_review": "2026-08-18",
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-08-27",
+      "next_review": "2026-08-30",
       "feynman": null
     },
     "curl (Web Fetching)": {
@@ -265,13 +272,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-08-27",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 1,
-      "consecutive_correct": 1,
+      "interval_index": 2,
+      "consecutive_correct": 0,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-08",
-      "next_review": "2026-08-15",
+      "last_reviewed": "2026-08-27",
+      "next_review": "2026-09-10",
       "feynman": null
     },
     "jq": {
@@ -580,12 +593,19 @@
     },
     "Parameter Expansion": {
       "type": "procedure",
-      "attempts": [],
+      "attempts": [
+        {
+          "date": "2026-08-27",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
+        }
+      ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-18",
-      "next_review": "2026-08-21",
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-08-27",
+      "next_review": "2026-08-30",
       "feynman": null
     },
     "Shell Built-ins & Process Isolation": {
@@ -674,12 +694,19 @@
     },
     "Environment Variables (Shell)": {
       "type": "concept",
-      "attempts": [],
-      "interval_index": 0,
-      "consecutive_correct": 0,
+      "attempts": [
+        {
+          "date": "2026-08-27",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-24",
-      "next_review": "2026-08-27",
+      "last_reviewed": "2026-08-27",
+      "next_review": "2026-09-03",
       "feynman": null
     },
     "Exit Codes & Short-Circuit Control Flow": {
@@ -710,6 +737,23 @@
       "consecutive_wrong": 0,
       "last_reviewed": "2026-08-24",
       "next_review": "2026-08-30",
+      "feynman": null
+    },
+    "less (Pager)": {
+      "type": "memory",
+      "attempts": [
+        {
+          "date": "2026-08-27",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        }
+      ],
+      "interval_index": 3,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-27",
+      "next_review": "2026-09-03",
       "feynman": null
     }
   },
