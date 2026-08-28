@@ -276,6 +276,10 @@ The first line of a script tells the system which interpreter to use:
 
 When the file is executed (e.g. `./script.sh`), the OS reads the shebang and runs the specified interpreter with the script content as input.
 
+### Portable shebang with `env`
+
+Hardcoding `/usr/bin/python3` breaks on machines where Python lives elsewhere. `#!/usr/bin/env python3` lets `env` resolve the interpreter by searching `$PATH`, so the **same script runs unchanged** on any machine. (The notes framed this as: `env` finds the real location by walking `$PATH`.)
+
 ### Making a Script Executable
 
 Scripts need the executable permission bit set:
@@ -479,6 +483,18 @@ When the shell runs an external command, the OS creates a **child process** with
 These work as child processes because their output goes to the filesystem or stdout — changes persist on disk regardless of process hierarchy.
 
 **Rule of thumb:** If a command needs to change the shell's own memory (variables, working directory, options), it must be a built-in. If it only needs to read/write files or print output, an external program works.
+
+## Text Slicing & Counting (`cut`, `wc`, history)
+
+These round out the editor/CLI toolkit from the Development Environment lesson.
+
+- `cut -d: -f1 /etc/passwd` — extracts fields from each line. `-d:` sets the field **delimiter** (here `:`, the separator in `/etc/passwd`); `-f1` selects the **1st field** (the username). General form: `cut -d DELIM -f N file`.
+- `wc -l file` — counts lines; `wc -l < file` gives the *same count but without the filename* in the output.
+- `history | wc -l` — counts saved commands. The shell caps history size (often `HISTSIZE` / `HISTFILESIZE` = 1000 or 2000 lines), so this is *saved* commands, not every command ever run since install.
+
+### Why `wc -l < file` hides the filename
+
+The shell intercepts `<` **before** running `wc`: it opens `shopping.txt` itself, connects the raw text stream to `wc`'s stdin, and `wc` never sees the word `shopping.txt`. So `wc -l < shopping.txt` prints just the number; `wc -l shopping.txt` prints `N shopping.txt` because `wc` opened the file by name and reports it. (Contrast `cp`, which needs the filename to copy — you can't do `notes.txt > backup.txt`.)
 
 ## Key Takeaways (Remaining)
 7. Pipes (`|`) are the shell's composition mechanism — they let you chain programs together

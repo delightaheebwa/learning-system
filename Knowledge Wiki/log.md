@@ -544,3 +544,11 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Housekeeping:** seeded less (Pager) into Attempts.json (ingested 08-24 but never seeded). Surfaced 5 active mistakes due 2026-08-28 (find, Built-ins, Process Substitution, Shebang, fd) for next session.
 - **Writes:** Active Concepts 5 rows synced; Reviews/ 5 notes; Session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-27.md`.
 - **Review gate:** NOT run (terminal API key 401 blocker open).
+
+## 2026-08-28 (ingest) — Lesson B3 Development Environment & Tools (handwritten notes) — Clerk
+- **Source:** handwritten class notes across 5 images (Lesson 3 "Development Environment & Tools", 2026-08-25→28), transcribed verbatim; MIT Missing Semester editors/shell sources cross-referenced.
+- **Overlap:** 3 Vim concept rows already seeded 2026-08-28 but their wiki page was "pending Clerk ingest" — this ingest created that missing page. No new concept seeds.
+- **Writes:** NEW wiki `Knowledge Wiki/wiki/MIT Missing Semester — Editors (Vim).md` (modes, Normal-mode keystroke categories, buffer/window/tab, readline `set -o vi`, modal-editor rationale).
+- **Enrichments:** `MIT Missing Semester — Shell.md` — portable `env` shebang subsection + new `cut`/`wc`/history + `< file` filename-hiding nuance section; `Environment Variables (Shell).md` — `EDITOR`/`VISUAL` var + readline vim-mode affordance.
+- **Active Concepts:** 3 Vim rows — prereq → `Shell Built-ins & Process Isolation`, wiki link de-"pending", `last_reviewed` 2026-08-28, `next_review` 2026-08-31 (unchanged). Curricula B3 already `done`.
+- **Review gate:** foreground `GATE:review` envelope (delegate_task, model ox-alpha-free). Legacy `review_gate` Tool retired/unreachable — surfaced, not faked. Verdict in `Learning System/Reviews/Quality Gates/`.

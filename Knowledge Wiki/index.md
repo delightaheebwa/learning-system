@@ -166,6 +166,7 @@
 [[MIT Missing Semester — Shell]]
 [[MIT Missing Semester — Command-line Environment]]
 [[MIT Missing Semester — Shell Configuration & Dotfiles]]
+[[MIT Missing Semester — Editors (Vim)]]
 [[SSH — Public-Key Auth & Remote Commands]]
 [[Positional & Special Shell Parameters]]
 [[Process Substitution]]

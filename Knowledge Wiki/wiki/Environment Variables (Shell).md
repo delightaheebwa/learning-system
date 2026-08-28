@@ -26,4 +26,7 @@ They mutate the **shell's own memory** (its environment). A child program cannot
 - Per-command assignment is idiomatic for one-off config: `DEBUG=1 ./server`.
 - Forgetting `export` is the classic bug: the script you call sees an empty variable while `echo $VAR` in the shell looks fine.
 
-Related: [[Positional & Special Shell Parameters]] · [[Exit Codes & Short-Circuit Control Flow]]
+- `EDITOR` / `VISUAL` — programs read this env var when they need to launch an editor (e.g. `git commit`, `crontab -e`, `less` + `v`). Set `EDITOR=vim` once and you never fight a program's default editor again.
+- **Vim keys everywhere:** `set -o vi` (bash) or `set editing-mode vi` in `~/.inputrc` switches the readline line editor to vi mode, so the Normal-mode keystrokes you learn work at the bash prompt and in any readline REPL (Python, MySQL, …).
+
+Related: [[Positional & Special Shell Parameters]] · [[Exit Codes & Short-Circuit Control Flow]] · [[MIT Missing Semester — Editors (Vim)]]
