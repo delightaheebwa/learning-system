@@ -14,13 +14,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 2,
-      "consecutive_correct": 1,
+      "interval_index": 3,
+      "consecutive_correct": 0,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-26",
-      "next_review": "2026-09-09",
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-09-27",
       "feynman": null
     },
     "Shell Navigation & Paths": {
@@ -616,14 +622,23 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 2,
-      "consecutive_correct": 1,
+      "interval_index": 3,
+      "consecutive_correct": 0,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-26",
-      "next_review": "2026-09-09",
-      "feynman": null
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-09-27",
+      "feynman": {
+        "pass": true,
+        "date": "2026-08-28"
+      }
     },
     "Makefile: Targets, Prerequisites & Recipes": {
       "type": "concept",
@@ -754,6 +769,36 @@
       "consecutive_wrong": 0,
       "last_reviewed": "2026-08-27",
       "next_review": "2026-09-03",
+      "feynman": null
+    },
+    "Vim Modal Editing": {
+      "type": "concept",
+      "attempts": [],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
+      "feynman": null
+    },
+    "Vim Composable Commands": {
+      "type": "concept",
+      "attempts": [],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
+      "feynman": null
+    },
+    "Vim Buffers & Windows": {
+      "type": "concept",
+      "attempts": [],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
       "feynman": null
     }
   },

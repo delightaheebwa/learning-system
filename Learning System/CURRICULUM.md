@@ -20,7 +20,7 @@ Goal: tooling becomes reflex, not friction.
 |---|--------|-----------|---------|--------|-------|
 | 1 | Course Overview + Shell | ~1h | none | done | Shell fluencies in Active Concepts (What is the Shell, Navigation, PATH…) |
 | 2 | Command-line Environment | ~1–2h | 1 | done | job control, signals, tmux, aliases, dotfiles |
-| 3 | Development Environment & Tools | ~1–2h | 2 | not-started | editors, Vim, customizing, shell scripting |
+| 3 | Development Environment & Tools | ~1–2h | 2 | done | editors, Vim, customizing, shell scripting |
 | 4 | Debugging and Profiling | ~1–2h | 3 | not-started | gdb, strace, perf; syscall-level debugging |
 | 5 | Version Control and Git | ~1–2h | 4 | not-started | git internals; deepens Git commit conventions concept |
 | 6 | Data Wrangling | ~1–2h | 5 | not-started | regex, sed, awk deeper; joints to xargs/awk/pipes |

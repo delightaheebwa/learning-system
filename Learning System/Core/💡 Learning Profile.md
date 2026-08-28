@@ -22,7 +22,7 @@
 - **Goal:** Make the base reflexive — shell, git, debugging, editors — per the SWE Primary Colors roadmap
 - **Source:** MIT Missing Semester (https://missing.csail.mit.edu/2026/) + SWE Primary Colors roadmap
 - **Roadmap stored at:** `Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
-- **Current Position:** Stage 0 — Mission 1 (MIT Missing Semester) in progress · Lecture 3 (Development Environment & Tools) next
+- **Current Position:** Stage 0 — Mission 1 (MIT Missing Semester) in progress · Lecture 4 (Debugging and Profiling) next
 - **Archived:** Terminal System Monitor C project (archived 2026-08-24) · AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
 - **Sequencing:** Stage 0 (current) → Stage 1 Computation → Stage 2 Systems → Stage 3 Abstraction → Stage 4 State → Stage 5 Interaction → Stage 6 White Light
 
