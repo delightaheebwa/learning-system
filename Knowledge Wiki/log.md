@@ -552,3 +552,9 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enrichments:** `MIT Missing Semester — Shell.md` — portable `env` shebang subsection + new `cut`/`wc`/history + `< file` filename-hiding nuance section; `Environment Variables (Shell).md` — `EDITOR`/`VISUAL` var + readline vim-mode affordance.
 - **Active Concepts:** 3 Vim rows — prereq → `Shell Built-ins & Process Isolation`, wiki link de-"pending", `last_reviewed` 2026-08-28, `next_review` 2026-08-31 (unchanged). Curricula B3 already `done`.
 - **Review gate:** foreground `GATE:review` envelope (delegate_task, model ox-alpha-free). Legacy `review_gate` Tool retired/unreachable — surfaced, not faked. Verdict in `Learning System/Reviews/Quality Gates/`.
+
+## 2026-08-28 (review) — SWE spaced-repetition review (5 slots)
+- Mistake retry: none due (earliest fd 2026-08-29; find/Built-ins/Process Substitution/Shebang/Vim 2026-08-31). 5 slots = due reviews.
+- Queue: find · Signals (Software Interrupts) · Shebang & Script Execution · Process Substitution · grep — shuffled, 2 discriminative / 3 definitional, Make cluster excluded.
+- Results: 2 pass / 3 fail. find PASS (unquoted glob expands pre-find; advanced 7d → 2026-09-04; mistake → review) · Signals PASS (SIGTERM vs SIGKILL; advanced 30d → 2026-09-27) · Shebang FAIL (kernel-executes vs bash-reads route split; mistake stays active) · Process Substitution FAIL ($(text-split vs <(path); mistake stays active) · grep FAIL (regex * repeats prev char, not glob any; new mistake row).
+- Writes: Active Concepts 5 rows synced; 🧯 Mistakes.md (find → review, +grep row); 5 Review notes; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-28.md`.

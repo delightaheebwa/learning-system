@@ -138,13 +138,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
-      "interval_index": 1,
-      "consecutive_correct": 1,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-20",
-      "next_review": "2026-08-27",
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
       "feynman": null
     },
     "ripgrep": {
@@ -207,13 +213,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-08-25",
-      "next_review": "2026-08-28",
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-09-04",
       "feynman": null
     },
     "fd": {
@@ -382,13 +394,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-08-25",
-      "next_review": "2026-08-28",
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
       "feynman": null
     },
     "Background Jobs": {
@@ -416,13 +434,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "discriminative"
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 1,
-      "consecutive_correct": 1,
+      "interval_index": 3,
+      "consecutive_correct": 0,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-08-21",
-      "next_review": "2026-08-28",
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-09-27",
       "feynman": null
     },
     "Job Control (Ctrl-Z, fg/bg, nohup/disown)": {
@@ -502,13 +526,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-08-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-08-25",
-      "next_review": "2026-08-28",
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-08-28",
+      "next_review": "2026-08-31",
       "feynman": null
     },
     "Shell Config & Dotfiles": {
