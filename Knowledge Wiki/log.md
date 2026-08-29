@@ -558,3 +558,9 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - Queue: find · Signals (Software Interrupts) · Shebang & Script Execution · Process Substitution · grep — shuffled, 2 discriminative / 3 definitional, Make cluster excluded.
 - Results: 2 pass / 3 fail. find PASS (unquoted glob expands pre-find; advanced 7d → 2026-09-04; mistake → review) · Signals PASS (SIGTERM vs SIGKILL; advanced 30d → 2026-09-27) · Shebang FAIL (kernel-executes vs bash-reads route split; mistake stays active) · Process Substitution FAIL ($(text-split vs <(path); mistake stays active) · grep FAIL (regex * repeats prev char, not glob any; new mistake row).
 - Writes: Active Concepts 5 rows synced; 🧯 Mistakes.md (find → review, +grep row); 5 Review notes; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-28.md`.
+## 2026-08-29 (review) — SWE spaced-repetition review (5 slots)
+- Priority-1 mistakes due (Next Retry ≤ 2026-08-29): fd only strictly (Shebang/Vim/PS/Built-ins/grep all due 2026-08-31 — Shebang pulled 2d early). 5 slots = 2 mistakes + 3 due reviews.
+- Queue: fd · Shebang & Script Execution · tmux · Job Control · PATH & Program Discovery — 2 discriminative / 3 definitional.
+- Results: 3 pass / 2 fail. tmux PASS (memory, advanced → 2026-09-12) · Job Control PASS (procedure, advanced → 2026-09-12) · fd FAIL (missed .gitignore default; retry 2026-08-30) · Shebang FAIL (kernel-vs-shell route still tangled; stays active) · PATH & Program Discovery FAIL (cwd not on PATH; new mistake row, retry 2026-09-01).
+- Writes: Active Concepts 5 rows synced (dates, Last Q Type, intervals); Mistakes.md (fd row updated, +PATH row); 5 Review notes; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-29.md`.
+- Tooling note: `ops.py attempt`/`ops.py mastery` unregistered in repo ops.py; intervals advanced manually.
