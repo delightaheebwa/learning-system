@@ -17,11 +17,11 @@ The active learning system, running in Open WebUI against the repo at `/home/use
 Sessions die when the running conversation outgrows the model's context window: cutoffs hit mid-flow (~20 tool calls) because every tool output stays in the transcript forever. The fix is fewer, denser tool calls — not smaller messages.
 
 - **Batch all reads.** Never chain multiple full-file `read_file` calls for state. Use the batch tool ONCE instead (`run_command`, paths are repo-root-relative):
-  - Session start: `python3 /home/user/.ops/ops.py state <track>`
-  - Any mix of ranges/tails/greps: `python3 /home/user/.ops/ops.py bundle "PATH:N-M" "PATH:-N" "PATH@regex1|regex2"`
+  - Session start: `python3 scripts/ops.py state <track>`
+  - Any mix of ranges/tails/greps: `python3 scripts/ops.py bundle "PATH:N-M" "PATH:-N" "PATH@regex1|regex2"`
 - **Read wiki pages by section.** First `bundle "Knowledge Wiki/wiki/<page>.md@^## "` to list its headings, then fetch only the section you actually enrich.
 - **Batch all writes.** Persistence at session end = ONE apply call, not N `write_file` calls:
-  `python3 /home/user/.ops/ops.py apply <<'SPEC'` then a JSON spec, then `SPEC`.
+  `python3 scripts/ops.py apply <<'SPEC'` then a JSON spec, then `SPEC`.
   Spec: `{"writes":[{"path","content"}],"appends":[{path,content}],"replaces":[{"path","find","replace_with"}]}`.
 - Target **≤12 tool calls per flow**. Never re-read a file already in context. Never dump whole files you only need one row of.
 
@@ -50,13 +50,13 @@ Trigger: "teach me X", "lesson", or "continue". The pipeline runs in the **same 
 Trigger: "swe", "review", or a learning request.
 
 1. Track selection: "swe" → swe table; "aie" → aie table (currently archived — ask the user before unarchiving); neither → ask which track.
-2. Session start — ONE call: `run_command` → `python3 /home/user/.ops/ops.py state <track>`. This now returns Learning Profile + your track's Active Concepts rows + Attempts.json (advisory mastery scores) + 🧯 Mistakes.md. Do not read those files separately.
+2. Session start — ONE call: `run_command` → `python3 scripts/ops.py state <track>`. This now returns Learning Profile + your track's Active Concepts rows + Attempts.json (advisory mastery scores) + 🧯 Mistakes.md. Do not read those files separately.
 3. Build the queue:
    - Slots 1–2 = due mistakes from `🧯 Mistakes.md` where Next Retry ≤ today (`active`/`review`), oldest first (priority-1, DeepTutor pattern).
    - Remaining 3 slots = type-aware due reviews (Next Review ≤ today), shuffled. Adjacency constraint: no two consecutive concepts from the same Source (if impossible, shuffle anyway).
 4. Per concept: one question, one answer (≤1 line), targeting the 20% insight worth 80%. Math: ask insight/result, never notation.
 5. Question type alternation by Last Q Type: blank/definitional → discriminative; discriminative → definitional.
-6. After each answer: grade pass/fail. Record via `python3 /home/user/.ops/ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail]` — this updates Attempts.json (recency-weighted mastery 0–1, confidence cap {1:0.5, 2:0.8}, interval_index +1 on pass / +2 on 2 consecutive passes / -1 on fail, next_review). On fail also append row to `🧯 Mistakes.md` with error_type (`structural|deviation|application|metacognitive`) and self-attribution; on next correct recall bump Retries, after 2 consecutive correct mark `graduated`. For `concept`/`design` types, elicit Feynman explain-back (own words, when/why, nearest-neighbor distinction, one example) and pass `feynman_pass`/`feynman_fail` — score shown but **not blocking** (advisory mode). Then write `Reviews/Review — [Concept] — [Date].md` and update Active Concepts `last_reviewed`/`next_review` (from Attempts.json) / `Last Q Type`.
+6. After each answer: grade pass/fail. Record via `python3 scripts/ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail]` — this updates Attempts.json (recency-weighted mastery 0–1, confidence cap {1:0.5, 2:0.8}, interval_index +1 on pass / +2 on 2 consecutive passes / -1 on fail, next_review). On fail also append row to `🧯 Mistakes.md` with error_type (`structural|deviation|application|metacognitive`) and self-attribution; on next correct recall bump Retries, after 2 consecutive correct mark `graduated`. For `concept`/`design` types, elicit Feynman explain-back (own words, when/why, nearest-neighbor distinction, one example) and pass `feynman_pass`/`feynman_fail` — score shown but **not blocking** (advisory mode). Then write `Reviews/Review — [Concept] — [Date].md` and update Active Concepts `last_reviewed`/`next_review` (from Attempts.json) / `Last Q Type`.
 7. Cap 5. Then ask "Any you want to dig deeper on?" — if yes, deep-dive one concept.
 8. Surface open questions from Active Concepts. Also surface advisory mastery line for each concept (e.g. `mastery 0.50 — Feynman: —`) alongside Held/Advanced note for calibration.
 
@@ -68,7 +68,7 @@ Trigger: "ingest" with content to add (NOT a review). **Run on the Clerk preset*
 
 1. If `Learning System/Core/Pending Ingest.json` exists (lesson handoff), read it — it contains `{lesson_file, session_file, concepts, source_url|source_file, created_at}`. Use `lesson_file` as the source of content to ingest.
 2. Otherwise extract concepts from the supplied content.
-3. Overlap check — ONE bundle call with an alternation regex over candidate keywords: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@kw1|kw2|kw3"` (or `@^### ` to pull the full track section). No separate grep/read calls per keyword.
+3. Overlap check — ONE bundle call with an alternation regex over candidate keywords: `python3 scripts/ops.py bundle "Learning System/Core/📚 Active Concepts.md@kw1|kw2|kw3"` (or `#^## <track>` to pull the full track section). No separate grep/read calls per keyword.
 4. Overlap → enrich the existing wiki page + insight row with the genuinely new details; set `last_reviewed` today; write the session note as enrichment (not new ingest). Read only the target page's relevant section (headings first via `@^## `).
 5. No overlap → new concept: status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`.
 6. Outside focus area → ask about switching focus. Stagger schedules for multiple new concepts.
@@ -88,7 +88,7 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 1. Update Active Concepts — statuses, dates, new concepts, open questions. Preserve existing rows.
 2. On `consolidated`: move to `Archive/Consolidated/[concept].md` (name, date, insight, wiki link, related), remove from Active, update Mastery Summary.
 3. Write `Sessions/Session — [Topic] — [Date].md` (date, topic, concepts, statuses, open questions) with a one-line interleaving summary, e.g. "Interleaving: 5 concepts shuffled, 3 discriminative / 2 definitional".
-4. Consistency check — ONE bundle call re-grepping only the touched rows: `python3 /home/user/.ops/ops.py bundle "Learning System/Core/📚 Active Concepts.md@<concept1>|<concept2>" "Knowledge Wiki/index.md@<title>" "Knowledge Wiki/log.md:-3"`; verify today's `last_reviewed`, correct `next_review`, `Last Q Type`, all ingested concepts present, wiki pages in index.md, log entry present. Fix discrepancies in a single apply call. If the user claims stale dates are wrong, cross-check session notes.
+4. Consistency check — ONE bundle call re-grepping only the touched rows: `python3 scripts/ops.py bundle "Learning System/Core/📚 Active Concepts.md@<concept1>|<concept2>" "Knowledge Wiki/index.md@<title>" "Knowledge Wiki/log.md:-3"`; verify today's `last_reviewed`, correct `next_review`, `Last Q Type`, all ingested concepts present, wiki pages in index.md, log entry present. Fix discrepancies in a single apply call. If the user claims stale dates are wrong, cross-check session notes.
 5. Confirm completion — what was saved, what's due next.
 
 ## Open WebUI adaptation

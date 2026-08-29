@@ -24,11 +24,34 @@ All paths resolve under the workspace root (/home/user/learning-system). Escapes
 """
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path("/home/user/learning-system").resolve()
+
+def _detect_root() -> Path:
+    """Resolve the learning-system workspace root.
+
+    The real checkout lives at /home/delinux/learning-system locally but at
+    /home/user/learning-system inside the Open WebUI Open Terminal container, so
+    hardcoding one path breaks the other. Auto-detect by looking for the
+    distinctive 'Learning System/Core' substructure; honor an env override.
+    """
+    candidates = [
+        os.environ.get("LEARNING_SYSTEM_ROOT", ""),
+        "/home/delinux/learning-system",
+        "/home/user/learning-system",
+        os.path.expanduser("~/learning-system"),
+    ]
+    for c in candidates:
+        c = (c or "").strip()
+        if c and os.path.isdir(os.path.join(c, "Learning System", "Core")):
+            return Path(c).resolve()
+    return Path("/home/user/learning-system").resolve()
+
+
+ROOT = _detect_root()
 MAX_LINE = 4000
 
 
@@ -44,11 +67,38 @@ def _read_lines(path: Path):
     return text.splitlines(), text
 
 
+def _section_slice(lines, pattern):
+    """Return the slice from a heading matching `pattern` up to the next heading
+    of equal-or-higher level (so a track section captures its table body, not
+    just the heading line). Returns (text, error)."""
+    try:
+        rx = re.compile(pattern, re.IGNORECASE)
+    except re.error as e:
+        return None, f"BAD REGEX: {e}"
+    headings = [i for i, l in enumerate(lines) if re.match(r"^#{1,6}\s", l)]
+    start = None
+    for i in headings:
+        if rx.search(lines[i]):
+            start = i
+            break
+    if start is None:
+        return None, "(no matching section)"
+    level = (len(lines[start]) - len(lines[start].lstrip("#"))) or 1
+    end = len(lines)
+    for j in headings:
+        if j > start and (len(lines[j]) - len(lines[j].lstrip("#"))) <= level:
+            end = j
+            break
+    return "\n".join(lines[start:end]), None
+
+
 def do_state(track: str) -> None:
     track = track.lower().strip()
     specs = [
         ("Learning System/Core/💡 Learning Profile.md", ""),
-        (f"Learning System/Core/📚 Active Concepts.md@^## {track}\\b|^### ", ""),
+        # Section selector (#heading) pulls the whole track block (header + table
+        # rows) — the old `^## {track}\b|^### ` grep matched only heading lines.
+        (f"Learning System/Core/📚 Active Concepts.md#^## {track}\\b", ""),
         ("Knowledge Wiki/log.md:-25", ""),
         ("Knowledge Wiki/index.md:1-40", ""),
     ]
@@ -61,7 +111,10 @@ def do_bundle(*specs: str) -> None:
         spec = spec.strip()
         path_part, note, selector = spec, "whole file", None
 
-        if "@" in spec:
+        if "#" in spec:
+            path_part, pattern = spec.split("#", 1)
+            note, selector = f"section /{pattern}/i", ("section", pattern)
+        elif "@" in spec:
             path_part, pattern = spec.rsplit("@", 1)
             note, selector = f"grep /{pattern}/i", ("grep", pattern)
         else:
@@ -93,6 +146,11 @@ def do_bundle(*specs: str) -> None:
             lo, hi = selector[1], selector[2] or total
             lo = max(1, lo)
             out = "\n".join(lines[lo - 1: hi])
+        elif selector[0] == "section":
+            out, err = _section_slice(lines, selector[1])
+            if err:
+                print(err)
+                continue
         else:  # grep
             try:
                 rx = re.compile(selector[1], re.IGNORECASE)

@@ -390,32 +390,41 @@ class Filter:
                                 "done": is_done,
                             }
                         )
-                    if not child_chats:
-                        from open_webui.models.chats import Chats
-
-                        ids = await Chats.get_internal_chat_ids_by_parent_id(chat_id, user_id)
-                        for cid in ids:
-                            c = await Chats.get_chat_by_id(cid)
-                            if not c or (c.meta or {}).get("parent_message_id") != assistant_id:
-                                continue
-                            hist2 = (c.chat or {}).get("history", {}).get("messages", {})
-                            task2 = ""
-                            content2 = ""
-                            for m2 in (hist2 or {}).values():
-                                if m2.get("role") == "user":
-                                    task2 = m2.get("content") or task2
-                                if m2.get("role") == "assistant":
-                                    content2 = m2.get("content") or content2
-                            child_chats.append(
-                                {
-                                    "id": cid,
-                                    "meta": c.meta or {},
-                                    "mode": (c.meta or {}).get("mode", ""),
-                                    "task": task2,
-                                    "content": content2,
-                                    "done": True,
-                                }
-                            )
+                if not child_chats:
+                    from open_webui.models.chats import Chats
+    
+                    ids = await Chats.get_internal_chat_ids_by_parent_id(chat_id, user_id)
+                    for cid in ids:
+                        c = await Chats.get_chat_by_id(cid)
+                        if not c or (c.meta or {}).get("parent_message_id") != assistant_id:
+                            continue
+                        meta2 = c.meta or {}
+                        mode2 = (meta2 or {}).get("mode", "")
+                        # Same foreground + completed gate as the primary path —
+                        # the fallback must not accept background/incomplete receipts.
+                        if mode2 == "background" or mode2 == "async":
+                            continue
+                        hist2 = (c.chat or {}).get("history", {}).get("messages", {})
+                        task2 = ""
+                        content2 = ""
+                        for m2 in (hist2 or {}).values():
+                            if m2.get("role") == "user":
+                                task2 = m2.get("content") or task2
+                            if m2.get("role") == "assistant":
+                                content2 = m2.get("content") or content2
+                        is_done = any(isinstance(v, dict) and v.get("done") for v in (hist2 or {}).values())
+                        if not is_done:
+                            continue
+                        child_chats.append(
+                            {
+                                "id": cid,
+                                "meta": meta2,
+                                "mode": mode2,
+                                "task": task2,
+                                "content": content2,
+                                "done": True,
+                            }
+                        )
             except Exception as e:
                 try:
                     import logging
