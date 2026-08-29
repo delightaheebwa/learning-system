@@ -48,6 +48,9 @@ def _detect_root() -> Path:
         c = (c or "").strip()
         if c and os.path.isdir(os.path.join(c, "Learning System", "Core")):
             return Path(c).resolve()
+    # Degenerate fallback: no checkout with the expected substructure was found
+    # (e.g. a misconfigured environment). Best-effort the canonical container path
+    # rather than crashing; callers will then see MISSING reads, not a stack trace.
     return Path("/home/user/learning-system").resolve()
 
 
