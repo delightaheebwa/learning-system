@@ -21,12 +21,12 @@ layer (skills, subagents, model presets, prompts, gate Pipe) that routes trigger
 | Scout (exploration) | **Scout** preset | Workspace → Models → Scout → base model |
 | Tutor (probe/plan/teach) | **Learning Tutor** preset | Workspace → Models → Learning Tutor → base model |
 | Clerk (ingest + review) | **Clerk** preset | Workspace → Models → Clerk → base model |
-| Slash-command triggers | **Prompts** (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) | — |
+| Slash-command triggers | **Prompts** (`/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) — `/swe` is legacy (SWE archived; redirects to AIEFS) | — |
 | Deterministic gate | **Gate Pipe** Filter (`gate_pipe.py` + `gate_schema.py`) — outlet, priority 10, bound to Tutor + Clerk | Function Valves (priority, max_retries, digest_ttl_days) |
 | Fixed verifier prompts | Global **subagents.system_prompt** (keyed `GATE:fact_check` / `GATE:quiz_audit` / `GATE:review`) | Settings → Subagents |
-| Repo + git | **Open Terminal** sandbox `/home/user/learning-system` | — |
-| Ephemeral Scout digest | `Learning System/.tmp/context-<chat_id>-<slug>.json` (gitignored, 7-day TTL) | — |
-| Web search / grounding | **Web Search** (SearXNG) | — |
+| Repo + git | **Open Terminal** sandbox `/home/user/learning-system` (container) vs `/home/delinux/learning-system` (WSL). Docker Desktop runs Windows-side, separate from WSL — WSL must use `http://host.docker.internal:3000` | — |
+| Ephemeral Scout digest | `Learning System/.tmp/context-<chat_id>-<slug>.json` (gitignored, 7-day TTL) — now includes `rohit_hash` + `external_refs` + `lang_recommendation` + `roadmap_sha` + `fetched_at`; adaptive re-fetch; `📦 Concept Archive.md` strictly out of scope | — |
+| Web search / grounding | **Web Search** (SearXNG) — Scout uses it to fetch `docs/en.md` + Further Reading external refs live (Rohit is a source, not the source) | — |
 
 ### Models: one field per task
 
@@ -63,14 +63,16 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 
 ### Preset system prompts (summary)
 
-- **Scout:** gather MISSION/CURRICULUM/RESOURCES + relevant Active Concepts rows + curriculum source; write `.tmp/context-<chat>-<slug>.json` + post `SCOUT DIGEST:` in chat.
-- **Learning Tutor:** assume Scout digest/session context or existing `Lessons/` file; do not gather context or write wiki pages; verify claims via foreground `GATE:fact_check` before presenting; handoff to Clerk via `Pending Ingest.json` at lesson end.
+- **Scout:** gather MISSION/CURRICULUM/RESOURCES + relevant Active Concepts rows (do not grep SWE archive) + live `phases/<phase>/<lesson>/docs/en.md` **plus every URL in its `## Further Reading`** (Rohit is a source, not the source; synthesize); hash and surface drift (`SCOUT DIGEST: ⚠️ Upstream changed`), capture `lang_recommendation` (Python/TS/Rust per header); write `.tmp/context-<chat>-<slug>.json` + post `SCOUT DIGEST:` in chat. Special: Mission 0 Catch-Up (P0+P1.01–06, 80/20) synthesizes 5 strands. No phase cache (live fetch).
+- **Learning Tutor:** assume Scout digest (now includes `rohit_hash`+`external_refs`+`lang`+`roadmap_sha`) / session context or existing `Lessons/` file; do not gather context or write wiki pages; verify claims via foreground `GATE:fact_check` (cite both Rohit + external refs) before presenting; respect per-lesson language (Python/TS/Rust); handoff to Clerk via `Pending Ingest.json` at lesson end. Order: Mission 0 Catch-Up (in-progress) → Phase 1 L07.
 - **Clerk:** reads `Pending Ingest.json`, writes wiki/Active Concepts, dispatches `GATE:review`, applies fixes, cleans digest and marker, commits.
+
+**Environment note (Docker Desktop Windows-side, separate from WSL):** WSL must target `http://host.docker.internal:3000`; workspace repo at `/home/user/learning-system` (container) vs `/home/delinux/learning-system` (WSL). See `Learning System/MISSION.md`.
 
 ### Prompts
 
-`/swe` — Run a review session on the swe track. Load `learning-system`, follow Review flow.
-`/review` — Run a review session. Load `learning-system`, follow Review flow.
+`/swe` — **Legacy** (SWE archived 2026-09-01) — redirects to AIEFS review. Use `/review` instead.
+`/review` — Run a review session on the **AIEFS** track (SWE `swe` is archived). Load `learning-system`, follow Review flow.
 `/ingest` — `Ingest the following content: {{content}} — Switch to Clerk, load learning-system, follow Ingest flow, then commit and push.`
 `/teach` — `Teach me about: {{topic}} — Switch to Scout to gather context, then to Learning Tutor, load learning-teach, run probe → plan → teach. Gate enforces foreground GATE envelopes.`
 `/lesson` — `Run the next curriculum lesson. Switch to Scout to gather context for the next lesson, then to Learning Tutor, load learning-teach.`

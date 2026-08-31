@@ -5,8 +5,8 @@ built to run in **self-hosted Open WebUI** using native features (Skills, Tools,
 a Model preset, and Prompts) with the repo as the source of truth.
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
-- **Track:** SWE (Software Engineering Fundamentals) — Shell & Terminal, Makefiles, C, testing. AI Engineering (aie) archived.
-- **Scheduling:** manual — say `/swe` or `/review` to run a review session; `/ingest` to add content; `/teach` / `/lesson` to learn.
+- **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up P0+P1.01–06 80/20 in-progress → Phase 1 L07 next). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
+- **Scheduling:** manual — say `/review` to run a review session (AIEFS; SWE `swe` is legacy); `/ingest` to add content; `/teach` / `/lesson` / `/continue` to learn. `Scout` now fetches live `phases/.../docs/en.md` + Further Reading per lesson (Rohit is a source, not the source); language per lesson header (Python/TS/Rust).
 
 ## Layout
 

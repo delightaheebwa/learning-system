@@ -1,4 +1,6 @@
-# SWE Primary Colors & Roadmap
+# SWE Primary Colors & Roadmap — ARCHIVED 2026-09-01
+
+> **Archived 2026-09-01 — superseded by AI Engineering from Scratch (Rohit).** See active map: [[AI Engineering from Scratch — Roadmap]] · `Learning System/CURRICULUM.md` (Rohit 20 phases) · archive copies: `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` and `Learning System/Core/📦 Concept Archive.md` section `Paused Concepts — SWE (Archived 2026-09-01)` (visibility strictly out of scope — Scout/Tutor do not grep). This page kept for reference only.
 
 > Source: `Learning System/Curriculum/` (attached by user, 2026-08-16) — the project-based roadmap for Software Engineering, primary colors taxonomy, and Stage 0 mission spine.
 
@@ -39,7 +41,7 @@ Every technology is a blend: React = Abstraction + State + Interaction · Redis 
 
 ## Status
 
-- **Stage 0 active** (this wireframe). Monitor course implemented in C (decision 2026-08-16: user chose C over the roadmap's Python for the CLI strand).
-- Stages 1–6 scheduled after Stage 0 exits.
+- **Stage 0 archived 2026-09-01** (switch to AIEFS). Previously: Monitor course implemented in C (decision 2026-08-16: user chose C over the roadmap's Python for the CLI strand). Now: 43 SWE concepts paused, no active SWE rows in `📚 Active Concepts.md`.
+- **Active roadmap:** [[AI Engineering from Scratch — Roadmap]] — Mission 0 Catch-Up (P0+P1.01–06, 80/20, in-progress) → Phase 1 L07 Bayes' Theorem.
 
-Related: [[AI Engineering Roadmap v2]] (paused) · [[MIT Missing Semester — Shell]]
+Related: [[AI Engineering from Scratch — Roadmap]] (active) · [[AI Engineering Roadmap v2]] (paused) · [[MIT Missing Semester — Shell]]

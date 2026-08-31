@@ -1,6 +1,6 @@
 ---
 name: learning-teach
-description: Teach the user through the probe → plan → teach loop, applying the SWE Foundations mission, philosophy (unconditional truths, motivated discovery, guided Socratic, Bloom climb, Feynman explain-back), batched claim verification via fact-check subagents, and independent question-batch audits via quiz-audit subagents. Triggers: 'teach me X', 'lesson', 'continue'.
+description: Teach the user through the probe → plan → teach loop, applying the AIEFS (Rohit) mission — adaptively re-fetching live docs/en.md + Further Reading each new lesson, 80/20 catch-up for P0+P1.01–06 then sequential Phases, per-lesson language (Python/TS/Rust), batched fact-check + quiz-audit subagents. Triggers: 'teach me X', 'lesson', 'continue'.
 ---
 
 # Learning Teach
@@ -68,16 +68,16 @@ Subagent returns `{"issues":[{"id":"q1","severity":"high|medium|low","problem":"
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 
-- Mission: `Learning System/MISSION.md`.
-- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (roadmap-aligned missions, sequential lessons).
-- Sources: MIT Missing Semester + `Learning System/RESOURCES.md` (curated primary readings) + the sources named by the current curriculum stage. Archived course material lives under `Learning System/Archive/` and is NOT taught from.
-- Glossary: `Learning System/GLOSSARY.md`. Learning records: `Learning System/Learning Records/`. Lessons: `Learning System/Lessons/`.
-- Learner state: `Learning System/Core/📚 Active Concepts.md` → grep/range the **relevant** track and concepts only. Never read the whole file per concept during probing (user constraint).
+- Mission: `Learning System/MISSION.md` (AIEFS — Rohit; catch-up 80/20 P0+P1.01–06 first, then Phase 1 L07).
+- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (Rohit 20 phases + Mission 0 Catch-Up; lessons sequential; full map navigational, not contractual; `📦 Concept Archive.md` strictly out of scope). **Next after catch-up is Phase 1 L07: Bayes' Theorem** (decision 2026-09-01 — jump).
+- Sources: AI Engineering from Scratch (`phases/<phase>/<lesson>/docs/en.md` + **every URL in its `## Further Reading`**) + `Learning System/RESOURCES.md` (curated primary readings: 3Blue1Brown, Stanford CS229, log-sum-exp, etc.). **Rohit is a source, not the source** — Scout fetches the live docs + 2–4 external refs per lesson, hashes, compares, surfaces drift; you teach from the combined digest, not from parametric memory or a frozen snapshot. Adaptive re-fetch covers upstream changes (e.g., after 2–3 lessons, returning for the 4th, Scout re-fetches and compares hash). Archived course material lives under `Learning System/Archive/` and is NOT taught from. **Cache is ignored per decision 2026-09-01** — live fetch each lesson (no `Curriculum/cache/` layer).
+- Glossary: `Learning System/GLOSSARY.md` (AIEFS active). Learning records: `Learning System/Learning Records/`. Lessons: `Learning System/Lessons/`.
+- Learner state: `Learning System/Core/📚 Active Concepts.md` → grep/range the **relevant (aiefs)** track and concepts only. Never read the whole file per concept during probing (user constraint). **SWE is archived 2026-09-01 — do not grep `📦 Concept Archive.md`.**
 - Attempts sidecar: `Learning System/Core/Attempts.json` — record every probe/quiz/review answer via `python3 scripts/ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail]` (updates recency-weighted mastery, interval_index, next_review). **Advisory only** — show mastery 0.00–0.80 + Feynman rubric status alongside prose Held/Advanced for one cycle.
 - Mistakes ledger: `Learning System/Core/🧯 Mistakes.md` — on fail, append row with error_type (`structural|deviation|application|metacognitive`) and self-attribution; due mistakes asked first in reviews.
 - Feynman rubric for `concept`/`design` types (explain-back must hit 4 checks: what it is in own words, when/why used, distinguish from nearest neighbor, one concrete example). Grade pass/fail and pass to attempt call.
-- You teach **from** the sources (derive fresh markdown lessons), you do not reformat the HTML into markdown.
-- When creating new Active Concepts rows, set the `Type` column (`memory|concept|procedure|design` — see Active Concepts.md header) — ambiguous defaults to `concept`. New concepts get `Attempts.json` entry with interval_index 0 and next_review today+interval (memory 0d etc. per mastery.py).
+- You teach **from** the combined sources (derive fresh markdown lessons from `docs/en.md` + external refs synthesis), you do not reformat a single HTML into markdown. Cite both `rohit_source` and `external_refs` in `GATE:fact_check` `source_url`.
+- When creating new Active Concepts rows, set the `Type` column (`memory|concept|procedure|design` — see Active Concepts.md header) — ambiguous defaults to `concept`. New concepts get `Attempts.json` entry with interval_index 0 and next_review today+interval (memory 0d etc. per mastery.py). **Language column** follows the lesson's `Languages:` header (Python / TypeScript / Rust; Julia optional, Python-first for Phase 1) — record in Notes or infer from `lang_recommendation` in digest, not hardcoded.
 
 ## Multiple-choice integrity (applies to the probe AND the end-of-lesson quiz)
 
@@ -133,24 +133,24 @@ sees it** — see "Subagent verification protocol" above.
 ## The loop (probe → plan → teach)
 
 ### 1. Probe (find the edge)
-- Read only relevant state: the target lesson's dependent concepts (grep `📚 Active Concepts.md`), recent learning records, glossary terms. Never the whole file.
-- Ask 3–8 graded multiple-choice questions (always offer "I don't know"), broad → narrow, binary-searching each dependency strand to the boundary. Stop per-strand once the edge is found; hard cap 3–8. Follow **Multiple-choice integrity** and pass the whole strand's batch through the **quiz-audit subagent** before showing any of it.
-- Include exactly **one free-recall item per strand** ("explain in your own words…") — unguessable by construction; grade it against the source excerpt.
+- Read only relevant state: the target lesson's dependent concepts (grep `📚 Active Concepts.md` **aiefs** track; do not grep SWE archive), recent learning records, glossary terms. Never the whole file. For **Mission 0 Catch-Up (80/20 P0+P1.01–06)**, probe **broad→narrow across 5 strands** (tooling / vectors-matrices / transforms-eigen / calculus-chain-rule / probability) rather than a single strand — 6–8 MCQs + 2 free-recall total, still `quiz-audit` gated, then map gaps to the 80/20 list (`CURRICULUM.md` Mission 0 `80/20 map`). For regular lessons, 3–8 MCQs per strand as before.
+- Ask 3–8 graded multiple-choice questions (always offer "I don't know"), broad → narrow, binary-searching each dependency strand to the boundary. Stop per-strand once the edge is found; hard cap 3–8. Follow **Multiple-choice integrity** and pass the whole strand's batch through the **quiz-audit subagent** before showing any of it. Build distractors against **combined sources** (Rohit + external refs), not just one textbook sentence.
+- Include exactly **one free-recall item per strand** ("explain in your own words…") — unguessable by construction; grade it against the combined source excerpt (Rohit `docs/en.md` + Further Reading synthesis).
 - **Withheld feedback:** do NOT reveal right/wrong during a strand. Present the full batch, collect answers, only then reveal results. Feedback mid-strand lets the learner adapt-guess and contaminates the measurement.
 - **Confidence tagging:** require a tag on every answer: `sure` / `hunch` / `no idea`. Scoring rule: correct+`sure` = knows · correct+`hunch` = **unknown** (lucky guess — run an isomorphic re-probe of that concept with structurally different wording before counting it) · anything else = not known.
 - **Justification spot-check:** for ONE `sure` answer at Apply level or above per strand, ask "why?" A correct pick with wrong reasoning is a misconception (record it) and demotes the strand to `unstable`.
-- End the probe with a **structured probe verdict** in the session note: per-strand boundary state (`solid` / `unstable` / `unknown`) plus evidence rows (question id, answer, confidence tag, follow-up result). Every judgment must cite its evidence.
-- If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2).
+- End the probe with a **structured probe verdict** in the session note: per-strand boundary state (`solid` / `unstable` / `unknown`) plus evidence rows (question id, answer, confidence tag, follow-up result). Every judgment must cite its evidence. For catch-up, include a `gaps → 80/20` mapping: which of the 5 80/20 buckets are `solid` vs need teach.
+- If the user discloses prior knowledge ("I already know X"), note it and record it (see Learning Records trigger 2). For catch-up, prior exercises are assumed done — probe verifies, never assumes.
 
 ### 2. Plan (force the reasoning)
-- Reason out the dependency path from current understanding → goal. Collect the load-bearing claims in the plan (definitions, formulas, mechanisms) and verify them in ONE batched foreground `GATE:fact_check` envelope (see above), with `source_url` or `source_file`; correct anything before it reaches the user.
-- Present the plan as a **Mermaid graph** (renders in Open WebUI) and persist it in the session note. The graph must be a real dependency ordering — it forces reasoning out, not decoration.
+- Reason out the dependency path from current understanding → goal. Collect the load-bearing claims in the plan (definitions, formulas, mechanisms) and verify them in ONE batched foreground `GATE:fact_check` envelope (see above), with `source_url` citing **both** `rohit_source` and relevant `external_refs` URLs (or `source_file: Learning System/RESOURCES.md` when both point there); correct anything before it reaches the user. Respect the lesson's `lang_recommendation` (Python / TypeScript / Rust) in the plan's Build It block.
+- Present the plan as a **Mermaid graph** (renders in Open WebUI) and persist it in the session note. The graph must be a real dependency ordering — it forces reasoning out, not decoration. For catch-up, graph the 5 80/20 buckets as parallel unlock paths converging on "Ready for Phase 1 L07".
 
 ### 3. Teach (one reasoning step at a time)
 - Each step: (a) unconditional truth (or "all X are Y"/definition) if the step has one, (b) motivated discovery — "why would anyone try this?", (c) **guided Socratic** question wherever the user has prior knowledge to connect to; tell the minimum hint/analogy the moment they stall (never pure Socratic — matches Learning Profile).
-- **Hook-in:** open with the mission-grounded "why this matters" hook. **Wonder-out:** close with open "what if…?" questions feeding the Open Questions principle.
-- **Bloom climb (phase-mapped):** introduction targets Remember/Understand; practice climbs Apply → Analyze → Evaluate; the capstone is Create. Every lesson climbs at least to Apply. Not every lesson reaches every level (short lessons).
-- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), batch it (with any others pending for this step) into a foreground `GATE:fact_check` envelope with `source_url`/`source_file`; fold in verdicts before continuing — on ISSUES, correct first. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating.
+- **Hook-in:** open with the mission-grounded "why this matters" hook (for catch-up: why 80/20 reactivation unlocks Phase 1 L07+). **Wonder-out:** close with open "what if…?" questions feeding the Open Questions principle.
+- **Bloom climb (phase-mapped):** introduction targets Remember/Understand; practice climbs Apply → Analyze → Evaluate; the capstone is Create. Every lesson climbs at least to Apply. Not every lesson reaches every level (short lessons). For catch-up, target Apply on each 80/20 bucket (e.g., implement `softmax` + `cross-entropy` from scratch, reason `W@x+b` shapes).
+- Before presenting any **load-bearing factual claim** (a claim that, if wrong, would mis-teach the concept), batch it (with any others pending for this step) into a foreground `GATE:fact_check` envelope with `source_url` citing the combined live sources (Rohit + external); fold in verdicts before continuing — on ISSUES, correct first. Routine consistency (prerequisites, self-contradiction, coverage) is your own responsibility — check it yourself rather than delegating. **Language:** code blocks use the lesson's `lang_recommendation` (Rohit header; Python default for Phases 0–12, TypeScript for Tools/Agents, Rust where listed).
 
 ### 4. Lesson end (advancement gate → handoff to Clerk)
 - **Two-tier quiz:** retrieval items (spaced, storage strength) + higher-order items ("explain why / predict / modify"). For any multiple-choice item, follow **Multiple-choice integrity** and pass the full batch through the **quiz-audit subagent** (foreground envelope) before presenting it. Confidence tagging applies here too: a correct `hunch` does not count as retrieval success — re-check that item with an isomorphic variant.
@@ -166,9 +166,9 @@ Interleaving lives in the **review flow only** (the SRS shuffle + adjacency cons
 
 ## SRS integration
 
-- On first introduction of a new concept: add a row to `📚 Active Concepts.md` (status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`) — identical to ingest.
-- The `swe` trigger handles subsequent reviews; teaching does not bundle reviews into a single session.
-- Curriculum rows already `done` from prior learning (A1–A4): run a **retrieval check** to verify instead of re-teaching; on failure, demote the row to `in-progress` and correct the concept status.
+- On first introduction of a new concept: add a row to `📚 Active Concepts.md` (status `developing`, `last_reviewed` today, `next_review` +3d, `Last Q Type` `definitional`) — identical to ingest. Record the lesson's build language in Notes when non-Python.
+- The `review` trigger (AIEFS) handles subsequent reviews; teaching does not bundle reviews into a single session. SWE reviews are archived — do not schedule.
+- Curriculum rows already `done` from prior learning (now Mission 0 catch-up `not-started*` Phase 0 + Phase 1 L01–L06): run a **retrieval check** to verify instead of re-teaching; on failure, demote the row to `in-progress` and correct the concept status. After catch-up passes, **Phase 1 L07** is the next `in-progress` (jump per 2026-09-01).
 
 ## Writes & consistency
 

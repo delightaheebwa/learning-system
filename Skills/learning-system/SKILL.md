@@ -1,6 +1,6 @@
 ---
 name: learning-system
-description: Run the spaced-repetition learning system in Open WebUI. Triggers — "swe"/"review" (review the swe track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files from the repo at /home/user/learning-system, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes.
+description: Run the spaced-repetition learning system in Open WebUI. Triggers — "review" (review the AIEFS track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files from the repo at /home/user/learning-system, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes. Active roadmap is AI Engineering from Scratch (Rohit); SWE is archived.
 ---
 
 # Learning System
@@ -8,9 +8,9 @@ description: Run the spaced-repetition learning system in Open WebUI. Triggers �
 The active learning system, running in Open WebUI against the repo at `/home/user/learning-system` (Open Terminal workspace). Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
 
 **Trigger routing (read first):**
-- **"swe" / "review" → review flow** (below).
+- **"review" → review flow** on the AIEFS track (SWE `swe` is archived — redirect to AIEFS if requested).
 - **"teach me X" / "learn" / "study" → teaching loop** — `Skills/learning-teach/SKILL.md`, NOT a review. "review" alone means the review flow.
-- **"lesson" / "continue" → next curriculum lesson** — `Skills/learning-teach/SKILL.md`.
+- **"lesson" / "continue" → next curriculum lesson** — `Skills/learning-teach/SKILL.md` (Rohit roadmap order; Mission 0 Catch-Up 80/20 first, then Phase 1 L07).
 
 ## Context discipline (hard rules — read first)
 
@@ -28,28 +28,28 @@ Sessions die when the running conversation outgrows the model's context window: 
 ## State files (repo root: `/home/user/learning-system`)
 
 - `Learning System/Core/💡 Learning Profile.md` — learner preferences. Read at session start.
-- `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (aie, swe) with `Type` column (`memory | concept | procedure | design`). Type drives scheduler intervals. Grep/range only the needed track — never the whole file.
+- `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (now **aiefs** active; swe archived 2026-09-01) with `Type` column (`memory | concept | procedure | design`). Type drives scheduler intervals. Grep/range only the needed track — never the whole file; `📦 Concept Archive.md` is strictly out of scope.
 - `Learning System/Core/Attempts.json` — evidence-based mastery sidecar (attempt history, interval_index state machine, Feynman pass). Bundled by `ops.py state`; report via `ops.py mastery <track>` — **advisory only** (scores shown, not blocking).
 - `Learning System/Core/🧯 Mistakes.md` — structured wrong-answer ledger (error_type + self-attribution). Due mistakes are priority-1 in review queue.
-- `Learning System/Core/📦 Concept Archive.md` — paused/archived concepts. Grep on demand; never auto-load.
+- `Learning System/Core/📦 Concept Archive.md` — paused/archived concepts (SWE archived 2026-09-01). **Do not grep** — strictly out of scope per user decision. Search only on explicit revive request.
 - `Learning System/Sessions/`, `Learning System/Reviews/`, `Learning System/Concept Notes/`, `Learning System/Archive/` — writes land here.
-- `Learning System/MISSION.md`, `Learning System/CURRICULUM.md`, `Learning System/GLOSSARY.md`, `Learning System/RESOURCES.md` — mission, curriculum, glossary, curated readings.
+- `Learning System/MISSION.md`, `Learning System/CURRICULUM.md`, `Learning System/GLOSSARY.md`, `Learning System/RESOURCES.md` — mission, curriculum, glossary, curated readings (AIEFS; Rohit is a source, not the source).
 
 ## Teaching flow (delegation) — Scout → Tutor → Clerk
 
 Trigger: "teach me X", "lesson", or "continue". The pipeline runs in the **same chat**, switching presets.
 
-0. **Scout (if new lesson):** if no `Lessons/Lesson — <slug> — *.md` exists for the requested topic/lesson and no `.tmp/context-<chat_id>-<slug>.json` (7-day TTL) is present, switch to the **Scout** preset first. Scout reads `MISSION.md`, `CURRICULUM.md`, `RESOURCES.md`, relevant Active Concepts rows, and the curriculum source, then writes `Learning System/.tmp/context-<chat_id>-<slug>.json` + posts `SCOUT DIGEST:` in chat. The Tutor's gate Pipe requires this digest for new lessons (resume of an existing `Lessons/` file bypasses the check).
-1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic). If resuming (`Lessons/` file exists), the lesson file + last `Sessions/` note are the source of truth — no Scout digest needed.
-2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s current mission (strictly sequential order); if the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead.
-3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Pending Ingest for Clerk, and surface the "switching focus?" question.
-4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Claim verification runs via **foreground** `GATE:fact_check` envelopes (gate_pipe); question batches are audited via `GATE:quiz_audit` envelopes before showing. The Tutor **does not** write wiki pages/Active Concepts rows — it writes `Learning System/Core/Pending Ingest.json` and hands off to **Clerk** at lesson end (see `learning-teach`).
+0. **Scout (if new lesson):** if no `Lessons/Lesson — <slug> — *.md` exists for the requested topic/lesson and no `.tmp/context-<chat_id>-<slug>.json` (7-day TTL) is present, switch to the **Scout** preset first. Scout reads `MISSION.md`, `CURRICULUM.md`, `RESOURCES.md`, relevant Active Concepts rows, **and the curriculum source for the next lesson — `phases/<phase>/<lesson>/docs/en.md` plus every URL in its `## Further Reading`** (Rohit is a source, not the source; see `RESOURCES.md`). Scout fetches the live `docs/en.md` + 2–4 external refs via Web Search / fetch, hashes them, compares to prior digest hash if present, surfaces drift (`SCOUT DIGEST: ⚠️ Upstream changed`), and writes `Learning System/.tmp/context-<chat_id>-<slug>.json` with `{goal, slug, tracks, concept_rows, source_refs:[rohit_source, ...external_refs], rohit_hash, external_refs_hashes, lang_recommendation, fetched_at, roadmap_sha}` + posts `SCOUT DIGEST:` (headings + 3–5 bullet synthesis of external refs vs Rohit). Language per lesson header (`Languages:`) decides `lang_recommendation` (Python / TypeScript / Rust; Julia optional). No caching layer is used (decision 2026-09-01 — live fetch each lesson). The Tutor's gate Pipe requires this digest for new lessons (resume of an existing `Lessons/` file bypasses the check). **Adaptive rule:** before each new lesson, Scout re-fetches the live docs + Further Reading and checks for change; Tutor prefers the live combined sources over parametric memory. `📦 Concept Archive.md` is strictly out of scope — do not grep it.
+1. Load `Learning System/MISSION.md` + `Learning System/CURRICULUM.md` to determine the next lesson (or the requested topic). Order: **Mission 0 Catch-Up (P0+P1.01–06, 80/20, `in-progress`) is first**; after it passes, next is **Phase 1, Lesson 07 — Bayes' Theorem** (decision 2026-09-01 — jump). If resuming (`Lessons/` file exists), the lesson file + last `Sessions/` note are the source of truth — no Scout digest needed.
+2. **`lesson`/`continue`:** pick the next lesson per `CURRICULUM.md`'s current mission (strictly sequential order); Mission 0 → Phase 1 L07 → Phase 1 L08 … → Phase 19. If the lesson is resumable (mid-lesson state exists), resume where left off. A `done` lesson is never re-taught — retrieval-verify instead. `not-started*` rows (Phase 0, Phase 1 L01–L06) are covered by the catch-up — retrieval-check on demand, not re-taught.
+3. **`teach me X`:** in current-mission scope → treat as a curriculum node (add/route it); out of scope → one-off that still feeds Pending Ingest for Clerk, and surface the "switching focus?" question. For AIEFS, scope = `CURRICULUM.md` 20-phase map; map is navigational, not contractual — after each phase, decide to go deeper / branch.
+4. Delegate the full probe → plan → teach loop to the `learning-teach` skill. Claim verification runs via **foreground** `GATE:fact_check` envelopes (gate_pipe) citing **both** `rohit_source` and `external_refs` URLs; question batches are audited via `GATE:quiz_audit` envelopes before showing. The Tutor **does not** write wiki pages/Active Concepts rows — it writes `Learning System/Core/Pending Ingest.json` and hands off to **Clerk** at lesson end (see `learning-teach`). Build language follows `lang_recommendation` (per-lesson Rohit header), not a default.
 
 ## Review flow
 
-Trigger: "swe", "review", or a learning request.
+Trigger: "review" (AIEFS). `swe` is archived — redirect to AIEFS.
 
-1. Track selection: "swe" → swe table; "aie" → aie table (currently archived — ask the user before unarchiving); neither → ask which track.
+1. Track selection: `aiefs` / `aie` → AIEFS table (active — Mission 0 catch-up + Phases 0–19). `swe` is archived 2026-09-01 (do not revive without explicit request); if user says "swe", note it is archived and offer AIEFS. Neither → assume AIEFS.
 2. Session start — ONE call: `run_command` → `python3 scripts/ops.py state <track>`. This now returns Learning Profile + your track's Active Concepts rows + Attempts.json (advisory mastery scores) + 🧯 Mistakes.md. Do not read those files separately.
 3. Build the queue:
    - Slots 1–2 = due mistakes from `🧯 Mistakes.md` where Next Retry ≤ today (`active`/`review`), oldest first (priority-1, DeepTutor pattern).
@@ -93,9 +93,9 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 
 ## Open WebUI adaptation
 
-- **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system`) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
-- **Pipeline presets:** `Scout` → `Tutor` → `Clerk` in the same chat (switch preset per message). Scout writes the ephemeral digest; Tutor teaches; Clerk ingests. See `OPENWEBUI.md`.
+- **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system` — `host.docker.internal:3000` from WSL when Docker Desktop runs Windows-side, separate from WSL; `/home/user/learning-system` in container vs `/home/delinux/learning-system` in WSL) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
+- **Pipeline presets:** `Scout` → `Tutor` → `Clerk` in the same chat (switch preset per message). Scout writes the ephemeral digest (now includes `rohit_hash` + `external_refs` + `lang_recommendation` + `roadmap_sha`; adaptive re-fetch, Further Reading synthesis; `📦 Concept Archive.md` strictly out of scope); Tutor teaches; Clerk ingests. See `OPENWEBUI.md`.
 - **Gate Pipe:** `Skills/learning-review/openwebui/gate_pipe.py` (Filter, inlet/outlet) blocks Tutor/Clerk output without valid foreground `GATE:*` receipts and enforces Scout digest for new lessons (7-day TTL). Fixed verifier wording lives in global `subagents.system_prompt` — send data only.
 - **Review gate (Clerk):** dispatch ONE foreground `GATE:review` envelope on the wiki content you wrote. Applies to handoffs from Tutor and standalone `/ingest`.
-- **Teaching verification (Tutor):** batch load-bearing claims into foreground `GATE:fact_check` envelopes before presenting them; fold verdicts in before continuing.
+- **Teaching verification (Tutor):** batch load-bearing claims into foreground `GATE:fact_check` envelopes (cite both `rohit_source` and `external_refs`) before presenting them; fold verdicts in before continuing. Build language follows the lesson's Rohit header.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

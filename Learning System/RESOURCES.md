@@ -1,19 +1,39 @@
-# RESOURCES.md — SWE Foundations (Stage 0: Fluency & Tools)
+# RESOURCES.md — AI Engineering from Scratch (Rohit)
 
-> Curated trusted sources for the current mission. The teacher draws knowledge from here (never bare parametric memory) and proposes new entries for user approval. Wisdom/communities reserved for a later round.
->
-> C-project resources (Make internals, GCC, Acutest, /proc, termios, kilo) were archived with the C project on 2026-08-24 — see `Archive/CURRICULUM — Stage 0 two-strand` history and `Core/📦 Concept Archive.md`; re-add on request if a concept is revived.
+> Curated trusted sources for the current mission. The teacher draws knowledge from combined sources — Rohit's `docs/en.md` **plus** every link in its `## Further Reading` plus the entries below — never bare parametric memory. Rohit is a source, not the source. Scout gathers this synthesis; the teacher proposes new entries for user approval.
 
-## Knowledge
+> Archive note: MIT Missing Semester / GNU Make / C-project resources remain valid as supporting refs but are not the driving curriculum. SWE Primary Colors roadmap archived 2026-09-01 — see `Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md`.
 
-- [MIT Missing Semester (2026)](https://missing.csail.mit.edu/2026/) — shell, git, debugging, editors. Primary curriculum source for Mission 1.
-- [GNU Make Manual](https://www.gnu.org/software/make/manual/) — targets, prerequisites, recipes. Use for: any Makefile claim (active Makefile concepts).
+## Knowledge (Primary)
+
+- [AI Engineering from Scratch — ROADMAP](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/ROADMAP.md) — 20 phases, 523 lessons, ~323h. Order + status. Lessons live at `phases/<NN>-<phase>/<NN>-<lesson>/docs/en.md` with `code/` implementations.
+- [AI Engineering from Scratch — GitHub](https://github.com/rohitg00/ai-engineering-from-scratch) — `docs/en.md` per lesson (`## Further Reading` at bottom is the provenance to fetch — Scout brings all of these together, not just `docs/en.md`).
+- [AI Engineering from Scratch — Website](https://aiengineeringfromscratch.com) — rendered lessons + phase sites.
+
+### Phase-routed sources (Scout fetches the lesson's Further Reading + these as needed)
+
+- **Phase 0 Tooling:** `uv` docs, `fnm`/`pnpm`, `rustup`, PyTorch CUDA/MPS docs (`torch.cuda.is_available()`), `verify.py --route` scripts in `phases/00-setup-and-tooling/01-dev-environment/code/`.
+- **Phase 1 Math Foundations:**
+  - 3Blue1Brown — linear algebra / probability intuition (linked from P1 Further Reading, e.g., CLT https://www.youtube.com/watch?v=zeJD6dqJ5lo).
+  - Stanford CS229 — Probability Review (https://cs229.stanford.edu/section/cs229-prob.pdf), Linear Algebra Review.
+  - Greg Gundersen — Log-Sum-Exp Trick (https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/) — numerical stability for softmax/NLL.
+  - (Scout adds per-lesson links: e.g., P1 L01–L06 Further Reading entries for vectors, eigen, autodiff chain rule, etc.)
+- **Later phases:** add on entry — Transformers (Attention Is All You Need), Diffusion (DDPM), RL (Sutton & Barto), LLM eval harnesses, MCP/A2A specs — propose at phase start for user approval.
+
+## Supporting (on demand)
+
+- [MIT Missing Semester (2026)](https://missing.csail.mit.edu/2026/) — shell, git, debugging, editors — still useful for Phase 0 Terminal/Shell/Linux (Scout may fetch but not drive).
+- [GNU Make Manual](https://www.gnu.org/software/make/manual/) — for Makefile-backed builds where `code/` uses Make.
+- Previous lesson notes: `Knowledge Wiki/wiki/AI Engineering from Scratch — Roadmap.md` (index), `Learning System/CURRICULUM.md` (what's next), per-lesson `Lessons/` files (formed after catch-up).
 
 ## Wisdom (Communities)
 
-- (Reserved — not started. Suggest communities when the user is ready.)
+- (Reserved — not started. Suggest communities when the user is ready — e.g., PyTorch forums, Hugging Face, local AI engineer meetups. Rohit's Discussions: https://github.com/rohitg00/ai-engineering-from-scratch/discussions)
 
 ## Gaps
 
-- Stage 1 (Computation) resources to add when Mission 2 activates: CS61B / _Grokking Algorithms_, Write Yourself a Git! / ugit.
-- Higher-order "why" reading for Color 6 (debugging methodology) — fill as lessons demand.
+- Fill per phase on activation: Phase 7 Transformers (original Transformer paper, RoPE/ALiBi refs), Phase 10 LLMs from Scratch (tokenizer BPE, distributed training refs), Phase 13 MCP/A2A specs, Phase 18 alignment research (MATS/Redwood/Apollo). Scout proposes new entries; user approves.
+
+## How Scout uses this file
+
+Scout reads `MISSION.md`, `CURRICULUM.md`, **this file**, relevant `📚 Active Concepts.md` rows, **and** the target lesson's `docs/en.md` + **every URL in its `## Further Reading`** (Web Search / fetch, 2–4 per lesson). It writes `Learning System/.tmp/context-<chat>-<slug>.json` with `{goal, slug, rohit_source, rohit_hash, external_refs:[{url,hash,summary}], lang_recommendation, fetched_at, roadmap_sha}` and posts `SCOUT DIGEST:` (headings + 3–5 bullet synthesis of external refs vs Rohit). Tutor teaches from the combined digest; verification (`GATE:fact_check`) cites both `source_url`s.

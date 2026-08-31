@@ -33,8 +33,9 @@
 
 
 ## Concepts
+- [[AI Engineering from Scratch — Roadmap]] (active — Rohit 20 phases; 2026-09-01)
 - [[AI Engineering Roadmap v2]]
-- [[SWE Primary Colors & Roadmap]]
+- [[SWE Primary Colors & Roadmap]] (archived 2026-09-01 — see AIEFS Roadmap)
 - [[less (Pager)]]
 
 - \[\[AI Engineering - Dev Environment Stack\]\]

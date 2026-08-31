@@ -8,23 +8,23 @@
 - **Handle:** delight
 - **Personality:** ISFP-T (Turbulent Adventurer)
 - **Created:** 2026-04-13
-- **Last Updated:** 2026-08-16
+- **Last Updated:** 2026-09-01 — switched to AIEFS (Rohit); added Mission 0 catch-up, language-per-lesson rule, Docker Desktop/WSL note.
 
 ## Academic Context
 
 - **Year:** 2nd Year University Student
 - **Field:** AI/ML (Artificial Intelligence / Machine Learning)
-- **Current Focus:** SWE Foundations — Stage 0 (Fluency & Tools); AI/ML roadmap paused
+- **Current Focus:** AI Engineering from Scratch (Rohit) — Mission 0 Catch-Up (P0 + P1.01–06, 80/20 reactivation)
 
 ## Current Roadmap
 
-- **Active Roadmap:** SWE Foundations — Stage 0 (Fluency & Tools)
-- **Goal:** Make the base reflexive — shell, git, debugging, editors — per the SWE Primary Colors roadmap
-- **Source:** MIT Missing Semester (https://missing.csail.mit.edu/2026/) + SWE Primary Colors roadmap
-- **Roadmap stored at:** `Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
-- **Current Position:** Stage 0 — Mission 1 (MIT Missing Semester) in progress · Lecture 4 (Debugging and Profiling) next
-- **Archived:** Terminal System Monitor C project (archived 2026-08-24) · AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
-- **Sequencing:** Stage 0 (current) → Stage 1 Computation → Stage 2 Systems → Stage 3 Abstraction → Stage 4 State → Stage 5 Interaction → Stage 6 White Light
+- **Active Roadmap:** AI Engineering from Scratch by Rohit Ghumare (https://github.com/rohitg00/ai-engineering-from-scratch) — 20 phases (0–19), 523 lessons, ~323h
+- **Goal:** Build real AI systems end-to-end (math → DL → LLMs → agents → multimodal → production), shipping one artifact per lesson — Rohit is a source, not the source (Scout synthesizes docs/en.md + Further Reading).
+- **Source:** https://github.com/rohitg00/ai-engineering-from-scratch — `ROADMAP.md` (order) + `phases/<phase>/<lesson>/docs/en.md` + Further Reading external refs + `code/` per lesson.
+- **Roadmap stored at:** `Knowledge Wiki/wiki/AI Engineering from Scratch — Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
+- **Current Position:** Mission 0 — Catch-Up: Foundations Reactivation (P0 + P1.01–06, 80/20, in-progress) · Next real lesson after catch-up: **Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking** (decision 2026-09-01 — jump, not Phase 0 L01)
+- **Archived:** SWE Primary Colors roadmap (archived 2026-09-01 — see `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` + wiki banner, 43 concepts paused) · Terminal System Monitor C project (archived 2026-08-24) · AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
+- **Sequencing:** Mission 0 Catch-Up (P0+P1.01–06, 80/20) → Phase 1 L07 → Phases 1–19 sequential (0→19). Full 20-phase map present for navigation; not a contract — after each phase, decide to go deeper / branch / build.
 
 ## Learning Style Preferences
 

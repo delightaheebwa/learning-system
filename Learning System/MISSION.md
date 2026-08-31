@@ -1,36 +1,40 @@
-# Mission: Stage 0 — Fluency & Tools (Color 6: Process)
+# Mission: AI Engineering from Scratch (Rohit) — Foundations → Production
 
 ## Why
 
-Make the base reflexive so nothing later fights you — "tooling becomes reflex,
-not friction." The six Primary Colors roadmap structures the whole SWE journey;
-this mission is its Stage 0. Full roadmap:
-`Knowledge Wiki/wiki/SWE Primary Colors & Roadmap.md` (also the authoritative
-copy in `~/swe/SWE Primary Colors & Roadmap.md`).
+Build real AI systems end-to-end, from math foundations to shipped agents and production infrastructure — not just calling APIs. The curriculum is **AI Engineering from Scratch** by Rohit Ghumare (https://github.com/rohitg00/ai-engineering-from-scratch): 523 lessons, 20 phases, ~323h, Python/TypeScript/Rust, every lesson ships a reusable artifact (prompt/skill/agent/MCP). Full map: `Knowledge Wiki/wiki/AI Engineering from Scratch — Roadmap.md` and `Learning System/CURRICULUM.md`.
+
+Rohit is **a source, not the source** — his roadmap gives direction and sequence; Scout gathers `docs/en.md` **plus** every link in its `## Further Reading` (§6) and curated `RESOURCES.md` entries, synthesizing primary sources (papers, docs, 3Blue1Brown, Stanford notes) rather than copying one narrative.
+
+The learning loop (OpenWebUI: Scout → Tutor → Clerk) adapts to upstream changes: Scout re-fetches the live `phases/<phase>/<lesson>/docs/en.md` + Further Reading before each new lesson, surfaces drift (`SCOUT DIGEST: ⚠️ Upstream changed`), and the Tutor prefers the live combined sources.
+
+## Current Phase
+
+- **Catch-Up (Mission 0):** 80/20 reactivation of Phase 0 + Phase 1 L01–L06 (up to Probability & Distributions) — `in-progress`. Covers: 4-layer env stack, vectors/matrices/dot product, transforms/eigen, calculus substrate, probability core (PMF/PDF, CLT, softmax/log-sum-exp, cross-entropy).
+- **Next real lesson after catch-up:** **Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking** (per decision 2026-09-01 — jump, not Phase 0 L01). See `CURRICULUM.md` Mission 2.
+- **Full map:** Missions 1–21 = Phases 0–19 (20 phases). Present for navigation; not a contract to finish end-to-end — after each phase, decide to go deeper / branch / build a learning system around a topic.
 
 ## Success looks like
 
-- Shell fluency: pipelines, redirection, job control, scripting, dotfiles (MIT Missing Semester).
-- Editor + environment mastery: Vim/customization from lecture 3.
-- Debugging and profiling: gdb, strace, perf; you can trace a program to its syscalls.
-- Git internals, not just commands (lecture 5).
-- Data wrangling: regex/sed/awk applied to real output (lecture 6).
-- Security and cryptography basics (lecture 7).
-- Tested-code habits carry over from prior learning: testable seams, Arrange–Act–Assert, red–green–refactor.
+- You can set up a reproducible AI env (uv/venv, verify.py, GPU/MPS check) and explain the 4-layer stack.
+- You can implement vectors, matrices, `W@x+b`, PMF/PDF/softmax+NLL from scratch, and state why CLT makes normals dominate.
+- Through later phases you climb: backprop from scratch → transformers → LLMs → agents → multimodal → infrastructure → ethics → capstones, shipping one artifact per lesson.
+- Every artifact is built (not pasted) and verified (tests + evidence: command, cwd, exit code, artifact diff).
 
 ## Constraints
 
-- Manual triggers; moderate pace; step-by-step + real-world analogies (soccer).
-- Lessons are sequential — one at a time. Interleaving lives in the review flow only.
-- Guided Socratic questioning (never pure Socratic — resolve confusion immediately with an analogy or smaller step).
-- Push toward higher-order thinking (Bloom), phase-mapped; lessons are short and completable.
-- A lesson advances only after demonstrating the lesson's skill (retrieval check + Feynman explain-back).
-- Local-first repo; source of truth is this GitHub repo.
+- Manual triggers; moderate pace; step-by-step + real-world analogies (soccer) where useful.
+- Lessons sequential within a phase; phases in roadmap order. **Branching allowed** after a phase (deeper dive) — orthogonal to interleaving.
+- Interleaving lives only in review flow (SRS shuffle + adjacency + question-type alternation) — never inside lessons/quizzes.
+- Guided Socratic questioning (never pure Socratic — resolve confusion immediately).
+- Push toward higher-order thinking (Bloom), phase-mapped; lessons short and completable.
+- Advancement only after practice + retrieval check + Feynman explain-back (Learning Record).
+- Local-first repo (`/home/user/learning-system` in container, `/home/delinux/learning-system` in WSL); OpenWebUI is control layer.
+- OpenWebUI runs in **Docker Desktop on Windows side, separate from WSL** — base URL `http://host.docker.internal:3000` from WSL, not `localhost:3000`; `~/.git-credentials` lives in Open Terminal volume. See `OPENWEBUI.md`.
+- Archived SWE Primary Colors roadmap is paused and strictly out of scope for Scout/Tutor grep (see `📦 Concept Archive.md`).
 
 ## Out of scope
 
-- The roadmap's Stage-0 Python CLI-tool projects (skipped by decision, 2026-08-24) and the C Terminal System Monitor project (archived 2026-08-24 — see `Archive/CURRICULUM — Stage 0 two-strand` and `Core/📦 Concept Archive.md`).
-- Stages 1–6 of the roadmap (Computation, Systems, Abstraction, State, Interaction, White-Light capstones) — for later missions.
-- AI Engineering / Data Science roadmap (paused).
-- Wisdom/community sourcing (reserved for a later round; see RESOURCES.md).
-- Scripture Memory (separate skill, untouched).
+- SWE Primary Colors roadmap (archived 2026-09-01 — `Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md`, wiki banner).
+- Terminal System Monitor C project (archived 2026-08-24) and legacy Scripture Memory skill.
+- Phase caching layer (ignored per decision 2026-09-01 — live fetch each lesson; no `Curriculum/cache/`).
