@@ -250,42 +250,45 @@ def main() -> int:
 
     c = Client(args.base_url, args.api_key)
 
+    def upsert(path_create: str, path_update: str, payload: dict, conflict_marker: str, label: str) -> None:
+        status, resp = c.post(path_create, payload, conflict_marker=conflict_marker)
+        if resp is not None:
+            print(f"  + created {label}")
+            return
+        if status == 400:
+            status2, _ = c.post(path_update, payload)
+            ok = status2 == 200
+            print(f"  ~ updated {label}" if ok else f"  ! failed to update {label}")
+
     print("== Skills ==")
     for rel in SKILLS:
         skill_id, name, desc, content = parse_skill_md(os.path.join(REPO_ROOT, rel))
         payload = {"id": skill_id, "name": name, "description": desc, "content": content, "meta": {"tags": []}, "is_active": True, "access_grants": []}
-        status, resp = c.post("/api/v1/skills/create", payload, conflict_marker="ID_TAKEN")
-        if resp is not None:
-            print(f"  + created skill {skill_id}")
-        elif status == 400:
-            status2, _ = c.post(f"/api/v1/skills/id/{skill_id}/update", payload)
-            print(f"  ~ updated skill {skill_id}" if status2 == 200 else f"  ! failed to update {skill_id}")
+        upsert("/api/v1/skills/create", f"/api/v1/skills/id/{skill_id}/update", payload, "ID_TAKEN", f"skill {skill_id}")
 
     print("== Gate Filter (Function) ==")
     # Combine gate_pipe + gate_schema into one Function content (gate_schema imported as sibling, but we inline for single-function install)
+    def inline_gate_filter(schema_src: str, pipe_src: str) -> str:
+        if "from gate_schema import" not in pipe_src:
+            return pipe_src
+        start = pipe_src.find("try:\n    from gate_schema import")
+        if start == -1:
+            return pipe_src
+        end_marker = "extract_json_block = lambda t: None"
+        end = pipe_src.find(end_marker, start)
+        if end == -1:
+            return pipe_src
+        end = pipe_src.find("\n", end)
+        if end != -1:
+            end += 1
+        return pipe_src[:start] + "# gate_schema inlined above — already defined in schema_src\npass\n" + pipe_src[end:]
+
     try:
         with open(os.path.join(REPO_ROOT, "Skills/learning-review/openwebui/gate_schema.py"), "r", encoding="utf-8") as f:
             schema_src = f.read()
         with open(os.path.join(REPO_ROOT, "Skills/learning-review/openwebui/gate_pipe.py"), "r", encoding="utf-8") as f:
             pipe_src = f.read()
-        # Remove the try/except import block that pulls gate_schema when inlined — schema_src already defines those symbols
-        # The block is multi-line; find it by markers rather than fragile regex
-        if "from gate_schema import" in pipe_src:
-            start = pipe_src.find("try:\n    from gate_schema import")
-            if start != -1:
-                end_marker = "extract_json_block = lambda t: None"
-                end = pipe_src.find(end_marker, start)
-                if end != -1:
-                    end = pipe_src.find("\n", end)
-                    if end != -1:
-                        end += 1
-                    pipe_src_inlined = pipe_src[:start] + "# gate_schema inlined above — already defined in schema_src\npass\n" + pipe_src[end:]
-                else:
-                    pipe_src_inlined = pipe_src
-            else:
-                pipe_src_inlined = pipe_src
-        else:
-            pipe_src_inlined = pipe_src
+        pipe_src_inlined = inline_gate_filter(schema_src, pipe_src)
         # Sanity check: the inlined content must still compile
         try:
             compile(schema_src + "\n\n" + pipe_src_inlined, "<gate_pipe_inlined>", "exec")
@@ -302,12 +305,7 @@ def main() -> int:
             "is_active": True,
             "access_grants": [],
         }
-        status, resp = c.post("/api/v1/functions/create", payload, conflict_marker="ID_TAKEN")
-        if resp is not None:
-            print(f"  + created function {GATE_FILTER_ID}")
-        elif status == 400:
-            status2, _ = c.post(f"/api/v1/functions/id/{GATE_FILTER_ID}/update", payload)
-            print(f"  ~ updated function {GATE_FILTER_ID}" if status2 == 200 else f"  ! failed to update {GATE_FILTER_ID}")
+        upsert("/api/v1/functions/create", f"/api/v1/functions/id/{GATE_FILTER_ID}/update", payload, "ID_TAKEN", f"function {GATE_FILTER_ID}")
         # Ensure Valves priority is set (filter ordering)
         c.post(f"/api/v1/functions/id/{GATE_FILTER_ID}/valves/update", {"priority": 10, "max_retries": 2, "digest_ttl_days": 7})
     except Exception as e:
@@ -345,10 +343,11 @@ def main() -> int:
             "meta": {"description": preset["description"], "capabilities": preset["capabilities"], "skillIds": preset["skillIds"], "knowledge": [], "filterIds": filter_ids},
             "access_grants": [], "is_active": True,
         }
+        # Models use 401 for duplicate (not 400) — handle both
         status, resp = c.post("/api/v1/models/create", payload, conflict_marker="MODEL_ID_TAKEN")
         if resp is not None:
             print(f"  + created model {preset['id']} (base: {base})")
-        elif status == 400:
+        elif status in (400, 401):
             status2, _ = c.post("/api/v1/models/model/update", payload)
             print(f"  ~ updated model {preset['id']} (base preserved: {base})" if status2 == 200 else f"  ! failed to update {preset['id']}")
         else:
@@ -357,12 +356,7 @@ def main() -> int:
     print("== Prompts ==")
     for p in PROMPTS:
         payload = {"command": p["command"], "name": p["name"], "content": p["content"], "access_grants": []}
-        status, resp = c.post("/api/v1/prompts/create", payload, conflict_marker="ID_TAKEN")
-        if resp is not None:
-            print(f"  + created prompt /{p['command']}")
-        elif status == 400:
-            status2, _ = c.post(f"/api/v1/prompts/id/{p['command']}/update", payload)
-            print(f"  ~ updated prompt /{p['command']}" if status2 == 200 else f"  ! failed to update /{p['command']}")
+        upsert("/api/v1/prompts/create", f"/api/v1/prompts/id/{p['command']}/update", payload, "ID_TAKEN", f"prompt /{p['command']}")
 
     print("\nDone. Verify: Workspace → Models (Scout/Tutor/Clerk) and Functions → Gate Pipe.")
     print("Gate Filter is bound to Tutor and Clerk only; Scout is exempt.")
