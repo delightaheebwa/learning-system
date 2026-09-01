@@ -7,8 +7,12 @@ Runs as outlet (blocking before render) with inlet pass-through.
 Enforces:
 - Tutor new-lesson: Scout digest + Scout message present (slug match, 7-day TTL).
   Resume of existing lesson (Lessons/ file exists) bypasses digest check.
-- Tutor/Clerk content: foreground GATE:fact_check / GATE:review / GATE:quiz_audit
-  receipts exist as child internal chats (Chats.meta.parent_message_id == draft.id).
+- Tutor content (Learning Tutor only, multi-turn): per-generation GATE:fact_check /
+  GATE:quiz_audit receipts — each Tutor generation that teaches must have a fresh
+  fact_check (claims) or quiz_audit (questions) with parent_message_id == draft.id;
+  an upfront Plan batch never satisfies later Teach steps, and quiz_audit never
+  satisfies claims. Mixed claims+quiz needs BOTH receipts for the same message.
+- Clerk content (single-turn): single GATE:review receipt per wiki write.
 
 Retry: outlet replaces blocked draft with BLOCKED (<code>) banner. Cap 2 per
 USER TURN (reset when parent user message changes), durably counted in
@@ -56,6 +60,145 @@ except Exception:
 TMP_DIR = ".tmp"
 SLUG_RE = re.compile(r"[^a-z0-9]+")
 TRIGGER_RE = re.compile(r"^\s*(/teach|/lesson|/continue|teach me|learn|study)\b", re.I)
+# Per-generation gate (Tutor only): detect quiz vs claims content
+_QUIZ_RE = re.compile(r"(\|\s*A\s*\||\|\s*B\s*\||\bQ\s*\d+\b|Your answer \+ confidence|correct_index|questions_json)", re.I)
+
+
+def _is_quiz_content(text: str) -> bool:
+    return bool(_QUIZ_RE.search(text or ""))
+
+
+def _non_quiz_prose_len(text: str) -> int:
+    """Chars outside quiz markers/tables — used to distinguish pure quiz vs mixed."""
+    total = 0
+    for line in text.splitlines():
+        if _QUIZ_RE.search(line):
+            continue
+        stripped = line.strip()
+        if stripped.startswith("|") and stripped.endswith("|"):
+            continue
+        total += len(stripped)
+    return total
+
+
+def _is_claims_content(text: str) -> bool:
+    s = (text or "").strip()
+    if len(s) < 120:
+        return False
+    if not _is_quiz_content(s):
+        return True
+
+    non_quiz = _non_quiz_prose_len(s)
+    hits = len(_QUIZ_RE.findall(s))
+
+    # Pure quiz: several markers but little prose → quiz-only
+    if hits >= 3 and non_quiz < 300:
+        return False
+    if hits >= 2 and non_quiz < 200:
+        return False
+
+    # Mixed: quiz markers plus substantial prose → needs fact_check as well
+    if non_quiz > 250:
+        return True
+    return len(s) > 500 and non_quiz > 120
+
+
+def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
+    """Return (needs_fact_check, needs_quiz_audit, needs_review) for Gate 2."""
+    if is_tutor:
+        needs_fact = _is_claims_content(content)
+        needs_quiz = _is_quiz_content(content)
+        if not needs_fact and not needs_quiz and len(content.strip()) > 120:
+            needs_fact = True
+        return needs_fact, needs_quiz, False
+    if is_clerk and len(content.strip()) > 80:
+        return False, False, True
+    return False, False, False
+
+
+def _check_fact_check(data: dict, verd_text: str):
+    """Validate fact_check envelope + verdicts. Returns (ok, code, detail)."""
+    # Lift per-claim source to top-level if needed (LLM drift)
+    if not data.get("source_url") and not data.get("source_file"):
+        for c in (data.get("claims") or []):
+            if isinstance(c, dict) and (c.get("source_url") or c.get("source_file")):
+                if c.get("source_url"):
+                    data["source_url"] = c.get("source_url")
+                if c.get("source_file"):
+                    data["source_file"] = c.get("source_file")
+                break
+    if GATEFactCheckEnvelope is not None:
+        try:
+            clean = dict(data)
+            clean["claims"] = [{k: v for k, v in cc.items() if k in ("id", "claim")} if isinstance(cc, dict) else cc for cc in (clean.get("claims") or [])]
+            GATEFactCheckEnvelope.model_validate(clean)
+        except Exception as e:
+            return False, "MALFORMED_ENVELOPE", f"fact_check envelope invalid: {e}"
+    claims = data.get("claims") or []
+    if not claims or not isinstance(claims, list):
+        return False, "MALFORMED_ENVELOPE", "GATE:fact_check envelope missing claims[]"
+    if not data.get("source_url") and not data.get("source_file"):
+        return False, "MALFORMED_ENVELOPE", "GATE:fact_check requires source_url or source_file"
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    if not verdict_data or "verdicts" not in verdict_data:
+        return False, "MALFORMED_VERDICTS", "Subagent did not return {verdicts:[...]}"
+    verdicts = verdict_data.get("verdicts") or []
+    bad = [v for v in verdicts if v.get("verdict") not in ("PASS", "ISSUES", "UNVERIFIED")]
+    if bad:
+        return False, "MALFORMED_VERDICTS", f"Invalid verdict value: {bad[0].get('verdict')}"
+    verdict_ids = {v.get("id") for v in verdicts}
+    claim_ids = {c.get("id") for c in claims}
+    if claim_ids - verdict_ids:
+        return False, "MALFORMED_VERDICTS", f"Verdicts missing ids: {claim_ids - verdict_ids}"
+    return True, "", ""
+
+
+def _check_quiz_audit(data: dict, verd_text: str):
+    if GATEQuizAuditEnvelope is not None:
+        try:
+            GATEQuizAuditEnvelope.model_validate(data)
+        except Exception as e:
+            return False, "MALFORMED_ENVELOPE", f"quiz_audit envelope invalid: {e}"
+    if not data.get("questions_json") or not isinstance(data.get("questions_json"), list):
+        return False, "MALFORMED_ENVELOPE", "GATE:quiz_audit requires questions_json[]"
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    if not verdict_data or "verdict" not in verdict_data:
+        return False, "MALFORMED_VERDICTS", "Quiz-audit subagent did not return {verdict: PASS|ISSUES}"
+    if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
+        return False, "MALFORMED_VERDICTS", f"Invalid quiz verdict: {verdict_data.get('verdict')}"
+    return True, "", ""
+
+
+def _check_review(data: dict, verd_text: str):
+    if GATEReviewEnvelope is not None:
+        try:
+            GATEReviewEnvelope.model_validate(data)
+        except Exception as e:
+            return False, "MALFORMED_ENVELOPE", f"review envelope invalid: {e}"
+    if not data.get("wiki_content") or not data.get("concepts"):
+        return False, "MALFORMED_ENVELOPE", "GATE:review requires wiki_content and concepts"
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    if not verdict_data or "verdict" not in verdict_data:
+        return False, "MALFORMED_VERDICTS", "Review subagent did not return {verdict: PASS|ISSUES}"
+    if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
+        return False, "MALFORMED_VERDICTS", f"Invalid review verdict: {verdict_data.get('verdict')}"
+    return True, "", ""
+
+
+def _parse_gate_envelope(task: str):
+    """Extract gate data dict from delegate_task payload, handling GATE: prefix."""
+    json_part = task
+    if "GATE:" in task:
+        parts = task.split("\n", 1)
+        if len(parts) == 2:
+            json_part = parts[1]
+    stripped = json_part.strip()
+    if stripped.startswith("{"):
+        try:
+            return json.loads(stripped)
+        except Exception:
+            return extract_json_block(task) if callable(extract_json_block) else None
+    return extract_json_block(task) if callable(extract_json_block) else None
 
 
 def _slugify(text: str) -> str:
@@ -241,6 +384,71 @@ class Filter:
             pass
         return body
 
+    def _parse_child_hist(self, hist: dict):
+        task = ""
+        content = ""
+        for m in (hist or {}).values():
+            if m.get("role") == "user":
+                task = m.get("content") or task
+            if m.get("role") == "assistant":
+                content = m.get("content") or content
+        is_done = any(isinstance(v, dict) and v.get("done") for v in (hist or {}).values())
+        return task, content, is_done
+
+    async def _fetch_child_chats(self, chat_id: str, assistant_id: str, user: dict):
+        """Fetch foreground subagent receipts with parent_message_id == assistant_id."""
+        child_chats: list[dict] = []
+        try:
+            from sqlalchemy import select
+            from open_webui.internal.db import get_async_db
+            from open_webui.models.chats import Chat
+
+            user_id = user.get("id")
+            async with get_async_db() as db:
+                result = await db.execute(
+                    select(Chat).where(
+                        Chat.user_id == user_id,
+                        Chat.meta["internal"].as_boolean().is_(True),
+                        Chat.meta["type"].as_string() == "subagent",
+                        Chat.meta["parent_message_id"].as_string() == assistant_id,
+                    )
+                )
+                for row in result.scalars().all():
+                    meta = row.meta or {}
+                    hist = (row.chat or {}).get("history", {}).get("messages", {}) if hasattr(row, "chat") else {}
+                    task, content, is_done = self._parse_child_hist(hist)
+                    child_chats.append(
+                        {"id": row.id, "meta": meta, "mode": meta.get("mode", ""), "task": task, "content": content, "done": is_done}
+                    )
+            if child_chats:
+                return child_chats
+
+            # Fallback: legacy lookup via parent chat id
+            from open_webui.models.chats import Chats
+
+            ids = await Chats.get_internal_chat_ids_by_parent_id(chat_id, user_id)
+            for cid in ids:
+                c = await Chats.get_chat_by_id(cid)
+                if not c or (c.meta or {}).get("parent_message_id") != assistant_id:
+                    continue
+                meta = c.meta or {}
+                if (meta.get("mode") or "").lower() in ("background", "async"):
+                    continue
+                hist = (c.chat or {}).get("history", {}).get("messages", {})
+                task, content, is_done = self._parse_child_hist(hist)
+                if not is_done:
+                    continue
+                child_chats.append({"id": cid, "meta": meta, "mode": meta.get("mode", ""), "task": task, "content": content, "done": True})
+        except Exception as e:
+            try:
+                import logging
+
+                logging.getLogger(__name__).debug(f"gate_pipe child lookup failed (fail open): {e}")
+            except Exception:
+                pass
+            return None  # signal fail-open to caller
+        return child_chats
+
     async def outlet(self, body: dict, __user__: dict = None, __request__=None, __metadata__: dict = None, __model__: dict = None) -> dict:  # type: ignore
         """
         body shape (middleware outlet_filter_handler):
@@ -382,107 +590,30 @@ class Filter:
                     assistant_msg["content"] = blocked
                     return body
 
-            # Gate 2: Receipts for load-bearing claims (Tutor) and review (Clerk)
-            needs_receipt = False
-            if is_tutor and len(content_str.strip()) > 120:
-                needs_receipt = True
-            if is_clerk and len(content_str.strip()) > 80:
-                needs_receipt = True
+            # Gate 2: Per-generation receipts — Tutor is multi-turn; Clerk single-turn
+            needs_fact_check, needs_quiz_audit, needs_review = _gate_needs(
+                content_str, is_tutor, is_clerk
+            )
+            needs_receipt = any((needs_fact_check, needs_quiz_audit, needs_review))
 
             if not needs_receipt:
                 # Trivial messages don't need receipts, but don't reset turn-scoped cap here
                 # (that would allow gaming via short acks). Only valid receipts reset.
                 return body
 
-            # Look up child internal chats with parent_message_id == assistant_id
-            child_chats = []
-            try:
-                from sqlalchemy import select
-                from open_webui.internal.db import get_async_db
-                from open_webui.models.chats import Chat
+            child_chats = await self._fetch_child_chats(chat_id, assistant_id, __user__)
+            if child_chats is None:
+                return body  # fail open on DB error (helper already logged)
 
-                user_id = __user__.get("id")
-                async with get_async_db() as db:
-                    result = await db.execute(
-                        select(Chat).where(
-                            Chat.user_id == user_id,
-                            Chat.meta["internal"].as_boolean().is_(True),
-                            Chat.meta["type"].as_string() == "subagent",
-                            Chat.meta["parent_message_id"].as_string() == assistant_id,
-                        )
-                    )
-                    rows = list(result.scalars().all())
-                    for row in rows:
-                        meta = row.meta or {}
-                        hist = (row.chat or {}).get("history", {}).get("messages", {}) if hasattr(row, "chat") else {}
-                        assistant_content = ""
-                        task_prompt = ""
-                        for m in (hist or {}).values():
-                            if m.get("role") == "user":
-                                task_prompt = m.get("content") or task_prompt
-                            if m.get("role") == "assistant":
-                                assistant_content = m.get("content") or assistant_content
-                        is_done = any(isinstance(v, dict) and v.get("done") for v in (hist or {}).values())
-                        # Also check meta.mode
-                        mode = (meta or {}).get("mode", "")
-                        child_chats.append(
-                            {
-                                "id": row.id,
-                                "meta": meta,
-                                "mode": mode,
-                                "task": task_prompt,
-                                "content": assistant_content,
-                                "done": is_done,
-                            }
-                        )
-                if not child_chats:
-                    from open_webui.models.chats import Chats
-    
-                    ids = await Chats.get_internal_chat_ids_by_parent_id(chat_id, user_id)
-                    for cid in ids:
-                        c = await Chats.get_chat_by_id(cid)
-                        if not c or (c.meta or {}).get("parent_message_id") != assistant_id:
-                            continue
-                        meta2 = c.meta or {}
-                        mode2 = (meta2 or {}).get("mode", "")
-                        # Same foreground + completed gate as the primary path —
-                        # the fallback must not accept background/incomplete receipts.
-                        if mode2 == "background" or mode2 == "async":
-                            continue
-                        hist2 = (c.chat or {}).get("history", {}).get("messages", {})
-                        task2 = ""
-                        content2 = ""
-                        for m2 in (hist2 or {}).values():
-                            if m2.get("role") == "user":
-                                task2 = m2.get("content") or task2
-                            if m2.get("role") == "assistant":
-                                content2 = m2.get("content") or content2
-                        is_done = any(isinstance(v, dict) and v.get("done") for v in (hist2 or {}).values())
-                        if not is_done:
-                            continue
-                        child_chats.append(
-                            {
-                                "id": cid,
-                                "meta": meta2,
-                                "mode": mode2,
-                                "task": task2,
-                                "content": content2,
-                                "done": True,
-                            }
-                        )
-            except Exception as e:
-                try:
-                    import logging
-
-                    logging.getLogger(__name__).debug(f"gate_pipe child lookup failed (fail open): {e}")
-                except Exception:
-                    pass
-                return body
-
-            # Validate receipts per role
-            valid_receipt = False
+            # Validate receipts per role — Tutor is per-generation (fix 2026-09-01):
+            # each Tutor message that contains claims must have a fresh fact_check,
+            # each that contains a quiz must have a fresh quiz_audit. An upfront
+            # Plan batch never covers later steps, and quiz_audit never covers claims.
+            found_fact_check = False
+            found_quiz_audit = False
+            found_review = False
             reject_code = "NO_DELEGATION"
-            reject_detail = "No foreground GATE envelope dispatched via delegate_task."
+            reject_detail = "No foreground GATE envelope dispatched via delegate_task for this generation. Each Tutor step needs its own fresh receipt (parent_message_id == this message)."
 
             if child_chats:
                 for ch in child_chats:
@@ -497,143 +628,80 @@ class Filter:
 
                     task = ch.get("task") or ""
                     verd_text = ch.get("content") or ""
-                    # Parse envelope from task
-                    json_part = task
-                    if "GATE:" in task:
-                        parts = task.split("\n", 1)
-                        if len(parts) == 2:
-                            json_part = parts[1]
-                    data = None
-                    stripped = json_part.strip()
-                    if stripped.startswith("{"):
-                        try:
-                            data = json.loads(stripped)
-                        except Exception:
-                            data = extract_json_block(task) if callable(extract_json_block) else None
-                    else:
-                        data = extract_json_block(task) if callable(extract_json_block) else None
-
+                    data = _parse_gate_envelope(task)
                     if not data or not isinstance(data, dict) or "gate" not in data:
                         reject_code = "MALFORMED_ENVELOPE"
                         reject_detail = "GATE envelope must be JSON with gate field (fact_check | review | quiz_audit)"
                         continue
-
                     gate_type = data.get("gate")
 
-                    # Use Pydantic for strict validation when available
                     if gate_type == "fact_check" and is_tutor:
-                        # Normalize per-claim source_url/source_file to top-level if tutor
-                        # sent them inside claims (common LLM drift) — gate should accept either.
-                        if not data.get("source_url") and not data.get("source_file"):
-                            for _c in (data.get("claims") or []):
-                                if isinstance(_c, dict) and (_c.get("source_url") or _c.get("source_file")):
-                                    if _c.get("source_url"):
-                                        data["source_url"] = _c.get("source_url")
-                                    if _c.get("source_file"):
-                                        data["source_file"] = _c.get("source_file")
-                                    break
-                        # Validate via Pydantic if available, fallback to manual checks
-                        # Strip per-claim source extras before Pydantic so it doesn't see unexpected fields
-                        if GATEFactCheckEnvelope is not None:
-                            try:
-                                _clean = dict(data)
-                                _clean_claims = []
-                                for _cc in (_clean.get("claims") or []):
-                                    if isinstance(_cc, dict):
-                                        _clean_claims.append({k: v for k, v in _cc.items() if k in ("id", "claim")})
-                                    else:
-                                        _clean_claims.append(_cc)
-                                _clean["claims"] = _clean_claims
-                                GATEFactCheckEnvelope.model_validate(_clean)
-                            except Exception as e:
-                                reject_code = "MALFORMED_ENVELOPE"
-                                reject_detail = f"fact_check envelope invalid: {e}"
-                                continue
-                        claims = data.get("claims") or []
-                        if not claims or not isinstance(claims, list):
-                            reject_code = "MALFORMED_ENVELOPE"
-                            reject_detail = "GATE:fact_check envelope missing claims[]"
-                            continue
-                        if not data.get("source_url") and not data.get("source_file"):
-                            reject_code = "MALFORMED_ENVELOPE"
-                            reject_detail = "GATE:fact_check requires source_url or source_file"
-                            continue
-                        verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
-                        if not verdict_data or "verdicts" not in verdict_data:
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = "Subagent did not return {verdicts:[...]}"
-                            continue
-                        # Validate verdict enum values
-                        verdicts = verdict_data.get("verdicts") or []
-                        bad = [v for v in verdicts if v.get("verdict") not in ("PASS", "ISSUES", "UNVERIFIED")]
-                        if bad:
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = f"Invalid verdict value: {bad[0].get('verdict')}"
-                            continue
-                        verdict_ids = {v.get("id") for v in verdicts}
-                        claim_ids = {c.get("id") for c in claims}
-                        if claim_ids - verdict_ids:
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = f"Verdicts missing ids: {claim_ids - verdict_ids}"
-                            continue
-                        valid_receipt = True
-                        break
+                        ok, code, detail = _check_fact_check(data, verd_text)
+                        if ok:
+                            found_fact_check = True
+                        else:
+                            reject_code, reject_detail = code, detail
+                        continue
 
                     if gate_type == "quiz_audit" and is_tutor:
-                        if GATEQuizAuditEnvelope is not None:
-                            try:
-                                GATEQuizAuditEnvelope.model_validate(data)
-                            except Exception as e:
-                                reject_code = "MALFORMED_ENVELOPE"
-                                reject_detail = f"quiz_audit envelope invalid: {e}"
-                                continue
-                        if not data.get("questions_json") or not isinstance(data.get("questions_json"), list):
-                            reject_code = "MALFORMED_ENVELOPE"
-                            reject_detail = "GATE:quiz_audit requires questions_json[]"
-                            continue
-                        verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
-                        if not verdict_data or "verdict" not in verdict_data:
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = "Quiz-audit subagent did not return {verdict: PASS|ISSUES}"
-                            continue
-                        if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = f"Invalid quiz verdict: {verdict_data.get('verdict')}"
-                            continue
-                        valid_receipt = True
-                        break
+                        ok, code, detail = _check_quiz_audit(data, verd_text)
+                        if ok:
+                            found_quiz_audit = True
+                        else:
+                            reject_code, reject_detail = code, detail
+                        continue
 
                     if gate_type == "review" and is_clerk:
-                        if GATEReviewEnvelope is not None:
-                            try:
-                                GATEReviewEnvelope.model_validate(data)
-                            except Exception as e:
-                                reject_code = "MALFORMED_ENVELOPE"
-                                reject_detail = f"review envelope invalid: {e}"
-                                continue
-                        if not data.get("wiki_content") or not data.get("concepts"):
-                            reject_code = "MALFORMED_ENVELOPE"
-                            reject_detail = "GATE:review requires wiki_content and concepts"
-                            continue
-                        verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
-                        if not verdict_data or "verdict" not in verdict_data:
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = "Review subagent did not return {verdict: PASS|ISSUES}"
-                            continue
-                        if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
-                            reject_code = "MALFORMED_VERDICTS"
-                            reject_detail = f"Invalid review verdict: {verdict_data.get('verdict')}"
-                            continue
-                        valid_receipt = True
-                        break
+                        ok, code, detail = _check_review(data, verd_text)
+                        if ok:
+                            found_review = True
+                        else:
+                            reject_code, reject_detail = code, detail
+                        continue
 
                     # Cross-role envelope: e.g., quiz_audit on Clerk — treat as invalid gate for that role
                     reject_code = "MALFORMED_ENVELOPE"
                     reject_detail = f"Gate type '{gate_type}' not valid for this preset ({model_id})"
                     continue
 
-            if valid_receipt:
-                await self._reset_gate_state(chat_id, __user__, __request__)
+            # Evaluate per-generation requirement (Tutor only)
+            if is_tutor:
+                # Tutor: each generation needs fresh receipt matching its content type.
+                # Mixed claims+quiz needs BOTH. Upfront Plan batch never covers later steps.
+                if needs_fact_check and needs_quiz_audit:
+                    if found_fact_check and found_quiz_audit:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        return body
+                    if not found_fact_check and not found_quiz_audit:
+                        reject_code = "NO_DELEGATION"
+                        reject_detail = "Mixed claims+quiz message requires BOTH fact_check and quiz_audit receipts for this generation (parent_message_id == this message). Dispatch both foreground GATE envelopes before presenting."
+                    elif not found_fact_check:
+                        reject_code = "NO_DELEGATION"
+                        reject_detail = "Per-generation fact_check required before this teaching step (mixed message). Dispatch a foreground GATE:fact_check for the claims in THIS generation. Upfront Plan verification does not cover Teach steps, and quiz_audit does not cover claims."
+                    else:  # found_fact_check but not found_quiz_audit
+                        reject_code = "NO_DELEGATION"
+                        reject_detail = "Quiz part of this mixed message requires GATE:quiz_audit receipt for this generation (parent_message_id == this message)."
+                elif needs_fact_check:
+                    if found_fact_check:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Per-generation fact_check required before this teaching step. Dispatch a foreground GATE:fact_check for the claims you are about to present in THIS generation (parent_message_id == this message). Upfront Plan verification does not cover Teach steps, and quiz_audit does not cover claims."
+                elif needs_quiz_audit:
+                    if found_quiz_audit:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Quiz batch requires GATE:quiz_audit receipt for this generation (parent_message_id == this message). Dispatch foreground quiz_audit before presenting questions."
+                else:
+                    # Non-trivial but heuristics missed — treat as needs fact_check
+                    pass
+            elif is_clerk:
+                if found_review:
+                    await self._reset_gate_state(chat_id, __user__, __request__)
+                    return body
+            else:
+                # Should not reach here (Scout exempt)
                 return body
 
             # No valid receipt — check cap and block
@@ -645,16 +713,17 @@ class Filter:
             if is_tutor:
                 detail_help = (
                     f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
-                    f"Dispatch a foreground GATE envelope via delegate_task (background:false) before presenting claims:\n"
+                    f"Learning Tutor is multi-turn: **each generation** needs its own fresh GATE receipt before you emit it (parent_message_id must equal this message's id). Do NOT reuse an upfront Plan batch for later Teach steps.\n\n"
+                    f"For teaching claims in THIS step:\n"
                     f"```json\n"
-                    f'{{\n  "gate": "fact_check",\n  "claims": [{{"id": 1, "claim": "..."}}],\n'
+                    f'{{\n  "gate": "fact_check",\n  "claims": [{{"id": 1, "claim": "load-bearing claim for THIS step"}}],\n'
                     f'  "source_url": "https://..."  // or "source_file": "path/to/source",\n'
-                    f'  "context": "what is being taught"\n}}\n```\n'
-                    f"Or for question batches:\n"
+                    f'  "context": "what THIS step teaches"\n}}\n```\n'
+                    f"For question batches in THIS generation:\n"
                     f"```json\n"
                     f'{{\n  "gate": "quiz_audit",\n  "questions_json": [{{"id":"q1","type":"mcq","question":"...","options":["a","b","c","d"],"correct_index":1,"target_bloom":"Apply"}}],\n'
                     f'  "purpose": "probe", "concept": "Concept", "source_excerpt": "..."\n}}\n```\n'
-                    f"Subagent prompt is fixed via global subagents.system_prompt — send data only."
+                    f"Mixed claims+quiz needs BOTH receipts for the same message. Subagent prompt is fixed via global subagents.system_prompt — send data only."
                 )
             else:
                 detail_help = (
