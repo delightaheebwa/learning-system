@@ -223,3 +223,9 @@
 [[AI Engineer Weekly — July 20, 2026]]
 [[AI Engineer Weekly — July 21, 2026]] — weekly synthesis of AI Engineer talks covering eval infrastructure, agent architecture decoupling, multi-agent failures, memory, and 2026 State of AI Engineering survey — weekly synthesis of AI Engineer talks covering agent scaffolding, eval design, production observability, memory systems, and infrastructure patterns
 - [[AI Engineer Weekly — 2026-07-25]] — 10 talks from 100-video pool, agent-tinkering lens (handoffs, prompt caching, Claude Code patterns, agent logs)
+- [[Chain Rule for Neural Networks]] — Gradients multiply across layers; this IS backpropagation
+- [[PMF vs PDF]] — PMF=discrete, PDF=density, CDF=cumulative
+- [[Softmax Subtract-Max Trick]] — Subtract max(z) for numerical stability
+- [[Cosine Similarity]] — Unit vector dot product = cos(θ)
+- [[4-Layer AI Environment Stack]] — System→Packages→Runtimes→AI Libraries
+- [[Cross-Entropy from NLL]] — L=−log(p_correct); model surprise
