@@ -117,6 +117,16 @@ def _find_digest(chat_id: str, slug: str, ttl_days: int, repo_root: str):
     # Prefer exact slug match
     exact = list(base.glob(f"context-{chat_id}-{slug}.json"))
     candidates = exact if exact else list(base.glob(f"context-{chat_id}-*.json"))
+    # Fallback: legacy Scout files without chat_id prefix (e.g. context-mission-0-*.json)
+    # and generic slug mismatches like "next-lesson" vs digest slug "mission-0-catchup-foundations"
+    if not candidates:
+        candidates = list(base.glob("context-*.json"))
+        # For alias topics like "next-lesson", "lesson", "continue" — prefer the newest
+        # digest for this chat if any, otherwise any recent digest
+        if slug in ("next-lesson", "lesson", "continue", "gather-context-for-next-lesson"):
+            chat_candidates = list(base.glob(f"context-{chat_id}-*.json"))
+            if chat_candidates:
+                candidates = chat_candidates
     # Filter by TTL and pick newest
     valid = []
     for p in candidates:
@@ -132,6 +142,9 @@ def _find_digest(chat_id: str, slug: str, ttl_days: int, repo_root: str):
         return None
     # Newest first
     valid.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    # Alias slugs should accept any recent digest (return newest)
+    if slug in ("next-lesson", "lesson", "continue", "gather-context-for-next-lesson"):
+        return valid[0]
     # If we used fallback, return newest regardless of slug
     if exact:
         for p in valid:
@@ -143,6 +156,14 @@ def _find_digest(chat_id: str, slug: str, ttl_days: int, repo_root: str):
                 continue
         # Exact glob matched but slug field mismatched — still return newest exact
         return valid[0]
+    # No exact match — check if any candidate's internal slug matches requested slug
+    for p in valid:
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+            if data.get("slug") == slug:
+                return p
+        except Exception:
+            continue
     return valid[0]
 
 
@@ -235,6 +256,21 @@ class Filter:
             if not messages:
                 return body
 
+            # Exempt internal subagent chats (verifiers) — they are not Tutor/Clerk teaching
+            # and must not be recursively gated. This prevents verifier BLOCKED loops.
+            try:
+                if chat_id and __user__ and __user__.get("id"):
+                    from open_webui.models.chats import Chats as _ChatsExempt
+
+                    _c = await _ChatsExempt.get_chat_by_id_and_user_id(chat_id, __user__.get("id"))
+                    if _c and (_c.meta or {}).get("internal") is True:
+                        return body
+                    # Also exempt if body came from a subagent invocation (internal parent)
+                    if _c and (_c.meta or {}).get("type") == "subagent":
+                        return body
+            except Exception:
+                pass
+
             is_tutor = _is_tutor_preset(model_id, valves)
             is_clerk = _is_clerk_preset(model_id, valves)
             if not is_tutor and not is_clerk:
@@ -321,7 +357,16 @@ class Filter:
             if is_tutor and is_new_lesson_trigger and not has_lesson_file:
                 digest = _find_digest(chat_id, slug, getattr(valves, "digest_ttl_days", 7), repo_root)
                 has_scout_msg = any(_is_scout_message(m, valves) for m in chat_history.values())
-                if not digest or not has_scout_msg:
+                # If repo filesystem is not mounted in Open WebUI (common: /home/user is in
+                # open-terminal volume, not open-webui), digest will be None even when Scout
+                # succeeded. In that case, rely on SCOUT DIGEST message alone (graceful degrade)
+                # rather than permanently blocking new lessons.
+                digest_base = Path(repo_root) / "Learning System" / TMP_DIR
+                repo_unavailable = not digest_base.exists()
+                if repo_unavailable and has_scout_msg:
+                    # Fail open for file part — message proves Scout ran
+                    pass
+                elif not digest or not has_scout_msg:
                     blocked = (
                         f"⛔ BLOCKED (NO_SCOUT_CONTEXT) — No Scout digest found for this lesson (`{slug}`).\n\n"
                         f"Switch to your **{getattr(valves, 'scout_name_prefix', 'Scout')}** preset in this same chat and gather context for: `{parent_user_text[:120]}`.\n"
@@ -477,10 +522,29 @@ class Filter:
 
                     # Use Pydantic for strict validation when available
                     if gate_type == "fact_check" and is_tutor:
+                        # Normalize per-claim source_url/source_file to top-level if tutor
+                        # sent them inside claims (common LLM drift) — gate should accept either.
+                        if not data.get("source_url") and not data.get("source_file"):
+                            for _c in (data.get("claims") or []):
+                                if isinstance(_c, dict) and (_c.get("source_url") or _c.get("source_file")):
+                                    if _c.get("source_url"):
+                                        data["source_url"] = _c.get("source_url")
+                                    if _c.get("source_file"):
+                                        data["source_file"] = _c.get("source_file")
+                                    break
                         # Validate via Pydantic if available, fallback to manual checks
+                        # Strip per-claim source extras before Pydantic so it doesn't see unexpected fields
                         if GATEFactCheckEnvelope is not None:
                             try:
-                                GATEFactCheckEnvelope.model_validate(data)
+                                _clean = dict(data)
+                                _clean_claims = []
+                                for _cc in (_clean.get("claims") or []):
+                                    if isinstance(_cc, dict):
+                                        _clean_claims.append({k: v for k, v in _cc.items() if k in ("id", "claim")})
+                                    else:
+                                        _clean_claims.append(_cc)
+                                _clean["claims"] = _clean_claims
+                                GATEFactCheckEnvelope.model_validate(_clean)
                             except Exception as e:
                                 reject_code = "MALFORMED_ENVELOPE"
                                 reject_detail = f"fact_check envelope invalid: {e}"
