@@ -23,7 +23,7 @@ The learning loop (OpenWebUI: Scout → Tutor → Clerk) adapts to upstream chan
 
 ## Constraints
 
-- Manual triggers; moderate pace; step-by-step + real-world analogies (soccer) where useful.
+- Manual triggers; moderate pace; step-by-step + real-world analogies where they clarify without distorting (flexible, accuracy-first — soccer removed).
 - Lessons sequential within a phase; phases in roadmap order. **Branching allowed** after a phase (deeper dive) — orthogonal to interleaving.
 - Interleaving lives only in review flow (SRS shuffle + adjacency + question-type alternation) — never inside lessons/quizzes.
 - Guided Socratic questioning (never pure Socratic — resolve confusion immediately).

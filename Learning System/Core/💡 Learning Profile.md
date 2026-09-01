@@ -9,6 +9,7 @@
 - **Personality:** ISFP-T (Turbulent Adventurer)
 - **Created:** 2026-04-13
 - **Last Updated:** 2026-09-01 — switched to AIEFS (Rohit); added Mission 0 catch-up, language-per-lesson rule, Docker Desktop/WSL note.
+- **Last Updated:** 2026-09-01 — paper-based math (work on paper, submit final output only; no verbatim LaTeX), removed soccer analogies (flexible, accuracy-first).
 
 ## Academic Context
 
@@ -35,8 +36,14 @@
 
 ## Analogy Domain
 
-- **Domain you relate to most:** Soccer — sports and gameplay mechanics are intuitive for you
-- **Topics to avoid in metaphors:** None noted yet
+- **Preference:** Flexible, accuracy-first — choose the analogy that most precisely matches the mechanism. Do not default to any single domain.
+- **Soccer:** Removed — do not use soccer analogies. If a soccer example were the only perfect fit, prefer a direct explanation instead.
+
+## Input Preferences — Math (paper accommodation)
+
+- **Workflow:** Do all working on paper / by hand. The chat only receives the final output the question asks for (number, choice letter A–D, or 1-line result).
+- **Never** require typing full LaTeX / long formulas verbatim into the chat box.
+- **Validation:** Getting the formula right is demonstrated by getting the final answer right — correct final output proves formula recall. Do not skip math concepts; test them via results.
 
 ## Communication Style
 
