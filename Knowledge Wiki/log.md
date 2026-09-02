@@ -564,3 +564,9 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - Results: 3 pass / 2 fail. tmux PASS (memory, advanced → 2026-09-12) · Job Control PASS (procedure, advanced → 2026-09-12) · fd FAIL (missed .gitignore default; retry 2026-08-30) · Shebang FAIL (kernel-vs-shell route still tangled; stays active) · PATH & Program Discovery FAIL (cwd not on PATH; new mistake row, retry 2026-09-01).
 - Writes: Active Concepts 5 rows synced (dates, Last Q Type, intervals); Mistakes.md (fd row updated, +PATH row); 5 Review notes; session note `Learning System/Sessions/Session — SWE Track Review — 2026-08-29.md`.
 - Tooling note: `ops.py attempt`/`ops.py mastery` unregistered in repo ops.py; intervals advanced manually.- 2026-09-01 — Ingested 6 concepts from Mission 0 Catch-Up (P0+P1.01-06 80/20): Chain Rule for Neural Networks, PMF vs PDF, Softmax Subtract-Max Trick, Cosine Similarity, 4-Layer AI Environment Stack, Cross-Entropy from NLL. Source: Rohit composite + 12 external refs. All new (no overlap).
+
+## 2026-09-02 (ingest) — Phase 1 Lesson 2: Bayes' Theorem & Statistical Thinking — Clerk
+- **Source:** Handwritten lesson notes (3 images): Bayes' Theorem formula, terminology table, disease test example, base rate fallacy, Naive Bayes, Laplace smoothing.
+- **Wiki pages created (8):** Bayes' Theorem, Prior Probability, Likelihood, Posterior Probability, Base Rate Fallacy, Naive Bayes, Laplace Smoothing, Conditional Independence.
+- **Active Concepts added (8):** all `developing`, last_reviewed 2026-09-02, next_review 2026-09-05, Last Q Type `definitional`.
+- **Session note:** `Learning System/Sessions/Session — Bayes Theorem Ingest — 2026-09-02.md`.

@@ -228,4 +228,11 @@
 - [[Softmax Subtract-Max Trick]] — Subtract max(z) for numerical stability
 - [[Cosine Similarity]] — Unit vector dot product = cos(θ)
 - [[4-Layer AI Environment Stack]] — System→Packages→Runtimes→AI Libraries
-- [[Cross-Entropy from NLL]] — L=−log(p_correct); model surprise
+- [[Cross-Entropy from NLL]] — L=−log(p_correct); model surprise- [[Bayes' Theorem]] — P(H|E) = P(E|H)·P(H)/P(E); update beliefs with evidence
+- [[Prior Probability]] — P(H); belief before evidence (base rate)
+- [[Likelihood]] — P(E|H); probability of evidence given hypothesis
+- [[Posterior Probability]] — P(H|E); updated belief after evidence
+- [[Base Rate Fallacy]] — ignoring how common/rare an event is when interpreting evidence
+- [[Naive Bayes]] — classifier assuming conditional independence of features given class
+- [[Laplace Smoothing]] — add-1 fix for zero-frequency problem in Naive Bayes
+- [[Conditional Independence]] — features independent given class label
