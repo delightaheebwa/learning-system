@@ -7,7 +7,7 @@ Creates (or updates) everything the system needs, using the Open WebUI REST API:
   - 4 Skills        from Skills/*/SKILL.md
   - 3 Model presets Scout / Learning Tutor / Clerk
   - 1 Gate Filter   (Function) gate_pipe — deterministic delegation gate
-  - 6 Prompts       /swe /review /ingest /teach /lesson /continue
+  - 7 Prompts       /swe /review /ingest /teach /lesson /continue /pause
   - Subagent system prompt (keyed GATE: templates)
 
 All verification gates run as foreground subagent tasks (delegate_task) with
@@ -84,7 +84,7 @@ PRESETS = [
 
 - Read MISSION.md, CURRICULUM.md, RESOURCES.md, relevant Active Concepts rows (bundle, not full reads; do NOT grep 📦 Concept Archive.md — SWE archived, strictly out of scope), and the curriculum source for the requested topic.
 - For each new lesson, the curriculum source is TWO layers: (1) Rohit's `phases/<phase>/<lesson>/docs/en.md` (live fetch from https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/phases/.../docs/en.md) — Rohit is a source, not the source — and (2) **every URL in that file's `## Further Reading`** (2–4 external refs per lesson, e.g. 3Blue1Brown, Stanford CS229, log-sum-exp blog for P1 L06). Fetch the live docs/en.md + each Further Reading URL via Web Search / fetch, hash each, compare to any prior digest hash and surface drift as `SCOUT DIGEST: ⚠️ Upstream changed:` if hashes differ. Capture per-lesson `Languages:` header as `lang_recommendation` (Python / TypeScript / Rust; Julia optional, Python-first for Phase 1).
-- Write a digest to Learning System/.tmp/context-<chat_id>-<slug>.json with {goal, slug, tracks, concept_rows, source_refs:[rohit_source, ...external_refs], rohit_hash, external_refs_hashes, lang_recommendation, roadmap_sha, fetched_at, created_at} and post a short SCOUT DIGEST: summary in chat (headings + 3–5 bullet synthesis of external refs vs Rohit + language + adaptive note if drift).
+- Write a digest to Learning System/.tmp/context-<chat_id>-<slug>.json with {goal, slug, tracks, concept_rows, prereqs, source_refs:[rohit_source, ...external_refs], rohit_hash, external_refs_hashes, lang_recommendation, roadmap_sha, fetched_at, created_at} and post a short SCOUT DIGEST: summary in chat (headings + 3–5 bullet synthesis of external refs vs Rohit + language + adaptive note if drift). The `prereqs` field is load-bearing for the Tutor's personalization: a list of {concept, keywords:[aliases/variants], why} for every load-bearing dependency of this lesson (e.g. Bayes → {concept:"conditional probability", keywords:["P(A|B)","posterior","joint|marginal"], why:"Bayes is defined via conditional probability"}). Keywords must include notation + plain-language variants (e.g. PMF → ["PMF","probability mass","PMF vs PDF"]) so the Tutor searches rather than guesses.
 - Special: Mission 0 Catch-Up (P0 + P1.01–06, 80/20) — synthesize 5 strands (tooling / vectors-matrices / transforms-eigen / calculus-chain-rule / probability) from Phase 0 (12 lessons) + Phase 1 L01–L06 docs/en.md + their Further Reading combined.
 - Cache is ignored per decision 2026-09-01 — live fetch each lesson, no phase cache layer.
 - Do not teach, quiz, or write wiki pages. Hand off to Tutor. Adaptive rule: re-fetch live before each new lesson; Tutor prefers live combined sources over parametric memory.""",
@@ -113,8 +113,10 @@ Order: Mission 0 Catch-Up (P0 + P1.01–06, 80/20, 6–8 MCQs + 2 free-recall, i
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise):
 - "review" → review flow (AIEFS) → view_skill "learning-system" (SWE archived — redirect to AIEFS if requested)
 - "ingest <content>" → hand off to Clerk — do not ingest here
-- "teach me X" / "learn" / "study" / "lesson" / "continue" → teaching flow → view_skill "learning-teach"; Rohit docs/en.md is a source, not the source — teach from combined Scout digest (docs/en.md + Further Reading external refs) + RESOURCES.md; verify batched load-bearing claims with foreground GATE:fact_check envelopes (cite both rohit_source and external_refs) before presenting them, audit question batches with GATE:quiz_audit subagent before showing, respect per-lesson lang_recommendation (Python / TypeScript / Rust; Julia optional), and handoff ingest to Clerk at lesson end (do not write wiki pages yourself)
+- "teach me X" / "learn" / "study" / "lesson" / "continue" / "pause" → teaching flow → view_skill "learning-teach"; Rohit docs/en.md is a source, not the source — teach from combined Scout digest (docs/en.md + Further Reading external refs) + RESOURCES.md; verify batched load-bearing claims with foreground GATE:fact_check envelopes (cite both rohit_source and external_refs) before presenting them, audit question batches with GATE:quiz_audit subagent before showing, respect per-lesson lang_recommendation (Python / TypeScript / Rust; Julia optional), and handoff ingest to Clerk at lesson end AND at every /pause (partial ingest, digest survives — do not write wiki pages yourself)
 - wiki work → view_skill "llm-wiki"
+
+Breakpoints are first-class: the student decides lesson length via /pause ("let's stop here"); every lesson is checkpointed so a pause/resume is always clean. A partial Clerk ingest keeps the lesson in-progress and the Scout digest alive.
 
 Language: build language follows the lesson's Rohit `Languages:` header (captured as lang_recommendation); Python for math/ML (Phases 0–12), TypeScript for Tools/Agents/Protocols (Phases 13–17), Rust where listed. Cache is ignored (live fetch each lesson).
 
@@ -173,6 +175,11 @@ PROMPTS = [
         "command": "continue",
         "name": "Continue Lesson",
         "content": "Continue the current lesson where we left off. Load the learning-teach skill (view_skill \"learning-teach\"). If the lesson file exists, it is the source of truth — no Scout digest needed.",
+    },
+    {
+        "command": "pause",
+        "name": "Pause Lesson",
+        "content": "Pause the current lesson where we are. Switch to the Learning Tutor preset, load the learning-teach skill (view_skill \"learning-teach\"), and run the pause protocol: exit ticket for today's checkpoints only, partial lesson file with Status + Resume-from pointer, partial Pending Ingest.json, then hand to the Clerk preset with /ingest to bank today's progress. The gate Filter enforces foreground GATE envelopes — do not bypass it.",
     },
 ]
 

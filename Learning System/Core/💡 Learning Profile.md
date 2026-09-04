@@ -53,6 +53,9 @@
 
 ## Workflow Preferences
 
+- **Lesson pacing:** student-paced — you decide length via `/pause` ("let's stop here"); tutor designs every lesson with stoppable checkpoints. Exit ticket per pause covers today's material only; cumulative quiz + Feynman only at the final checkpoint.
+- **Tangents:** hybrid — tutor answers quick questions inline (≤2 min, logged) and dives properly when the tangent blocks the current step or exposes a real gap; when unsure it asks "quick answer now, or dive?"
+
 - **Preferred learning environment:** Obsidian vault + terminal workflow
 - **System preference:** Local-first, with Google Drive used as a mirror backup when needed
 - **Structure preference:** Keep folder names stable and avoid unnecessary fragmentation
