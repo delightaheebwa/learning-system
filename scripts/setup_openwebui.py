@@ -325,13 +325,16 @@ def main() -> int:
         print(f"  ! gate filter install failed: {e}")
 
     print("== Subagent system prompt ==")
-    # Best-effort: set global subagents.system_prompt via config API
+    # The configs API has no /update route (405) — read the full object,
+    # set our field, and POST it back to /api/v1/configs/subagents.
     try:
-        status, _ = c.post("/api/v1/configs/update", {"subagents.system_prompt": SUBAGENT_SYSTEM_PROMPT})
-        if status in (200, 201):
-            print("  ~ set subagents.system_prompt")
+        gstatus, gresp = c.get("/api/v1/configs/subagents")
+        if gstatus == 200 and isinstance(gresp, dict):
+            gresp["SUBAGENTS_SYSTEM_PROMPT"] = SUBAGENT_SYSTEM_PROMPT
+            status, _ = c.post("/api/v1/configs/subagents", gresp)
+            print("  ~ set subagents.system_prompt" if status == 200 else "  ! subagents.system_prompt POST failed — set manually in Settings → Subagents")
         else:
-            print("  ! subagents.system_prompt not set via API — set manually in Settings → Subagents")
+            print("  ! could not read subagents config — set manually in Settings → Subagents")
     except Exception as e:
         print(f"  ! subagents.system_prompt: {e} — set manually in Settings → Subagents")
 
@@ -367,9 +370,21 @@ def main() -> int:
             print(f"  ! model {preset['id']} status {status}")
 
     print("== Prompts ==")
+    # Prompts are keyed by UUID, not command — list first, match on command,
+    # then update by real id (guessing id/{command} 404s).
+    _, existing = c.get("/api/v1/prompts/")
+    by_command = {}
+    if isinstance(existing, list):
+        by_command = {p.get("command"): p for p in existing if isinstance(p, dict)}
     for p in PROMPTS:
         payload = {"command": p["command"], "name": p["name"], "content": p["content"], "access_grants": []}
-        upsert("/api/v1/prompts/create", f"/api/v1/prompts/id/{p['command']}/update", payload, "ID_TAKEN", f"prompt /{p['command']}")
+        hit = by_command.get(p["command"])
+        if hit and hit.get("id"):
+            status2, _ = c.post(f"/api/v1/prompts/id/{hit['id']}/update", payload)
+            print(f"  ~ updated prompt /{p['command']}" if status2 == 200 else f"  ! failed to update prompt /{p['command']}")
+        else:
+            status3, resp3 = c.post("/api/v1/prompts/create", payload)
+            print(f"  + created prompt /{p['command']}" if resp3 is not None else f"  ! failed to create prompt /{p['command']}")
 
     print("\nDone. Verify: Workspace → Models (Scout/Tutor/Clerk) and Functions → Gate Pipe.")
     print("Gate Filter is bound to Tutor and Clerk only; Scout is exempt.")
