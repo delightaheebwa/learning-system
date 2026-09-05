@@ -7,7 +7,7 @@
 > **Language rule:** build language per lesson follows Rohit's `Languages:` header (Python / TypeScript / Rust; Julia optional). Phase default is in the mission header; lesson-level overrides apply. See `RESOURCES.md`.
 > **Scope note:** full 20-phase map is present for navigation; it is not a contract to finish end-to-end. After each phase, decide to go deeper / branch / build a learning system around a topic. Archived SWE roadmap: `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` and wiki banner; `📦 Concept Archive.md` holds paused SWE rows (visibility strictly out of scope — Scout/Tutor do not grep it).
 
-## Mission 0 — Catch-Up: Foundations Reactivation *(special · in-progress)*
+## Mission 0 — Catch-Up: Foundations Reactivation *(special · done)*
 
 Goal: **80/20 reactivation** of everything up to and including **Phase 1, Lesson 06 — Probability & Distributions**. You did Phase 0 + P1.01–06 before (exercises done) but haven't reviewed in weeks. This lesson rebuilds the 20% that unlocks 80% of later phases, probes for gaps, and sets `next` to Phase 1 Lesson 07.
 
@@ -23,7 +23,7 @@ Goal: **80/20 reactivation** of everything up to and including **Phase 1, Lesson
 
 | # | Lesson | Est. time | Prereqs | Lang | Status | Notes |
 |---|--------|-----------|---------|------|--------|-------|
-| 0 | Catch-Up: 80/20 Foundations (Tooling → Probability, P0 + P1.01–06) | ~90 min | none | Python | in-progress | Special reactivation. Probe first, then teach gaps. On pass → jump to Phase 1 L07. Source: P0–P1.06 `docs/en.md` + Further Reading synthesis. |
+| 0 | Catch-Up: 80/20 Foundations (Tooling → Probability, P0 + P1.01–06) | ~90 min | none | Python | done | Special reactivation. Probe first, then teach gaps. On pass → jump to Phase 1 L07. Source: P0–P1.06 `docs/en.md` + Further Reading synthesis. |
 
 **Exit:** you can state the 4-layer env stack, explain `Wx+b` with shapes, distinguish PMF/PDF, and derive cross-entropy from NLL without notes.
 
@@ -56,7 +56,7 @@ Goal: Setup & Tooling — see upstream `phases/00-*/docs/en.md` per lesson. Goal
 
 Goal: Math Foundations — see upstream `phases/01-*/docs/en.md` per lesson. Goal phrasing follows Rohit ROADMAP.md phase header.
 
-- **Phase note:** L01–L06 covered by Mission 0 catch-up; L07 is the first real lesson after catch-up (`in-progress` next).
+- **Phase note:** L01–L06 covered by Mission 0 catch-up; L07 is done 2026-09-05 (retrieval + Feynman pass); L08 Optimization is next.
 - **Lang (phase default):** Python (Julia optional) — lesson-level `Languages:` header overrides (Rohit). Python for math/ML, TypeScript for Tools/Agents/Protocols, Rust where phase lists it, Julia optional in Phase 1.
 - **Source base:** `https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/01-*` — each lesson: `phases/<phase>/<lesson>/docs/en.md` + `## Further Reading` external refs + `code/` per Rohit (Rohit is a source, not the source).
 
@@ -68,7 +68,7 @@ Goal: Math Foundations — see upstream `phases/01-*/docs/en.md` per lesson. Goa
 | 04 | Calculus for ML — Derivatives & Gradients | ~45 min | 3 | Python (Julia optional) | not-started* | Covered by Mission 0 catch-up (80/20). Ritual: retrieval-check on demand, not re-taught unless probe fails. Source: P1 L04 `docs/en.md`. |
 | 05 | Chain Rule & Automatic Differentiation | ~75 min | 4 | Python (Julia optional) | not-started* | Covered by Mission 0 catch-up (80/20). Ritual: retrieval-check on demand, not re-taught unless probe fails. Source: P1 L05 `docs/en.md`. |
 | 06 | Probability & Distributions | ~45 min | 5 | Python (Julia optional) | not-started* | Covered by Mission 0 catch-up (80/20). Ritual: retrieval-check on demand, not re-taught unless probe fails. Source: P1 L06 `docs/en.md`. |
-| 07 | Bayes' Theorem & Statistical Thinking | ~75 min | 6 | Python (Julia optional) | not-started ← next | **NEXT after catch-up.** First real lesson. Est ~75 min (from ROADMAP). Scout fetches live docs + Further Reading; language per Rohit header (Python for P1). |
+| 07 | Bayes' Theorem & Statistical Thinking | ~75 min | 6 | Python (Julia optional) | done | Taught 2026-09-02, re-activated 2026-09-05 (retrieval + Feynman pass). Est ~75 min (from ROADMAP). Scout fetches live docs + Further Reading; language per Rohit header (Python for P1). |
 | 08 | Optimization — Gradient Descent Family | ~75 min | 7 | Python (Julia optional) | not-started | Source: Phase 1 L08 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 09 | Information Theory — Entropy, KL Divergence | ~45 min | 8 | Python (Julia optional) | not-started | Source: Phase 1 L09 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 10 | Dimensionality Reduction — PCA, t-SNE, UMAP | ~75 min | 9 | Python (Julia optional) | not-started | Source: Phase 1 L10 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
