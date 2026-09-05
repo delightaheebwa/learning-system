@@ -30,8 +30,10 @@ class GateFactCheckClaim(BaseModel):  # type: ignore
 class GATEFactCheckEnvelope(BaseModel):  # type: ignore
     gate: Literal["fact_check"] = Field(default="fact_check")
     claims: List[GateFactCheckClaim] = Field(min_length=1)
-    # Exactly one of source_url or source_file must be set; subagent fetches source
+    # At least one source must be set; multi-source (Rohit + external refs) preferred.
+    # Singular fields are legacy; source_urls is the multi-source form.
     source_url: Optional[str] = Field(default=None, description="Stable URL to fetch")
+    source_urls: Optional[List[str]] = Field(default=None, description="Multiple source URLs (Rohit + external refs) to verify against together")
     source_file: Optional[str] = Field(default=None, description="Repo-relative path")
     reference_excerpt: Optional[str] = Field(
         default=None, description="Optional excerpt — subagent validates against fetched source"

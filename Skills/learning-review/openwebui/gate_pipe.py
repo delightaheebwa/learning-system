@@ -119,11 +119,13 @@ def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
 def _check_fact_check(data: dict, verd_text: str):
     """Validate fact_check envelope + verdicts. Returns (ok, code, detail)."""
     # Lift per-claim source to top-level if needed (LLM drift)
-    if not data.get("source_url") and not data.get("source_file"):
+    if not data.get("source_url") and not data.get("source_urls") and not data.get("source_file"):
         for c in (data.get("claims") or []):
-            if isinstance(c, dict) and (c.get("source_url") or c.get("source_file")):
+            if isinstance(c, dict) and (c.get("source_url") or c.get("source_urls") or c.get("source_file")):
                 if c.get("source_url"):
                     data["source_url"] = c.get("source_url")
+                if c.get("source_urls"):
+                    data["source_urls"] = c.get("source_urls")
                 if c.get("source_file"):
                     data["source_file"] = c.get("source_file")
                 break
@@ -137,8 +139,8 @@ def _check_fact_check(data: dict, verd_text: str):
     claims = data.get("claims") or []
     if not claims or not isinstance(claims, list):
         return False, "MALFORMED_ENVELOPE", "GATE:fact_check envelope missing claims[]"
-    if not data.get("source_url") and not data.get("source_file"):
-        return False, "MALFORMED_ENVELOPE", "GATE:fact_check requires source_url or source_file"
+    if not data.get("source_url") and not data.get("source_urls") and not data.get("source_file"):
+        return False, "MALFORMED_ENVELOPE", "GATE:fact_check requires source_url(s) or source_file (multi-source source_urls preferred: Rohit + external refs)"
     verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
     if not verdict_data or "verdicts" not in verdict_data:
         return False, "MALFORMED_VERDICTS", "Subagent did not return {verdicts:[...]}"
@@ -717,7 +719,8 @@ class Filter:
                     f"For teaching claims in THIS step:\n"
                     f"```json\n"
                     f'{{\n  "gate": "fact_check",\n  "claims": [{{"id": 1, "claim": "load-bearing claim for THIS step"}}],\n'
-                    f'  "source_url": "https://..."  // or "source_file": "path/to/source",\n'
+                    f'  "source_urls": ["https://rohit-source...", "https://external-ref..."],\n'
+                    f'  "reference_excerpt": "digest excerpts for THIS step",\n'
                     f'  "context": "what THIS step teaches"\n}}\n```\n'
                     f"For question batches in THIS generation:\n"
                     f"```json\n"
