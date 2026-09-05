@@ -155,7 +155,7 @@ PROMPTS = [
     {
         "command": "swe",
         "name": "SWE Review Session",
-        "content": "Run a review session on the swe track. Load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow.",
+        "content": "Run a review session on the swe track. Load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. Note: SWE is archived 2026-09-01 — if requested, redirect to AIEFS (aiefs) and note the archive.",
     },
     {
         "command": "review",
