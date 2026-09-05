@@ -1,6 +1,6 @@
 # Prior Probability P(H)
 
-> **Source:** Phase 1, Lesson 2 — Bayes' Theorem & Statistical Thinking (AIEFS Rohit)
+> **Source:** Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking (AIEFS Rohit)
 > **Related:** [[Bayes' Theorem]], [[Posterior Probability]], [[Likelihood]], [[Base Rate Fallacy]]
 
 ## Definition

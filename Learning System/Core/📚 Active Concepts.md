@@ -58,15 +58,19 @@
 | 4-Layer AI Environment Stack | concept | developing | Rohit P0 L01-L12 | Python | 2026-09-01 | 2026-09-04 | definitional | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
 | Cross-Entropy from NLL | concept | developing | Rohit P1 L06 + CS229 | Python | 2026-09-01 | 2026-09-04 | definitional | L=−log(p_correct). Minimizing pushes true class toward 1. |
 
-### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 2)
+### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
-| Bayes' Theorem | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Prior Probability | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Likelihood | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Posterior Probability | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Base Rate Fallacy | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Naive Bayes | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Laplace Smoothing | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
-| Conditional Independence | aiefs | concept | developing | Phase 1 L2 notes | 2026-09-02 | 2026-09-05 | definitional | |
+| Bayes' Theorem | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Prior Probability | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Likelihood | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Posterior Probability | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Base Rate Fallacy | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Naive Bayes | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Laplace Smoothing | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Conditional Independence | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| MLE vs MAP Estimation | aiefs | concept | developing | Rohit P1 L07 + lesson 2026-09-05 | Python | 2026-09-05 | 2026-09-08 | definitional | MAP = MLE × prior; Gaussian prior = L2, Laplace prior = L1. |
+| Conjugate Priors (Beta-Binomial) | aiefs | concept | developing | Rohit P1 L07 + Think Bayes | Python | 2026-09-05 | 2026-09-08 | definitional | Beta(a,b) + s/f → Beta(a+s,b+f). Update = addition. |
+| Sequential Bayesian Updating | aiefs | concept | developing | Rohit P1 L07 | Python | 2026-09-05 | 2026-09-08 | definitional | Today's posterior = tomorrow's prior. Order-invariant. |
+| Bayesian A/B Testing | aiefs | procedure | developing | Rohit P1 L07 | Python | 2026-09-05 | 2026-09-08 | definitional | P(B>A) via Monte Carlo; safe early stopping. |

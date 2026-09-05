@@ -1,12 +1,12 @@
 # Bayes' Theorem
 
-> **Source:** Phase 1, Lesson 2 — Bayes' Theorem & Statistical Thinking (AIEFS Rohit)
+> **Source:** Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking (AIEFS Rohit)
 > **Phase:** 1 · Math Foundations
-> **Related:** [[Prior Probability]], [[Posterior Probability]], [[Likelihood]], [[Base Rate Fallacy]], [[Naive Bayes]], [[Laplace Smoothing]]
+> **Related:** [[Prior Probability]], [[Posterior Probability]], [[Likelihood]], [[Base Rate Fallacy]], [[Naive Bayes]], [[Laplace Smoothing]], [[MLE vs MAP Estimation]], [[Conjugate Priors]], [[Bayesian A-B Testing]]
 
 ## Core Formula
 
-$$P(H|E) = rac{P(E|H) \cdot P(H)}{P(E)}$$
+$$P(H|E) = \frac{P(E|H) \cdot P(H)}{P(E)}$$
 
 **Components:**
 - **Prior P(H):** Your belief before seeing any evidence — the base rate.
@@ -14,6 +14,14 @@ $$P(H|E) = rac{P(E|H) \cdot P(H)}{P(E)}$$
 - **Evidence P(E):** Total probability of seeing E under all possibilities (Law of Total Probability):
   - `P(E) = P(E|H)·P(H) + P(E|¬H)·P(¬H)`
 - **Posterior P(H|E):** Belief after incorporating evidence.
+
+## Derivation (from Conditional Probability)
+
+Conditional probability: `P(A|B) = P(A∩B)/P(B)`, and symmetrically `P(B|A) = P(A∩B)/P(A)`. Both expressions share the same numerator — P(A∩B). Set them equal and isolate P(A|B):
+
+`P(A|B)·P(B) = P(B|A)·P(A)` → `P(A|B) = P(B|A)·P(A)/P(B)`
+
+That is Bayes' theorem. No independence assumption is needed — the derivation only equates two expressions for the same joint probability.
 
 ## Why It Matters for AI/ML
 
@@ -40,3 +48,7 @@ A disease affects 1 in 1000 people. A test is 99% sensitive, 1% false positive r
 ## Key Insight
 
 The prior dominates when a condition is rare — even accurate tests produce mostly false positives.
+
+## The Forgotten Term
+
+When someone says "the test is 99% accurate, so a positive means you're 99% sure," the single word for what they're forgetting is **prior**. Test accuracy is only the likelihood — one number, meaningless without the other (how rare the condition is). Bayes' theorem forces both into the computation. See [[Base Rate Fallacy]].

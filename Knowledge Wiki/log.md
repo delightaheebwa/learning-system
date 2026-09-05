@@ -570,3 +570,16 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Wiki pages created (8):** Bayes' Theorem, Prior Probability, Likelihood, Posterior Probability, Base Rate Fallacy, Naive Bayes, Laplace Smoothing, Conditional Independence.
 - **Active Concepts added (8):** all `developing`, last_reviewed 2026-09-02, next_review 2026-09-05, Last Q Type `definitional`.
 - **Session note:** `Learning System/Sessions/Session — Bayes Theorem Ingest — 2026-09-02.md`.
+## 2026-09-05 (ingest) — Phase 1 L07 Bayes' Theorem completion — Clerk
+- **Source:** Tutor handoff `Pending Ingest.json` (core concepts first ingested 2026-09-02 as incremental notes; lesson completed 2026-09-05).
+- **Wiki pages created (4):** MLE vs MAP Estimation, Conjugate Priors, Sequential Bayesian Updating, Bayesian A/B Testing.
+- **Wiki pages enriched (3):** Bayes' Theorem (derivation + forgotten-term note), Naive Bayes (calibration vs ranking, log-space, sklearn mapping), Laplace Smoothing (denominator normalization + worked example).
+- **Source label fix:** "Phase 1, Lesson 2" → "Phase 1, Lesson 07" across Bayes pages.
+- **Active Concepts:** 8 overlap rows relabeled L2→L07, last_reviewed 2026-09-05, next_review 2026-09-12; 4 new rows developing (next_review 2026-09-08).
+- **Session note:** `Learning System/Sessions/Session — Bayes Theorem Ingest — 2026-09-05.md`.
+
+## 2026-09-05 (ingest pm) — Bayes handwritten-notes transcription — Clerk
+- **Source:** learner's handwritten notes transcription (5 pages); heavy overlap vs morning L07 completion ingest — enrichment only, no new rows.
+- **Enriched (3):** Conjugate Priors (a+b = effective sample size; 2 vs 200 contrast); Bayesian A/B Testing (frequentist 4-step procedure); Base Rate Fallacy (3-step concrete-population method + library-card example P(child|card) = 4/22 ≈ 0.18).
+- **Fix:** `Bayesian A/B Testing.md` (bogus `Bayesian A/` subdir from slash) → `Bayesian A-B Testing.md`; index + Related links updated.
+- **Session note:** `Learning System/Sessions/Session — Bayes Handwritten Notes Ingest — 2026-09-05.md`.
