@@ -46,7 +46,7 @@ Rules:
 The gate Pipe (`gate_pipe.py`, outlet) blocks before render:
 
 - **Scout digest for new lessons:** a Tutor turn responding to a new `/teach`/`/lesson` (no `Lessons/Lesson — <slug> — *.md` yet) requires a `.tmp/context-<chat>-<slug>.json` digest and a prior `Scout` message in the same chat (7-day TTL, slug must match trigger). Resume of an existing lesson grounds in `Lessons/` + `Sessions/` and bypasses this check, so stale/missing digests don't confuse Tutor.
-- **Receipts:** every non-trivial Tutor (claims) and Clerk (wiki) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
+- **Receipts:** every non-trivial Tutor (claims) and Clerk (wiki) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Tutor **review grades** require a foreground `GATE:grade_audit` envelope (`concept/question/learner_answer/claimed_verdict/source_excerpt`) before the grade renders. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
 
 ## One-time setup
 
@@ -72,7 +72,7 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 ### Prompts
 
 `/swe` — **Legacy** (SWE archived 2026-09-01) — redirects to AIEFS review. Use `/review` instead.
-`/review` — Run a review session on the **AIEFS** track (SWE `swe` is archived). Load `learning-system`, follow Review flow.
+`/review` — Run a review session on the **AIEFS** track (SWE `swe` is archived). Load `learning-system`, follow Review flow. Grades are verified via foreground `GATE:grade_audit` — do not bypass.
 `/ingest` — `Ingest the following content: {{content}} — Switch to Clerk, load learning-system, follow Ingest flow, then commit and push.`
 `/teach` — `Teach me about: {{topic}} — Switch to Scout to gather context, then to Learning Tutor, load learning-teach, run probe → plan → teach. Gate enforces foreground GATE envelopes.`
 `/lesson` — `Run the next curriculum lesson. Switch to Scout to gather context for the next lesson, then to Learning Tutor, load learning-teach.`

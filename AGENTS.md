@@ -114,8 +114,8 @@ renders without valid **foreground** `delegate_task` receipts:
 - **Tutor**, new-lesson turn: requires a `.tmp/context-<chat>-<slug>.json` Scout
   digest (7-day TTL) + a prior Scout message; resume of an existing
   `Lessons/Lesson — <slug> — *.md` bypasses it.
-- **Tutor claims/quizzes** & **Clerk wiki writes**: require a `GATE:fact_check` /
-  `GATE:quiz_audit` / `GATE:review` envelope whose child internal chat is
+- **Tutor claims/quizzes/grades** & **Clerk wiki writes**: require a `GATE:fact_check` /
+  `GATE:quiz_audit` / `GATE:grade_audit` / `GATE:review` envelope whose child internal chat is
   foreground (`background:false`), completed, and whose verdict JSON covers every
   `claims[].id`. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`,
   `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`. Retry cap 2/turn → `⛔ Withheld`.

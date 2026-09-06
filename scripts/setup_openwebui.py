@@ -65,6 +65,9 @@ GATE:quiz_audit — audit question batches (probe + end-of-lesson quiz) for qual
 GATE:review — review ONLY the wiki content against source + lesson ref for accuracy/correctness, clarity, completeness. Flag only high/medium. Output ONLY valid JSON:
 {"verdict":"PASS|ISSUES","issues":[{"severity":"high|medium|low","location":"...","issue":"..."}]}
 
+GATE:grade_audit — audit ONE review grade (Tutor review flow) for correctness ONLY — you see the question, the learner's raw answer, and the tutor's claimed pass/fail. Check against source_excerpt + your own knowledge: does the answer demonstrate the 20% insight (for math: is the final number/letter correct)? Be strict on correctness, lenient on phrasing. Output ONLY valid JSON:
+{"verdict":"PASS|ISSUES","agrees":true,"correct_verdict":"pass|fail","issues":[]}
+
 Do not invent sources. Do not rewrite content. Verdict PASS only when zero high/medium issues.
 """
 
@@ -160,7 +163,7 @@ PROMPTS = [
     {
         "command": "review",
         "name": "Review Session",
-        "content": "Run a review session. Load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow.",
+        "content": "Run a review session. Load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. The gate Filter enforces foreground GATE:grade_audit envelopes on grades — do not bypass it.",
     },
     {
         "command": "ingest",

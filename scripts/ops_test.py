@@ -8,8 +8,10 @@ Guards the three bugs fixed 2026-08:
 """
 
 import io
+import json
 import os
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -88,6 +90,102 @@ class TestDoStateActiveConcepts(unittest.TestCase):
         else:
             # Pre-archive expectation (preserved for history)
             self.assertIn("| What is the Shell |", out)
+
+
+class TestDoStateIncludesMasterySidecars(unittest.TestCase):
+    def test_state_bundles_attempts_and_mistakes(self):
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_state("aiefs")
+        out = buf.getvalue()
+        self.assertIn("Attempts.json", out)
+        self.assertIn("Mistakes.md", out)
+
+
+class TestAttemptCommand(unittest.TestCase):
+    def _make_root(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        seed = {
+            "concepts": {
+                "Test Concept": {
+                    "type": "concept",
+                    "attempts": [{"date": "2026-09-01", "is_correct": True,
+                                  "result": "pass", "q_type": None}],
+                    "interval_index": 0,
+                    "consecutive_correct": 1,
+                    "consecutive_wrong": 0,
+                    "last_reviewed": "2026-09-01",
+                    "next_review": "2026-09-04",
+                    "feynman": None,
+                }
+            },
+            "meta": {"version": 1,
+                     "intervals": {"memory": [0, 1, 3, 7, 14, 30, 60],
+                                   "concept": [3, 7, 14, 30],
+                                   "procedure": [3, 7, 14],
+                                   "design": [14, 28]}},
+        }
+        (core / "Attempts.json").write_text(json.dumps(seed), encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        return Path(tmp.name)
+
+    def test_attempt_pass_advances_interval(self):
+        self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_attempt("Test Concept", "pass", date="2026-09-04")
+        out = buf.getvalue()
+        self.assertIn("next_review", out)
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        entry = data["concepts"]["Test Concept"]
+        self.assertEqual(len(entry["attempts"]), 2)
+        # 2nd consecutive pass => +2 from index 0
+        self.assertEqual(entry["interval_index"], 2)
+        self.assertEqual(entry["next_review"], "2026-09-18")  # 2026-09-04 + 14d
+        self.assertEqual(entry["last_reviewed"], "2026-09-04")
+
+    def test_attempt_fail_drops_interval(self):
+        self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_attempt("Test Concept", "fail", date="2026-09-04")
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        entry = data["concepts"]["Test Concept"]
+        self.assertEqual(entry["interval_index"], 0)  # clamped, was 0
+        self.assertEqual(entry["consecutive_wrong"], 1)
+
+    def test_attempt_feynman_flag_recorded(self):
+        self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_attempt("Test Concept", "pass", feynman="feynman_pass",
+                           date="2026-09-04")
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["Test Concept"]["feynman"], "pass")
+
+    def test_attempt_new_concept_defaults(self):
+        self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_attempt("Brand New", "pass", date="2026-09-04")
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertIn("Brand New", data["concepts"])
+        self.assertEqual(data["concepts"]["Brand New"]["type"], "concept")
+
+    def test_mastery_caps_single_attempt(self):
+        self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_mastery("aiefs")
+        out = buf.getvalue()
+        # 1 pass => recency 1.0 capped at 0.5
+        self.assertIn("Test Concept", out)
+        self.assertIn("0.50", out)
 
 
 if __name__ == "__main__":

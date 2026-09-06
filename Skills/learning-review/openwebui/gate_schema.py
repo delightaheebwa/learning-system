@@ -92,10 +92,32 @@ class GATEQuizAuditVerdict(BaseModel):  # type: ignore
 
 
 # ---------------------------------------------------------------------------
+# Grade-audit envelope (Tutor review grading → subagent)
+# ---------------------------------------------------------------------------
+
+
+class GATEGradeAuditEnvelope(BaseModel):  # type: ignore
+    gate: Literal["grade_audit"] = Field(default="grade_audit")
+    concept: str = Field(description="Concept that was reviewed")
+    question: str = Field(min_length=1, description="Question asked")
+    learner_answer: str = Field(min_length=1, description="Learner's raw answer")
+    claimed_verdict: Literal["pass", "fail"] = Field(description="Tutor's grade")
+    source_excerpt: str = Field(min_length=1, description="Grounding excerpt (Concept Note / Lesson / Wiki)")
+    feynman_transcript: Optional[str] = Field(default=None, description="Explain-back text for concept/design types")
+
+
+class GATEGradeAuditVerdict(BaseModel):  # type: ignore
+    verdict: Literal["PASS", "ISSUES"]
+    agrees: bool = Field(description="True when claimed_verdict matches evidence")
+    correct_verdict: Literal["pass", "fail"]
+    issues: List[dict] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
 # Legacy helpers: validate sentinel text and JSON extraction (for migration)
 # ---------------------------------------------------------------------------
 
-_ENVELOPE_SENTINEL_RE = re.compile(r"^\s*GATE:(fact_check|review|quiz_audit)\b", re.MULTILINE)
+_ENVELOPE_SENTINEL_RE = re.compile(r"^\s*GATE:(fact_check|review|quiz_audit|grade_audit)\b", re.MULTILINE)
 
 
 def detect_gate_type(task_text: str) -> Optional[str]:

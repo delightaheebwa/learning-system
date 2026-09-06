@@ -7,18 +7,26 @@ agent sessions stay far below the model's cumulative context limit.
 Usage:
   ops.py state TRACK              Standard session-start bundle for TRACK (aie|swe).
                                   One call replaces: Learning Profile read, Active
-                                  Concepts track slice, log tail, index head.
+                                  Concepts track slice, Attempts.json, Mistakes.md,
+                                  log tail, index head.
   ops.py bundle SPEC [SPEC...]    Read many targets in one call. SPEC syntax:
                                     PATH            whole file
                                     PATH:N-M        lines N..M (1-based, inclusive)
                                     PATH:-N         last N lines
                                     PATH@REGEX      lines matching REGEX (ignore-case)
-  ops.py apply < SPEC.json        Apply a batch of writes from JSON on stdin:
-                                    {"writes":   [{"path": "...", "content": "..."}],
-                                     "appends":  [{"path": "...", "content": "..."}],
-                                     "replaces": [{"path": "...", "find": "...",
-                                                   "replace_with": "..."}]}
-                                  Prints a per-op summary. Use with a quoted heredoc.
+   ops.py apply < SPEC.json        Apply a batch of writes from JSON on stdin:
+                                     {"writes":   [{"path": "...", "content": "..."}],
+                                      "appends":  [{"path": "...", "content": "..."}],
+                                      "replaces": [{"path": "...", "find": "...",
+                                                    "replace_with": "..."}]}
+                                   Prints a per-op summary. Use with a quoted heredoc.
+  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design]
+                                  Record one answer in Attempts.json (interval_index
+                                  +1 pass / +2 on 2 consecutive passes / -1 fail,
+                                  next_review from type schedule). Prints mastery +
+                                  next_review for the skill to copy via apply.
+  ops.py mastery [TRACK]           Advisory recency-weighted mastery report
+                                   (0.00-1.00 + Feynman status, not blocking).
 
 All paths resolve under the workspace root (/home/user/learning-system). Escapes are rejected.
 """
@@ -27,6 +35,7 @@ import json
 import os
 import re
 import sys
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 
@@ -56,6 +65,16 @@ def _detect_root() -> Path:
 
 ROOT = _detect_root()
 MAX_LINE = 4000
+
+DEFAULT_INTERVALS = {
+    "memory": [0, 1, 3, 7, 14, 30, 60],
+    "concept": [3, 7, 14, 30],
+    "procedure": [3, 7, 14],
+    "design": [14, 28],
+}
+ATTEMPTS_PATH = "Learning System/Core/Attempts.json"
+MISTAKES_PATH = "Learning System/Core/🧯 Mistakes.md"
+MASTERY_WEIGHTS = [0.4, 0.25, 0.15, 0.1, 0.1]
 
 
 def _resolve(p: str) -> Path:
@@ -102,6 +121,8 @@ def do_state(track: str) -> None:
         # Section selector (#heading) pulls the whole track block (header + table
         # rows) — the old `^## {track}\b|^### ` grep matched only heading lines.
         (f"Learning System/Core/📚 Active Concepts.md#^## {track}\\b", ""),
+        (ATTEMPTS_PATH, ""),
+        (MISTAKES_PATH, ""),
         ("Knowledge Wiki/log.md:-25", ""),
         ("Knowledge Wiki/index.md:1-40", ""),
     ]
@@ -169,6 +190,121 @@ def do_bundle(*specs: str) -> None:
         print(out if out else "(empty)")
 
 
+def _load_attempts() -> tuple:
+    p = _resolve(ATTEMPTS_PATH)
+    if not p.is_file():
+        return {"concepts": {}, "meta": {"version": 1, "intervals": DEFAULT_INTERVALS}}, p
+    data = json.loads(p.read_text(encoding="utf-8"))
+    data.setdefault("concepts", {})
+    meta = data.setdefault("meta", {})
+    meta.setdefault("intervals", DEFAULT_INTERVALS)
+    return data, p
+
+
+def _intervals_for(data: dict, ctype: str):
+    sched = (data.get("meta") or {}).get("intervals") or DEFAULT_INTERVALS
+    return sched.get(ctype, sched.get("concept", [3, 7, 14, 30]))
+
+
+def compute_mastery(attempts: list) -> float:
+    """Recency-weighted mastery 0-1 with confidence caps ({1:0.5, 2:0.8})."""
+    if not attempts:
+        return 0.0
+    recent = attempts[-5:][::-1]  # most recent first
+    weights = MASTERY_WEIGHTS[: len(recent)]
+    total = sum(weights)
+    score = sum(w * (1.0 if a.get("is_correct") else 0.0) for w, a in zip(weights, recent)) / total
+    n = len(attempts)
+    if n == 1:
+        score = min(score, 0.5)
+    elif n == 2:
+        score = min(score, 0.8)
+    return round(score, 2)
+
+
+def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
+               qtype: str = None, ctype: str = None) -> None:
+    result = (result or "").lower().strip()
+    if result not in ("pass", "fail"):
+        print(f"ATTEMPT FAILED: result must be pass|fail, got {result!r}")
+        sys.exit(2)
+    is_correct = result == "pass"
+    day = date or datetime.now().strftime("%Y-%m-%d")
+    try:
+        datetime.strptime(day, "%Y-%m-%d")
+    except ValueError:
+        print(f"ATTEMPT FAILED: bad --date {day!r}, want YYYY-MM-DD")
+        sys.exit(2)
+    data, path = _load_attempts()
+    entry = data["concepts"].get(concept)
+    if entry is None:
+        entry = {
+            "type": (ctype or "concept").lower().strip(),
+            "attempts": [],
+            "interval_index": 0,
+            "consecutive_correct": 0,
+            "consecutive_wrong": 0,
+            "last_reviewed": day,
+            "next_review": day,
+            "feynman": None,
+        }
+        data["concepts"][concept] = entry
+    if is_correct:
+        entry["consecutive_correct"] = int(entry.get("consecutive_correct", 0)) + 1
+        entry["consecutive_wrong"] = 0
+        step = 2 if entry["consecutive_correct"] >= 2 else 1
+        entry["interval_index"] = int(entry.get("interval_index", 0)) + step
+    else:
+        entry["consecutive_wrong"] = int(entry.get("consecutive_wrong", 0)) + 1
+        entry["consecutive_correct"] = 0
+        entry["interval_index"] = int(entry.get("interval_index", 0)) - 1
+    sched = _intervals_for(data, entry.get("type", "concept"))
+    entry["interval_index"] = max(0, min(int(entry["interval_index"]), len(sched) - 1))
+    entry["attempts"].append({"date": day, "is_correct": is_correct,
+                              "result": result, "q_type": qtype})
+    entry["last_reviewed"] = day
+    entry["next_review"] = (datetime.strptime(day, "%Y-%m-%d").date()
+                            + timedelta(days=sched[entry["interval_index"]])).isoformat()
+    if feynman in ("feynman_pass", "feynman_fail"):
+        entry["feynman"] = "pass" if feynman == "feynman_pass" else "fail"
+    elif feynman is not None:
+        print(f"ATTEMPT FAILED: feynman must be feynman_pass|feynman_fail, got {feynman!r}")
+        sys.exit(2)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    mastery = compute_mastery(entry["attempts"])
+    feyn = entry.get("feynman") or "—"
+    print(f"ATTEMPT OK: {concept} {result} mastery {mastery:.2f} — Feynman: {feyn}")
+    print(f"next_review {entry['next_review']} (interval_index {entry['interval_index']})")
+
+
+def do_mastery(track: str = "") -> None:
+    data, _ = _load_attempts()
+    concepts = data.get("concepts", {})
+    names = sorted(concepts)
+    if track:
+        # Filter to the track's Active Concepts section when available.
+        try:
+            apath = _resolve("Learning System/Core/📚 Active Concepts.md")
+            if apath.is_file():
+                lines = apath.read_text(encoding="utf-8", errors="replace").splitlines()
+                section, err = _section_slice(lines, rf"^## {re.escape(track)}\b")
+                if not err and section:
+                    in_section = {n for n in names if n in section}
+                    if in_section:
+                        names = sorted(in_section)
+        except Exception:
+            pass
+    if not names:
+        print("(no concepts)")
+        return
+    for n in names:
+        e = concepts[n]
+        m = compute_mastery(e.get("attempts", []))
+        print(f"{n} mastery {m:.2f} — Feynman: {e.get('feynman') or '—'} "
+              f"(next {e.get('next_review')})")
+
+
 def _apply_op(kind: str, op: dict) -> str:
     p = _resolve(op["path"])
     if kind == "write":
@@ -229,6 +365,30 @@ def main() -> None:
         do_state(rest[0])
     elif cmd == "apply":
         do_apply(sys.stdin)
+    elif cmd == "attempt":
+        # attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date D] [--qtype T] [--type C]
+        if len(rest) < 2:
+            print('usage: ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type C]')
+            sys.exit(2)
+        concept, result = rest[0], rest[1]
+        feynman = qtype = ctype = day = None
+        positional = []
+        i = 2
+        while i < len(rest):
+            tok = rest[i]
+            if tok == "--date" and i + 1 < len(rest):
+                day = rest[i + 1]; i += 2
+            elif tok == "--qtype" and i + 1 < len(rest):
+                qtype = rest[i + 1]; i += 2
+            elif tok == "--type" and i + 1 < len(rest):
+                ctype = rest[i + 1]; i += 2
+            else:
+                positional.append(tok); i += 1
+        if positional:
+            feynman = positional[0]
+        do_attempt(concept, result, feynman=feynman, date=day, qtype=qtype, ctype=ctype)
+    elif cmd == "mastery":
+        do_mastery(rest[0] if rest else "")
     else:
         print(f"unknown command: {cmd}")
         sys.exit(2)

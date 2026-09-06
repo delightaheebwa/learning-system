@@ -10,7 +10,7 @@ Verification gate for the learning system's ingest output. Runs automatically:
 1. At the end of every standalone **ingest** session (delegated from the learning-system skill).
 2. At the end of any **teaching lesson** that wrote wiki pages and/or Active Concepts rows (delegated from the learning-teach skill — see its "Lesson-end ingest gate" step), or on demand.
 
-Scope: **ingest output wherever it originates** — wiki pages, Active Concepts insight rows, question seeds, from both standalone ingests and lesson-end ingests. Review sessions and mechanical date updates are NOT gated.
+Scope: **ingest output wherever it originates** — wiki pages, Active Concepts insight rows, question seeds, from both standalone ingests and lesson-end ingests. Review-session **grades** are gated via `GATE:grade_audit` on the Tutor (see `learning-system` Review flow); mechanical date updates alone are NOT gated.
 
 Lesson files under `Learning System/Lessons/`, learning records, and glossary entries promoted by lessons are verified live by the `learning-teach` skill using batched fact-check subagent tasks during plan/teach, before they reach the user. They do **not** go through this gate. See `Skills/learning-teach/SKILL.md`. The two verification paths are deliberately separate.
 

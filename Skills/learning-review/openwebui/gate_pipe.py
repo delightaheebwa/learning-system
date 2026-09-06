@@ -8,8 +8,9 @@ Enforces:
 - Tutor new-lesson: Scout digest + Scout message present (slug match, 7-day TTL).
   Resume of existing lesson (Lessons/ file exists) bypasses digest check.
 - Tutor content (Learning Tutor only, multi-turn): per-generation GATE:fact_check /
-  GATE:quiz_audit receipts — each Tutor generation that teaches must have a fresh
-  fact_check (claims) or quiz_audit (questions) with parent_message_id == draft.id;
+  GATE:quiz_audit / GATE:grade_audit receipts — each Tutor generation that teaches
+  must have a fresh fact_check (claims) or quiz_audit (questions), and each
+  review grade must have a fresh grade_audit, with parent_message_id == draft.id;
   an upfront Plan batch never satisfies later Teach steps, and quiz_audit never
   satisfies claims. Mixed claims+quiz needs BOTH receipts for the same message.
 - Clerk content (single-turn): single GATE:review receipt per wiki write.
@@ -40,6 +41,7 @@ try:
         GATEFactCheckEnvelope,
         GATEReviewEnvelope,
         GATEQuizAuditEnvelope,
+        GATEGradeAuditEnvelope,
         extract_json_block,
     )
 except Exception:
@@ -48,12 +50,14 @@ except Exception:
             GATEFactCheckEnvelope,
             GATEReviewEnvelope,
             GATEQuizAuditEnvelope,
+            GATEGradeAuditEnvelope,
             extract_json_block,
         )
     except Exception:
         GATEFactCheckEnvelope = None  # type: ignore
         GATEReviewEnvelope = None  # type: ignore
         GATEQuizAuditEnvelope = None  # type: ignore
+        GATEGradeAuditEnvelope = None  # type: ignore
         extract_json_block = lambda t: None  # noqa: E731
 
 
@@ -62,6 +66,16 @@ SLUG_RE = re.compile(r"[^a-z0-9]+")
 TRIGGER_RE = re.compile(r"^\s*(/teach|/lesson|/continue|teach me|learn|study)\b", re.I)
 # Per-generation gate (Tutor only): detect quiz vs claims content
 _QUIZ_RE = re.compile(r"(\|\s*A\s*\||\|\s*B\s*\||\bQ\s*\d+\b|Your answer \+ confidence|correct_index|questions_json)", re.I)
+# Review grading content (Tutor review flow): grade marker + verdict marker.
+# Grading lines are short (<=1 line + mastery line) so they would otherwise
+# fall under the <120char bypass — detect explicitly before length checks.
+_GRADE_MARKER_RE = re.compile(r"(mastery\s+\d|Feynman:|ops\.py\s+attempt|Reviews/Review|Next Review|Last Q Type)", re.I)
+_GRADE_VERDICT_RE = re.compile(r"\b(pass|fail|held|advanced|graduated)\b", re.I)
+
+
+def _is_grade_content(text: str) -> bool:
+    s = text or ""
+    return bool(_GRADE_MARKER_RE.search(s) and _GRADE_VERDICT_RE.search(s))
 
 
 def _is_quiz_content(text: str) -> bool:
@@ -104,16 +118,20 @@ def _is_claims_content(text: str) -> bool:
 
 
 def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
-    """Return (needs_fact_check, needs_quiz_audit, needs_review) for Gate 2."""
+    """Return (needs_fact_check, needs_quiz_audit, needs_review, needs_grade) for Gate 2."""
     if is_tutor:
+        # Review grading takes precedence: grading lines are short and would
+        # otherwise bypass via <120char or misclassify as fact_check.
+        if _is_grade_content(content):
+            return False, False, False, True
         needs_fact = _is_claims_content(content)
         needs_quiz = _is_quiz_content(content)
         if not needs_fact and not needs_quiz and len(content.strip()) > 120:
             needs_fact = True
-        return needs_fact, needs_quiz, False
+        return needs_fact, needs_quiz, False, False
     if is_clerk and len(content.strip()) > 80:
-        return False, False, True
-    return False, False, False
+        return False, False, True, False
+    return False, False, False, False
 
 
 def _check_fact_check(data: dict, verd_text: str):
@@ -168,6 +186,27 @@ def _check_quiz_audit(data: dict, verd_text: str):
         return False, "MALFORMED_VERDICTS", "Quiz-audit subagent did not return {verdict: PASS|ISSUES}"
     if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
         return False, "MALFORMED_VERDICTS", f"Invalid quiz verdict: {verdict_data.get('verdict')}"
+    return True, "", ""
+
+
+def _check_grade_audit(data: dict, verd_text: str):
+    if GATEGradeAuditEnvelope is not None:
+        try:
+            GATEGradeAuditEnvelope.model_validate(data)
+        except Exception as e:
+            return False, "MALFORMED_ENVELOPE", f"grade_audit envelope invalid: {e}"
+    for field in ("concept", "question", "learner_answer", "claimed_verdict", "source_excerpt"):
+        if not data.get(field):
+            return False, "MALFORMED_ENVELOPE", f"GATE:grade_audit requires {field}"
+    if data.get("claimed_verdict") not in ("pass", "fail"):
+        return False, "MALFORMED_ENVELOPE", "GATE:grade_audit claimed_verdict must be pass|fail"
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    if not verdict_data or "verdict" not in verdict_data or "correct_verdict" not in verdict_data:
+        return False, "MALFORMED_VERDICTS", "Grade-audit subagent did not return {verdict: PASS|ISSUES, agrees, correct_verdict}"
+    if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
+        return False, "MALFORMED_VERDICTS", f"Invalid grade verdict: {verdict_data.get('verdict')}"
+    if verdict_data.get("correct_verdict") not in ("pass", "fail"):
+        return False, "MALFORMED_VERDICTS", "correct_verdict must be pass|fail"
     return True, "", ""
 
 
@@ -593,10 +632,10 @@ class Filter:
                     return body
 
             # Gate 2: Per-generation receipts — Tutor is multi-turn; Clerk single-turn
-            needs_fact_check, needs_quiz_audit, needs_review = _gate_needs(
+            needs_fact_check, needs_quiz_audit, needs_review, needs_grade = _gate_needs(
                 content_str, is_tutor, is_clerk
             )
-            needs_receipt = any((needs_fact_check, needs_quiz_audit, needs_review))
+            needs_receipt = any((needs_fact_check, needs_quiz_audit, needs_review, needs_grade))
 
             if not needs_receipt:
                 # Trivial messages don't need receipts, but don't reset turn-scoped cap here
@@ -614,6 +653,7 @@ class Filter:
             found_fact_check = False
             found_quiz_audit = False
             found_review = False
+            found_grade_audit = False
             reject_code = "NO_DELEGATION"
             reject_detail = "No foreground GATE envelope dispatched via delegate_task for this generation. Each Tutor step needs its own fresh receipt (parent_message_id == this message)."
 
@@ -633,7 +673,7 @@ class Filter:
                     data = _parse_gate_envelope(task)
                     if not data or not isinstance(data, dict) or "gate" not in data:
                         reject_code = "MALFORMED_ENVELOPE"
-                        reject_detail = "GATE envelope must be JSON with gate field (fact_check | review | quiz_audit)"
+                        reject_detail = "GATE envelope must be JSON with gate field (fact_check | review | quiz_audit | grade_audit)"
                         continue
                     gate_type = data.get("gate")
 
@@ -661,6 +701,14 @@ class Filter:
                             reject_code, reject_detail = code, detail
                         continue
 
+                    if gate_type == "grade_audit" and is_tutor:
+                        ok, code, detail = _check_grade_audit(data, verd_text)
+                        if ok:
+                            found_grade_audit = True
+                        else:
+                            reject_code, reject_detail = code, detail
+                        continue
+
                     # Cross-role envelope: e.g., quiz_audit on Clerk — treat as invalid gate for that role
                     reject_code = "MALFORMED_ENVELOPE"
                     reject_detail = f"Gate type '{gate_type}' not valid for this preset ({model_id})"
@@ -668,9 +716,16 @@ class Filter:
 
             # Evaluate per-generation requirement (Tutor only)
             if is_tutor:
+                # Review grading: strict — grade must carry a fresh grade_audit.
+                if needs_grade:
+                    if found_grade_audit:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Review grade requires a foreground GATE:grade_audit receipt for THIS generation (parent_message_id == this message). Dispatch grade_audit with concept/question/learner_answer/claimed_verdict/source_excerpt before presenting the grade."
                 # Tutor: each generation needs fresh receipt matching its content type.
                 # Mixed claims+quiz needs BOTH. Upfront Plan batch never covers later steps.
-                if needs_fact_check and needs_quiz_audit:
+                elif needs_fact_check and needs_quiz_audit:
                     if found_fact_check and found_quiz_audit:
                         await self._reset_gate_state(chat_id, __user__, __request__)
                         return body
@@ -726,6 +781,9 @@ class Filter:
                     f"```json\n"
                     f'{{\n  "gate": "quiz_audit",\n  "questions_json": [{{"id":"q1","type":"mcq","question":"...","options":["a","b","c","d"],"correct_index":1,"target_bloom":"Apply"}}],\n'
                     f'  "purpose": "probe", "concept": "Concept", "source_excerpt": "..."\n}}\n```\n'
+                    f"For review grades in THIS generation:\n"
+                    f"```json\n"
+                    f'{{\n  "gate": "grade_audit",\n  "concept": "Concept",\n  "question": "what was asked",\n  "learner_answer": "raw answer",\n  "claimed_verdict": "pass",\n  "source_excerpt": "Concept Note / Lesson / Wiki excerpt"\n}}\n```\n'
                     f"Mixed claims+quiz needs BOTH receipts for the same message. Subagent prompt is fixed via global subagents.system_prompt — send data only."
                 )
             else:
