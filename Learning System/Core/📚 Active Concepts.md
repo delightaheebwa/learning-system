@@ -58,7 +58,7 @@
 | Softmax Subtract-Max Trick | procedure | developing | Rohit P1 L06 + Gundersen | Python | 2026-09-05 | 2026-09-12 | discriminative | Subtract max(z) before exp to prevent overflow. Identical result. |
 | Cosine Similarity | concept | developing | Rohit P1 L02 + 3B1B | Python | 2026-09-05 | 2026-09-08 | discriminative | Unit vectors u·v=cos(θ). Measures alignment −1 to +1. |
 | 4-Layer AI Environment Stack | concept | developing | Rohit P0 L01-L12 | Python | 2026-09-05 | 2026-09-08 | discriminative | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
-| Cross-Entropy from NLL | concept | developing | Rohit P1 L06 + CS229 | Python | 2026-09-01 | 2026-09-04 | definitional | L=−log(p_correct). Minimizing pushes true class toward 1. |
+| Cross-Entropy from NLL | concept | developing | Rohit P1 L06 + CS229 | Python | 2026-09-06 | 2026-09-09 | discriminative | L=−log(p_correct). Minimizing pushes true class toward 1. |
 
 ### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
