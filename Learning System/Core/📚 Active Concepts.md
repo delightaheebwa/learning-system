@@ -76,3 +76,6 @@
 | Conjugate Priors (Beta-Binomial) | aiefs | concept | developing | Rohit P1 L07 + Think Bayes | Python | 2026-09-05 | 2026-09-08 | definitional | Beta(a,b) + s/f → Beta(a+s,b+f). Update = addition. |
 | Sequential Bayesian Updating | aiefs | concept | developing | Rohit P1 L07 | Python | 2026-09-05 | 2026-09-08 | definitional | Today's posterior = tomorrow's prior. Order-invariant. |
 | Bayesian A/B Testing | aiefs | procedure | developing | Rohit P1 L07 | Python | 2026-09-05 | 2026-09-08 | definitional | P(B>A) via Monte Carlo; safe early stopping. |
+| Gradient Descent (vanilla) | aiefs | procedure | developing | Rohit P1 L08 + lesson 2026-09-07 | Python | 2026-09-07 | 2026-09-10 | definitional | w = w - lr*grad. Zigzag (valley) vs overshoot (lr) are different failures. |
+| Learning Rate | aiefs | concept | developing | Rohit P1 L08 + lesson 2026-09-07 | Python | 2026-09-07 | 2026-09-10 | definitional | Step size η. Adam 0.001, SGD+M 0.01. Schedules: step/exp/cosine/warmup. |
+| Momentum (SGD with Momentum) | aiefs | procedure | developing | Rohit P1 L08 + Goh Distill | Python | 2026-09-07 | 2026-09-10 | definitional | v = βv + g (β=0.9). Selective accumulator: keeps consistent, cancels zigzag. |

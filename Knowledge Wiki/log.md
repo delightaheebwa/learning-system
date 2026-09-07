@@ -583,3 +583,10 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enriched (3):** Conjugate Priors (a+b = effective sample size; 2 vs 200 contrast); Bayesian A/B Testing (frequentist 4-step procedure); Base Rate Fallacy (3-step concrete-population method + library-card example P(child|card) = 4/22 ≈ 0.18).
 - **Fix:** `Bayesian A/B Testing.md` (bogus `Bayesian A/` subdir from slash) → `Bayesian A-B Testing.md`; index + Related links updated.
 - **Session note:** `Learning System/Sessions/Session — Bayes Handwritten Notes Ingest — 2026-09-05.md`.
+
+## 2026-09-07 (partial ingest) — P1 L08 Optimization Checkpoints 1–2: Gradient Descent, Learning Rate, Momentum — Clerk
+- **Source:** Rohit P1 L08 `docs/en.md` + Goh (Distill) momentum; lesson paused at Checkpoint 2/5.
+- **New (2):** [[Learning Rate]] (concept); [[Momentum (SGD with Momentum)]] (procedure, incl. Goh eigenvalue-rescaling depth).
+- **Enriched (1):** [[Gradient descent]] (update rule, two failure modes zigzag vs overshoot, batch/SGD/mini-batch, Rosenbrock benchmark).
+- **Active Concepts (3):** Gradient Descent, Learning Rate, Momentum — all developing, last_reviewed 2026-09-07, next_review 2026-09-10.
+- **Session note:** `Learning System/Sessions/Session — Optimization (Gradient Descent Family) — 2026-09-07.md`.
