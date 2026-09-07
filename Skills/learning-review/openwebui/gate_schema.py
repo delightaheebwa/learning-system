@@ -30,6 +30,13 @@ class GateFactCheckClaim(BaseModel):  # type: ignore
 class GATEFactCheckEnvelope(BaseModel):  # type: ignore
     gate: Literal["fact_check"] = Field(default="fact_check")
     claims: List[GateFactCheckClaim] = Field(min_length=1)
+    # Post-generation binding (2026-09): the actual draft step text being verified.
+    # The verifier checks claims[] AS STATED in rendered_content, and the Pipe checks
+    # rendered_content against the emitted message. Closes plan-vs-output drift.
+    rendered_content: str = Field(
+        min_length=1,
+        description="Actual draft step text under verification (what will be rendered, pre-corrections)",
+    )
     # At least one source must be set; multi-source (Rohit + external refs) preferred.
     # Singular fields are legacy; source_urls is the multi-source form.
     source_url: Optional[str] = Field(default=None, description="Stable URL to fetch")
@@ -77,9 +84,18 @@ class GATEReviewVerdict(BaseModel):  # type: ignore
 # ---------------------------------------------------------------------------
 
 
+class GateQuizQuestion(BaseModel):  # type: ignore
+    id: str = Field(description="Question id, e.g. q1")
+    type: Literal["mcq", "free_recall"] = Field(description="MCQ or free-recall item")
+    question: str = Field(min_length=1)
+    options: Optional[List[str]] = Field(default=None, description="4 options for MCQ")
+    correct_index: Optional[int] = Field(default=None, description="0-indexed correct slot for MCQ")
+    target_bloom: Optional[str] = Field(default=None)
+
+
 class GATEQuizAuditEnvelope(BaseModel):  # type: ignore
     gate: Literal["quiz_audit"] = Field(default="quiz_audit")
-    questions_json: List[dict] = Field(min_length=1, description="Each: id, type mcq|free_recall, question, options+correct_index for MCQ, target_bloom")
+    questions_json: List[GateQuizQuestion] = Field(min_length=1, description="Each: id, type mcq|free_recall, question, options+correct_index for MCQ, target_bloom")
     purpose: Literal["probe", "end-of-lesson quiz"] = Field(default="probe")
     concept: str = Field(description="Concept being probed")
     bloom_levels: List[str] = Field(default_factory=list)

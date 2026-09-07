@@ -59,10 +59,10 @@ From the session note and Active Concepts changes:
 Dispatch ONE **foreground** `GATE:review` envelope via `delegate_task` (`background:false`) validated by `gate_pipe.py`:
 
 ```json
-{"gate":"review","concepts":["Concept"],"wiki_content":"...","source_url":"https://...","lesson_ref":"Lessons/...md","pass_number":1}
+{"gate":"review","concepts":["Concept"],"wiki_content":"exact written wiki text (must match the files on disk — generation-to-emission, never a summary)","source_url":"https://...","lesson_ref":"Lessons/...md","pass_number":1}
 ```
 
-Use `source_file` instead of `source_url` when the source is a repo file. The Pipe verifies the child chat receipt (foreground, schema, verdict coverage) before the Clerk's final message renders; blocked drafts show `⛔ BLOCKED (<code>)` with fix instructions. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
+Grounding (`source_url`, `source_file`, or `lesson_ref`) is required — the Pipe rejects ungrounded envelopes. Every concept must appear in `wiki_content`, and the written files must match the reviewed content (the Pipe checks both). Use `source_file` instead of `source_url` when the source is a repo file. The Pipe verifies the child chat receipt (foreground, schema, verdict coverage) before the Clerk's final message renders; blocked drafts show `⛔ BLOCKED (<code>)` with fix instructions. Save the returned verdict JSON to `Learning System/Reviews/Quality Gates/<concepts>-pass<N>-<date>.json` and show the result to the user.
 
 ### 3. Factual gate (new concepts only, same session)
 
@@ -74,7 +74,7 @@ For each NEW concept, spot-check key factual claims with web search. This is a s
 
 ### 4. Fix loop (max 2 cycles)
 
-- If the quality gate returns issues (or factual gate flags claims): fix the wiki/insight/question seeds, then re-run the quality gate ONLY with `PASS (cycle) = 2` and the SAME source, concepts, and wiki content.
+- If the quality gate returns issues (or factual gate flags claims): fix the wiki/insight/question seeds, then re-run the quality gate with `PASS (cycle) = 2`, the SAME source and concepts, and the UPDATED wiki content (post-fix text — generation-to-emission: the reviewer re-checks what was actually written, not the pre-fix draft).
 - Cap: **2 cycles total.** After cycle 2, anything still flagged gets surfaced to the user — no third LLM pass.
 - The reviewer never rewrites content. You own final wording.
 

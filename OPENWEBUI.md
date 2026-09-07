@@ -20,7 +20,7 @@ layer (skills, subagents, model presets, prompts, gate Pipe) that routes trigger
 | --- | --- | --- |
 | Scout (exploration) | **Scout** preset | Workspace → Models → Scout → base model |
 | Tutor (probe/plan/teach) | **Learning Tutor** preset | Workspace → Models → Learning Tutor → base model |
-| Clerk (ingest + review) | **Clerk** preset | Workspace → Models → Clerk → base model |
+| Clerk (ingest + review) | **Clerk** preset (or **Deputy** — your review preset, held to the same clerk-role gate rules) | Workspace → Models → Clerk → base model |
 | Slash-command triggers | **Prompts** (`/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) — `/swe` is legacy (SWE archived; redirects to AIEFS) | — |
 | Deterministic gate | **Gate Pipe** Filter (`gate_pipe.py` + `gate_schema.py`) — outlet, priority 10, bound to Tutor + Clerk | Function Valves (priority, max_retries, digest_ttl_days) |
 | Fixed verifier prompts | Global **subagents.system_prompt** (keyed `GATE:fact_check` / `GATE:quiz_audit` / `GATE:review`) | Settings → Subagents |
@@ -43,10 +43,10 @@ Rules:
 
 ### Gate enforcement (Pipe)
 
-The gate Pipe (`gate_pipe.py`, outlet) blocks before render:
+The gate Pipe (`gate_pipe.py`, outlet) blocks before render — bound to Tutor, Clerk, and Deputy (Deputy held to clerk-role rules via `deputy_name_prefix` valve); Scout exempt:
 
 - **Scout digest for new lessons:** a Tutor turn responding to a new `/teach`/`/lesson` (no `Lessons/Lesson — <slug> — *.md` yet) requires a `.tmp/context-<chat>-<slug>.json` digest and a prior `Scout` message in the same chat (7-day TTL, slug must match trigger). Resume of an existing lesson grounds in `Lessons/` + `Sessions/` and bypasses this check, so stale/missing digests don't confuse Tutor.
-- **Receipts:** every non-trivial Tutor (claims) and Clerk (wiki) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Tutor **review grades** require a foreground `GATE:grade_audit` envelope (`concept/question/learner_answer/claimed_verdict/source_excerpt`) before the grade renders. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
+- **Receipts:** every non-trivial Tutor (claims) and Clerk/Deputy (wiki) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Tutor `fact_check` is generation-to-emission: the envelope must carry the actual draft in `rendered_content`, the Pipe checks `claims[] ⊆ rendered_content ⊆ emitted message`, and plan-only verification never passes. Clerk/Deputy `review` is file-grounded generation-to-emission: grounding (`source_url`/`source_file`/`lesson_ref`) is required, every concept must appear in `wiki_content`, and the written wiki files must match the reviewed content. Tutor **review grades** require a foreground `GATE:grade_audit` envelope (`concept/question/learner_answer/claimed_verdict/source_excerpt`) before the grade renders. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
 
 ## One-time setup
 

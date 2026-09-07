@@ -64,7 +64,7 @@ Intervals (type-aware, from `mastery.py`): memory [0d,1d,3d,7d,14d,30d,60d] · c
 
 ## Ingest flow — via Clerk (handoffs from Tutor and standalone `/ingest`)
 
-Trigger: "ingest" with content to add (NOT a review). **Run on the Clerk preset** (reads `Pending Ingest.json` when the ingest originates from a lesson). Standalone `/ingest` also routes to Clerk.
+Trigger: "ingest" with content to add (NOT a review). **Run on the Clerk preset — or Deputy, your review preset** (reads `Pending Ingest.json` when the ingest originates from a lesson). Standalone `/ingest` also routes to Clerk/Deputy.
 
 1. If `Learning System/Core/Pending Ingest.json` exists (lesson handoff), read it — it contains `{lesson_file, session_file, concepts, source_url|source_file, created_at}`. Use `lesson_file` as the source of content to ingest.
 2. Otherwise extract concepts from the supplied content.
@@ -96,7 +96,7 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 - **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system` — `host.docker.internal:3000` from WSL when Docker Desktop runs Windows-side, separate from WSL; `/home/user/learning-system` in container vs `/home/delinux/learning-system` in WSL) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
 - **Pipeline presets:** `Scout` → `Tutor` → `Clerk` in the same chat (switch preset per message). Scout writes the ephemeral digest (now includes `rohit_hash` + `external_refs` + `lang_recommendation` + `roadmap_sha`; adaptive re-fetch, Further Reading synthesis; `📦 Concept Archive.md` strictly out of scope); Tutor teaches; Clerk ingests. See `OPENWEBUI.md`.
 - **Gate Pipe:** `Skills/learning-review/openwebui/gate_pipe.py` (Filter, inlet/outlet) blocks Tutor/Clerk output without valid foreground `GATE:*` receipts and enforces Scout digest for new lessons (7-day TTL). Fixed verifier wording lives in global `subagents.system_prompt` — send data only.
-- **Review gate (Clerk):** dispatch ONE foreground `GATE:review` envelope on the wiki content you wrote. Applies to handoffs from Tutor and standalone `/ingest`.
-- **Teaching verification (Tutor):** batch load-bearing claims into foreground `GATE:fact_check` envelopes (cite both `rohit_source` and `external_refs`) before presenting them; fold verdicts in before continuing. Build language follows the lesson's Rohit header.
+- **Review gate (Clerk/Deputy):** dispatch ONE foreground `GATE:review` envelope on the exact wiki content you wrote (post-fix text on re-runs — generation-to-emission, never a summary). Applies to handoffs from Tutor and standalone `/ingest`. The Pipe checks the written files match the reviewed content.
+- **Teaching verification (Tutor):** draft each step internally, then batch its load-bearing claims + the draft as `rendered_content` into foreground `GATE:fact_check` envelopes (cite both `rohit_source` and `external_refs`) and fold verdicts before emitting; audit question batches via `GATE:quiz_audit` envelopes before showing. Build language follows the lesson's Rohit header.
 - **Review grading (Tutor):** verify each pass/fail with a foreground `GATE:grade_audit` envelope (concept/question/learner_answer/claimed_verdict/source_excerpt) before presenting the grade; fold the verdict in before `ops.py attempt`.
 - **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).

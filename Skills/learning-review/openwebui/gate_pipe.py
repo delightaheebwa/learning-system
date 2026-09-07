@@ -1,7 +1,8 @@
 """
 gate_pipe — Deterministic delegation gate (Open WebUI Filter).
 
-Installed as Filter (Function type filter), bound to Scout/Tutor/Clerk presets.
+Installed as Filter (Function type filter), bound to Tutor/Clerk/Deputy presets
+(Scout exempt). Deputy is the user's review preset, held to clerk-role rules.
 Runs as outlet (blocking before render) with inlet pass-through.
 
 Enforces:
@@ -134,8 +135,54 @@ def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
     return False, False, False, False
 
 
-def _check_fact_check(data: dict, verd_text: str):
-    """Validate fact_check envelope + verdicts. Returns (ok, code, detail)."""
+def _normalize_for_binding(text: str) -> str:
+    """Normalize for plan-vs-output binding: lower, collapse ws, strip KaTeX markers."""
+    s = (text or "").lower()
+    s = s.replace("\\(", " ").replace("\\)", " ").replace("\\[", " ").replace("\\]", " ")
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def _claim_in_rendered(claim: str, rendered_norm: str) -> bool:
+    """Fuzzy containment: claim key content words appear in order in rendered text."""
+    words = [w.strip(".,:;()[]\"'") for w in _normalize_for_binding(claim).split()]
+    words = [w for w in words if len(w) > 3][:12]
+    if not words:
+        return True
+    # Require first/last content words + majority in order (tolerates verdict-driven fixes)
+    hits = sum(1 for w in words if w in rendered_norm)
+    if words[0] not in rendered_norm or words[-1] not in rendered_norm:
+        return False
+    return hits / len(words) >= 0.6
+
+
+def _rendered_matches_output(rendered: str, output: str) -> bool:
+    """Rendered draft must substantially match the emitted message (90% char overlap)."""
+    r, o = _normalize_for_binding(rendered), _normalize_for_binding(output)
+    if not r:
+        return False
+    if r in o or o in r:
+        return True
+    # Overlap fallback: majority of rendered 5-grams present in output
+    grams = [r[i : i + 24] for i in range(0, len(r), 24) if len(r[i : i + 24]) >= 12]
+    if not grams:
+        return r[:120] in o
+    hits = sum(1 for g in grams if g in o)
+    return hits / len(grams) >= 0.6
+
+
+def _check_fact_check(data: dict, verd_text: str, content_str: str = ""):
+    """Validate fact_check envelope + verdicts + generation-to-emission binding."""
+    # Post-generation binding (2026-09): envelope must carry the actual draft text.
+    rendered = data.get("rendered_content") or ""
+    if not isinstance(rendered, str) or not rendered.strip():
+        return (
+            False,
+            "MALFORMED_ENVELOPE",
+            "GATE:fact_check requires rendered_content (actual draft step text). "
+            "Draft the step internally, send it as rendered_content with claims[], "
+            "fold verdicts, then emit the corrected final.",
+        )
     # Lift per-claim source to top-level if needed (LLM drift)
     if not data.get("source_url") and not data.get("source_urls") and not data.get("source_file"):
         for c in (data.get("claims") or []):
@@ -170,10 +217,53 @@ def _check_fact_check(data: dict, verd_text: str):
     claim_ids = {c.get("id") for c in claims}
     if claim_ids - verdict_ids:
         return False, "MALFORMED_VERDICTS", f"Verdicts missing ids: {claim_ids - verdict_ids}"
+    # Generation-to-emission binding: claims[] must appear in rendered_content,
+    # and rendered_content must substantially match the emitted message.
+    rendered_norm = _normalize_for_binding(rendered)
+    for c in claims:
+        claim_text = c.get("claim", "") if isinstance(c, dict) else str(c)
+        if not _claim_in_rendered(claim_text, rendered_norm):
+            return (
+                False,
+                "MALFORMED_ENVELOPE",
+                f"Claim id={c.get('id') if isinstance(c, dict) else '?'} not found in "
+                "rendered_content — send the actual draft text, not a plan summary.",
+            )
+    if content_str and not _rendered_matches_output(rendered, content_str):
+        return (
+            False,
+            "MALFORMED_ENVELOPE",
+            "rendered_content does not match the emitted message — the gate verifies "
+            "what is generated, not what was planned. Redispatch with the actual draft.",
+        )
     return True, "", ""
 
 
-def _check_quiz_audit(data: dict, verd_text: str):
+_BANNED_OPTION_RE = re.compile(r"\b(all|none)\s+of\s+the\s+above\b", re.I)
+
+
+def _strip_option_label(text: str) -> str:
+    """Remove leading A-D/1-4 labels, pipes, and bold markers from a rendered option."""
+    s = re.sub(r"^[\s\|\-\*\>]*\(?[A-Da-d1-4]\)?[\.\)\:\|\-]\s*", "", (text or "").strip())
+    return s.replace("**", "").strip()
+
+
+def _is_code_option(options) -> bool:
+    """Code/math options get natural length variance — exempt from length pattern."""
+    blob = " ".join(str(o) for o in (options or []))
+    return ("```" in blob) or ("\\(" in blob) or ("\\[" in blob)
+
+
+def _option_lens(options) -> list:
+    lens = []
+    for o in (options or []):
+        s = _strip_option_label(str(o))
+        s = re.sub(r"```.*?```", "CODE", s, flags=re.DOTALL)
+        lens.append(len(s.strip()))
+    return lens
+
+
+def _check_quiz_audit(data: dict, verd_text: str, content_str: str = ""):
     if GATEQuizAuditEnvelope is not None:
         try:
             GATEQuizAuditEnvelope.model_validate(data)
@@ -181,11 +271,91 @@ def _check_quiz_audit(data: dict, verd_text: str):
             return False, "MALFORMED_ENVELOPE", f"quiz_audit envelope invalid: {e}"
     if not data.get("questions_json") or not isinstance(data.get("questions_json"), list):
         return False, "MALFORMED_ENVELOPE", "GATE:quiz_audit requires questions_json[]"
+    # Deterministic per-item structural checks (Pipe-side: schema import may fail open)
+    mcqs = []
+    for q in (data.get("questions_json") or []):
+        if not isinstance(q, dict):
+            return False, "MALFORMED_ENVELOPE", "GATE:quiz_audit questions_json[] items must be objects"
+        qid = q.get("id", "?")
+        qtype = q.get("type", "mcq")
+        if qtype == "mcq":
+            opts = q.get("options")
+            ci = q.get("correct_index")
+            if not isinstance(opts, list) or len(opts) != 4:
+                return False, "MALFORMED_ENVELOPE", f"Quiz item {qid}: MCQ requires exactly 4 options"
+            if not isinstance(ci, int) or not 0 <= ci < 4:
+                return False, "MALFORMED_ENVELOPE", f"Quiz item {qid}: correct_index out of range"
+            for o in opts:
+                if _BANNED_OPTION_RE.search(str(o)):
+                    return (
+                        False,
+                        "MALFORMED_ENVELOPE",
+                        f"Quiz item {qid}: 'all/none of the above' is banned — rewrite options "
+                        "as four parallel, topically-plausible alternatives.",
+                    )
+            mcqs.append(q)
+    # Batch-pattern blocks (tolerant: batches <3 leave variety to the auditor)
+    if len(mcqs) >= 3:
+        slots = [q.get("correct_index") for q in mcqs]
+        if len(set(slots)) == 1:
+            return (
+                False,
+                "MALFORMED_ENVELOPE",
+                "Quiz batch: correct answer sits in the same slot every time — "
+                "randomize correct positions across questions.",
+            )
+        eligible = [q for q in mcqs if not _is_code_option(q.get("options"))]
+        if len(eligible) >= 3:
+            flagged = []
+            for q in eligible:
+                lens = _option_lens(q.get("options"))
+                med = sorted(lens)[len(lens) // 2] or 1
+                ci_len = lens[q.get("correct_index")]
+                if (ci_len == max(lens) and ci_len > 1.25 * med) or (
+                    ci_len == min(lens) and ci_len < 0.75 * med
+                ):
+                    flagged.append(str(q.get("id", "?")))
+            if flagged and len(flagged) / len(eligible) >= 2 / 3:
+                return (
+                    False,
+                    "MALFORMED_ENVELOPE",
+                    f"Quiz items {flagged}: correct option is the length outlier "
+                    "(longest/shortest) across the batch — balance option lengths so "
+                    "the answer can't be spotted by shape.",
+                )
     verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
     if not verdict_data or "verdict" not in verdict_data:
         return False, "MALFORMED_VERDICTS", "Quiz-audit subagent did not return {verdict: PASS|ISSUES}"
     if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
         return False, "MALFORMED_VERDICTS", f"Invalid quiz verdict: {verdict_data.get('verdict')}"
+    # Generation-to-emission binding: verified batch must match the emitted message.
+    if content_str:
+        out_norm = _normalize_for_binding(content_str)
+        for q in (data.get("questions_json") or []):
+            if not isinstance(q, dict):
+                continue
+            qid = q.get("id", "?")
+            if not _claim_in_rendered(str(q.get("question", "")), out_norm):
+                return (
+                    False,
+                    "MALFORMED_ENVELOPE",
+                    f"Quiz item {qid}: verified question not found in the emitted message — "
+                    "the gate audits what is rendered, not what was planned. "
+                    "Redispatch with the actual batch.",
+                )
+            if (q.get("type", "mcq")) == "mcq":
+                hits = sum(
+                    1
+                    for o in (q.get("options") or [])
+                    if _claim_in_rendered(_strip_option_label(str(o)), out_norm)
+                )
+                if hits < 3:
+                    return (
+                        False,
+                        "MALFORMED_ENVELOPE",
+                        f"Quiz item {qid}: verified options not found in the emitted message — "
+                        "redispatch with the actual batch.",
+                    )
     return True, "", ""
 
 
@@ -210,7 +380,33 @@ def _check_grade_audit(data: dict, verd_text: str):
     return True, "", ""
 
 
-def _check_review(data: dict, verd_text: str):
+def _resolve_wiki_files(concepts, repo_root: str) -> dict:
+    """Map each concept to candidate wiki files. Returns {concept: [Path]}."""
+    wiki_dir = Path(repo_root) / "Knowledge Wiki" / "wiki"
+    mapping: dict = {}
+    if not wiki_dir.exists():
+        return mapping
+    pages = list(wiki_dir.glob("*.md"))
+    for concept in (concepts or []):
+        cslug = _slugify(str(concept))
+        hits = [p for p in pages if cslug and (cslug in _slugify(p.stem) or _slugify(p.stem) in cslug)]
+        mapping[str(concept)] = hits
+    return mapping
+
+
+def _wiki_matches_files(wiki_content: str, files) -> float:
+    """Fraction of substantial wiki_content paragraphs found verbatim in files."""
+    blocks = [b for b in re.split(r"\n\s*\n", wiki_content or "") if len(_normalize_for_binding(b)) >= 40]
+    if not blocks:
+        return 1.0
+    combined = _normalize_for_binding(" ".join(p.read_text(encoding="utf-8", errors="replace") for p in files))
+    if not combined:
+        return 0.0
+    hits = sum(1 for b in blocks if _normalize_for_binding(b) in combined)
+    return hits / len(blocks)
+
+
+def _check_review(data: dict, verd_text: str, content_str: str = "", repo_root: str = ""):
     if GATEReviewEnvelope is not None:
         try:
             GATEReviewEnvelope.model_validate(data)
@@ -218,11 +414,53 @@ def _check_review(data: dict, verd_text: str):
             return False, "MALFORMED_ENVELOPE", f"review envelope invalid: {e}"
     if not data.get("wiki_content") or not data.get("concepts"):
         return False, "MALFORMED_ENVELOPE", "GATE:review requires wiki_content and concepts"
+    if not data.get("source_url") and not data.get("source_file") and not data.get("lesson_ref"):
+        return (
+            False,
+            "MALFORMED_ENVELOPE",
+            "GATE:review requires grounding: source_url, source_file, or lesson_ref "
+            "(the reviewer verifies against the source, not from memory).",
+        )
+    wiki_norm = _normalize_for_binding(str(data.get("wiki_content") or ""))
+    for concept in (data.get("concepts") or []):
+        if not _claim_in_rendered(str(concept), wiki_norm):
+            return (
+                False,
+                "MALFORMED_ENVELOPE",
+                f"Concept '{concept}' not found in wiki_content — send the actual "
+                "written content, not a summary.",
+            )
     verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
     if not verdict_data or "verdict" not in verdict_data:
         return False, "MALFORMED_VERDICTS", "Review subagent did not return {verdict: PASS|ISSUES}"
     if verdict_data.get("verdict") not in ("PASS", "ISSUES"):
         return False, "MALFORMED_VERDICTS", f"Invalid review verdict: {verdict_data.get('verdict')}"
+    # Generation-to-emission binding (file-grounded): the reviewed wiki_content must
+    # match what was actually written. The final message is a summary, so message
+    # containment would false-positive — compare against files on disk instead.
+    # Files are written via ops.py apply before the final message, so at outlet
+    # time the artifact exists. Fail open when the repo is unreachable.
+    if repo_root:
+        mapping = _resolve_wiki_files(data.get("concepts"), repo_root)
+        if mapping:
+            missing = [c for c, files in mapping.items() if not files]
+            if missing:
+                return (
+                    False,
+                    "MALFORMED_ENVELOPE",
+                    f"No wiki file found for concept(s) {missing} — write the pages "
+                    "before dispatching review.",
+                )
+            all_files = [p for files in mapping.values() for p in files]
+            overlap = _wiki_matches_files(str(data.get("wiki_content") or ""), all_files)
+            if overlap < 0.6:
+                return (
+                    False,
+                    "MALFORMED_ENVELOPE",
+                    "Written wiki files do not match the reviewed wiki_content — the gate "
+                    "reviews what was written, not what was planned. Redispatch with "
+                    "the actual written content.",
+                )
     return True, "", ""
 
 
@@ -292,6 +530,12 @@ def _is_tutor_preset(model_id: str, valves) -> bool:
 def _is_clerk_preset(model_id: str, valves) -> bool:
     prefix = getattr(valves, "clerk_name_prefix", "Clerk")
     return prefix.lower() in (model_id or "").lower()
+
+
+def _is_deputy_preset(model_id: str, valves) -> bool:
+    """User's review preset: held to the same clerk-role rules as Clerk."""
+    prefix = getattr(valves, "deputy_name_prefix", "Deputy")
+    return bool(prefix) and prefix.lower() in (model_id or "").lower()
 
 
 def _find_digest(chat_id: str, slug: str, ttl_days: int, repo_root: str):
@@ -408,6 +652,7 @@ class Filter:
         scout_name_prefix: str = Field(default="Scout")
         tutor_name_prefix: str = Field(default="Tutor")
         clerk_name_prefix: str = Field(default="Clerk")
+        deputy_name_prefix: str = Field(default="Deputy", description="User's review preset — held to clerk-role rules (empty disables)")
         repo_root: str = Field(default="", description="Override repo path (empty = auto-detect)")
         blocked_banner: str = Field(
             default="⛔ Withheld: not independently verified — retry limit reached. Fix the GATE envelope and retry.",
@@ -521,7 +766,7 @@ class Filter:
                 pass
 
             is_tutor = _is_tutor_preset(model_id, valves)
-            is_clerk = _is_clerk_preset(model_id, valves)
+            is_clerk = _is_clerk_preset(model_id, valves) or _is_deputy_preset(model_id, valves)
             if not is_tutor and not is_clerk:
                 scout_prefix = getattr(valves, "scout_name_prefix", "Scout").lower()
                 if scout_prefix in (model_id or "").lower():
@@ -678,7 +923,7 @@ class Filter:
                     gate_type = data.get("gate")
 
                     if gate_type == "fact_check" and is_tutor:
-                        ok, code, detail = _check_fact_check(data, verd_text)
+                        ok, code, detail = _check_fact_check(data, verd_text, content_str)
                         if ok:
                             found_fact_check = True
                         else:
@@ -686,7 +931,7 @@ class Filter:
                         continue
 
                     if gate_type == "quiz_audit" and is_tutor:
-                        ok, code, detail = _check_quiz_audit(data, verd_text)
+                        ok, code, detail = _check_quiz_audit(data, verd_text, content_str)
                         if ok:
                             found_quiz_audit = True
                         else:
@@ -694,7 +939,7 @@ class Filter:
                         continue
 
                     if gate_type == "review" and is_clerk:
-                        ok, code, detail = _check_review(data, verd_text)
+                        ok, code, detail = _check_review(data, verd_text, content_str, repo_root)
                         if ok:
                             found_review = True
                         else:
@@ -771,16 +1016,20 @@ class Filter:
                 detail_help = (
                     f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
                     f"Learning Tutor is multi-turn: **each generation** needs its own fresh GATE receipt before you emit it (parent_message_id must equal this message's id). Do NOT reuse an upfront Plan batch for later Teach steps.\n\n"
-                    f"For teaching claims in THIS step:\n"
+                    f"For teaching claims in THIS step (generation-to-emission: draft internally, verify draft, then emit):\n"
                     f"```json\n"
                     f'{{\n  "gate": "fact_check",\n  "claims": [{{"id": 1, "claim": "load-bearing claim for THIS step"}}],\n'
+                    f'  "rendered_content": "actual draft step text that will be emitted (pre-corrections)",\n'
                     f'  "source_urls": ["https://rohit-source...", "https://external-ref..."],\n'
                     f'  "reference_excerpt": "digest excerpts for THIS step",\n'
                     f'  "context": "what THIS step teaches"\n}}\n```\n'
-                    f"For question batches in THIS generation:\n"
+                    f"For question batches in THIS generation (verified batch must equal rendered batch):\n"
                     f"```json\n"
                     f'{{\n  "gate": "quiz_audit",\n  "questions_json": [{{"id":"q1","type":"mcq","question":"...","options":["a","b","c","d"],"correct_index":1,"target_bloom":"Apply"}}],\n'
                     f'  "purpose": "probe", "concept": "Concept", "source_excerpt": "..."\n}}\n```\n'
+                    f"Quiz rules enforced deterministically: 4 options + correct_index in range per MCQ; "
+                    f"no 'all/none of the above'; batches of 3+ must vary correct positions and must not "
+                    f"make the correct option the length outlier across the batch.\n"
                     f"For review grades in THIS generation:\n"
                     f"```json\n"
                     f'{{\n  "gate": "grade_audit",\n  "concept": "Concept",\n  "question": "what was asked",\n  "learner_answer": "raw answer",\n  "claimed_verdict": "pass",\n  "source_excerpt": "Concept Note / Lesson / Wiki excerpt"\n}}\n```\n'
@@ -789,10 +1038,12 @@ class Filter:
             else:
                 detail_help = (
                     f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
-                    f"Dispatch a foreground GATE:review envelope via delegate_task:\n"
+                    f"Dispatch a foreground GATE:review envelope via delegate_task on the exact content you wrote (generation-to-emission: write files first, review what was written, then report):\n"
                     f"```json\n"
-                    f'{{\n  "gate": "review",\n  "concepts": ["Concept"],\n  "wiki_content": "...",\n'
-                    f'  "source_url": "https://...",\n  "lesson_ref": "Lessons/...md"\n}}\n```'
+                    f'{{\n  "gate": "review",\n  "concepts": ["Concept"],\n  "wiki_content": "exact written wiki text (must match the files on disk)",\n'
+                    f'  "source_url": "https://...",\n  "lesson_ref": "Lessons/...md"\n}}\n```\n'
+                    f"Grounding (source_url, source_file, or lesson_ref) is required, every concept must appear in wiki_content, "
+                    f"and the written files must match the reviewed content. Applies to Clerk and Deputy alike."
                 )
 
             assistant_msg["content"] = detail_help
