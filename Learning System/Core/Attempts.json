@@ -1131,6 +1131,57 @@
       "last_reviewed": "2026-09-07",
       "next_review": "2026-09-14",
       "feynman": null
+    },
+    "Adam (adaptive moments)": {
+      "type": "procedure",
+      "attempts": [
+        {
+          "date": "2026-09-08",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "definitional"
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-08",
+      "next_review": "2026-09-11",
+      "feynman": null
+    },
+    "Momentum (SGD with Momentum)": {
+      "type": "procedure",
+      "attempts": [
+        {
+          "date": "2026-09-08",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "definitional"
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-08",
+      "next_review": "2026-09-15",
+      "feynman": null
+    },
+    "Gradient Descent (vanilla)": {
+      "type": "procedure",
+      "attempts": [
+        {
+          "date": "2026-09-08",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "definitional"
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-08",
+      "next_review": "2026-09-15",
+      "feynman": null
     }
   },
   "meta": {
