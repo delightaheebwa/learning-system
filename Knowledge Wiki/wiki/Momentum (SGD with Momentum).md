@@ -31,3 +31,10 @@ Geometrically, this rescales the effective step size per eigenvector direction o
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-07
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md`
 - **Enrichment:** G. Goh, "Why Momentum Really Works" (Distill, 2017)
+
+
+## Rosenbrock race result (CP3, 2026-09-08)
+
+On the Rosenbrock function from \((-1,1)\), lr=0.0005, momentum converged first (~2941 steps), beating Adam (~6156 steps). Vanilla GD never converged (zigzag). This shows: in a clean, smooth two-dimensional valley, momentum's velocity accumulation is the most direct cure for oscillation — Adam's per-weight adaptivity adds overhead with no benefit on this structure.
+
+SGD with momentum also tends to generalize better in practice (residual noise avoids sharp minima), a point relevant to later phases.

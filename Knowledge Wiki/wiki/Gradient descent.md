@@ -54,3 +54,13 @@ So the key idea is:
 ## Sources (P1 L08 addition)
 
 - Rohit P1 L08 — Optimization, 2026-09-07
+
+
+## Three-optimizer race on Rosenbrock (CP3, 2026-09-08)
+
+Three optimizers (vanilla GD, SGD+momentum, Adam) raced from \((-1, 1)\) on the Rosenbrock function:\n
+- **Vanilla GD** never converged after 20,000 steps (final loss 5.7e-05) — trapped in zigzag oscillation.
+- **SGD with momentum** converged first (~2941 steps, loss 2.2e-29) — momentum's selective accumulation cured the zigzag.
+- **Adam** converged second (~6156 steps, loss 4.6e-13) — correct and stable, but slower because the problem does not need per-weight adaptivity.
+
+Takeaway: on a clean two-dimensional deterministic benchmark, vanilla GD's zigzag is the critical failure; momentum's velocity accumulation cures it fastest.

@@ -243,3 +243,4 @@
 - [[Bayesian A-B Testing]] — P(B > A) via Monte Carlo; safe early stopping, no peeking problem
 - [[Learning Rate]] — step size; most important hyperparameter
 - [[Momentum (SGD with Momentum)]] — velocity term; selective accumulator
+- [[Adam (adaptive moments)]] — per-weight adaptive lr via first+second moments + bias correction

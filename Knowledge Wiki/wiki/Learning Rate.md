@@ -29,3 +29,8 @@ A fixed lr is a compromise — large steps early for fast progress, small steps 
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-07
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md`
+
+
+## lr and optimizer choice (CP3, 2026-09-08)
+
+The "right" learning rate depends on the optimizer — Adam defaults to 0.001, SGD+momentum to 0.01. In the Rosenbrock race, Adam's lr=0.001 was effective without tuning; vanilla GD at lr=0.0005 never converged (wrong failure mode — zigzag, not overshoot). The optimizer choice and the lr choice are coupled, not independent.

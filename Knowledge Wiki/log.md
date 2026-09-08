@@ -590,3 +590,11 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enriched (1):** [[Gradient descent]] (update rule, two failure modes zigzag vs overshoot, batch/SGD/mini-batch, Rosenbrock benchmark).
 - **Active Concepts (3):** Gradient Descent, Learning Rate, Momentum — all developing, last_reviewed 2026-09-07, next_review 2026-09-10.
 - **Session note:** `Learning System/Sessions/Session — Optimization (Gradient Descent Family) — 2026-09-07.md`.
+
+### 2026-09-08 — P1 L08 Optimization (partial ingest, Checkpoint 3 done)
+
+- **New (1):** [[Adam (adaptive moments)]] (procedure — first/second moments, bias correction, lineage Adagrad→RMSProp→Adam).
+- **Enriched (3):** [[Gradient descent]] (3-optimizer race result: vanilla GD zigzag trap confirmed); [[Learning Rate]] (lr and optimizer choice are coupled); [[Momentum (SGD with Momentum)]] (won Rosenbrock race at 2941 steps).
+- **Active Concepts (4):** Gradient Descent, Learning Rate, Momentum, Adam — all developing, last_reviewed 2026-09-08, next_review 2026-09-11.
+- **Session note:** `Learning System/Sessions/Session — Optimization (Gradient Descent Family) — 2026-09-08.md`.
+- **Lesson status:** paused at Checkpoint 4/5 (saddle points taught, exit-check pending).
