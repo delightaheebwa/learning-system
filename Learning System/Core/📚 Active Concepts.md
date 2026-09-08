@@ -62,7 +62,7 @@
 | Softmax Subtract-Max Trick | aiefs | procedure | developing | Rohit P1 L06 + Gundersen (Python) | 2026-09-05 | 2026-09-12 | discriminative | Subtract max(z) before exp to prevent overflow. Identical result. |
 | Cosine Similarity | aiefs | concept | developing | Rohit P1 L02 + 3B1B (Python) | 2026-09-08 | 2026-09-14 | definitional | Unit vectors u·v=cos(θ). Measures alignment −1 to +1. |
 | 4-Layer AI Environment Stack | aiefs | concept | developing | Rohit P0 L01-L12 (Python) | 2026-09-08 | 2026-09-10 | definitional | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
-| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + CS229 (Python) | 2026-09-06 | 2026-09-09 | discriminative | L=−log(p_correct). Minimizing pushes true class toward 1. |
+| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + CS229 (Python) | 2026-09-09 | 2026-09-15 | discriminative | L=−log(p_correct). Minimizing pushes true class toward 1. |
 
 ### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
@@ -79,7 +79,7 @@
 | Conditional Independence | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
 | MLE vs MAP Estimation | aiefs | concept | developing | Rohit P1 L07 + lesson 2026-09-05 (Python) | 2026-09-08 | 2026-09-14 | discriminative | MAP = MLE × prior; Gaussian prior = L2, Laplace prior = L1. |
 | Conjugate Priors (Beta-Binomial) | aiefs | concept | developing | Rohit P1 L07 + Think Bayes (Python) | 2026-09-08 | 2026-09-14 | discriminative | Beta(a,b) + s/f → Beta(a+s,b+f). Update = addition. |
-| Sequential Bayesian Updating | aiefs | concept | developing | Rohit P1 L07 (Python) | 2026-09-05 | 2026-09-08 | definitional | Today's posterior = tomorrow's prior. Order-invariant. |
+| Sequential Bayesian Updating | aiefs | concept | developing | Rohit P1 L07 (Python) | 2026-09-09 | 2026-09-15 | discriminative | Today's posterior = tomorrow's prior. Order-invariant. |
 | Bayesian A/B Testing | aiefs | procedure | developing | Rohit P1 L07 (Python) | 2026-09-08 | 2026-09-14 | discriminative | P(B>A) via Monte Carlo; safe early stopping. |
 | Gradient Descent (vanilla) | aiefs | procedure | developing | Rohit P1 L08 + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | w = w - lr*grad. No formula for η (empirical). Too big → overshoot/bounce; too small → freezes. Zigzag vs overshoot are different failures. GD never converged on Rosenbrock (20k steps). |
 | Learning Rate | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | Step size η. No formula — tune empirically. Too big → overshoot/bounce; too small → freezes. Adam 0.001, SGD+M 0.01. lr and optimizer choice are coupled. |

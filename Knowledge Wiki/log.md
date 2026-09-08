@@ -599,3 +599,8 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Session note:** `Learning System/Sessions/Session — Optimization (Gradient Descent Family) — 2026-09-08.md`.
 - **Enrichment (2026-09-08, handwritten notes ingest):** [[Gradient descent]] (no formula for η, explicit lr failure modes, vanilla GD zigzag description); [[Momentum (SGD with Momentum)]] (eigenvalue λ language, direction-dependent step size); [[Adam (adaptive moments)]] (m/v role summary, self-tuner framing, SGD+M vs Adam generalization note). Active Concepts: Gradient Descent, Learning Rate, Momentum, Adam — open questions enriched.
 - **Lesson status:** paused at Checkpoint 4/5 (saddle points taught, exit-check pending).
+
+### 2026-09-09 — AIEFS Review Session (2 concepts)
+- **Reviewed (2):** Cross-Entropy from NLL (mistake retry — PASS, corrected prior inversion; mastery 0.62), Sequential Bayesian Updating (overdue review — PASS, Beta chain correct; mastery 0.50)
+- **Mistakes updated:** Cross-Entropy from NLL → status review, retries 1, next_retry 2026-09-16
+- **Session note:** `Learning System/Sessions/Session — AIEFS Review — 2026-09-09.md`
