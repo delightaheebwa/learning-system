@@ -597,4 +597,5 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enriched (3):** [[Gradient descent]] (3-optimizer race result: vanilla GD zigzag trap confirmed); [[Learning Rate]] (lr and optimizer choice are coupled); [[Momentum (SGD with Momentum)]] (won Rosenbrock race at 2941 steps).
 - **Active Concepts (4):** Gradient Descent, Learning Rate, Momentum, Adam — all developing, last_reviewed 2026-09-08, next_review 2026-09-11.
 - **Session note:** `Learning System/Sessions/Session — Optimization (Gradient Descent Family) — 2026-09-08.md`.
+- **Enrichment (2026-09-08, handwritten notes ingest):** [[Gradient descent]] (no formula for η, explicit lr failure modes, vanilla GD zigzag description); [[Momentum (SGD with Momentum)]] (eigenvalue λ language, direction-dependent step size); [[Adam (adaptive moments)]] (m/v role summary, self-tuner framing, SGD+M vs Adam generalization note). Active Concepts: Gradient Descent, Learning Rate, Momentum, Adam — open questions enriched.
 - **Lesson status:** paused at Checkpoint 4/5 (saddle points taught, exit-check pending).

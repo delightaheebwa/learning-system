@@ -55,3 +55,13 @@ SGD with momentum also achieves lower final loss on many practical tasks because
 - Kingma & Ba, "Adam: A Method for Stochastic Optimization" (2015)
 - Ruder, "An overview of gradient descent optimization algorithms"
 - Lesson: Phase 1 L08 — Optimization (Gradient Descent Family), 2026-09-07/08
+
+
+## Role summary (handwritten notes, 2026-09-08)
+
+- **m** (tracked by β₁): the moving-average direction ⇒ tells the update **which way** to go.
+- **v** (tracked by β₂): the moving-average scale ⇒ tells the update **how big a step** each weight can tolerate.
+
+Consistently large gradient → v is large → scale down → steps stay bounded. Rare weight with very large movement → the size of the scaling matrix rescales the direction.
+
+Adam is the reliable default — a self-tuner for weight learning rates. On messy real neural-net objective function landscapes with wildly different gradient scales across parameters, it just works out of the box. But Adam isn't "better" in all senses: SGD + momentum often beats Adam on final test accuracy because SGD's residual noise keeps it from settling into sharp minima (worse generalizers), whereas Adam's smooth adaptation can land in a sharp narrow valley that doesn't perform well on unseen data.

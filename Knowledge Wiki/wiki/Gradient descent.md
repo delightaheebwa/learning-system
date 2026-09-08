@@ -64,3 +64,13 @@ Three optimizers (vanilla GD, SGD+momentum, Adam) raced from \((-1, 1)\) on the 
 - **Adam** converged second (~6156 steps, loss 4.6e-13) — correct and stable, but slower because the problem does not need per-weight adaptivity.
 
 Takeaway: on a clean two-dimensional deterministic benchmark, vanilla GD's zigzag is the critical failure; momentum's velocity accumulation cures it fastest.
+
+
+## Learning rate failure modes (handwritten notes, 2026-09-08)
+
+There is no formula for the right η — it must be tuned empirically.
+
+- **Too big:** step overshoots the minimum or bounces off the valley walls (divergence / oscillation).
+- **Too small:** convergence is painfully slow or effectively freezes.
+
+Vanilla GD's characteristic failure in a narrow curved valley: it repeatedly step-oscillates side to side across the valley walls, making almost no net progress along the trough toward the minimum. Every step mostly cancels out the previous one's perpendicular motion — it is crawling. This is exactly the geometry that momentum and Adam were designed to fix.

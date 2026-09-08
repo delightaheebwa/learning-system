@@ -38,3 +38,10 @@ Geometrically, this rescales the effective step size per eigenvector direction o
 On the Rosenbrock function from \((-1,1)\), lr=0.0005, momentum converged first (~2941 steps), beating Adam (~6156 steps). Vanilla GD never converged (zigzag). This shows: in a clean, smooth two-dimensional valley, momentum's velocity accumulation is the most direct cure for oscillation — Adam's per-weight adaptivity adds overhead with no benefit on this structure.
 
 SGD with momentum also tends to generalize better in practice (residual noise avoids sharp minima), a point relevant to later phases.
+
+
+## Eigenvalue & step-size interpretation (handwritten notes, 2026-09-08)
+
+Momentum rescales your effective step size per direction. Along the valley's long axis (small curvature, small eigenvalue λ), momentum lets you take big steps; across the steep walls (large λ), it keeps steps small. That is why it navigates the Rosenbrock valley — it gives you a **direction-dependent step size** which plain GD cannot do.
+
+Momentum equalizes convergence across directions with different curvature: it balances out the speeds across directions so one high-curvature direction doesn't choke progress in low-curvature directions.

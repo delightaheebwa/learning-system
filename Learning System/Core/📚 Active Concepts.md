@@ -68,7 +68,7 @@
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
-| Adam (adaptive moments) | aiefs | procedure | developing | Rohit P1 L08 + Kingma & Ba 2015 + Ruder (Python) | 2026-09-08 | 2026-09-11 | definitional | m = β₁m + (1-β₁)g; v = β₂v + (1-β₂)g². Bias correction un-shrinks cold start. Default lr=0.001. |
+| Adam (adaptive moments) | aiefs | procedure | developing | Rohit P1 L08 + Kingma & Ba 2015 + Ruder + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | m = direction (β₁=0.9); v = scale (β₂=0.999). Bias correction: m̂=m/(1-β₁ᵗ), v̂=v/(1-β₂ᵗ). Self-tuner per weight. SGD+M can beat Adam on generalization (sharp vs flat minima). Default lr=0.001. |
 | Bayes' Theorem | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
 | Prior Probability | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
 | Likelihood | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
@@ -81,6 +81,6 @@
 | Conjugate Priors (Beta-Binomial) | aiefs | concept | developing | Rohit P1 L07 + Think Bayes (Python) | 2026-09-08 | 2026-09-14 | discriminative | Beta(a,b) + s/f → Beta(a+s,b+f). Update = addition. |
 | Sequential Bayesian Updating | aiefs | concept | developing | Rohit P1 L07 (Python) | 2026-09-05 | 2026-09-08 | definitional | Today's posterior = tomorrow's prior. Order-invariant. |
 | Bayesian A/B Testing | aiefs | procedure | developing | Rohit P1 L07 (Python) | 2026-09-08 | 2026-09-14 | discriminative | P(B>A) via Monte Carlo; safe early stopping. |
-| Gradient Descent (vanilla) | aiefs | procedure | developing | Rohit P1 L08 + lesson 2026-09-07/08 (Python) | 2026-09-08 | 2026-09-11 | definitional | w = w - lr*grad. Zigzag (valley) vs overshoot (lr) are different failures. 3-optimizer race: GD never converged (zigzag trap). |
-| Learning Rate | aiefs | concept | developing | Rohit P1 L08 + lesson 2026-09-07/08 (Python) | 2026-09-08 | 2026-09-11 | definitional | Step size η. Adam 0.001, SGD+M 0.01. lr and optimizer choice are coupled. |
-| Momentum (SGD with Momentum) | aiefs | procedure | developing | Rohit P1 L08 + Goh Distill (Python) | 2026-09-08 | 2026-09-11 | definitional | v = βv + g (β=0.9). Selective accumulator: keeps consistent, cancels zigzag. Won Rosenbrock race (2941 steps). |
+| Gradient Descent (vanilla) | aiefs | procedure | developing | Rohit P1 L08 + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | w = w - lr*grad. No formula for η (empirical). Too big → overshoot/bounce; too small → freezes. Zigzag vs overshoot are different failures. GD never converged on Rosenbrock (20k steps). |
+| Learning Rate | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | Step size η. No formula — tune empirically. Too big → overshoot/bounce; too small → freezes. Adam 0.001, SGD+M 0.01. lr and optimizer choice are coupled. |
+| Momentum (SGD with Momentum) | aiefs | procedure | developing | Rohit P1 L08 + Goh Distill + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | v = βv + g (β=0.9). Selective accumulator: keeps consistent, cancels zigzag. Direction-dependent step size via eigenvalue λ: big steps along valley (small λ), small steps across walls (large λ). Won Rosenbrock race (2941 steps). |
