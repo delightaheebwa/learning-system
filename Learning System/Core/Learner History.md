@@ -13,25 +13,31 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 292 concepts (62 with attempt history + 230 paused)(aiefs 14 · swe 65 · aie 213) · solid 0 · neutral 282 · fuzzy 10
+Totals: 299 concepts (62 with attempt history + 230 paused)(aiefs 20 · swe 66 · aie 213) · solid 0 · neutral 291 · fuzzy 8
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-05 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-05.md |
-| Cosine Similarity | concept | fuzzy | 2026-09-05 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-05.md |
-| Cross-Entropy from NLL | concept | fuzzy | 2026-09-06 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-06.md |
+| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-07 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-08.md |
+| Adam (adaptive moments) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Bayes' Theorem | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Bayesian A/B Testing | concept | neutral | 2026-09-07 | last reviewed 2026-09-07 |
 | Chain Rule for Neural Networks | procedure | neutral | 2026-09-05 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
+| Cross-Entropy from NLL | concept | neutral | 2026-09-08 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
+| Gradient Descent (vanilla) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Likelihood | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| MLE vs MAP Estimation | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
+| Momentum (SGD with Momentum) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | PMF vs PDF | concept | neutral | 2026-09-05 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
 | Posterior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Prior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Sequential Bayesian Updating | concept | neutral | 2026-09-08 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-09.md |
 | Softmax Subtract-Max Trick | procedure | neutral | 2026-09-05 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-05.md |
 
 ## SWE era — frozen 2026-09-01 (see `Archive/SWE-2026-09-01/`)
@@ -60,6 +66,7 @@ Totals: 292 concepts (62 with attempt history + 230 paused)(aiefs 14 · swe 65 �
 | C String Buffer Boundaries |  | neutral | 2026-08-23 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |
 | Clean Targets & .PHONY | concept | neutral | 2026-08-08 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Clean Targets & .PHONY — 2026-08-08.md |
 | Command Substitution & Arithmetic | procedure | neutral | 2026-08-24 | last reviewed 2026-08-24 |
+| Conjugate Priors | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-08.md |
 | curl (Web Fetching) | procedure | neutral | 2026-08-27 | Learning System/Archive/SWE-2026-09-01/reviews/Review — curl (Web Fetching) — 2026-08-27.md |
 | Environment Variables (Shell) | concept | neutral | 2026-08-27 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Environment Variables (Shell) — 2026-08-27.md |
 | Exit Codes & Short-Circuit Control Flow | concept | neutral | 2026-08-24 | last reviewed 2026-08-24 |
