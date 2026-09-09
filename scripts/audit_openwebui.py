@@ -35,6 +35,7 @@ from scripts.setup_openwebui import (  # noqa: E402
     PROMPTS,
     SKILLS,
     SUBAGENT_SYSTEM_PROMPT,
+    build_function_source,
     parse_skill_md,
     REPO_ROOT as _,
 )
@@ -88,18 +89,8 @@ def main() -> int:
             schema_src = f.read()
         with open(os.path.join(REPO_ROOT, "Skills/learning-review/openwebui/gate_pipe.py")) as f:
             pipe_src = f.read()
-        # Recompute the installer's inlining deterministically (must match
-        # setup_openwebui.inline_gate_filter exactly).
-        start = pipe_src.find("try:\n    from gate_schema import")
-        end_marker = "extract_json_block = lambda t: None"
-        end = pipe_src.find(end_marker, start)
-        end = pipe_src.find("\n", end) + 1
-        inlined = (
-            pipe_src[:start]
-            + "# gate_schema inlined above — already defined in schema_src\npass\n"
-            + pipe_src[end:]
-        )
-        check("function gate_pipe", sha(schema_src + "\n\n" + inlined), sha(fn.get("content") or ""))
+        expected = build_function_source(schema_src, pipe_src)
+        check("function gate_pipe", sha(expected), sha(fn.get("content") or ""))
         vstatus, valves = c.get(f"/api/v1/functions/id/{GATE_FILTER_ID}/valves")
         if vstatus == 200:
             want = {"priority": 10, "max_retries": 2, "digest_ttl_days": 7}

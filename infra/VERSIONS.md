@@ -8,7 +8,7 @@ component changes (run `scripts/audit_openwebui.py` to detect drift).
 | Component | Image | Digest | Notes |
 | --- | --- | --- | --- |
 | Open WebUI | `ghcr.io/open-webui/open-webui:main` | `sha256:8afd2d77…2eb6e4` | version 0.11.3, build `2a960a59…781` |
-| Open Terminal | `ghcr.io/open-webui/open-terminal` | `sha256:8df3a502…25384 52` | terminal tool-server, port 8000 |
+| Open Terminal | `ghcr.io/open-webui/open-terminal` | `sha256:8df3a502…2538452` | terminal tool-server, port 8000; API key in `infra/.env` (gitignored — rotate it, it leaked into git history in an earlier commit) |
 | SearXNG | `searxng/searxng:latest` | `sha256:892cf809…8750788d` | version 2026.8.14 |
 
 ## Ports

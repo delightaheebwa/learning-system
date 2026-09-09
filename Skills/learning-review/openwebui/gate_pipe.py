@@ -37,6 +37,9 @@ try:
 except Exception as e:  # pragma: no cover
     raise ImportError("pydantic is required for gate_pipe — install it or run inside Open WebUI") from e
 
+# --- GATE_SCHEMA_IMPORT_BEGIN (installer inlines gate_schema.py here — do not
+# --- change these marker lines; setup_openwebui.py + audit_openwebui.py splice
+# --- strictly between them) ---
 try:
     from gate_schema import (
         GATEFactCheckEnvelope,
@@ -52,14 +55,15 @@ except Exception:
             GATEReviewEnvelope,
             GATEQuizAuditEnvelope,
             GATEGradeAuditEnvelope,
-            extract_json_block,
         )
+        from open_webui.functions.gate_schema import extract_json_block  # type: ignore
     except Exception:
         GATEFactCheckEnvelope = None  # type: ignore
         GATEReviewEnvelope = None  # type: ignore
         GATEQuizAuditEnvelope = None  # type: ignore
         GATEGradeAuditEnvelope = None  # type: ignore
         extract_json_block = lambda t: None  # noqa: E731
+# --- GATE_SCHEMA_IMPORT_END ---
 
 
 TMP_DIR = ".tmp"
@@ -733,7 +737,7 @@ class Filter:
             try:
                 import logging
 
-                logging.getLogger(__name__).debug(f"gate_pipe child lookup failed (fail open): {e}")
+                logging.getLogger(__name__).warning(f"gate_pipe child lookup failed (fail open): {e}")
             except Exception:
                 pass
             return None  # signal fail-open to caller
@@ -809,11 +813,12 @@ class Filter:
                     chat_history = hist
                     parent_user_id, parent_user_text = _last_user_message(hist)
             except Exception as e:
-                # Fail open on DB error — log and pass
+                # Fail open on DB error — but log at WARNING so the gap is
+                # visible in `docker logs open-webui` (do not silently pass).
                 try:
                     import logging
 
-                    logging.getLogger(__name__).debug(f"gate_pipe DB history fetch failed: {e}")
+                    logging.getLogger(__name__).warning(f"gate_pipe DB history fetch failed (fail open): {e}")
                 except Exception:
                     pass
                 return body

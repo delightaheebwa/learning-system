@@ -20,6 +20,7 @@ else by last_reviewed date (<= 2026-07-28 -> aie, else swe).
 Usage: python3 scripts/learner_history.py   (run from repo root)
 """
 
+import datetime
 import json
 import os
 import re
@@ -35,23 +36,33 @@ def load_attempts():
         return json.load(f).get("concepts", {})
 
 
-def load_open_mistakes():
-    """Concepts with active/review mistake rows."""
+def load_open_mistakes(include_archived=False):
+    """Concepts with active/review mistake rows.
+
+    Live queue by default; pass include_archived=True to also count rows in the
+    Archive mistake files (SWE-era, C-project) so frozen-era tags stay accurate.
+    """
     open_m = set()
-    path = os.path.join(CORE, "🧯 Mistakes.md")
-    try:
-        text = open(path, encoding="utf-8").read()
-    except FileNotFoundError:
-        return open_m
-    for line in text.splitlines():
-        if not line.startswith("|"):
+    paths = [os.path.join(CORE, "🧯 Mistakes.md")]
+    if include_archived:
+        paths += [
+            os.path.join(REPO_ROOT, "Learning System", "Archive", "SWE-2026-09-01", "mistakes.md"),
+            os.path.join(REPO_ROOT, "Learning System", "Archive", "C-project", "mistakes.md"),
+        ]
+    for path in paths:
+        try:
+            text = open(path, encoding="utf-8").read()
+        except FileNotFoundError:
             continue
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) < 9 or cells[0] == "Date" or cells[0].startswith("---"):
-            continue
-        concept, status = cells[1], cells[7]
-        if status in ("active", "review"):
-            open_m.add(concept)
+        for line in text.splitlines():
+            if not line.startswith("|"):
+                continue
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) < 9 or cells[0] == "Date" or set(cells[0]) <= set("- "):
+                continue
+            concept, status = cells[1], cells[7]
+            if status in ("active", "review"):
+                open_m.add(concept)
     return open_m
 
 
@@ -169,7 +180,7 @@ def tag(concept, entry, open_mistakes):
 
 def main():
     concepts = load_attempts()
-    open_mistakes = load_open_mistakes()
+    open_mistakes = load_open_mistakes(include_archived=True)
     live = live_concepts()
     reviews = review_index()
 
@@ -214,7 +225,7 @@ def main():
     total = sum(len(rows[t]) for t in rows)
 
     lines = [
-        "# Learner History — compact tutor context (generated 2026-09-08)",
+        f"# Learner History — compact tutor context (generated {datetime.date.today().isoformat()})",
         "",
         "> **For models: read THIS file for learner background, not `Archive/`.**",
         "> One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +",
@@ -229,8 +240,8 @@ def main():
         "Tutor use: build directly on `solid`; probe-then-teach `neutral`;",
         "reteach-from-scratch `fuzzy` (check its mistake row / review note first).",
         "",
-        f"Totals: {total} concepts (62 with attempt history + {total - len(concepts)} paused)"
-        f"(aiefs {len(rows['aiefs'])} · swe {len(rows['swe'])} · aie {len(rows['aie'])}) · "
+        f"Totals: {total} concepts ({len(concepts)} with attempt history + {total - len(concepts)} paused)"
+        f" — aiefs {len(rows['aiefs'])} · swe {len(rows['swe'])} · aie {len(rows['aie'])} · "
         f"solid {sum(r['tag'] == 'solid' for rs in rows.values() for r in rs)} · "
         f"neutral {sum(r['tag'] == 'neutral' for rs in rows.values() for r in rs)} · "
         f"fuzzy {sum(r['tag'] == 'fuzzy' for rs in rows.values() for r in rs)}",

@@ -5,7 +5,7 @@ built to run in **self-hosted Open WebUI** using native features (Skills, Tools,
 a Model preset, and Prompts) with the repo as the source of truth.
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
-- **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up P0+P1.01–06 80/20 in-progress → Phase 1 L07 next). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
+- **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done, P1 L07 done — resume P1 L08 Optimization, paused 2/5). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
 - **Scheduling:** manual — say `/review` to run a review session (AIEFS; SWE `swe` is legacy); `/ingest` to add content; `/teach` / `/lesson` / `/continue` to learn. `Scout` now fetches live `phases/.../docs/en.md` + Further Reading per lesson and packs per-source excerpts/takeaways/`adds_vs_rohit` + synthesis into the digest (Rohit sets the agenda; externals enrich every checkpoint); language per lesson header (Python/TS/Rust).
 
 ## Layout
@@ -45,7 +45,7 @@ OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
 That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 7 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`).
-Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; the verifier runs on Open WebUI's **subagent default model** — set that to a model different from the tutor. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools are dormant; do not bind them.)
+Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; verifiers run on the **calling preset's own base model** (Open WebUI has no separate verifier-model setting) — enforcement rests on the deterministic Pipe checks, not model independence. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools were retired; do not bind them.)
 After install, models are changed in **one place each in the Open WebUI UI** —
 see `OPENWEBUI.md`. The installer only applies model values on a **first
 install** (or when empty); re-running it preserves your UI-chosen models.

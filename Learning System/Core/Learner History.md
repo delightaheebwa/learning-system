@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-08)
+# Learner History — compact tutor context (generated 2026-09-09)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 299 concepts (62 with attempt history + 230 paused)(aiefs 20 · swe 66 · aie 213) · solid 0 · neutral 291 · fuzzy 8
+Totals: 299 concepts (69 with attempt history + 230 paused) — aiefs 20 · swe 66 · aie 213 · solid 0 · neutral 291 · fuzzy 8
 
 ## AIEFS — living (updated by Clerk each session)
 

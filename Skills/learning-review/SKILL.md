@@ -1,6 +1,6 @@
 ---
 name: learning-review
-description: Quality-gate learning system ingest output before it is finalized — wherever it originates. Runs after every standalone ingest session AND at the end of any teaching lesson that produced wiki pages or Active Concepts rows: a review-gate subagent task (on Open WebUI's subagent default model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user.
+description: Quality-gate learning system ingest output before it is finalized — wherever it originates. Runs after every standalone ingest session AND at the end of any teaching lesson that produced wiki pages or Active Concepts rows: a review-gate subagent task (running on the calling preset's own base model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user.
 ---
 
 # Learning System Review Gate
@@ -16,7 +16,7 @@ Lesson files under `Learning System/Lessons/`, learning records, and glossary en
 
 ## Config
 
-- Reviewer model: Open WebUI's **subagent default model** (Settings → subagents) — always different from the tutor model so the tutor never reviews its own output. To change models, edit that one field in Open WebUI — see the model-per-task table in `OPENWEBUI.md`.
+- Reviewer model: the **calling preset's own base model** (Open WebUI runs verifiers on the model that dispatched `delegate_task` — there is no separate verifier-model setting). Enforcement rests on the deterministic Pipe checks + fixed `GATE:` prompts, not model independence. To change models, edit the preset's base model in the Open WebUI UI — see the model-per-task table in `OPENWEBUI.md`.
 - Fixed verifier prompts now live in the global `subagents.system_prompt` (keyed by `GATE:`), not in this file. The envelope schemas are in `Skills/learning-review/openwebui/gate_schema.py`; the gate Pipe (`gate_pipe.py`) blocks Clerk output without a receipt. Do not bypass by editing the sysprompt.
 - This file's template below is the canonical reference for `GATE:review`; the live prompt is the `GATE:review` section of `subagents.system_prompt`.
 

@@ -37,7 +37,6 @@ SKILLS = [
     "Skills/llm-wiki/SKILL.md",
 ]
 
-TUTOR_FLAG = "--tutor-model"
 TUTOR_ENV = "OPENWEBUI_TUTOR_MODEL"
 TUTOR_BOOTSTRAP_DEFAULT = "ox-alpha-free"
 SCOUT_BOOTSTRAP_DEFAULT = "ox-alpha-free"
@@ -249,11 +248,36 @@ def parse_skill_md(path):
     return skill_id, name, description, body
 
 
+def build_function_source(schema_src: str, pipe_src: str) -> str:
+    """Single source of truth for the installed Function content (also used by
+    scripts/audit_openwebui.py). Splices gate_schema.py into gate_pipe.py in
+    place of the GATE_SCHEMA_IMPORT marker block, then sanity-compiles."""
+    begin = "# --- GATE_SCHEMA_IMPORT_BEGIN"
+    end = "# --- GATE_SCHEMA_IMPORT_END"
+    b = pipe_src.find(begin)
+    if b == -1:
+        raise ValueError(
+            "gate_pipe.py is missing the GATE_SCHEMA_IMPORT markers — the "
+            "installer cannot inline gate_schema safely; restore the markers."
+        )
+    e = pipe_src.find(end, b)
+    if e == -1:
+        raise ValueError("gate_pipe.py GATE_SCHEMA_IMPORT_END marker missing")
+    # consume to the end of the END-marker line (tolerates trailing "---")
+    e = pipe_src.find("\n", e)
+    e = len(pipe_src) if e == -1 else e + 1
+    built = pipe_src[:b] + schema_src + pipe_src[e:]
+    try:
+        compile(built, "<gate_pipe_built>", "exec")
+    except SyntaxError as err:
+        raise ValueError(f"built Function content failed to compile: {err}") from err
+    return built
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Install the Learning System into Open WebUI.")
     ap.add_argument("--base-url", default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:3000"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
-    ap.add_argument(TUTOR_FLAG, default=os.environ.get(TUTOR_ENV, TUTOR_BOOTSTRAP_DEFAULT))
     args = ap.parse_args()
 
     if not args.api_key:
@@ -283,35 +307,18 @@ def main() -> int:
         upsert("/api/v1/skills/create", f"/api/v1/skills/id/{skill_id}/update", payload, "ID_TAKEN", f"skill {skill_id}")
 
     print("== Gate Filter (Function) ==")
-    # Combine gate_pipe + gate_schema into one Function content (gate_schema imported as sibling, but we inline for single-function install)
-    def inline_gate_filter(schema_src: str, pipe_src: str) -> str:
-        if "from gate_schema import" not in pipe_src:
-            return pipe_src
-        start = pipe_src.find("try:\n    from gate_schema import")
-        if start == -1:
-            return pipe_src
-        end_marker = "extract_json_block = lambda t: None"
-        end = pipe_src.find(end_marker, start)
-        if end == -1:
-            return pipe_src
-        end = pipe_src.find("\n", end)
-        if end != -1:
-            end += 1
-        return pipe_src[:start] + "# gate_schema inlined above — already defined in schema_src\npass\n" + pipe_src[end:]
-
+    # Combine gate_pipe + gate_schema into one Function content via the shared
+    # marker-splice builder (audit_openwebui.py recomputes with the same code).
     try:
         with open(os.path.join(REPO_ROOT, "Skills/learning-review/openwebui/gate_schema.py"), "r", encoding="utf-8") as f:
             schema_src = f.read()
         with open(os.path.join(REPO_ROOT, "Skills/learning-review/openwebui/gate_pipe.py"), "r", encoding="utf-8") as f:
             pipe_src = f.read()
-        pipe_src_inlined = inline_gate_filter(schema_src, pipe_src)
-        # Sanity check: the inlined content must still compile
         try:
-            compile(schema_src + "\n\n" + pipe_src_inlined, "<gate_pipe_inlined>", "exec")
-        except SyntaxError as e:
-            print(f"  ! inlined gate content failed to compile: {e} — aborting Function install")
+            function_content = build_function_source(schema_src, pipe_src)
+        except ValueError as e:
+            print(f"  ! {e} — aborting Function install")
             raise
-        function_content = schema_src + "\n\n" + pipe_src_inlined
         payload = {
             "id": GATE_FILTER_ID,
             "name": "Gate Pipe",

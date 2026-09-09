@@ -2,7 +2,11 @@
 # containers 2026-09-08 — see infra/VERSIONS.md for the pinned digests).
 #
 # One command brings the whole system up on any Docker host:
-#   docker compose -f infra/docker-compose.yml up -d
+#   docker compose -f infra/docker-compose.yml --env-file infra/.env up -d
+#
+# Secrets live in infra/.env (gitignored — see .env.example). If a secret ever
+# lands in git history, rotate it (Open Terminal key is set in the Open WebUI
+# admin UI: Settings → Terminal Server connection) and update infra/.env.
 #
 # Data lives in named volumes (open-webui, open-terminal) — restore them with
 # infra/restore.sh before first start to carry chats/presets/repo over.
@@ -56,9 +60,9 @@ services:
     volumes:
       - open-terminal:/home/user
     environment:
-      # Key the Open WebUI terminal_server connection expects (see webui.db
-      # config tool_server.connections). Rotate together on both sides.
-      - OPEN_TERMINAL_API_KEY=sk-e23ecd2124a7ddbfba350d878bc105a1e183daa83b812089651c1d3bdaf87ad8
+      # Key the Open WebUI terminal_server connection expects (Settings →
+      # Terminal Server). Set it in infra/.env — never inline it here.
+      - OPEN_TERMINAL_API_KEY=${OPEN_TERMINAL_API_KEY:?set OPEN_TERMINAL_API_KEY in infra/.env (copy infra/.env.example)}
     restart: unless-stopped
 
 volumes:
