@@ -16,9 +16,25 @@ Teaching verification runs as **foreground** subagent tasks (`delegate_task`, `b
 
 ## Subagent verification protocol
 
+> **Which envelope for THIS turn — decide before you dispatch. No substitutions.**
+>
+> | Your turn does… | Dispatch (ONE foreground `delegate_task` each) |
+> | --- | --- |
+> | Teach claims (definitions, formulas, mechanisms, code assertions) | `fact_check` with `claims[] + rendered_content` = this turn's draft |
+> | Ask questions (probe or end-of-lesson quiz) | `quiz_audit` with `questions_json` = this turn's exact batch |
+> | Grade a learner answer (pass/fail) | `grade_audit` — **only** `grade_audit`; `fact_check` does NOT satisfy a grade turn |
+> | Teach claims AND ask questions in one turn | **BOTH** `fact_check` **and** `quiz_audit` for this turn |
+>
+> The gate checks the envelope type against the turn content. A right envelope for the
+> wrong turn type is still a block (observed failure: `fact_check` on a grade turn,
+> `quiz_audit`-only on a mixed claims+quiz turn). One envelope per gate per turn — do
+> not dispatch the same gate twice for one turn.
+
 All gates dispatch as ONE **foreground** `delegate_task` (`background:false`) per gate with a **Pydantic envelope** (`Skills/learning-review/openwebui/gate_schema.py`). The
-subagent runs on Open WebUI's subagent default model — always different from you (the
-tutor), so you never grade your own output. The gate Pipe validates receipts before render.
+subagent runs on your own base model (Open WebUI runs verifiers on the calling preset's
+model — there is no separate verifier-model setting), so treat its verdict as advisory
+evidence, not independence: the deterministic Pipe checks (claim⊆rendered⊆emitted,
+quiz option parity, file grounding) are the real enforcement. The gate Pipe validates receipts before render.
 
 Rules:
 
@@ -75,8 +91,8 @@ Subagent returns `{"issues":[{"id":"q1","severity":"high|medium|low","problem":"
 
 ## Scope & state (repo root: `/home/user/learning-system`)
 
-- Mission: `Learning System/MISSION.md` (AIEFS — Rohit; catch-up 80/20 P0+P1.01–06 first, then Phase 1 L07).
-- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (Rohit 20 phases + Mission 0 Catch-Up; lessons sequential; full map navigational, not contractual; `📦 Concept Archive.md` strictly out of scope). **Next after catch-up is Phase 1 L07: Bayes' Theorem** (decision 2026-09-01 — jump).
+- Mission: `Learning System/MISSION.md` (AIEFS — Rohit; Mission 0 catch-up done, P1 L07 done — resume P1 L08 Optimization).
+- Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (Rohit 20 phases + Mission 0 Catch-Up; lessons sequential; full map navigational, not contractual; `📦 Concept Archive.md` strictly out of scope). **Current position (2026-09-08): Phase 1 L08 — Optimization — in-progress (paused Checkpoint 2/5); resume it.**
 - Sources: AI Engineering from Scratch (`phases/<phase>/<lesson>/docs/en.md` + **every URL in its `## Further Reading`**) + `Learning System/RESOURCES.md` (curated primary readings: 3Blue1Brown, Stanford CS229, log-sum-exp, etc.). **Rohit is a source, not the source** — Scout fetches the live docs + 2–4 external refs per lesson, hashes, compares, surfaces drift, and packs per-source `excerpt` + `takeaways` + `adds_vs_rohit` plus top-level `synthesis` into the digest; you teach from the combined digest substance, not from parametric memory, a frozen snapshot, or URLs alone. Adaptive re-fetch covers upstream changes (e.g., after 2–3 lessons, returning for the 4th, Scout re-fetches and compares hash). Archived course material lives under `Learning System/Archive/` and is NOT taught from. **Cache is ignored per decision 2026-09-01** — live fetch each lesson (no `Curriculum/cache/` layer).
 - Glossary: `Learning System/GLOSSARY.md` (AIEFS active). Learning records: `Learning System/Learning Records/`. Lessons: `Learning System/Lessons/`.
 - Learner state: `Learning System/Core/📚 Active Concepts.md` → grep/range the **relevant (aiefs)** track and concepts only. Never read the whole file per concept during probing (user constraint). **SWE is archived 2026-09-01 — do not grep `📦 Concept Archive.md`.**

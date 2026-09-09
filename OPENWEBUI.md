@@ -9,8 +9,9 @@ layer (skills, subagents, model presets, prompts, gate Pipe) that routes trigger
 > `review_gate`, `quiz_gate`) were retired after persistent HTTP 500 failures.
 > All verification now runs as **foreground subagent tasks** (`delegate_task`,
 > `background:false`) with Pydantic envelope validation (`gate_schema.py`).
-> The Python tool files remain in `Skills/learning-review/openwebui/` as dormant
-> fallbacks; fixed verifier prompts live in the global `subagents.system_prompt`
+> The Python tool files were archived 2026-09-08 to
+> `Learning System/Archive/legacy-tools-2026-08-25/`; fixed verifier prompts live in
+> the global `subagents.system_prompt`
 > (keyed by `GATE:`). Enforcement is via the gate **Pipe/Filter**
 > `Skills/learning-review/openwebui/gate_pipe.py` (see "Gate enforcement").
 
@@ -20,10 +21,10 @@ layer (skills, subagents, model presets, prompts, gate Pipe) that routes trigger
 | --- | --- | --- |
 | Scout (exploration) | **Scout** preset | Workspace → Models → Scout → base model |
 | Tutor (probe/plan/teach) | **Learning Tutor** preset | Workspace → Models → Learning Tutor → base model |
-| Clerk (ingest + review) | **Clerk** preset (or **Deputy** — your review preset, held to the same clerk-role gate rules) | Workspace → Models → Clerk → base model |
+| Clerk (ingest + review) | **Clerk** preset — handles standalone reviews, standalone ingests, AND lesson-handoff ingests (Deputy was a legacy review preset, deleted 2026-09-08 after Clerk absorbed its role) | Workspace → Models → Clerk → base model |
 | Slash-command triggers | **Prompts** (`/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) — `/swe` is legacy (SWE archived; redirects to AIEFS) | — |
 | Deterministic gate | **Gate Pipe** Filter (`gate_pipe.py` + `gate_schema.py`) — outlet, priority 10, bound to Tutor + Clerk | Function Valves (priority, max_retries, digest_ttl_days) |
-| Fixed verifier prompts | Global **subagents.system_prompt** (keyed `GATE:fact_check` / `GATE:quiz_audit` / `GATE:review`) | Settings → Subagents |
+| Fixed verifier prompts | Global **subagents.system_prompt** (keyed `GATE:fact_check` / `GATE:quiz_audit` / `GATE:review` / `GATE:grade_audit`) | Settings → Subagents |
 | Repo + git | **Open Terminal** sandbox `/home/user/learning-system` (container) vs `/home/delinux/learning-system` (WSL). Docker Desktop runs Windows-side, separate from WSL — WSL must use `http://host.docker.internal:3000` | — |
 | Ephemeral Scout digest | `Learning System/.tmp/context-<chat_id>-<slug>.json` (gitignored, 7-day TTL) — now includes `rohit_hash` + `external_refs` (each with `excerpt` ~500 chars + `takeaways` + `adds_vs_rohit`) + top-level `synthesis` + `lang_recommendation` + `roadmap_sha` + `fetched_at`; adaptive re-fetch; `📦 Concept Archive.md` strictly out of scope | — |
 | Web search / grounding | **Web Search** (SearXNG) — Scout uses it to fetch `docs/en.md` + Further Reading external refs live (Rohit is a source, not the source) | — |
@@ -39,14 +40,14 @@ Rules:
 
 - Each preset's base model is whatever its preset's `base_model_id` is set to.
 - The gate Pipe is bound only to Tutor and Clerk; Scout is exempt.
-- Gates must use a model *different* from the Tutor so the tutor never grades its own output (configure subagent default model separately).
+- Verifier model reality (verified 2026-09-08 against backend `utils/subagents.py::delegate`): verifiers run on the **calling preset's own base model** — Open WebUI has no separate "subagent default model" setting (its `subagents` config holds only enable/limits/system-prompt keys). So the Tutor's verifier is the Tutor's model. Enforcement therefore rests on the deterministic Pipe checks (`claims[] ⊆ rendered_content ⊆ emitted`, quiz parity, file grounding) plus the fixed `GATE:` prompts — not on model independence. Pick Tutor/Clerk base models with strong instruction-following so the envelope protocol is actually obeyed (observed failure mode: right envelope, wrong turn type).
 
 ### Gate enforcement (Pipe)
 
-The gate Pipe (`gate_pipe.py`, outlet) blocks before render — bound to Tutor, Clerk, and Deputy (Deputy held to clerk-role rules via `deputy_name_prefix` valve); Scout exempt:
+The gate Pipe (`gate_pipe.py`, outlet) blocks before render — bound to Tutor + Clerk; Scout exempt:
 
 - **Scout digest for new lessons:** a Tutor turn responding to a new `/teach`/`/lesson` (no `Lessons/Lesson — <slug> — *.md` yet) requires a `.tmp/context-<chat>-<slug>.json` digest and a prior `Scout` message in the same chat (7-day TTL, slug must match trigger). Resume of an existing lesson grounds in `Lessons/` + `Sessions/` and bypasses this check, so stale/missing digests don't confuse Tutor.
-- **Receipts:** every non-trivial Tutor (claims) and Clerk/Deputy (wiki) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Tutor `fact_check` is generation-to-emission: the envelope must carry the actual draft in `rendered_content`, the Pipe checks `claims[] ⊆ rendered_content ⊆ emitted message`, and plan-only verification never passes. Clerk/Deputy `review` is file-grounded generation-to-emission: grounding (`source_url`/`source_file`/`lesson_ref`) is required, every concept must appear in `wiki_content`, and the written wiki files must match the reviewed content. Tutor **review grades** require a foreground `GATE:grade_audit` envelope (`concept/question/learner_answer/claimed_verdict/source_excerpt`) before the grade renders. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
+- **Receipts:** every non-trivial Tutor (claims) and Clerk (wiki or grade) message requires a foreground `GATE:*` envelope dispatched via `delegate_task` (`background:false`) with a child internal chat (`meta.parent_message_id == draft.id`) whose task parses as the envelope schema and whose assistant output parses as the verdict schema covering every `claims[].id`. Tutor `fact_check` is generation-to-emission: the envelope must carry the actual draft in `rendered_content`, the Pipe checks `claims[] ⊆ rendered_content ⊆ emitted message`, and plan-only verification never passes. Clerk `review` is file-grounded generation-to-emission: grounding (`source_url`/`source_file`/`lesson_ref`) is required, every concept must appear in `wiki_content`, and the written wiki files must match the reviewed content. Grade turns (Tutor **and** Clerk review flow) require a foreground `GATE:grade_audit` envelope (`concept/question/learner_answer/claimed_verdict/source_excerpt`) before the grade renders. Retry cap 2 per user turn (durably counted in `Chat.meta.gate_state`); after cap, `⛔ Withheld` banner. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`, `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`.
 
 ## One-time setup
 
@@ -56,7 +57,7 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 2. **Functions → Gate Pipe** — installs `gate_pipe` (inlined `gate_schema.py`) as Filter type, priority 10, bound to Tutor + Clerk.
 3. **Subagent system prompt** — sets global `subagents.system_prompt` to the `GATE:*` templates.
 4. **Workspace → Models** — creates **Scout**, **Learning Tutor**, **Clerk** presets (each with its system prompt, capabilities, and skill bindings; Tutor/Clerk have `filterIds: [gate_pipe]`).
-5. **Workspace → Prompts** — creates the 6 slash commands below.
+5. **Workspace → Prompts** — creates the 7 slash commands below.
 6. **Open Terminal** — repo at `/home/user/learning-system`; git push is wired.
 
 *(Legacy, dormant: the `fact_check` / `review_gate` / `quiz_gate` Tools and their setup. Do not bind them.)*
@@ -82,7 +83,7 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 ## Operating notes
 
 - Skills are lazy-loaded via `view_skill`; keep each `description` crisp.
-- Verification is synchronous per step: one foreground `delegate_task` per gate, fold verdicts in before presenting. Fixed prompts live in global `subagents.system_prompt`; do not weaken them.
+- Verification is synchronous per step: one foreground `delegate_task` per gate **of the matching type for the turn** (grade→`grade_audit` only; claims→`fact_check`; questions→`quiz_audit`; mixed claims+questions→both — no substitutions), fold verdicts in before presenting. Fixed prompts live in global `subagents.system_prompt`; do not weaken them.
 - Scout digests are ephemeral (`.tmp/`, gitignored). `Clerk` deletes the consumed digest and clears `Pending Ingest.json` on success. Orphans older than 7 days are swept on the next Tutor/Clerk inlet (the Filter runs only on those presets; Scout is exempt).
 - Routine consistency (prerequisites, self-contradiction, coverage) is the tutor's own responsibility.
 

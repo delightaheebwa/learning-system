@@ -131,6 +131,10 @@ def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
             needs_fact = True
         return needs_fact, needs_quiz, False, False
     if is_clerk and len(content.strip()) > 80:
+        # Clerk runs review sessions too (standalone reviews + lesson handoffs):
+        # grade turns need grade_audit, wiki-write turns need review.
+        if _is_grade_content(content):
+            return False, False, False, True
         return False, False, True, False
     return False, False, False, False
 
@@ -946,7 +950,7 @@ class Filter:
                             reject_code, reject_detail = code, detail
                         continue
 
-                    if gate_type == "grade_audit" and is_tutor:
+                    if gate_type == "grade_audit" and (is_tutor or is_clerk):
                         ok, code, detail = _check_grade_audit(data, verd_text)
                         if ok:
                             found_grade_audit = True
@@ -999,7 +1003,14 @@ class Filter:
                     # Non-trivial but heuristics missed — treat as needs fact_check
                     pass
             elif is_clerk:
-                if found_review:
+                # Clerk review sessions: grade turns need grade_audit, wiki writes need review.
+                if needs_grade:
+                    if found_grade_audit:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Review grade requires a foreground GATE:grade_audit receipt for THIS generation (parent_message_id == this message). Dispatch grade_audit with concept/question/learner_answer/claimed_verdict/source_excerpt before presenting the grade."
+                elif found_review:
                     await self._reset_gate_state(chat_id, __user__, __request__)
                     return body
             else:
@@ -1034,6 +1045,13 @@ class Filter:
                     f"```json\n"
                     f'{{\n  "gate": "grade_audit",\n  "concept": "Concept",\n  "question": "what was asked",\n  "learner_answer": "raw answer",\n  "claimed_verdict": "pass",\n  "source_excerpt": "Concept Note / Lesson / Wiki excerpt"\n}}\n```\n'
                     f"Mixed claims+quiz needs BOTH receipts for the same message. Subagent prompt is fixed via global subagents.system_prompt — send data only."
+                )
+            elif is_clerk and needs_grade:
+                detail_help = (
+                    f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
+                    f"Dispatch a foreground GATE:grade_audit envelope via delegate_task before presenting the grade:\n"
+                    f"```json\n"
+                    f'{{\n  "gate": "grade_audit",\n  "concept": "Concept",\n  "question": "what was asked",\n  "learner_answer": "raw answer",\n  "claimed_verdict": "pass",\n  "source_excerpt": "Concept Note / Lesson / Wiki excerpt"\n}}\n```\n'
                 )
             else:
                 detail_help = (

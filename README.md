@@ -12,19 +12,28 @@ a Model preset, and Prompts) with the repo as the source of truth.
 
 ```
 OPENWEBUI.md              setup + operating guide (read this first)
-scripts/setup_openwebui.py  one-shot installer: skills, gate Pipe filter, model presets, prompts, subagent system prompt
+AGENTS.md                 agent context: repo conventions, change protocol, gotchas
+scripts/
+  setup_openwebui.py        one-shot installer: skills, gate Pipe filter, model presets, prompts, subagent system prompt
+  ops.py                    runtime sidecar (state/bundle/apply/attempt)
+  learner_history.py        regenerates Core/Learner History.md (tutor context)
+  audit_openwebui.py        read-only repo↔live drift audit
+  ops_test.py               unittest suite
+infra/                     portability: docker-compose.yml, backup/restore, VERSIONS.md, ACCESS.md
 Learning System/          live state + history
   Core/                     💡 Learning Profile, 📚 Active Concepts (the review schedule),
+                            Attempts.json, 🧯 Mistakes.md, Learner History.md (generated),
                             📦 Concept Archive, templates
-  Sessions/  Reviews/  Concept Notes/  Archive/   session notes, review notes, atomic pages, history
+  Sessions/  Reviews/  Lessons/  Learning Records/   session notes, review notes, lessons, records
+  Archive/                  ALL legacy material, era-folded (AIE, SWE, C-project, legacy tools, plans, frozen) — do not grep
   AGENTS.md                 behavioral conventions (consistency checks, git sync)
 Knowledge Wiki/           curated wiki (raw/sources, raw/assets, wiki/, index.md, log.md, AGENTS.md)
 Skills/                   operating rules, imported into Open WebUI as Skills
-  learning-system/SKILL.md        review + ingest flows
+  learning-system/SKILL.md        review + ingest flows (Clerk runs reviews AND ingests)
   learning-teach/SKILL.md         probe → plan → teach loop (+ fact-check & quiz-audit subagent gates, lesson-end review gate)
   learning-review/SKILL.md        ingest quality gate (review-gate subagent task — standalone ingests AND lesson-end ingests)
   llm-wiki/SKILL.md               wiki building/maintenance rules
-  learning-review/openwebui/      dormant legacy tools: review_gate.py · fact_check.py · quiz_gate.py · templates/
+  learning-review/openwebui/      gate_pipe.py + gate_schema.py (the deterministic enforcement)
 ```
 
 ## Setup in Open WebUI (one time)
@@ -35,7 +44,7 @@ Run the installer, then start chatting:
 OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
-That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 6 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`).
+That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 7 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`).
 Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; the verifier runs on Open WebUI's **subagent default model** — set that to a model different from the tutor. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools are dormant; do not bind them.)
 After install, models are changed in **one place each in the Open WebUI UI** —
 see `OPENWEBUI.md`. The installer only applies model values on a **first

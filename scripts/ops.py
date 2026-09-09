@@ -5,7 +5,7 @@ Purpose: collapse many sequential read/write tool calls into ONE command so
 agent sessions stay far below the model's cumulative context limit.
 
 Usage:
-  ops.py state TRACK              Standard session-start bundle for TRACK (aie|swe).
+  ops.py state TRACK              Standard session-start bundle for TRACK (aiefs|aie|swe).
                                   One call replaces: Learning Profile read, Active
                                   Concepts track slice, Attempts.json, Mistakes.md,
                                   log tail, index head.
@@ -116,11 +116,18 @@ def _section_slice(lines, pattern):
 
 def do_state(track: str) -> None:
     track = track.lower().strip()
+    if track == "aiefs":
+        # Active AIEFS concepts live under per-lesson headings (Mission 0
+        # Catch-Up, Phase 1 …), not a single `## aiefs` heading — pull the
+        # live concept tables wholesale instead of one section.
+        concept_spec = ("Learning System/Core/📚 Active Concepts.md@^\\| ", "")
+    else:
+        concept_spec = (f"Learning System/Core/📚 Active Concepts.md#^## {track}\\b", "")
     specs = [
         ("Learning System/Core/💡 Learning Profile.md", ""),
         # Section selector (#heading) pulls the whole track block (header + table
         # rows) — the old `^## {track}\b|^### ` grep matched only heading lines.
-        (f"Learning System/Core/📚 Active Concepts.md#^## {track}\\b", ""),
+        concept_spec,
         (ATTEMPTS_PATH, ""),
         (MISTAKES_PATH, ""),
         ("Knowledge Wiki/log.md:-25", ""),

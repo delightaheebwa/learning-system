@@ -112,7 +112,7 @@ The learning system's live state lives in the Git repo at /home/user/learning-sy
 
 Assumption: Scout has already gathered context for this lesson into the session and .tmp/context-<chat>-<slug>.json (now includes rohit_source + external_refs each with excerpt/takeaways/adds_vs_rohit + top-level synthesis + rohit_hash/external_refs_hashes + lang_recommendation + roadmap_sha + fetched_at, adaptively re-fetched; 📦 Concept Archive.md strictly out of scope). Do not gather it yourself; teach from the digest excerpts/synthesis in the session. If you are resuming a lesson (Lessons/ file exists), ground in that file + Sessions/ + CURRICULUM.md.
 
-Order: Mission 0 Catch-Up (P0 + P1.01–06, 80/20, 6–8 MCQs + 2 free-recall, in-progress) is first; after it passes, next is Phase 1 Lesson 07 — Bayes' Theorem (decision 2026-09-01 — jump, not Phase 0 L01). Full 20-phase map is navigational, not contractual; after each phase, decide to go deeper / branch.
+Order: Mission 0 Catch-Up is done; Phase 1 L07 (Bayes) is done; resume Phase 1 L08 — Optimization (paused at Checkpoint 2/5). Full 20-phase map is navigational, not contractual; after each phase, decide to go deeper / branch.
 
 Routing (when a trigger fires, load the matching skill with view_skill and follow it — do not improvise):
 - "review" → review flow (AIEFS) → view_skill "learning-system" (SWE archived — redirect to AIEFS if requested)
@@ -163,7 +163,7 @@ PROMPTS = [
     {
         "command": "review",
         "name": "Review Session",
-        "content": "Run a review session. Load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. The gate Filter enforces foreground GATE:grade_audit envelopes on grades — do not bypass it.",
+        "content": "Run a review session. Switch to the Clerk preset, load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. The gate Filter enforces foreground GATE:grade_audit envelopes on grades — do not bypass it.",
     },
     {
         "command": "ingest",
