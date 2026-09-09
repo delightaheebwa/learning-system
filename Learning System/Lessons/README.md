@@ -11,8 +11,7 @@ Live teaching artifacts produced by the `learning-teach` skill. One markdown fil
 ```md
 # <Title>
 
-**Mission:** SWE Foundations — Stage 0 · **Prereqs:** <…> · **Status:** <in-progress | done>
-**Colors:** <e.g. Computation + Systems>
+**Track:** AIEFS · **Lesson:** <Phase X Lesson Y — Title> · **Status:** <in-progress (paused at Checkpoint N/M) | done> · **Language:** <Python | TypeScript | Rust>
 
 ## Core
 One reasoning step per section (unconditional truth → motivated discovery; guided Socratic).

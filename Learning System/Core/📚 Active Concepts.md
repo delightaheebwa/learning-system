@@ -2,7 +2,7 @@
 
 > Purpose: Active learning record for the current focus area. The assistant reads this at the start of learning sessions.
 > Paused/archived concepts: `Learning System/Core/📦 Concept Archive.md` (searched on demand, not auto-loaded)
-> Scripture memory: `Learning System/Core/📖 Scripture Memory.md`
+> Scripture memory (archived 2026-09-08): `Learning System/Archive/frozen/📖 Scripture Memory.md`
 
 ## Metadata
 
@@ -19,11 +19,11 @@
 ## Live System Notes
 
 - Use **"review"** to trigger AIEFS track reviews (SWE `swe` is archived — redirects to AIEFS)
-- Use **"lesson"/"continue"** to run the next AIEFS curriculum lesson: **Mission 0 Catch-Up (P0+P1.01–06, 80/20, in-progress)** is first, next real lesson after catch-up is **Phase 1 L07 Bayes' Theorem** (decision 2026-09-01 — jump). See `Learning System/CURRICULUM.md`; delegated to `learning-teach` — probe → plan → teach, live fact-checking.
+- Use **"lesson"/"continue"** to run the next AIEFS curriculum lesson: Mission 0 Catch-Up is **done**; Phase 1 L07 (Bayes) **done**; **resume Phase 1 L08 — Optimization (paused Checkpoint 2/5)**. See `Learning System/CURRICULUM.md`; delegated to `learning-teach` — probe → plan → teach, live fact-checking.
 - Each trigger runs a separate review session limited to that track's due concepts (cap of 5 per session)
 - `Sessions/` is the session history for the active learning system
 - `Reviews/` stores spaced-repetition review notes
-- `Concept Notes/` stores reusable atomic concept pages
+- `Concept Notes/` is archived (`Archive/frozen/concept-notes/`) — atomic pages live in `Knowledge Wiki/wiki/`
 - `Archive/` and `📦 Concept Archive.md` are reference-only
 - This file is the source of truth for what is due and what is developing
 - No more than 5 review concepts per session; overflow stays queued
@@ -39,7 +39,7 @@
 > Archived 2026-09-01: 43 concepts paused. No active SWE rows.
 ## Mastery Summary
 
-- **AIEFS (AI Engineering from Scratch):** catch-up 80/20 P0+P1.01–06 in-progress; Phase 1 L07 is next; 0 active non-catch-up concepts yet (see CURRICULUM.md Mission 0 + 20 phases).
+- **AIEFS (AI Engineering from Scratch):** Mission 0 catch-up done; P1 L07 done; P1 L08 Optimization in-progress (paused 2/5) — 21 live concepts (see CURRICULUM.md).
 - **Not Started:** 20 phases (Phases 0–19) navigational; after each phase decide to go deeper / branch.
 - **Paused:** ~146 (103 prior + 43 SWE archived 2026-09-01) — see `📦 Concept Archive.md` (SWE visibility strictly out of scope)
 - **Consolidated:** 0

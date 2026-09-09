@@ -4,7 +4,7 @@ This folder + `Knowledge Wiki/` are the active learning system. The operating pr
 
 ## Repo location
 
-The working copy lives at **`/home/user/learning-system`** inside the Open WebUI **Open Terminal** workspace (a persistent container volume). GitHub (https://github.com/delightaheebwa/learning-system) is the durable source of truth; this working copy is where the model reads and writes, and git is the sync mechanism.
+The runtime working copy lives at **`/home/user/learning-system`** inside the Open WebUI **Open Terminal** workspace (a persistent container volume). A second checkout lives at **`/home/delinux/learning-system`** (WSL) for maintenance refactors — both track the same GitHub remote; GitHub (https://github.com/delightaheebwa/learning-system) is the durable source of truth. The runtime model reads and writes the Open Terminal copy; keep the two in sync only via git push/pull, never by editing both directly in one session.
 
 ## Multi-File Consistency Check
 
@@ -33,12 +33,13 @@ The working copy is the Git repo at `/home/user/learning-system`, tracked agains
 
 After final edits in a session (consistency checks pass, writes complete), ALWAYS commit and push:
 
-1. `cd /home/user/learning-system && git add "Learning System" "Knowledge Wiki" "Skills"`
+1. `git add "Learning System" "Knowledge Wiki" "Skills" OPENWEBUI.md AGENTS.md README.md scripts/ infra/`
 2. `git commit -m "<short summary of session changes>"`
 3. `git push`
 
-Verify with `git status` (clean) and `git log --oneline -1`. Never commit files outside the three directories (plus `OPENWEBUI.md`, `scripts/` when they change).
+Verify with `git status` (clean) and `git log --oneline -1`. Never commit `Learning System/.tmp/` or `Pending Ingest.json` (gitignored).
 
 ### Git auth (automated)
 
-Credentials are stored in the Open Terminal sandbox home at `~/.git-credentials` (0600) with `credential.helper store` configured — `git push` works without interactive auth. If a push ever fails with auth errors, refresh the credential: re-run the one-time setup (write the PAT to `~/.git-credentials` + `git config --global credential.helper store`).
+- **Open Terminal container:** credentials at `~/.git-credentials` (0600) with `credential.helper store` — `git push` works without interactive auth.
+- **WSL checkout (`/home/delinux/learning-system`):** auth via Windows **Git Credential Manager** (`credential.helper=.../git-credential-manager.exe` through WSL interop) — no `~/.git-credentials` here. If push fails, refresh the credential in Windows (Credential Manager → GitHub).

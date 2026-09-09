@@ -10,8 +10,8 @@ The learning loop (OpenWebUI: Scout → Tutor → Clerk) adapts to upstream chan
 
 ## Current Phase
 
-- **Catch-Up (Mission 0):** 80/20 reactivation of Phase 0 + Phase 1 L01–L06 (up to Probability & Distributions) — `in-progress`. Covers: 4-layer env stack, vectors/matrices/dot product, transforms/eigen, calculus substrate, probability core (PMF/PDF, CLT, softmax/log-sum-exp, cross-entropy).
-- **Next real lesson after catch-up:** **Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking** (per decision 2026-09-01 — jump, not Phase 0 L01). See `CURRICULUM.md` Mission 2.
+- **Catch-Up (Mission 0):** 80/20 reactivation of Phase 0 + Phase 1 L01–L06 — **done** (2026-09-05 retrieval + Feynman pass).
+- **Position:** Phase 1 L07 — Bayes' Theorem — **done** (2026-09-05). Phase 1 L08 — Optimization (Gradient Descent Family) — **in-progress (paused at Checkpoint 2/5)**; resume next (L08 partial concepts ingested 2026-09-07). See `CURRICULUM.md`.
 - **Full map:** Missions 1–21 = Phases 0–19 (20 phases). Present for navigation; not a contract to finish end-to-end — after each phase, decide to go deeper / branch / build a learning system around a topic.
 
 ## Success looks like
