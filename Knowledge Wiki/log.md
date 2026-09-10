@@ -604,3 +604,8 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Reviewed (2):** Cross-Entropy from NLL (mistake retry — PASS, corrected prior inversion; mastery 0.62), Sequential Bayesian Updating (overdue review — PASS, Beta chain correct; mastery 0.50)
 - **Mistakes updated:** Cross-Entropy from NLL → status review, retries 1, next_retry 2026-09-16
 - **Session note:** `Learning System/Sessions/Session — AIEFS Review — 2026-09-09.md`
+
+### 2026-09-10 — P1 L08 Optimization Ingest (4 concepts)
+- **Ingested (4):** Saddle Points (critical point triage), Mini-batch Noise (two effects), Learning-rate Schedules (four types), Optimizer Selection (Rohit heuristic) — lesson DONE (final quiz 6/6 + Feynman pass)
+- **Enriched (2):** Optimizers (SGD, Adam, AdamW) — Practical Rule superseded by Rohit heuristic; Learning Rate — exponential timescale insight
+- **Session note:** `Learning System/Sessions/Session — Optimization Ingest — 2026-09-10.md`

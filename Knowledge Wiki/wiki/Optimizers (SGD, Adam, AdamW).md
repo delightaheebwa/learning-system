@@ -11,7 +11,11 @@ The optimizer decides *how* to update weights after computing gradients. Differe
 
 ## Practical Rule
 
-Start with **Adam** (lr=0.001) for new projects. If it doesn't converge, try **AdamW**. Only switch to SGD if you need to reproduce a paper's results (classic CNN papers use SGD+momentum).
+Start with **Adam** (lr=0.001) — it works for most problems without tuning. Switch to **SGD with momentum** (lr=0.01, momentum=0.9) when you need the *best final accuracy* and can afford more tuning (its noise lands in flat minima that generalize better). Use **AdamW** for transformers. Always schedule runs longer than a few epochs.
+
+> Superseded 2026-09-10 (Rohit P1 L08): the old rule below — "only switch to SGD to reproduce papers" — understated SGD+M, which is the go-to for best final accuracy, not just paper reproduction.
+
+~~Only switch to SGD if you need to reproduce a paper's results (classic CNN papers use SGD+momentum).~~ See [[Optimizer Selection (Rohit heuristic)]].
 
 ## Sources
 

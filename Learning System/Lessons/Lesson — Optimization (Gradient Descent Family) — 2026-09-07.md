@@ -104,7 +104,7 @@
 
 ## SHIP — optimizer choice ✅ (2026-09-10)
 
-- Rosenbrock race (CP3) is an **artifact** of a clean deterministic low-dim well-conditioned test function — NOT general evidence momentum > Adam in practice.
+- Rosenbrock race (CP3) is an **artifact** of a clean deterministic low-dim *ill-conditioned* test function (narrow curved valley) with run-specific hyperparameters — NOT general evidence momentum > Adam in practice. Note: Rohit's own defaults expect Adam fastest; the ordering flips with lr choices.
 - Rohit heuristic: start Adam (lr=0.001) → switch SGD+M (lr=0.01, β=0.9) for best final accuracy → AdamW (decoupled weight decay) for transformers; always schedule long runs.
 - "SGD for best accuracy" ties back to sharp/flat minima (CP4/CP5): Adam can settle in sharp minima, SGD's noise → flat minima.
 - Four knobs: Adam (adaptivity) · SGD+M (flat minima) · AdamW (transformers) · LR schedule (large-early/small-late).

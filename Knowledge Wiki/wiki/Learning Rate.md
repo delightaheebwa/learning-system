@@ -17,7 +17,9 @@ The scalar that controls how far each gradient-descent step moves: \(w \leftarro
 
 ## Schedules
 
-A fixed lr is a compromise — large steps early for fast progress, small steps late for fine-tuning. Common schedules: step decay, exponential decay, cosine annealing, warmup-then-decay (warmup is standard for large models to prevent early instability).
+A fixed lr is a compromise — large steps early for fast progress, small steps late for fine-tuning. Common schedules: step decay, exponential decay, cosine annealing, warmup-then-decay (warmup is standard for large models to prevent early instability). See [[Learning-rate Schedules (four types)]] for the full curve-shape reference.
+
+**Timescale insight (2026-09-10):** a decay factor that looks gentle isn't — \(0.999^{1000} \approx 0.368\), so \(0.999\) halves the rate every ~700 steps. Choosing the decay factor is choosing that characteristic timescale.
 
 ## Related pages
 

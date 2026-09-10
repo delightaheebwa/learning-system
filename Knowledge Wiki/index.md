@@ -244,3 +244,7 @@
 - [[Learning Rate]] — step size; most important hyperparameter
 - [[Momentum (SGD with Momentum)]] — velocity term; selective accumulator
 - [[Adam (adaptive moments)]] — per-weight adaptive lr via first+second moments + bias correction
+- [[Saddle Points (critical point triage)]] — Hessian-sign triage; saddles dominate ~exponentially in d
+- [[Mini-batch Noise (two effects)]] — optimization (escape stalls) vs generalization (avoid sharp minima)
+- [[Learning-rate Schedules (four types)]] — read η-vs-time curves; early phase + floor
+- [[Optimizer Selection (Rohit heuristic)]] — Adam → SGD+M → AdamW; race-result caveat

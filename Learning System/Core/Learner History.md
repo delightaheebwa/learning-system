@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-09)
+# Learner History — compact tutor context (generated 2026-09-10)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 299 concepts (69 with attempt history + 230 paused) — aiefs 20 · swe 66 · aie 213 · solid 0 · neutral 291 · fuzzy 8
+Totals: 303 concepts (73 with attempt history + 230 paused) — aiefs 24 · swe 66 · aie 213 · solid 1 · neutral 294 · fuzzy 8
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -28,15 +28,19 @@ Totals: 299 concepts (69 with attempt history + 230 paused) — aiefs 20 · swe 
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-08 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
-| Gradient Descent (vanilla) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
+| Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Learning-rate Schedules (four types) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | Likelihood | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Mini-batch Noise (two effects) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | MLE vs MAP Estimation | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
 | Momentum (SGD with Momentum) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | PMF vs PDF | concept | neutral | 2026-09-05 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
 | Posterior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Prior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Saddle Points (critical point triage) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | Sequential Bayesian Updating | concept | neutral | 2026-09-08 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-09.md |
 | Softmax Subtract-Max Trick | procedure | neutral | 2026-09-05 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-05.md |
 
