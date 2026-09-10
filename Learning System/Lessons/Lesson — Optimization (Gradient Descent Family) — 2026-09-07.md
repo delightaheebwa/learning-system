@@ -1,7 +1,7 @@
 # Lesson — Optimization (Gradient Descent Family) — 2026-09-07
 
 > **Track:** AIEFS · **Phase 1, Lesson 08** · **Lang:** Python
-> **Status: PAUSED at Checkpoint 4/5** (student-paced breakpoint, 2026-09-08)
+> **Status: DONE 2026-09-10** (all 5 checkpoints + SHIP + cumulative quiz + Feynman pass)
 
 ## Sources
 
@@ -68,17 +68,65 @@
 | P2 (race result) | C sure | ✅ |
 | P3 (bias correction why) | — | ✅ — cold start, zero-init shrinks early steps, (1−βᵗ) un-shrinks until history accumulates |
 
-## Checkpoint 4 — saddle points + mini-batch noise (OPEN, taught but NOT exit-checked)
+## Checkpoint 4 — saddle points + mini-batch noise ✅ (sealed 2026-09-10)
 
 - Critical-point triage via Hessian: local min (PSD, all λ≥0) · local max (NSD) · saddle (mixed-sign λ).
 - High-dim: saddle points dominate ~exponentially in d (Dauphin et al. 2014, via Ruder) — NOT Li et al. 2018 (that's filter-norm loss-surface smoothing).
 - Vanilla GD stalls at a saddle (∇=0). Mini-batch noise makes the gradient a non-zero random variable → nudge off saddle. This is an *optimization* effect (escape stall), distinct from noise's *regularization* effect (train-test gap).
 - **Resolved probe Q6** (local min → saddle) & **Q8** (overfitting → escape-stall mechanism).
-- Exit check (3 items) **not yet administered** — resume here.
 
-## Resume from: Checkpoint 4 exit check (3 items)
+### Exit check (2026-09-10) → re-seal
 
-Ask the CP4 exit-check (Hessian signs + stall; why high-d → saddles; optimization vs generalization reason for noise). Then CP5 (LR schedules + sharp/flat minima) → SHIP (Rosenbrock race artifact + optimizer-choice prompt).
+| Item | Answer | Verdict |
+|---|---|---|
+| Q1 (classify + stall) | B sure | ✅ |
+| Q2 (why saddles dominate) | C hunch | ❌ → re-seal R1 B sure ✅ |
+| Q3i (stuck + unstick) | free recall | ✅ |
+| Q3ii (OTHER effect = generalization) | free recall | ❌ → re-seal R2 ✅ |
+
+- Q2 miss: answered "loss surface convex in most directions" (wrong premise). Correct = counting argument: local min needs all d eigenvalue signs positive ≈ (1/2)^d, exponentially tiny; saddle needs one sign to differ. (Coin-flip model = heuristic, not exact law.)
+- Q3ii miss: correction-over-rotation from 09-07 — restated the optimization (escape-stall) half, dropped the generalization half. Noise has TWO distinct effects: (1) optimization — noisy gradient never exactly zero, no stall; (2) generalization — prevents settling into sharp minima (sharp generalize poorly, flat generalize well).
+- Re-seal passed → CP4 sealed. Attempts recorded (Saddle Points, Mini-batch Noise — both fail→pass, mastery 0.62). Mistake logged (Mini-batch Noise two effects, structural).
+
+## Checkpoint 5 — LR schedules + sharp/flat minima ✅ (sealed 2026-09-10)
+
+- Schedules exist because a fixed lr is a compromise: large steps early, small steps late. Four types: step decay · exponential (lr = lr_0·decay^t, no floor) · cosine annealing (lr = lr_min + 0.5(lr_max−lr_min)(1+cos(πt/T)); starts at lr_max, lands on lr_min = nonzero FLOOR) · warmup+decay (linear ramp-up → decay; only one with ramp-up, for large-model early instability).
+- Ruder critique: schedules set in advance (can't adapt to dataset) + same rate for all params — the gap Adam's adaptivity fills.
+- Sharp vs flat minima (Li et al. 2018 filter-norm visualization): sharp generalize poorly, flat generalize well — the CP4 generalization effect.
+- Exponential-decay insight: 0.999^1000 ≈ 0.368, 0.999^5000 ≈ 0.0067 → decay factor sets a characteristic timescale (half-life ≈ 693 steps).
+
+### Exit check → re-seal → rebuild
+
+- Q2 (Ruder two limits) ✅ · Q3 (sharp vs wide) ✅ · Q4 (why schedule + what Adam fixes) ✅.
+- Q1 miss (cosine when warmup correct — 'sure'). Re-seal R1 miss (exponential when cosine correct — 'sure'). **Two consecutive confident misses → dropped a rung, rebuilt schedules as η-vs-t curves on two axes (early phase / end behavior).**
+- Numeric re-check: 3/4 (missed floor value — transposed 0.999 decay factor into floor slot; floor = η_min itself). Final confirm 0.05 ✅. **Floor concept sealed.**
+- Attempts recorded (Learning-rate Schedules: fail×2 → pass, mastery 0.44). Mistake logged (structural).
+
+## SHIP — optimizer choice ✅ (2026-09-10)
+
+- Rosenbrock race (CP3) is an **artifact** of a clean deterministic low-dim well-conditioned test function — NOT general evidence momentum > Adam in practice.
+- Rohit heuristic: start Adam (lr=0.001) → switch SGD+M (lr=0.01, β=0.9) for best final accuracy → AdamW (decoupled weight decay) for transformers; always schedule long runs.
+- "SGD for best accuracy" ties back to sharp/flat minima (CP4/CP5): Adam can settle in sharp minima, SGD's noise → flat minima.
+- Four knobs: Adam (adaptivity) · SGD+M (flat minima) · AdamW (transformers) · LR schedule (large-early/small-late).
+
+## Final quiz (cumulative) — 2026-09-10
+
+- Q1–Q6 MCQ: **6/6 sure** (CP1 minus sign · CP2 momentum · CP3 bias correction · CP4 saddles · CP5 floor · SHIP AdamW).
+- Q8 optimizer selection ✅ (Adam prototype / SGD+M ship).
+- Q7 (two effects of noise) ❌ 4th recurrence → final re-seal ✅ (optimization=saddle escape / generalization=sharp-minima avoidance).
+
+## Feynman explain-back — ✅ PASS (2026-09-10)
+
+- Own-words synthesis: "talking bird on your shoulder tells you the next best step down the mountain (loss)" + "what's the best minima I can be in, and the fastest route to reach it" — reproduced the lesson's closing synthesis.
+
+## Concepts banked (2026-09-08 + 2026-09-10)
+
+- Gradient Descent (vanilla) — procedure ✅ (Feynman pass 2026-09-10, mastery 0.80)
+- Learning Rate — concept ✅ · Momentum — procedure ✅ · Adam — procedure ✅ (2026-09-08)
+- Saddle Points (critical point triage) — concept ✅ (2026-09-10, mastery 0.62)
+- Mini-batch Noise (two effects) — concept ✅ (2026-09-10, mastery 0.61 — 4 recurrences, final re-seal pass)
+- Learning-rate Schedules (four types) — concept ✅ (2026-09-10, mastery 0.44 — dropped rung, rebuilt as curves)
+- Optimizer Selection (Rohit heuristic) — concept ✅ (2026-09-10, mastery 0.80)
 
 ## Concepts (banked today, 2026-09-08)
 
