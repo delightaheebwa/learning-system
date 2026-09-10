@@ -16,6 +16,21 @@ Adam is the "just works" default, yet SGD+M wins on *final* accuracy — that's 
 
 In this lesson's run, momentum beat Adam (~2941 vs ~6156 steps to converge) on the Rosenbrock function — but note Rohit's own defaults expect the opposite ("Expected output: Adam converges fastest"; Rohit uses Adam lr=0.01 vs SGD+M lr=0.0001). The ordering flips with hyperparameter choices, which is itself the point: a toy-race ranking is hyperparameter-dependent, not a general result. And Rosenbrock is a clean, deterministic, 2-D, *ill-conditioned* toy — its minimum sits in "a narrow curved valley that is easy to find but hard to follow" — with no noise, no sparsity, no sharp minima. **Do not generalize that ranking to real training.** The race taught how the knobs work, not which wins in practice.
 
+## Two axes: global schedule x per-parameter adaptivity (handwritten synthesis, 2026-09-09)
+
+Ruder's critique leaves a two-axis design space: a global schedule (one curve for all weights) and per-parameter adaptivity (each weight's own scale). They complement:
+
+- \(w_{t+1} = w_t - \underbrace{\eta_t}_{\text{Global schedule}} \times \underbrace{\frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}}_{\text{Per-parameter adaptivity}}\)
+
+| Knob | What it buys | Where it lives |
+|---|---|---|
+| LR schedule | Large early / small late | Ops (global) |
+| Momentum | Dampens oscillations, speeds along valley | Update rule |
+| Mini-batch size | Escapes saddles, avoids sharp minima | Data sampling |
+| Adaptivity (Adam) | Per-weight step size | Update rule |
+
+Together the four knobs balance speed and destination — navigate quickly while landing in a well-generalizing minimum.
+
 ## Related pages
 
 - [[Optimizers (SGD, Adam, AdamW)]] — older reference table; its "Practical Rule" (only switch to SGD to reproduce papers) is superseded by this heuristic

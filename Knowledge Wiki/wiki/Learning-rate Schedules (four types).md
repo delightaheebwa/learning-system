@@ -18,9 +18,16 @@ Two discriminators worth memorizing:
 
 A decay factor that looks gentle isn't: \(0.999^{1000} \approx 0.368\), and \(0.999^{5000} \approx 0.0067\) — under 1% of the starting rate. The factor \(0.999\) halves the rate every ~700 steps (\((1-1/n)^n \to e^{-1}\) with \(n=1000\)). Choosing the decay factor is choosing that characteristic timescale — a tuned hyperparameter, not a freebie.
 
+## Use cases (from handwritten table, 2026-09-09)
+
+- Step decay — simple manual control.
+- Exponential decay — smooth reduction.
+- Cosine annealing — transformers, modern training.
+- Warmup + decay — large models, prevents early instability.
+
 ## Why schedules aren't enough (Ruder's critique)
 
-Pre-defined schedules (1) must be set in advance, so they can't adapt to a dataset's characteristics, and (2) apply the same rate to every parameter. That is exactly the gap per-parameter adaptivity (Adam) fills — schedules complement adaptivity, they don't replace it.
+Pre-defined schedules are a blunt instrument (Ruder): (1) the curve is drawn in advance before seeing how training actually unfolds, so it can't adapt to a dataset's characteristics, and (2) one size fits all — every weight gets scaled the same regardless of feature frequency or gradient size. That is exactly the gap per-parameter adaptivity (Adam) fills — schedules complement adaptivity, they don't replace it.
 
 ## Related pages
 

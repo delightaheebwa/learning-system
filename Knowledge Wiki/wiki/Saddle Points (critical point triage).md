@@ -18,6 +18,12 @@ A strict local minimum needs **all** \(d\) eigenvalue signs positive. Treated as
 
 **Attribution that matters:** the saddle-dominance argument is Dauphin et al. (2014), via Ruder's survey — *not* Li et al. (2018). Li et al. contributed the filter-normalization *visualization* of loss landscapes (sharp vs flat minima).
 
+## Non-convex framing + what dominates
+
+A neural-net loss surface is non-convex, so the simple "downhill to the bottom" picture breaks — the landscape holds valleys, critical points, and passes, not one bowl. The dominant obstacle at scale (millions to billions/trillions of parameters) is not being trapped at the bottom of a bowl: high-dimensional local minima tend to be near-global and of comparable quality (Choromanska et al. 2014). It is being stuck at a saddle — a flat point from which a descent direction exists but the gradient gives zero signal about it. The saddle-to-minimum ratio grows roughly exponentially with dimension d (Dauphin et al. 2014).
+
+(Note on the handwritten source: the 2026-09-09 notes attribute the (1/2)^d coin-flip intuition to "Li et al. 2018" — the saddle-dominance argument is Dauphin et al. 2014; Li et al. 2018 is the sharp/flat visualization. Attribution above is unchanged.)
+
 ## Why vanilla GD stalls there
 
 The update \(w \leftarrow w - \eta\,\nabla L(w)\) is proportional to the gradient. At the exact saddle point the gradient is zero → no step is taken. (Sliding off along the negative-curvature direction only happens *after* a nudge moves you off the point.)

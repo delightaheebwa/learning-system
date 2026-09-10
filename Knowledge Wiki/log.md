@@ -609,3 +609,8 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Ingested (4):** Saddle Points (critical point triage), Mini-batch Noise (two effects), Learning-rate Schedules (four types), Optimizer Selection (Rohit heuristic) — lesson DONE (final quiz 6/6 + Feynman pass)
 - **Enriched (2):** Optimizers (SGD, Adam, AdamW) — Practical Rule superseded by Rohit heuristic; Learning Rate — exponential timescale insight
 - **Session note:** `Learning System/Sessions/Session — Optimization Ingest — 2026-09-10.md`
+### 2026-09-10 — P1 L08 Handwritten Notes Enrichment (4 pages, no new concepts)
+- **Source:** Handwritten notes transcribed in chat (8 images, dated 2026-09-09). P1 L08 Optimization thread (lesson already DONE).
+- **Enriched (4):** Saddle Points — non-convex framing + Choromanska-2014 near-global minima + scale + Dauphin exponential ratio (with Li-2018 misattribution note); Mini-batch Noise — full-batch exact vs mini-batch noisy-estimate mechanism; LR Schedules — use cases + Ruder blunt-instrument wording; Optimizer Selection — two-axes synthesis equation + knob/where-it-lives table.
+- **Unchanged:** Adam, Gradient Descent, Momentum, Learning Rate (notes restate existing coverage).
+- **Session note:** `Learning System/Sessions/Session — Optimization Handwritten Notes Enrichment — 2026-09-10.md`

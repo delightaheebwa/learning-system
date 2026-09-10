@@ -7,6 +7,10 @@ The noise in SGD and mini-batches is not a bug. It does two genuinely different 
 | **Optimization** | The noisy mini-batch gradient is **almost never exactly zero**, so SGD doesn't stall at **saddles / plateaus** | "Can I keep moving?" |
 | **Generalization** | Noise stops you settling into **sharp minima** → you land in **flat minima** → better test accuracy | "Am I parking in a wide valley or a narrow crack?" |
 
+## Full-batch exact vs mini-batch noisy estimate
+
+With full-batch GD the gradient uses the entire dataset every step — the exact gradient. At a saddle where the true gradient is exactly zero, there is no direction to move, so it can sit on the flat spot. With mini-batch GD the gradient uses only a small random slice — a noisy estimate of the true gradient. Even where the true gradient is zero, the mini-batch estimate usually is not, and that random push moves the iterate off the saddle. (Handwritten notes, 2026-09-09.)
+
 ## The anchor
 
 "**Escape**" goes with **saddles** (optimization). "**Avoid / settle into**" goes with **sharp minima** (generalization). One is about *moving*, one is about *where you stop*.
