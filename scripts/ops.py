@@ -47,8 +47,15 @@ def _detect_root() -> Path:
     hardcoding one path breaks the other. Auto-detect by looking for the
     distinctive 'Learning System/Core' substructure; honor an env override.
     """
+    dynamic = []
+    script_path = Path(__file__).resolve()
+    dynamic.extend(str(p) for p in (script_path.parent, *script_path.parents))
+    cwd = Path.cwd().resolve()
+    dynamic.extend(str(p) for p in (cwd, *cwd.parents))
+
     candidates = [
         os.environ.get("LEARNING_SYSTEM_ROOT", ""),
+        *dynamic,
         "/home/delinux/learning-system",
         "/home/user/learning-system",
         os.path.expanduser("~/learning-system"),
