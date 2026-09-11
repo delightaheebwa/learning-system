@@ -614,3 +614,10 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Enriched (4):** Saddle Points — non-convex framing + Choromanska-2014 near-global minima + scale + Dauphin exponential ratio (with Li-2018 misattribution note); Mini-batch Noise — full-batch exact vs mini-batch noisy-estimate mechanism; LR Schedules — use cases + Ruder blunt-instrument wording; Optimizer Selection — two-axes synthesis equation + knob/where-it-lives table.
 - **Unchanged:** Adam, Gradient Descent, Momentum, Learning Rate (notes restate existing coverage).
 - **Session note:** `Learning System/Sessions/Session — Optimization Handwritten Notes Enrichment — 2026-09-10.md`
+
+### 2026-09-11 — P1 L09 Information Theory Partial Ingest (CP1–CP2, paused)
+- **Ingested (2):** Information Content (Surprise), Entropy (Average Surprise) — lesson PAUSED at Checkpoint 2/6 (CP1 done; CP2 concept taught, practice sign-flipped then re-sealed via exit ticket 3/3)
+- **Active Concepts (2):** both developing; Surprise last_reviewed 2026-09-11, next_review 2026-10-11; Entropy last_reviewed 2026-09-11, next_review 2026-09-18; Last Q Type discriminative
+- **Mistakes:** −log sign-inversion row → review, retries 1, next_retry 2026-09-17
+- **Session note:** `Learning System/Sessions/Session — Information Theory Ingest — 2026-09-11.md` (+ teaching note `Session — Information Theory (P1 L09) — 2026-09-11.md`)
+- **Lesson status:** in-progress (paused 2/6); digest kept (7-day TTL); resume at CP3 cross-entropy

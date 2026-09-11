@@ -88,3 +88,10 @@
 | Mini-batch Noise (two effects) | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-09-17 | definitional | Optimization: noisy grad almost never zero → escapes saddles. Generalization: avoids sharp minima → flat basins → better test accuracy. "escape"→saddles; "settle into"→sharp. |
 | Learning-rate Schedules (four types) | aiefs | concept | developing | Rohit P1 L08 + Ruder + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-09-17 | definitional | Read η-vs-t curves: early phase (only warmup ramps up) + end behavior (only cosine has nonzero floor η_min; exponential→0 no floor; step=staircase). 0.999 halves η every ~700 steps. |
 | Optimizer Selection (Rohit heuristic) | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-10-10 | definitional | Adam 0.001 default → SGD+M 0.01/0.9 for best final accuracy → AdamW for transformers; always schedule long runs. Rosenbrock race is an artifact. |
+
+### Information Theory — Entropy, KL Divergence (Phase 1 Lesson 09) — in-progress (paused 2/6)
+
+| Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
+|---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
+| Information Content (Surprise) | aiefs | concept | developing | Rohit P1 L09 + Olah (Python) | 2026-09-11 | 2026-10-11 | discriminative | I(x)=−log p(x). Rare events→large surprise; p=1→zero. Minus makes it non-negative; −log p ≈ optimal code length. |
+| Entropy (Average Surprise) | aiefs | concept | developing | Rohit P1 L09 + Olah (Python) | 2026-09-11 | 2026-09-18 | discriminative | H(P)=E[−log p(X)], weighted by p(x). Fair coin 1 bit; fair die +2.585 bits. Max at uniform, 0 at deterministic. |

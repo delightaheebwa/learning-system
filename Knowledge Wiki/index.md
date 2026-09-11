@@ -248,3 +248,5 @@
 - [[Mini-batch Noise (two effects)]] — optimization (escape stalls) vs generalization (avoid sharp minima)
 - [[Learning-rate Schedules (four types)]] — read η-vs-time curves; early phase + floor
 - [[Optimizer Selection (Rohit heuristic)]] — Adam → SGD+M → AdamW; race-result caveat
+- [[Information Content (Surprise)]] — I(x)=−log p(x); rare events surprise more, certain events zero
+- [[Entropy (Average Surprise)]] — H(P)=expected surprise; max at uniform, 0 at deterministic
