@@ -13,19 +13,19 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 305 concepts (75 with attempt history + 230 paused) — aiefs 26 · swe 66 · aie 213 · solid 2 · neutral 294 · fuzzy 9
+Totals: 306 concepts (76 with attempt history + 230 paused) — aiefs 26 · swe 67 · aie 213 · solid 5 · neutral 292 · fuzzy 9
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-07 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-08.md |
+| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-12 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-12.md |
 | PMF vs PDF | concept | fuzzy | 2026-09-11 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
-| Adam (adaptive moments) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
+| Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
-| Bayes' Theorem | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral | 2026-09-07 | last reviewed 2026-09-07 |
-| Chain Rule for Neural Networks | procedure | neutral | 2026-09-05 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
+| Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-12 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
@@ -82,6 +82,7 @@ Totals: 305 concepts (75 with attempt history + 230 paused) — aiefs 26 · swe 
 | find | procedure | neutral | 2026-08-28 | Learning System/Archive/SWE-2026-09-01/reviews/Review — find — 2026-08-28.md |
 | GCC Compilation Stages |  | neutral | 2026-08-20 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |
 | Git commit message conventions | memory | neutral | 2026-08-25 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Git commit message conventions — 2026-08-04.md |
+| Gradient Descent Failure Modes (zigzag vs overshoot) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Intermediate Object Files (.o) |  | neutral | 2026-08-04 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |
 | Job Control (Ctrl-Z, fg/bg, nohup/disown) | procedure | neutral | 2026-08-21 | last reviewed 2026-08-21 |
 | jq | procedure | neutral | 2026-08-26 | Learning System/Archive/SWE-2026-09-01/reviews/Review — jq — 2026-08-17.md |

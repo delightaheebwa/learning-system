@@ -57,19 +57,19 @@
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
-| Chain Rule for Neural Networks | aiefs | procedure | developing | Rohit P1 L05 + CS231n (Python) | 2026-09-05 | 2026-09-12 | discriminative | Gradients multiply across layers (not add) because variables are dependent. |
+| Chain Rule for Neural Networks | aiefs | procedure | developing | Rohit P1 L05 + CS231n (Python) | 2026-09-12 | 2026-09-26 | definitional | Gradients multiply across layers (not add) because variables are dependent. |
 | PMF vs PDF | aiefs | concept | developing | Rohit P1 L06 + CS229 (Python) | 2026-09-05 | 2026-09-12 | discriminative | PMF=discrete probability, PDF=density (integrate), CDF=cumulative. |
 | Softmax Subtract-Max Trick | aiefs | procedure | developing | Rohit P1 L06 + Gundersen (Python) | 2026-09-05 | 2026-09-12 | discriminative | Subtract max(z) before exp to prevent overflow. Identical result. |
 | Cosine Similarity | aiefs | concept | developing | Rohit P1 L02 + 3B1B (Python) | 2026-09-08 | 2026-09-14 | definitional | Unit vectors u·v=cos(θ). Measures alignment −1 to +1. |
-| 4-Layer AI Environment Stack | aiefs | concept | developing | Rohit P0 L01-L12 (Python) | 2026-09-08 | 2026-09-10 | definitional | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
+| 4-Layer AI Environment Stack | aiefs | concept | developing | Rohit P0 L01-L12 (Python) | 2026-09-12 | 2026-09-15 | discriminative | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. Layer order still shaky 09-12 (swapped 2–3: Runtimes before Packages). |
 | Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + P1 L09 + Olah + PyTorch CrossEntropyLoss (Python) | 2026-09-12 | 2026-10-12 | discriminative | H(P,Q)=Σ q(x)(−log₂ p(x)): weights from truth Q, surprises from model P (Olah convention here; Rohit/ML flips letters, P=truth → ≥H(P)). = CE loss = NLL (−log ŷ_correct under one-hot). Floor = the data's entropy H(Q): coin Q=(0.75,0.25) vs fair P → H(P,Q)=1.0 bit, floor 0.811, KL 0.189. Floor ≠ model's H(P). |
 
 ### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
-| Adam (adaptive moments) | aiefs | procedure | developing | Rohit P1 L08 + Kingma & Ba 2015 + Ruder + handwritten notes 2026-09-08 (Python) | 2026-09-08 | 2026-09-11 | definitional | m = direction (β₁=0.9); v = scale (β₂=0.999). Bias correction: m̂=m/(1-β₁ᵗ), v̂=v/(1-β₂ᵗ). Self-tuner per weight. SGD+M can beat Adam on generalization (sharp vs flat minima). Default lr=0.001. |
-| Bayes' Theorem | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
+| Adam (adaptive moments) | aiefs | procedure | developing | Rohit P1 L08 + Kingma & Ba 2015 + Ruder + handwritten notes 2026-09-08 (Python) | 2026-09-12 | 2026-09-26 | discriminative | m = direction (β₁=0.9); v = scale (β₂=0.999). Bias correction: m̂=m/(1-β₁ᵗ), v̂=v/(1-β₂ᵗ). Self-tuner per weight. SGD+M can beat Adam on generalization (sharp vs flat minima). Default lr=0.001. |
+| Bayes' Theorem | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-12 | 2026-10-12 | definitional | |
 | Prior Probability | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
 | Likelihood | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
 | Posterior Probability | aiefs | concept | developing | Phase 1 L07 notes | 2026-09-05 | 2026-09-12 | discriminative | |
