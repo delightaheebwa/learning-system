@@ -1,14 +1,14 @@
 # Lesson — Information Theory (Phase 1 L09) — 2026-09-11
 
-Status: **paused at Checkpoint 2/6** — resume at CP3 (cross-entropy)
+Status: **paused at Checkpoint 3/6** — resume at CP4 (KL divergence)
 
 ## Resume from
-Resume at **CP3 — cross-entropy** H(P,Q) = CE loss = NLL. (CP2's −log sign was re-sealed on the 2026-09-11 exit ticket: die entropy = +log₂ 6 ≈ +2.585 bits.)
+Resume at **CP4 — KL divergence** (KL = CE − H(data); re-emit the full CP4 teaching block from the 2026-09-12 session — the learner asked for it to be brought back, and it has NOT been answered/practiced yet). Convention note for CP4: this lesson uses Olah-style H(P,Q) with weights from truth Q, surprises from model P, so the floor is H(Q); Rohit/ML convention flips the letters (P = data → H(P,Q) ≥ H(P)). The learner asked about this and got the verified reconciliation — anchor phrase: "the entropy term is always the data's entropy".
 
 ## Checkpoints
 1. CP1 — Surprise I(x) = −log p — ✅ done (sign fixed: 3 / 0.014 / 0 all correct)
 2. CP2 — Entropy H(P) = expected surprise — ✅ done (sign re-sealed on the 2026-09-11 exit ticket; die entropy +2.585 bits)
-3. CP3 — Cross-entropy H(P,Q) = CE loss = NLL — pending
+3. CP3 — Cross-entropy H(P,Q) = CE loss = NLL — ✅ done (2026-09-12: practice 1 bit exact; floor misconception corrected + re-sealed on exit ticket E3; convention question answered, verified)
 4. CP4 — KL = CE − H(P) — pending
 5. CP5 — Mutual information I(X;Y) — pending
 6. CP6 — Perplexity + bits/nats + label smoothing — pending
@@ -21,4 +21,7 @@ Rohit en.md + Olah (Visual Information Theory) + PyTorch CrossEntropyLoss + Shan
 Python (Rohit `Language: Python`)
 
 ## Priority-1 misconception (tracking)
-−log sign inversion — recurred 3× (probe Q1, probe Q5 CE-vs-KL, CP2 die entropy). CP1 and CP2 both re-sealed by the 2026-09-11 exit ticket (Mistakes row bumped to review/retries=1). Re-test the sign on the next cross-entropy checkpoint before advancing.
+−log sign inversion — recurred 3× (probe Q1, probe Q5 CE-vs-KL, CP2 die entropy). CP1, CP2 re-sealed on the 2026-09-11 exit ticket. Re-tested again 2026-09-12 (warm-up W1 = +3 bits, sure; CP3 practice + exit ticket all sign-correct) — holds across 4 consecutive tests.
+
+## Floor misconception (second tracked, 2026-09-12)
+"Floor = model's entropy" — answered 1 bit (model H(P)) instead of H(Q) ≈ 0.811 for Q=(0.75,0.25). Corrected same session; re-sealed on exit ticket E3 (picked H(Q)≈0.47 over near-miss H(P)≈0.81 on a new coin). Mistakes row → review, retries=1.

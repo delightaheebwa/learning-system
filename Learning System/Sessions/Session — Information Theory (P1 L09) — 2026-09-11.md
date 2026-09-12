@@ -46,3 +46,18 @@ E1 (surprise) pass · E2 (die entropy) pass · E3 (entropy = expectation of surp
 
 ## Ingest (2026-09-11, Clerk)
 Banked CP1–CP2 as 2 new Active Concepts rows (developing) + 2 wiki pages + index/log. Lesson stays in-progress (paused 2/6); digest kept. Resume at CP3 cross-entropy.
+
+
+## Resume 2 (2026-09-12)
+Resumed from CP2. Warm-up (quiz-audit PASS): W1 sign +3 bits sure ✅ · W2 spinner H = 1.5 bits sure ✅ · W3 expected-surprise explanation ✅ — sign re-sealed again, 4 consecutive tests.
+
+CP3 (cross-entropy) taught: H(P,Q) = Σ q(x)·(−log₂ p(x)), weights from truth Q / surprises from model P; = CE loss = NLL (collapses to −log ŷ under one-hot labels); H(P,Q) ≥ H(Q). Practice (fact-checked): coin Q=(0.75,0.25) true, P=(0.5,0.5) model → H(P,Q) = 1 bit exact ✅; floor follow-up FAIL (1 bit = model's H) → corrected to H(Q) ≈ 0.811; misconception logged in Mistakes.md.
+
+Learner paused at CP3/6. Simplified floor re-explanation emitted (fact-check PASS 4/4). CP4 (KL) was emitted BEFORE the pause request but NOT answered/practiced — must be re-emitted fresh on resume.
+
+Resolved tangent (Open Questions): "is the floor H(P,Q) ≥ H(Q) or ≥ H(P)?" — both, convention-dependent: floor is always the entropy of the weighting (true/data) distribution; this lesson's convention → H(Q), Rohit/ML convention (P = data) → H(P). Anchor: "in CE − entropy = KL, the entropy term is always the data's entropy." fact-check PASS 4/4.
+
+## Pause exit ticket (2026-09-12, CP3 only — quiz-audit PASS after 3 fix cycles)
+E1 (weights from truth Q, surprises from model P) B sure ✅ · E2 H(P,Q) for Q=(0.9,0.1), P=(0.25,0.75) = 1.84 bits sure ✅ (direction stripped from stem — convention applied from recall) · E3 floor = H(Q) ≈ 0.47 bits (chose C over near-miss D = H(P) ≈ 0.81) sure ✅ — floor misconception re-sealed on a new distribution. All grade-audit agreed.
+
+State: Cross-entropy attempt logged (pass, mastery 0.80, next_review 2026-10-12). Mistakes row (floor) → review/retries=1. Resume at CP4 (re-emit CP4 fresh).
