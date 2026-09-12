@@ -52,11 +52,11 @@ Goal: Setup & Tooling — see upstream `phases/00-*/docs/en.md` per lesson. Goal
 
 **Exit:** 4-layer env reproducible, `verify.py --route` passes, Docker/tooling not blocking future phases.
 
-## Mission 2 — Phase 1: Math Foundations *(~23 hours · Python (Julia optional) · not-started)*
+## Mission 2 — Phase 1: Math Foundations *(~23 hours · Python (Julia optional) · in-progress)*
 
 Goal: Math Foundations — see upstream `phases/01-*/docs/en.md` per lesson. Goal phrasing follows Rohit ROADMAP.md phase header.
 
-- **Phase note:** L01–L06 covered by Mission 0 catch-up; L07 done 2026-09-05; L08 Optimization done 2026-09-10 (retrieval + Feynman pass).
+- **Phase note:** L01–L06 covered by Mission 0 catch-up; L07 done 2026-09-05; L08 Optimization done 2026-09-10 (retrieval + Feynman pass); L09 Information Theory in-progress — paused at Checkpoint 2/6 (2026-09-11), resume at CP3 cross-entropy.
 - **Lang (phase default):** Python (Julia optional) — lesson-level `Languages:` header overrides (Rohit). Python for math/ML, TypeScript for Tools/Agents/Protocols, Rust where phase lists it, Julia optional in Phase 1.
 - **Source base:** `https://github.com/rohitg00/ai-engineering-from-scratch/tree/main/phases/01-*` — each lesson: `phases/<phase>/<lesson>/docs/en.md` + `## Further Reading` external refs + `code/` per Rohit (Rohit is a source, not the source).
 
@@ -70,7 +70,7 @@ Goal: Math Foundations — see upstream `phases/01-*/docs/en.md` per lesson. Goa
 | 06 | Probability & Distributions | ~45 min | 5 | Python (Julia optional) | not-started* | Covered by Mission 0 catch-up (80/20). Ritual: retrieval-check on demand, not re-taught unless probe fails. Source: P1 L06 `docs/en.md`. |
 | 07 | Bayes' Theorem & Statistical Thinking | ~75 min | 6 | Python (Julia optional) | done | Taught 2026-09-02, re-activated 2026-09-05 (retrieval + Feynman pass). Est ~75 min (from ROADMAP). Scout fetches live docs + Further Reading; language per Rohit header (Python for P1). |
 | 08 | Optimization — Gradient Descent Family | ~75 min | 7 | Python (Julia optional) | done | CP1–5 + SHIP + cumulative quiz (6/6) + Feynman pass. 2026-09-10. | Source: Phase 1 L08 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
-| 09 | Information Theory — Entropy, KL Divergence | ~45 min | 8 | Python (Julia optional) | not-started | Source: Phase 1 L09 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
+| 09 | Information Theory — Entropy, KL Divergence | ~45 min | 8 | Python (Julia optional) | in-progress | Paused at Checkpoint 2/6 (2026-09-11): CP1 surprise + CP2 entropy banked; resume at CP3 cross-entropy. Source: Phase 1 L09 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 10 | Dimensionality Reduction — PCA, t-SNE, UMAP | ~75 min | 9 | Python (Julia optional) | not-started | Source: Phase 1 L10 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 11 | Singular Value Decomposition | ~75 min | 10 | Python (Julia optional) | not-started | Source: Phase 1 L11 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 12 | Tensor Operations | ~75 min | 11 | Python (Julia optional) | not-started | Source: Phase 1 L12 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
@@ -85,7 +85,7 @@ Goal: Math Foundations — see upstream `phases/01-*/docs/en.md` per lesson. Goa
 | 21 | Graph Theory for ML | ~45 min | 20 | Python (Julia optional) | not-started | Source: Phase 1 L21 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 | 22 | Stochastic Processes | ~45 min | 21 | Python (Julia optional) | not-started | Source: Phase 1 L22 `docs/en.md` + Further Reading. Lang per lesson header (Python (Julia optional)). |
 
-**Exit:** calculus → probability chain solid; you can implement PMF/PDF, softmax+ NLL, and state CLT without notes. Next → Phase 1 L07 (Optimization).
+**Exit:** calculus → probability chain solid; you can implement PMF/PDF, softmax+ NLL, and state CLT without notes. Continue Phase 1 at L09 (Information Theory, in progress).
 
 ## Mission 3 — Phase 2: ML Fundamentals *(~21 hours · Python · not-started)*
 
