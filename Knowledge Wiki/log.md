@@ -621,3 +621,13 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Mistakes:** −log sign-inversion row → review, retries 1, next_retry 2026-09-17
 - **Session note:** `Learning System/Sessions/Session — Information Theory Ingest — 2026-09-11.md` (+ teaching note `Session — Information Theory (P1 L09) — 2026-09-11.md`)
 - **Lesson status:** in-progress (paused 2/6); digest kept (7-day TTL); resume at CP3 cross-entropy
+
+### 2026-09-12 — P1 L09 Information Theory Partial Ingest (CP3 cross-entropy, paused 3/6)
+- **Enriched (1):** Cross-Entropy from NLL — two-distribution H(P,Q) with weights from truth Q / surprises from model P; Olah-vs-Rohit letter-convention table; CE loss = NLL (one-hot → −log ŷ_correct); floor rule H(P,Q) ≥ H(Q), equality iff P = Q; worked coin (Q=(0.75,0.25), P=fair → H(P,Q) = 1.0 bit, floor H(Q) ≈ 0.811, gap ≈ 0.189); KL bridge KL(Q∥P) = H(P,Q) − H(Q) as a labelled CP4 preview; units (bits/nats)
+- **Overlap check:** one bundle over Active Concepts + wiki; existing row + page `Cross-Entropy from NLL` → enriched, no duplicate row created
+- **Active Concepts:** Cross-Entropy from NLL → last_reviewed 2026-09-12, next_review 2026-09-15, Last Q Type discriminative; CP1/CP2 rows (2026-09-11) untouched
+- **Mistakes:** floor misconception row (2026-09-12) already present → review, retries 1; no new row added
+- **State fix:** stale checkpoint counter 2/6 → 3/6 in `CURRICULUM.md` (2 places) + Active Concepts IT header (lesson file is the authority; status still in-progress)
+- **Session note:** `Learning System/Sessions/Session — Information Theory Ingest (CP3) — 2026-09-12.md`
+- **Lesson status:** in-progress (paused 3/6); resume at CP4 KL divergence. CP4 NOT banked. Digest not present on disk (gitignored `.tmp/`); nothing deleted (partial ingest)
+- **Review gate:** 2 cycles (pass 1 ISSUES: 2 medium + 2 low → fixed; pass 2 ISSUES: 1 medium — KL "not taught" wording vs lesson state "emitted, never practiced" → fixed after the pass, no third pass per the 2-cycle cap). Verdicts: `Reviews/Quality Gates/information-theory-p1l09-cp3-pass1-2026-09-12.json`, `…-pass2-2026-09-12.json`

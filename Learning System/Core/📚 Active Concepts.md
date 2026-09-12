@@ -62,7 +62,7 @@
 | Softmax Subtract-Max Trick | aiefs | procedure | developing | Rohit P1 L06 + Gundersen (Python) | 2026-09-05 | 2026-09-12 | discriminative | Subtract max(z) before exp to prevent overflow. Identical result. |
 | Cosine Similarity | aiefs | concept | developing | Rohit P1 L02 + 3B1B (Python) | 2026-09-08 | 2026-09-14 | definitional | Unit vectors u·v=cos(θ). Measures alignment −1 to +1. |
 | 4-Layer AI Environment Stack | aiefs | concept | developing | Rohit P0 L01-L12 (Python) | 2026-09-08 | 2026-09-10 | definitional | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
-| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + CS229 (Python) | 2026-09-09 | 2026-09-15 | discriminative | L=−log(p_correct). Minimizing pushes true class toward 1. |
+| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + P1 L09 + Olah + PyTorch CrossEntropyLoss (Python) | 2026-09-12 | 2026-09-15 | discriminative | H(P,Q)=Σ q(x)(−log₂ p(x)): weights from truth Q, surprises from model P (Olah convention here; Rohit/ML flips letters, P=truth → ≥H(P)). = CE loss = NLL (−log ŷ_correct under one-hot). Floor = the data's entropy H(Q): coin Q=(0.75,0.25) vs fair P → H(P,Q)=1.0 bit, floor 0.811, KL 0.189. Floor ≠ model's H(P). |
 
 ### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
@@ -89,7 +89,7 @@
 | Learning-rate Schedules (four types) | aiefs | concept | developing | Rohit P1 L08 + Ruder + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-09-17 | definitional | Read η-vs-t curves: early phase (only warmup ramps up) + end behavior (only cosine has nonzero floor η_min; exponential→0 no floor; step=staircase). 0.999 halves η every ~700 steps. |
 | Optimizer Selection (Rohit heuristic) | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-10-10 | definitional | Adam 0.001 default → SGD+M 0.01/0.9 for best final accuracy → AdamW for transformers; always schedule long runs. Rosenbrock race is an artifact. |
 
-### Information Theory — Entropy, KL Divergence (Phase 1 Lesson 09) — in-progress (paused 2/6)
+### Information Theory — Entropy, KL Divergence (Phase 1 Lesson 09) — in-progress (paused 3/6)
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
