@@ -205,7 +205,7 @@
 - [[Softmax Subtract-Max Trick]] — Subtract max(z) for numerical stability
 - [[Cosine Similarity]] — Unit vector dot product = cos(θ)
 - [[4-Layer AI Environment Stack]] — System→Packages→Runtimes→AI Libraries
-- [[Cross-Entropy from NLL]] — H(P,Q)=Σ q·(−log p); = CE loss = NLL; floor = the data's entropy H(Q); −H(data) = KL (also: Cross-entropy (H(P,Q), CE loss, NLL))
+- [[Cross-Entropy from NLL]] — H(P,Q)=Σ q·(−log p); = CE loss = NLL; floor = the data's entropy H(Q); CE − H(data) = KL (also: Cross-entropy (H(P,Q), CE loss, NLL))
 - [[Bayes' Theorem]] — P(H|E) = P(E|H)·P(H)/P(E); update beliefs with evidence
 - [[Prior Probability]] — P(H); belief before evidence (base rate)
 - [[Likelihood]] — P(E|H); probability of evidence given hypothesis
