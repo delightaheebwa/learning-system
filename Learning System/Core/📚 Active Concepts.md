@@ -39,7 +39,7 @@
 > Archived 2026-09-01: 43 concepts paused. No active SWE rows.
 ## Mastery Summary
 
-- **AIEFS (AI Engineering from Scratch):** Mission 0 catch-up done; P1 L07 done; P1 L08 Optimization **done** (2026-09-10); P1 L09 Information Theory in-progress (paused 3/6, resume CP4 KL) — 21 live concepts (see CURRICULUM.md).
+- **AIEFS (AI Engineering from Scratch):** Mission 0 catch-up done; P1 L07 done; P1 L08 Optimization **done** (2026-09-10); P1 L09 Information Theory in-progress (paused 3/6, resume CP4 KL) — 28 live concepts (all `developing`; counted from the Active Concepts `aiefs` table on 2026-09-12: Mission 0 catch-up 5, L07 Bayes 11, L08 Optimization 7, L09 Information Theory 2, plus Cross-Entropy from NLL / Cosine Similarity / 4-Layer Stack; supersedes the stale "21 live concepts" figure).
 - **Not Started:** 20 phases (Phases 0–19) navigational; after each phase decide to go deeper / branch.
 - **Paused:** ~146 (103 prior + 43 SWE archived 2026-09-01) — see `📦 Concept Archive.md` (SWE visibility strictly out of scope)
 - **Consolidated:** 0
