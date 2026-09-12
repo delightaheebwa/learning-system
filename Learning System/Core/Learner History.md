@@ -13,14 +13,13 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 307 concepts (77 with attempt history + 230 paused) — aiefs 26 · swe 68 · aie 213 · solid 2 · neutral 295 · fuzzy 10
+Totals: 305 concepts (75 with attempt history + 230 paused) — aiefs 26 · swe 66 · aie 213 · solid 2 · neutral 294 · fuzzy 9
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
 | 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-07 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-08.md |
-| Cross-Entropy from NLL | concept | fuzzy | 2026-09-11 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
 | PMF vs PDF | concept | fuzzy | 2026-09-11 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
 | Adam (adaptive moments) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
@@ -29,7 +28,8 @@ Totals: 307 concepts (77 with attempt history + 230 paused) — aiefs 26 · swe 
 | Chain Rule for Neural Networks | procedure | neutral | 2026-09-05 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
-| Entropy (Average Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
+| Cross-Entropy from NLL | concept | neutral | 2026-09-12 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
+| Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
@@ -73,9 +73,7 @@ Totals: 307 concepts (77 with attempt history + 230 paused) — aiefs 26 · swe 
 | Clean Targets & .PHONY | concept | neutral | 2026-08-08 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Clean Targets & .PHONY — 2026-08-08.md |
 | Command Substitution & Arithmetic | procedure | neutral | 2026-08-24 | last reviewed 2026-08-24 |
 | Conjugate Priors | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-08.md |
-| Cross-entropy (H(P,Q), CE loss, NLL) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | curl (Web Fetching) | procedure | neutral | 2026-08-27 | Learning System/Archive/SWE-2026-09-01/reviews/Review — curl (Web Fetching) — 2026-08-27.md |
-| Entropy (expected surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Environment Variables (Shell) | concept | neutral | 2026-08-27 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Environment Variables (Shell) — 2026-08-27.md |
 | Exit Codes & Short-Circuit Control Flow | concept | neutral | 2026-08-24 | last reviewed 2026-08-24 |
 | Feature Probing vs Kernel Version Checking |  | neutral | 2026-08-18 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |

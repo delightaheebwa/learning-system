@@ -62,7 +62,7 @@
 | Softmax Subtract-Max Trick | aiefs | procedure | developing | Rohit P1 L06 + Gundersen (Python) | 2026-09-05 | 2026-09-12 | discriminative | Subtract max(z) before exp to prevent overflow. Identical result. |
 | Cosine Similarity | aiefs | concept | developing | Rohit P1 L02 + 3B1B (Python) | 2026-09-08 | 2026-09-14 | definitional | Unit vectors u·v=cos(θ). Measures alignment −1 to +1. |
 | 4-Layer AI Environment Stack | aiefs | concept | developing | Rohit P0 L01-L12 (Python) | 2026-09-08 | 2026-09-10 | definitional | System→Packages→Runtimes→AI Libs. GPU issue = Runtimes. |
-| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + P1 L09 + Olah + PyTorch CrossEntropyLoss (Python) | 2026-09-12 | 2026-09-15 | discriminative | H(P,Q)=Σ q(x)(−log₂ p(x)): weights from truth Q, surprises from model P (Olah convention here; Rohit/ML flips letters, P=truth → ≥H(P)). = CE loss = NLL (−log ŷ_correct under one-hot). Floor = the data's entropy H(Q): coin Q=(0.75,0.25) vs fair P → H(P,Q)=1.0 bit, floor 0.811, KL 0.189. Floor ≠ model's H(P). |
+| Cross-Entropy from NLL | aiefs | concept | developing | Rohit P1 L06 + P1 L09 + Olah + PyTorch CrossEntropyLoss (Python) | 2026-09-12 | 2026-10-12 | discriminative | H(P,Q)=Σ q(x)(−log₂ p(x)): weights from truth Q, surprises from model P (Olah convention here; Rohit/ML flips letters, P=truth → ≥H(P)). = CE loss = NLL (−log ŷ_correct under one-hot). Floor = the data's entropy H(Q): coin Q=(0.75,0.25) vs fair P → H(P,Q)=1.0 bit, floor 0.811, KL 0.189. Floor ≠ model's H(P). |
 
 ### Bayes' Theorem & Statistical Thinking (Phase 1 Lesson 07)
 
@@ -94,4 +94,4 @@
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
 | Information Content (Surprise) | aiefs | concept | developing | Rohit P1 L09 + Olah (Python) | 2026-09-11 | 2026-10-11 | discriminative | I(x)=−log p(x). Rare events→large surprise; p=1→zero. Minus makes it non-negative; −log p ≈ optimal code length. |
-| Entropy (Average Surprise) | aiefs | concept | developing | Rohit P1 L09 + Olah (Python) | 2026-09-11 | 2026-09-18 | discriminative | H(P)=E[−log p(X)], weighted by p(x). Fair coin 1 bit; fair die +2.585 bits. Max at uniform, 0 at deterministic. |
+| Entropy (Average Surprise) | aiefs | concept | developing | Rohit P1 L09 + Olah (Python) | 2026-09-11 | 2026-10-12 | discriminative | H(P)=E[−log p(X)], weighted by p(x). Fair coin 1 bit; fair die +2.585 bits. Max at uniform, 0 at deterministic. |
