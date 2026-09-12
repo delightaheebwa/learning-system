@@ -10,13 +10,13 @@
 - **Created:** 2026-04-13
 - **Last Updated:** 2026-09-01 — switched to AIEFS (Rohit); added Mission 0 catch-up, language-per-lesson rule, Docker Desktop/WSL note.
 - **Last Updated:** 2026-09-01 — paper-based math (work on paper, submit final output only; no verbatim LaTeX), removed soccer analogies (flexible, accuracy-first).
-- **Last Updated:** 2026-09-12 — reconciled position with `CURRICULUM.md`/`Lessons/` (L08 done, L09 paused 2/6); removed stale Mission 0 focus.
+- **Last Updated:** 2026-09-12 — reconciled position with `CURRICULUM.md`/`Lessons/` (L08 done, L09 paused 3/6, resume CP4 KL); removed stale Mission 0 focus.
 
 ## Academic Context
 
 - **Year:** 2nd Year University Student
 - **Field:** AI/ML (Artificial Intelligence / Machine Learning)
-- **Current Focus:** AI Engineering from Scratch (Rohit) — Phase 1, Lesson 09 (Information Theory; paused at Checkpoint 2/6)
+- **Current Focus:** AI Engineering from Scratch (Rohit) — Phase 1, Lesson 09 (Information Theory; paused at Checkpoint 3/6)
 
 ## Current Roadmap
 
@@ -24,7 +24,7 @@
 - **Goal:** Build real AI systems end-to-end (math → DL → LLMs → agents → multimodal → production), shipping one artifact per lesson — Rohit is a source, not the source (Scout synthesizes docs/en.md + Further Reading).
 - **Source:** https://github.com/rohitg00/ai-engineering-from-scratch — `ROADMAP.md` (order) + `phases/<phase>/<lesson>/docs/en.md` + Further Reading external refs + `code/` per lesson.
 - **Roadmap stored at:** `Knowledge Wiki/wiki/AI Engineering from Scratch — Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
-- **Current Position:** Phase 1 — Math Foundations: L07 Bayes ✅ (2026-09-05) · L08 Optimization ✅ (2026-09-10) · **L09 Information Theory in-progress (paused at Checkpoint 2/6, 2026-09-11)** — resume at CP3 cross-entropy
+- **Current Position:** Phase 1 — Math Foundations: L07 Bayes ✅ (2026-09-05) · L08 Optimization ✅ (2026-09-10) · **L09 Information Theory in-progress (paused at Checkpoint 3/6, 2026-09-12)** — resume at CP4 — KL divergence
 - **Archived:** SWE Primary Colors roadmap (archived 2026-09-01 — see `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` + wiki banner, 43 concepts paused) · Terminal System Monitor C project (archived 2026-08-24) · AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
 - **Sequencing:** Phase 1 sequential (L07 ✅, L08 ✅, L09 in-progress) → Phases 2–19. Mission 0 catch-up and Phase 0 are done/covered. Full 20-phase map present for navigation; not a contract — after each phase, decide to go deeper / branch / build.
 
