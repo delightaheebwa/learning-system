@@ -11,12 +11,14 @@ Phase 1 L09 — Information Theory (Entropy, KL Divergence). Prereqs: L06 Probab
 | Q2 | A prob/expect | C (p(x)) | hunch | correct-but-unknown | weight on surprise = p(x); hunch → re-probe |
 | Q3 | B log-stability | D (overflow) | sure | PASS | subtract-max |
 | Q4 | C CE/NLL | A (decrease) | sure | PASS | −log(ŷ) falls as ŷ→1 |
-| Q5 | C CE/NLL | C (H(P)−H(Q)) | hunch | FAIL | that is KL's shape; CE ≥ H(P), = iff Q=P |
+| Q5 | C CE/NLL | C (H(P)−H(Q)) | hunch | FAIL | that is KL's shape; CE ≥ the entropy of the weighting/data distribution — H(Q) in this lesson's Olah letters, H(P) in the en.md/ML letters (P = truth); = iff the two agree |
 | Q6 | A prob/expect | fuzzy | — | unknown | expectation = weighted avg of X, not "avg of p(x)" |
 | Q7 | B log-stability | overflow/underflow | sure | PASS | correct |
 | Q8 | C CE/NLL | fuzzy (distance) | — | unknown | KL intuition, not the likelihood identity |
 
 Strand states: **A = UNKNOWN** (log sign + expectation fuzzy) · **B = SOLID** (softmax stability) · **C = UNSTABLE** (CE≥H and CE≡NLL not landed).
+
+*Lettering note (added 2026-09-12): the probe ran before the CP3 convention reconciliation. This session uses Olah letters (model P, truth/data Q), so the floor reads H(Q); the en.md/ML letters used in the Q5 probe line flip P and Q. See `Lessons/Lesson — Information Theory — 2026-09-11.md` line 6.*
 
 ## Priority-1 misconception (load-bearing)
 The 09-06 structural mistake ("inverted the −log mechanism") RECURRED in Q1 (sign) and Q5 (CE conflated with the KL subtraction). This is the exact hinge of L09 — every formula here is −log-based. Open the lesson on it.
