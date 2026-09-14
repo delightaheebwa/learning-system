@@ -14,7 +14,11 @@ Enforces:
   review grade must have a fresh grade_audit, with parent_message_id == draft.id;
   an upfront Plan batch never satisfies later Teach steps, and quiz_audit never
   satisfies claims. Mixed claims+quiz needs BOTH receipts for the same message.
-- Clerk content (single-turn): single GATE:review receipt per wiki write.
+- Clerk content (single-turn): single GATE:review receipt per wiki write; a
+  standalone-review close requires a GATE:review_session receipt auditing the
+  end-of-review writes (Review notes, session note, touched state rows) — on
+  ISSUES after the fix loop the summary renders with a flags banner, never a
+  withhold (avoids the pi dead-end).
 
 Retry: outlet replaces blocked draft with BLOCKED (<code>) banner. Cap 2 per
 USER TURN (reset when parent user message changes), durably counted in
@@ -44,6 +48,7 @@ try:
     from gate_schema import (
         GATEFactCheckEnvelope,
         GATEReviewEnvelope,
+        GATEReviewSessionEnvelope,
         GATEQuizAuditEnvelope,
         GATEGradeAuditEnvelope,
         extract_json_block,
@@ -53,6 +58,7 @@ except Exception:
         from open_webui.functions.gate_schema import (  # type: ignore
             GATEFactCheckEnvelope,
             GATEReviewEnvelope,
+            GATEReviewSessionEnvelope,
             GATEQuizAuditEnvelope,
             GATEGradeAuditEnvelope,
         )
@@ -60,6 +66,7 @@ except Exception:
     except Exception:
         GATEFactCheckEnvelope = None  # type: ignore
         GATEReviewEnvelope = None  # type: ignore
+        GATEReviewSessionEnvelope = None  # type: ignore
         GATEQuizAuditEnvelope = None  # type: ignore
         GATEGradeAuditEnvelope = None  # type: ignore
         extract_json_block = lambda t: None  # noqa: E731
@@ -81,6 +88,30 @@ _GRADE_VERDICT_RE = re.compile(r"\b(pass|fail|held|advanced|graduated)\b", re.I)
 def _is_grade_content(text: str) -> bool:
     s = text or ""
     return bool(_GRADE_MARKER_RE.search(s) and _GRADE_VERDICT_RE.search(s))
+
+
+# Review-session close: the Clerk's end-of-review summary lists results for
+# several concepts (mastery + next review + mistakes/graduation). It is longer
+# than a single grade line and carries >=3 review markers. A single grade turn
+# is short (<=1 line + mastery line) and stays on the grade_audit path.
+_REVIEW_SESSION_MARK_RE = re.compile(
+    r"(mastery\s+\d|Next Review|Last Q Type|Reviews/Review|Feynman:|\bgraduated\b)", re.I
+)
+
+
+def _is_review_session_content(text: str) -> bool:
+    s = (text or "").strip()
+    if len(s) < 200:
+        return False
+    return len(_REVIEW_SESSION_MARK_RE.findall(s)) >= 3
+
+
+_REVIEW_SESSION_FLAGS_BANNER = (
+    "⚠️ REVIEW FLAGS SURFACED — the end-of-review audit returned high/medium flags on the "
+    "session writes (Review notes / session note / touched state rows). The summary below is "
+    "shown with those flags outstanding; fix them next session — do not re-run the audit "
+    "(hard cap 2 cycles).\n\n"
+)
 
 
 def _is_quiz_content(text: str) -> bool:
@@ -123,24 +154,30 @@ def _is_claims_content(text: str) -> bool:
 
 
 def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
-    """Return (needs_fact_check, needs_quiz_audit, needs_review, needs_grade) for Gate 2."""
+    """Return (needs_fact_check, needs_quiz_audit, needs_review, needs_grade, needs_review_session)."""
     if is_tutor:
-        # Review grading takes precedence: grading lines are short and would
+        # Review-session close (multi-concept summary) takes precedence; a single
+        # grade line stays on grade_audit. Grading lines are short and would
         # otherwise bypass via <120char or misclassify as fact_check.
+        if _is_review_session_content(content):
+            return False, False, False, False, True
         if _is_grade_content(content):
-            return False, False, False, True
+            return False, False, False, True, False
         needs_fact = _is_claims_content(content)
         needs_quiz = _is_quiz_content(content)
         if not needs_fact and not needs_quiz and len(content.strip()) > 120:
             needs_fact = True
-        return needs_fact, needs_quiz, False, False
+        return needs_fact, needs_quiz, False, False, False
     if is_clerk and len(content.strip()) > 80:
         # Clerk runs review sessions too (standalone reviews + lesson handoffs):
-        # grade turns need grade_audit, wiki-write turns need review.
+        # a session close needs review_session, grade turns need grade_audit,
+        # wiki-write turns need review.
+        if _is_review_session_content(content):
+            return False, False, False, False, True
         if _is_grade_content(content):
-            return False, False, False, True
-        return False, False, True, False
-    return False, False, False, False
+            return False, False, False, True, False
+        return False, False, True, False, False
+    return False, False, False, False, False
 
 
 def _normalize_for_binding(text: str) -> str:
@@ -470,6 +507,74 @@ def _check_review(data: dict, verd_text: str, content_str: str = "", repo_root: 
                     "the actual written content.",
                 )
     return True, "", ""
+
+
+def _check_review_session(data: dict, verd_text: str, content_str: str = "", repo_root: str = ""):
+    """Validate GATE:review_session envelope + verdicts + written-file grounding.
+
+    The reviewer audits the Clerk's end-of-review writes (Review notes, session
+    note, touched state rows) against the session transcript and the per-grade
+    verdicts. Scope is fenced: state drift the review did not write is the state
+    audit's job, never a blocking issue here.
+    """
+    if GATEReviewSessionEnvelope is not None:
+        try:
+            GATEReviewSessionEnvelope.model_validate(data)
+        except Exception as e:
+            return False, "MALFORMED_ENVELOPE", f"review_session envelope invalid: {e}"
+    if not data.get("concepts"):
+        return False, "MALFORMED_ENVELOPE", "GATE:review_session requires concepts[]"
+    if not data.get("transcript"):
+        return False, "MALFORMED_ENVELOPE", "GATE:review_session requires transcript (exact Q/A + verdicts)"
+    files = data.get("written_files")
+    if not files or not isinstance(files, list):
+        return False, "MALFORMED_ENVELOPE", "GATE:review_session requires written_files[]"
+    for f in files:
+        if not isinstance(f, dict) or not f.get("path") or not f.get("content"):
+            return False, "MALFORMED_ENVELOPE", "review_session written_files[] items need path and content"
+    # File grounding (generation-to-emission): the reviewed artifacts must match
+    # the files actually written. Files land via ops.py apply before the final
+    # message, so at outlet time they exist. Fail open when the repo is unreachable.
+    if repo_root:
+        missing, mismatch = [], []
+        for f in files:
+            p = Path(repo_root) / str(f.get("path"))
+            if not p.exists():
+                missing.append(str(f.get("path")))
+                continue
+            overlap = _wiki_matches_files(str(f.get("content") or ""), [p])
+            if overlap < 0.6:
+                mismatch.append(str(f.get("path")))
+        if missing:
+            return (
+                False,
+                "MALFORMED_ENVELOPE",
+                f"review_session: written file(s) not found on disk: {missing} — write them "
+                "before dispatching the audit.",
+            )
+        if mismatch:
+            return (
+                False,
+                "MALFORMED_ENVELOPE",
+                f"review_session: written file(s) do not match the audited content: {mismatch} — "
+                "the audit reviews what was written, not what was planned.",
+            )
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    if not verdict_data or "verdict" not in verdict_data:
+        return (
+            False,
+            "MALFORMED_VERDICTS",
+            "Review-session audit did not return {verdict: PASS|PASS_WITH_FLAGS|ISSUES}",
+        )
+    if verdict_data.get("verdict") not in ("PASS", "PASS_WITH_FLAGS", "ISSUES"):
+        return False, "MALFORMED_VERDICTS", f"Invalid review_session verdict: {verdict_data.get('verdict')}"
+    return True, "", ""
+
+
+def _review_session_flagged(verd_text: str) -> bool:
+    """True when the review-session audit returned ISSUES (banner + render)."""
+    verdict_data = extract_json_block(verd_text) if callable(extract_json_block) else None
+    return bool(verdict_data and verdict_data.get("verdict") == "ISSUES")
 
 
 def _parse_gate_envelope(task: str):
@@ -886,10 +991,12 @@ class Filter:
                     return body
 
             # Gate 2: Per-generation receipts — Tutor is multi-turn; Clerk single-turn
-            needs_fact_check, needs_quiz_audit, needs_review, needs_grade = _gate_needs(
+            needs_fact_check, needs_quiz_audit, needs_review, needs_grade, needs_review_session = _gate_needs(
                 content_str, is_tutor, is_clerk
             )
-            needs_receipt = any((needs_fact_check, needs_quiz_audit, needs_review, needs_grade))
+            needs_receipt = any(
+                (needs_fact_check, needs_quiz_audit, needs_review, needs_grade, needs_review_session)
+            )
 
             if not needs_receipt:
                 # Trivial messages don't need receipts, but don't reset turn-scoped cap here
@@ -908,6 +1015,8 @@ class Filter:
             found_quiz_audit = False
             found_review = False
             found_grade_audit = False
+            found_review_session = False
+            review_session_issues = False
             reject_code = "NO_DELEGATION"
             reject_detail = "No foreground GATE envelope dispatched via delegate_task for this generation. Each Tutor step needs its own fresh receipt (parent_message_id == this message)."
 
@@ -927,7 +1036,7 @@ class Filter:
                     data = _parse_gate_envelope(task)
                     if not data or not isinstance(data, dict) or "gate" not in data:
                         reject_code = "MALFORMED_ENVELOPE"
-                        reject_detail = "GATE envelope must be JSON with gate field (fact_check | review | quiz_audit | grade_audit)"
+                        reject_detail = "GATE envelope must be JSON with gate field (fact_check | review | review_session | quiz_audit | grade_audit)"
                         continue
                     gate_type = data.get("gate")
 
@@ -955,6 +1064,16 @@ class Filter:
                             reject_code, reject_detail = code, detail
                         continue
 
+                    if gate_type == "review_session" and (is_clerk or is_tutor):
+                        ok, code, detail = _check_review_session(data, verd_text, content_str, repo_root)
+                        if ok:
+                            found_review_session = True
+                            if _review_session_flagged(verd_text):
+                                review_session_issues = True
+                        else:
+                            reject_code, reject_detail = code, detail
+                        continue
+
                     if gate_type == "grade_audit" and (is_tutor or is_clerk):
                         ok, code, detail = _check_grade_audit(data, verd_text)
                         if ok:
@@ -970,8 +1089,19 @@ class Filter:
 
             # Evaluate per-generation requirement (Tutor only)
             if is_tutor:
+                # Review-session close: audit the end-of-review writes. On ISSUES
+                # after the fix loop the receipt is still valid — banner + render,
+                # never withhold (the pi dead-end lesson).
+                if needs_review_session:
+                    if found_review_session:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        if review_session_issues:
+                            assistant_msg["content"] = _REVIEW_SESSION_FLAGS_BANNER + content_str
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Review-session close requires a foreground GATE:review_session receipt for THIS generation — the end-of-review writes (Review notes, session note, touched state rows) must be audited against the transcript and grade verdicts. Dispatch review_session before presenting the summary."
                 # Review grading: strict — grade must carry a fresh grade_audit.
-                if needs_grade:
+                elif needs_grade:
                     if found_grade_audit:
                         await self._reset_gate_state(chat_id, __user__, __request__)
                         return body
@@ -1008,8 +1138,17 @@ class Filter:
                     # Non-trivial but heuristics missed — treat as needs fact_check
                     pass
             elif is_clerk:
-                # Clerk review sessions: grade turns need grade_audit, wiki writes need review.
-                if needs_grade:
+                # Clerk review sessions: a session close needs review_session,
+                # grade turns need grade_audit, wiki writes need review.
+                if needs_review_session:
+                    if found_review_session:
+                        await self._reset_gate_state(chat_id, __user__, __request__)
+                        if review_session_issues:
+                            assistant_msg["content"] = _REVIEW_SESSION_FLAGS_BANNER + content_str
+                        return body
+                    reject_code = "NO_DELEGATION"
+                    reject_detail = "Review-session close requires a foreground GATE:review_session receipt for THIS generation — the end-of-review writes (Review notes, session note, touched state rows) must be audited against the transcript and grade verdicts. Dispatch review_session before presenting the summary."
+                elif needs_grade:
                     if found_grade_audit:
                         await self._reset_gate_state(chat_id, __user__, __request__)
                         return body
@@ -1028,7 +1167,21 @@ class Filter:
                 assistant_msg["content"] = cap_msg or getattr(valves, "blocked_banner", "⛔ Withheld: not independently verified.")
                 return body
 
-            if is_tutor:
+            if needs_review_session:
+                detail_help = (
+                    f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
+                    f"Dispatch a foreground GATE:review_session envelope via delegate_task on the exact session "
+                    f"writes (generation-to-emission: write the notes/rows first, audit what was written, then summarize):\n"
+                    f"```json\n"
+                    f'{{\n  "gate": "review_session",\n  "concepts": ["Concept"],\n'
+                    f'  "transcript": "exact Q/A + learner answers + claimed verdicts",\n'
+                    f'  "grade_verdicts": [{{"concept": "Concept", "correct_verdict": "pass"}}],\n'
+                    f'  "written_files": [{{"path": "Learning System/Reviews/Review — Concept — YYYY-MM-DD.md", "content": "exact written text"}}],\n'
+                    f'  "state_rows": "exact touched Active Concepts / Mistakes / Attempts text"\n}}\n```\n'
+                    f"The written files must exist and match the audited content; scope is fenced — state drift the "
+                    f"review did not write is context_notes, never a blocking issue."
+                )
+            elif is_tutor:
                 detail_help = (
                     f"⛔ BLOCKED ({reject_code}) — {reject_detail}\n\n"
                     f"Learning Tutor is multi-turn: **each generation** needs its own fresh GATE receipt before you emit it (parent_message_id must equal this message's id). Do NOT reuse an upfront Plan batch for later Teach steps.\n\n"

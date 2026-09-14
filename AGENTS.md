@@ -81,7 +81,7 @@ infra/
 Skills/
   learning-system/SKILL.md      review + ingest flows (the "manager" skill)
   learning-teach/SKILL.md       probe → plan → teach loop + fact_check/quiz_audit
-  learning-review/SKILL.md      ingest quality gate (review-gate) orchestration
+  learning-review/SKILL.md      ingest quality gate (review-gate) + review-session close gate orchestration
   llm-wiki/SKILL.md             wiki build/maintain rules
   learning-review/openwebui/    gate_pipe.py + gate_schema.py (the enforcement).
                                  Legacy gate Tools were archived 2026-09-08 to
@@ -140,6 +140,11 @@ renders without valid **foreground** `delegate_task` receipts:
   foreground (`background:false`), completed, and whose verdict JSON covers every
   `claims[].id`. Block codes: `NO_SCOUT_CONTEXT`, `NO_DELEGATION`,
   `MALFORMED_ENVELOPE`, `MALFORMED_VERDICTS`. Retry cap 2/turn → `⛔ Withheld`.
+- **Clerk review-session close**: requires a `GATE:review_session` envelope
+  (`concepts/transcript/grade_verdicts/written_files[]/state_rows`) whose `written_files[].path`
+  exists on disk and matches its `content`. Scope is fenced (non-session state drift →
+  `context_notes`). An `ISSUES` verdict **renders with a `⚠️ REVIEW FLAGS SURFACED` banner**
+  rather than being withheld — a deliberate anti-dead-end choice mirroring the pi gate.
 - Envelopes are validated by `gate_schema.py` (Pydantic). The verifier *wording*
   is fixed in global `subagents.system_prompt` (keyed `GATE:`) — send **data only**,
   never prompt text. Editing that prompt weakens enforcement; don't.

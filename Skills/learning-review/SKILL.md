@@ -1,6 +1,6 @@
 ---
 name: learning-review
-description: Quality-gate learning system ingest output before it is finalized — wherever it originates. Runs after every standalone ingest session AND at the end of any teaching lesson that produced wiki pages or Active Concepts rows: a review-gate subagent task (running on the calling preset's own base model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user.
+description: Quality-gate learning system output before it is finalized — wherever it originates. Runs after every standalone ingest session, at the end of any teaching lesson that produced wiki pages or Active Concepts rows (review-gate on wiki/rows), AND at the close of a standalone /review session (review-session gate on the end-of-review writes). A review-gate subagent task (running on the calling preset's own base model) flags accuracy, correctness, clarity, and completeness issues with severity; the implementer fixes them; max 2 cycles, then remaining flags surface to the user.
 ---
 
 # Learning System Review Gate
@@ -95,6 +95,20 @@ Tell the user concisely:
 - Never skip the gates silently. If a gate can't run (e.g. the subagent task fails), say so and surface what was unverified — the Pipe's `⛔ BLOCKED` is the enforcement, not a silent skip.
 - The Pipe caps retries at 2 per user turn; after cap the Clerk's output shows `⛔ Withheld` and requires a manual fix.
 - Never run this gate on lesson files, learning records, or glossary promotions. Those use foreground `GATE:fact_check` envelopes via `learning-teach`, not this gate; the two verification paths are deliberately separate.
+
+## Review-session gate (standalone `/review` close)
+
+A standalone review session writes durable artifacts that no other gate covers: one `Reviews/Review — [Concept] — [Date].md` per graded concept, the `Sessions/Session — …md` note, touched `📚 Active Concepts.md` rows (status/`last_reviewed`/`next_review`/`Last Q Type`), `🧯 Mistakes.md` rows, and `Attempts.json` transitions. Per-grade `GATE:grade_audit` validates each verdict as it is presented; this gate validates the **writes that the session persists** against the transcript and those verdicts.
+
+Dispatch ONE **foreground** `GATE:review_session` envelope via `delegate_task` (`background:false`) at the close of the review, on the exact content written (generation-to-emission — write the notes/rows first, audit what was written, never a summary):
+
+```json
+{"gate":"review_session","concepts":["Concept A","Concept B"],"transcript":"exact Q/A + learner answers + claimed verdicts","grade_verdicts":[{"concept":"Concept A","correct_verdict":"pass"},{"concept":"Concept B","correct_verdict":"fail"}],"written_files":[{"path":"Learning System/Reviews/Review — Concept A — YYYY-MM-DD.md","content":"exact written text"},{"path":"Learning System/Sessions/Session — … — YYYY-MM-DD.md","content":"exact written text"}],"state_rows":"exact touched Active Concepts / Mistakes / Attempts text","pass_number":1}
+```
+
+The Pipe (`gate_pipe.py`) checks the envelope, that every `written_files[].path` exists on disk and matches its `content`, and that the verdict parses as `PASS|PASS_WITH_FLAGS|ISSUES`. Scope is fenced: state drift the review did **not** write (MISSION/CURRICULUM/Learning Profile/Learner History/wiki/index/log/git) is `context_notes`, never an `issue` — the state audit owns it. Save the verdict to `Learning System/Reviews/Session Audits/<concepts>-pass<N>-<date>.json`.
+
+Fix loop: on high/medium issues fix and re-dispatch with `pass_number: 2` and the updated content; **hard cap 2 cycles**. If high/medium issues remain after cycle 2, the Pipe **renders the summary with a `⚠️ REVIEW FLAGS SURFACED` banner** (never a third pass, never a withhold — this is deliberate: a withheld final message dead-ends the session and forces a manual poke, which is the pi failure this design avoids). Surface the remaining flags to the user.
 
 ## Manual trigger
 

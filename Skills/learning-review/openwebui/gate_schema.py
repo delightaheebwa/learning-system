@@ -80,6 +80,44 @@ class GATEReviewVerdict(BaseModel):  # type: ignore
 
 
 # ---------------------------------------------------------------------------
+# Review-session envelope (Clerk review flow → subagent)
+# ---------------------------------------------------------------------------
+
+
+class GATEReviewSessionFile(BaseModel):  # type: ignore
+    path: str = Field(description="Repo-relative path of a review artifact written this session")
+    content: str = Field(min_length=1, description="Exact written text of this artifact")
+
+
+class GATEReviewSessionEnvelope(BaseModel):  # type: ignore
+    gate: Literal["review_session"] = Field(default="review_session")
+    concepts: List[str] = Field(min_length=1, description="Concepts reviewed this session")
+    transcript: str = Field(
+        min_length=1,
+        description="Exact Q/A + learner answers + claimed verdicts for this session (generation-to-emission)",
+    )
+    grade_verdicts: List[dict] = Field(
+        default_factory=list,
+        description="One per concept: {concept, correct_verdict} from the grade-audit receipts",
+    )
+    written_files: List[GATEReviewSessionFile] = Field(
+        min_length=1,
+        description="Review notes / session note / touched state rows written this session (path + exact text)",
+    )
+    state_rows: Optional[str] = Field(
+        default=None,
+        description="Exact touched Active Concepts / Mistakes / Attempts text (optional)",
+    )
+    pass_number: int = Field(default=1, ge=1, le=2)
+
+
+class GATEReviewSessionVerdict(BaseModel):  # type: ignore
+    verdict: Literal["PASS", "PASS_WITH_FLAGS", "ISSUES"]
+    issues: List[dict] = Field(default_factory=list)
+    context_notes: List[dict] = Field(default_factory=list)
+
+
+# ---------------------------------------------------------------------------
 # Quiz-audit envelope (Tutor → subagent, probe & end-of-lesson quiz)
 # ---------------------------------------------------------------------------
 
@@ -133,7 +171,7 @@ class GATEGradeAuditVerdict(BaseModel):  # type: ignore
 # Legacy helpers: validate sentinel text and JSON extraction (for migration)
 # ---------------------------------------------------------------------------
 
-_ENVELOPE_SENTINEL_RE = re.compile(r"^\s*GATE:(fact_check|review|quiz_audit|grade_audit)\b", re.MULTILINE)
+_ENVELOPE_SENTINEL_RE = re.compile(r"^\s*GATE:(fact_check|review|review_session|quiz_audit|grade_audit)\b", re.MULTILINE)
 
 
 def detect_gate_type(task_text: str) -> Optional[str]:
