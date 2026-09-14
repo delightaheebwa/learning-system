@@ -63,13 +63,13 @@ KL(Q∥P) = 1.0 − 0.811                     ≈ 0.189 bits
 
 Misconception to avoid: calling the floor "the model's own entropy H(P)". Here H(P) = 1.0 bit is the *model's* entropy, not the floor; the floor is the truth's 0.811 bits. The floor is set by the data, not by the model. (Tracked in `Core/🧯 Mistakes.md`, 2026-09-12 row; re-sealed on exit-ticket E3 with a different coin: Q = (0.9, 0.1), P = (0.25, 0.75) → H(P,Q) = 1.84 bits, floor H(Q) ≈ 0.47 bits, not the near-miss H(P) ≈ 0.81 bits.)
 
-## KL bridge — preview only (CP4 was emitted, never practiced, so it is not banked)
+## KL bridge — [[KL Divergence]]
 
 KL(Q∥P) = H(P,Q) − H(Q) ≥ 0    (Olah convention: weights from Q)
 
 Equivalently H(P,Q) = H(Q) + KL(Q∥P) — cross-entropy = the data's entropy + the model's excess. Under the Rohit/ML letters (P = truth) the identical identity reads KL(P∥Q) = H(P,Q) − H(P).
 
-Coin numbers above: 1.0 − 0.811 = 0.189 bits. KL is zero iff the two distributions agree, and both KL and cross-entropy are directional: swapping which distribution supplies the weights changes the value (for this coin pair, cross-entropy with the letters swapped gives 1.208 bits). CP4 (KL) was emitted once in this lesson (2026-09-12) but never answered or practiced, so KL is **not banked as done** — this page carries the bridge only.
+Coin numbers above: 1.0 − 0.811 = 0.189 bits. KL is zero iff the two distributions agree, and both KL and cross-entropy are directional: swapping which distribution supplies the weights changes the value (for this coin pair the reversed KL is 0.208 bits, and cross-entropy with the letters swapped is 1.208 bits). CP4 (KL) was practiced and graded pass on 2026-09-14, so this identity is banked — [[KL Divergence]] carries the full treatment.
 
 ## Units
 
@@ -84,6 +84,7 @@ log base 2 → bits; natural log → nats (1 nat ≈ 1.4427 bits, so 0.811 bits 
 - [[Entropy (Average Surprise)]]
 - [[Information Content (Surprise)]]
 - [[Negative Log-Likelihood (NLL)]]
+- [[KL Divergence]]
 - [[Softmax Function]]
 - [[Loss Functions (PyTorch)]]
 

@@ -227,6 +227,7 @@
 - [[Optimizer Selection (Rohit heuristic)]] — Adam → SGD+M → AdamW; race-result caveat
 - [[Information Content (Surprise)]] — I(x)=−log p(x); rare events surprise more, certain events zero
 - [[Entropy (Average Surprise)]] — H(P)=expected surprise; max at uniform, 0 at deterministic
+- [[KL Divergence]] — KL(Q∥P)=H(P,Q)−H(Q)=Σ q·log₂(q/p); ≥0, 0 iff P=Q, not symmetric; ∞ when the model zeroes a data event (smoothing)
 - [[Bayes rule]]
 - [[Covariance and correlation]]
 - [[Euler number e]]

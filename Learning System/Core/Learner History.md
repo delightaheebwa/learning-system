@@ -13,14 +13,13 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 306 concepts (76 with attempt history + 230 paused) — aiefs 26 · swe 67 · aie 213 · solid 5 · neutral 291 · fuzzy 10
+Totals: 307 concepts (77 with attempt history + 230 paused) — aiefs 27 · swe 67 · aie 213 · solid 5 · neutral 293 · fuzzy 9
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
 | 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-12 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-12.md |
-| Cross-Entropy from NLL | concept | fuzzy | 2026-09-14 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
 | PMF vs PDF | concept | fuzzy | 2026-09-11 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
@@ -29,9 +28,11 @@ Totals: 306 concepts (76 with attempt history + 230 paused) — aiefs 26 · swe 
 | Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
+| Cross-Entropy from NLL | concept | neutral | 2026-09-14 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
+| KL Divergence | concept | neutral | 2026-09-14 | last reviewed 2026-09-14 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Learning-rate Schedules (four types) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | Likelihood | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
