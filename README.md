@@ -51,8 +51,7 @@ see `OPENWEBUI.md`. The installer only applies model values on a **first
 install** (or when empty); re-running it preserves your UI-chosen models.
 See `OPENWEBUI.md` for the full walkthrough, the system prompt, and the prompt texts.
 
-The repo must also be present in the Open Terminal workspace at
-`/home/user/learning-system` (the model's file workspace) with git push wired —
+The repo must also be present in the Open Terminal workspace (the model's file workspace) with git push wired —
 see `OPENWEBUI.md` and `Learning System/AGENTS.md`.
 
 ## Principles

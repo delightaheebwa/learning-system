@@ -9,7 +9,7 @@ description: Build and maintain a Karpathy-style personal LLM wiki from notes, s
 
 Turn raw sources into a persistent markdown wiki. Keep the source layer immutable, the wiki layer curated, and the index/log updated on every ingest.
 
-## Standard layout (repo root: `/home/user/learning-system`)
+## Standard layout (repo root: the checkout)
 
 - `Knowledge Wiki/raw/sources/` for source notes and clipped text
 - `Knowledge Wiki/raw/assets/` for screenshots and other attachments

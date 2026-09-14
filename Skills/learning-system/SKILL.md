@@ -1,11 +1,11 @@
 ---
 name: learning-system
-description: Run the spaced-repetition learning system in Open WebUI. Triggers — "review" (review the AIEFS track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files from the repo at /home/user/learning-system, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes. Active roadmap is AI Engineering from Scratch (Rohit); SWE is archived.
+description: Run the spaced-repetition learning system in Open WebUI. Triggers — "review" (review the AIEFS track), "ingest" (ingest new content), "teach me X"/"learn"/"study" (teaching loop, delegated to the learning-teach skill), "lesson"/"continue" (next curriculum lesson, delegated to learning-teach). Loads the Core state files from the repo checkout, executes the review/ingest/teach flow, and persists session notes, wiki updates, and Active Concepts changes. Active roadmap is AI Engineering from Scratch (Rohit); SWE is archived.
 ---
 
 # Learning System
 
-The active learning system, running in Open WebUI against the repo at `/home/user/learning-system` (Open Terminal workspace). Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
+The active learning system, running in Open WebUI against the repo checkout (Open Terminal workspace). Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
 
 **Trigger routing (read first):**
 - **"review" → review flow** on the AIEFS track (SWE `swe` is archived — redirect to AIEFS if requested). **Run reviews on the Clerk preset** (standalone reviews, standalone ingests, and lesson-handoff ingests are all Clerk's job).
@@ -25,7 +25,7 @@ Sessions die when the running conversation outgrows the model's context window: 
   Spec: `{"writes":[{"path","content"}],"appends":[{path,content}],"replaces":[{"path","find","replace_with"}]}`.
 - Target **≤12 tool calls per flow**. Never re-read a file already in context. Never dump whole files you only need one row of.
 
-## State files (repo root: `/home/user/learning-system`)
+## State files (repo root: the checkout — `LEARNING_SYSTEM_ROOT` or auto-detected via `Learning System/Core`)
 
 - `Learning System/Core/💡 Learning Profile.md` — learner preferences. Read at session start.
 - `Learning System/Core/📚 Active Concepts.md` — per-track concept rows (now **aiefs** active; swe archived 2026-09-01) with `Type` column (`memory | concept | procedure | design`). Type drives scheduler intervals. Grep/range only the needed track — never the whole file; `📦 Concept Archive.md` is strictly out of scope.
@@ -95,10 +95,10 @@ If the source is an image (handwritten notes, photo of a page), transcribe it ve
 
 ## Open WebUI adaptation
 
-- **Source of truth:** this GitHub repo. Load state files from the repo (`/home/user/learning-system` — `host.docker.internal:3000` from WSL when Docker Desktop runs Windows-side, separate from WSL; `/home/user/learning-system` in container vs `/home/delinux/learning-system` in WSL) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
+- **Source of truth:** this GitHub repo. Load state files from the repo checkout (container workspace for the model vs the WSL checkout on the host — see OPENWEBUI.md / Learning System/AGENTS.md §Repo location; `host.docker.internal:3000` from WSL when Docker Desktop runs Windows-side) before every flow; keep Open WebUI mirror content in sync with the repo, never the other way around.
 - **Pipeline presets:** `Scout` → `Tutor` → `Clerk` in the same chat (switch preset per message). Scout writes the ephemeral digest (now includes `rohit_hash` + `external_refs` + `lang_recommendation` + `roadmap_sha`; adaptive re-fetch, Further Reading synthesis; `📦 Concept Archive.md` strictly out of scope); Tutor teaches; Clerk ingests. See `OPENWEBUI.md`.
 - **Gate Pipe:** `Skills/learning-review/openwebui/gate_pipe.py` (Filter, inlet/outlet) blocks Tutor/Clerk output without valid foreground `GATE:*` receipts and enforces Scout digest for new lessons (7-day TTL). Fixed verifier wording lives in global `subagents.system_prompt` — send data only.
 - **Review gate (Clerk/Deputy):** dispatch ONE foreground `GATE:review` envelope on the exact wiki content you wrote (post-fix text on re-runs — generation-to-emission, never a summary). Applies to handoffs from Tutor and standalone `/ingest`. The Pipe checks the written files match the reviewed content.
 - **Teaching verification (Tutor):** draft each step internally, then batch its load-bearing claims + the draft as `rendered_content` into foreground `GATE:fact_check` envelopes (cite both `rohit_source` and `external_refs`) and fold verdicts before emitting; audit question batches via `GATE:quiz_audit` envelopes before showing. Build language follows the lesson's Rohit header.
 - **Review grading (Clerk, review flow):** verify each pass/fail with a foreground `GATE:grade_audit` envelope (concept/question/learner_answer/claimed_verdict/source_excerpt) before presenting the grade; fold the verdict in before `ops.py attempt`.
-- **After writes:** commit and push per `Learning System/AGENTS.md` (paths: `/home/user/learning-system`).
+- **After writes:** commit and push per `Learning System/AGENTS.md`.

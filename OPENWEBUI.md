@@ -1,7 +1,7 @@
 # Open WebUI Setup & Operating Guide
 
 This file is the canonical guide for running the learning system in **Open WebUI**
-using native features. The repo at `/home/user/learning-system` (Open Terminal
+using native features. The repo checkout (Open Terminal
 workspace) is the source of truth for all state; Open WebUI holds the control
 layer (skills, subagents, model presets, prompts, gate Pipe) that routes triggers.
 
@@ -25,7 +25,7 @@ layer (skills, subagents, model presets, prompts, gate Pipe) that routes trigger
 | Slash-command triggers | **Prompts** (`/review`, `/ingest`, `/teach`, `/lesson`, `/continue`) — `/swe` is legacy (SWE archived; redirects to AIEFS) | — |
 | Deterministic gate | **Gate Pipe** Filter (`gate_pipe.py` + `gate_schema.py`) — outlet, priority 10, bound to Tutor + Clerk | Function Valves (priority, max_retries, digest_ttl_days) |
 | Fixed verifier prompts | Global **subagents.system_prompt** (keyed `GATE:fact_check` / `GATE:quiz_audit` / `GATE:review` / `GATE:grade_audit`) | Settings → Subagents |
-| Repo + git | **Open Terminal** sandbox `/home/user/learning-system` (container) vs `/home/delinux/learning-system` (WSL). Docker Desktop publishes the UI on host port 3000 — reach it as `http://localhost:3000` from Windows, WSL, and browsers; only *container-to-container* traffic uses service names / `host.docker.internal` | — |
+| Repo + git | **Open Terminal** sandbox checkout (container) vs the WSL checkout on the host — different `$HOME`s, same repo. Docker Desktop publishes the UI on host port 3000 — reach it as `http://localhost:3000` from Windows, WSL, and browsers; only *container-to-container* traffic uses service names / `host.docker.internal` | — |
 | Ephemeral Scout digest | `Learning System/.tmp/context-<chat_id>-<slug>.json` (gitignored, 7-day TTL) — now includes `rohit_hash` + `external_refs` (each with `excerpt` ~500 chars + `takeaways` + `adds_vs_rohit`) + top-level `synthesis` + `lang_recommendation` + `roadmap_sha` + `fetched_at`; adaptive re-fetch; `📦 Concept Archive.md` strictly out of scope | — |
 | Web search / grounding | **Web Search** (SearXNG) — Scout uses it to fetch `docs/en.md` + Further Reading external refs live (Rohit is a source, not the source) | — |
 
@@ -60,7 +60,7 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 3. **Subagent system prompt** — sets global `subagents.system_prompt` to the `GATE:*` templates.
 4. **Workspace → Models** — creates **Scout**, **Learning Tutor**, **Clerk** presets (each with its system prompt, capabilities, and skill bindings; Tutor/Clerk have `filterIds: [gate_pipe]`).
 5. **Workspace → Prompts** — creates the 7 slash commands below.
-6. **Open Terminal** — repo at `/home/user/learning-system`; git push is wired.
+6. **Open Terminal** — repo checkout present; git push is wired.
 
 *(Legacy, dormant: the `fact_check` / `review_gate` / `quiz_gate` Tools and their setup. Do not bind them.)*
 
@@ -70,7 +70,7 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 - **Learning Tutor:** assume Scout digest (now includes per-source `excerpt`/`takeaways`/`adds_vs_rohit` + `synthesis` + `rohit_hash`+`external_refs`+`lang`+`roadmap_sha`) / session context or existing `Lessons/` file; do not gather context or write wiki pages; teach every checkpoint as Rohit framing → external angle → synthesis; verify claims via foreground `GATE:fact_check` (`source_urls`: Rohit + external refs, with `reference_excerpt`) before presenting; respect per-lesson language (Python/TS/Rust); handoff to Clerk via `Pending Ingest.json` at lesson end. Order: Mission 0 Catch-Up (in-progress) → Phase 1 L07.
 - **Clerk:** reads `Pending Ingest.json`, writes wiki/Active Concepts, dispatches `GATE:review`, applies fixes, cleans digest and marker, commits.
 
-**Environment note (Docker Desktop Windows-side, separate from WSL):** the UI is at `http://localhost:3000` from Windows and WSL alike (verified: the audit script and chat pulls run from WSL over localhost). Container-to-container calls use `host.docker.internal` / bridge IPs (see `infra/ACCESS.md`); workspace repo at `/home/user/learning-system` (container) vs `/home/delinux/learning-system` (WSL). See `Learning System/MISSION.md`.
+**Environment note (Docker Desktop Windows-side, separate from WSL):** the UI is at `http://localhost:3000` from Windows and WSL alike (verified: the audit script and chat pulls run from WSL over localhost). Container-to-container calls use `host.docker.internal` / bridge IPs (see `infra/ACCESS.md`); workspace repo checkout in-container vs the WSL checkout on the host. See `Learning System/MISSION.md`.
 
 ### Prompts
 

@@ -89,7 +89,7 @@ The subagent fetches the source itself; Pipe substring-checks the reference. Sub
 
 Subagent returns `{"issues":[{"id":"q1","severity":"high|medium|low","problem":"...","suggested_fix":"..."}],"verdict":"PASS|ISSUES"}`. Mechanical pre-checks (done BEFORE dispatch): each MCQ has 4 options, correct_index in range, correct positions not all in one slot.
 
-## Scope & state (repo root: `/home/user/learning-system`)
+## Scope & state (repo root: the checkout — `LEARNING_SYSTEM_ROOT` or auto-detected via `Learning System/Core`)
 
 - Mission: `Learning System/MISSION.md` (AIEFS — Rohit; Mission 0 catch-up done, P1 L07 done — resume P1 L08 Optimization).
 - Curriculum: `Learning System/CURRICULUM.md` — the authoritative "what's next" map (Rohit 20 phases + Mission 0 Catch-Up; lessons sequential; full map navigational, not contractual; `📦 Concept Archive.md` strictly out of scope). **Current position (2026-09-08): Phase 1 L08 — Optimization — in-progress (paused Checkpoint 2/5); resume it.**

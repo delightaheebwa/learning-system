@@ -168,9 +168,9 @@ ingest. The repo copy is authoritative over any Open WebUI mirror.
 ## Known gotchas (learned the hard way)
 
 1. **`ops.py` path mismatch (FIXED 2026-08).** Skills previously instructed the
-   LLM to call `/home/user/.ops/ops.py`, but the file lives at `scripts/ops.py`,
-   and `ops.py` hardcoded `ROOT=/home/user/learning-system` (wrong for the local
-   `/home/delinux/learning-system` checkout). Both fixed: skill invocations now
+   LLM to call a container-absolute `.ops/ops.py` path, but the file lives at `scripts/ops.py`,
+   and `ops.py` hardcoded a container-absolute `ROOT=.../learning-system` (wrong for the local
+   checkout on the host). Both fixed: skill invocations now
    call `python3 scripts/ops.py` and `ops.py` auto-detects its root via
    `Learning System/Core` (honors `LEARNING_SYSTEM_ROOT`). If reverting, restore
    the auto-detect + `scripts/ops.py` invocation.
@@ -205,7 +205,7 @@ land in this order or drift appears:
    Never hand-edit skills/prompts/presets in the UI (that edits webui.db only
    and will be flagged as drift or silently overwritten).
 4. **Audit**: `python3 scripts/audit_openwebui.py` must print "in sync".
-5. **Runtime checkout** (`open-terminal`): `git pull` (or re-clone on a fresh
+5. **Runtime checkout** (`open-terminal` workspace — see `infra/ACCESS.md`): `git pull` (or re-clone on a fresh
    restore) so the container's repo matches GitHub.
 6. **Commit** with the tracked-dirs rule above; re-run `learner_history.py`
    after any Attempts/Mistakes/Reviews change.

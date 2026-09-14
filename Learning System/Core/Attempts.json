@@ -1485,6 +1485,17 @@
       "last_reviewed": "2026-09-14",
       "next_review": "2026-09-21",
       "feynman": null
+    },
+    "Learning Rate": {
+      "type": "concept",
+      "attempts": [],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-08",
+      "next_review": "2026-09-11",
+      "feynman": null,
+      "note": "Backfilled 2026-09-14: row reviewed 2026-09-08 (L08 session) but never logged in Attempts.json; no attempts fabricated — first logged attempt will start the interval state machine."
     }
   },
   "meta": {
