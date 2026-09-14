@@ -11,7 +11,7 @@ The learning loop (OpenWebUI: Scout → Tutor → Clerk) adapts to upstream chan
 ## Current Phase
 
 - **Catch-Up (Mission 0):** 80/20 reactivation of Phase 0 + Phase 1 L01–L06 — **done** (2026-09-05 retrieval + Feynman pass).
-- **Position:** Phase 1 L07 — Bayes' Theorem — **done** (2026-09-05). Phase 1 L08 — Optimization (Gradient Descent Family) — **done** (2026-09-10; cumulative quiz + Feynman pass). Phase 1 L09 — Information Theory (Entropy, KL Divergence) — **in-progress (paused at Checkpoint 3/6, 2026-09-12)**; resume at CP4 — KL divergence (CP4 idea block re-emitted 2026-09-14, fact-check PASS 5/5 — opens with the KL ≥ 0 → H(P,Q) ≥ H(data) re-seal; next: invite questions, then issue CP4 practice. CP4 was taught once but never practiced). See `CURRICULUM.md`.
+- **Position:** Phase 1 L07 — Bayes' Theorem — **done** (2026-09-05). Phase 1 L08 — Optimization (Gradient Descent Family) — **done** (2026-09-10; cumulative quiz + Feynman pass). Phase 1 L09 — Information Theory (Entropy, KL Divergence) — **in-progress (Checkpoint 4/6, 2026-09-14)**: CP4 idea + practice done and graded pass (grade-audit agreed; attempts 'KL Divergence' + 'Cross-Entropy from NLL', next_review 2026-09-21); at CP4 Pause #2 — resume at CP5 mutual information. See `CURRICULUM.md`.
 - **Full map:** Missions 1–21 = Phases 0–19 (20 phases). Present for navigation; not a contract to finish end-to-end — after each phase, decide to go deeper / branch / build a learning system around a topic.
 
 ## Success looks like

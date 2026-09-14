@@ -70,3 +70,5 @@ CP3 warm-up issued (quiz-audit PASS_WITH_FLAGS after 1 fix cycle). Results: W1 H
 Floor-direction REGRESSION logged: own Mistakes row dated 2026-09-14 (active, due 2026-09-17); attempt logged under canonical key Cross-Entropy from NLL (fail, next_review 2026-09-17; alias key merged away per 09-12 ingest). Active Concepts row updated (last_reviewed 09-14, next_review 09-17 + regression note).
 
 Next: CP4 (KL) — idea block re-emitted 2026-09-14 (fact-check PASS 5/5, opens with the KL ≥ 0 → H(P,Q) ≥ H(data) re-seal); practice not yet issued. CP4 was NOT practiced.
+
+CP4 (2026-09-14, cont.): asymmetry clarification fact-checked 4/4 (learner's Laplace-smoothing wonder-out answer confirmed correct; label smoothing parked for CP6 — log as Open Question/Tangent: Laplace ↔ label smoothing link). Practice issued (quiz-audit PASS, cycle 2) and graded: P1 a/b/c = 1.000 / 0.469 / 0.531 bits all sure ✅ · P2 C sure ✅ — grade-audit PASS (correct_verdict pass). Attempts: "KL Divergence" pass (interval_index 1, next_review 2026-09-21) · "Cross-Entropy from NLL" pass (next_review 2026-09-21). At CP4 Pause #2 — next: on "no questions" → CP5 (mutual information).
