@@ -28,4 +28,4 @@ Python (Rohit `Language: Python`)
 
 ## Floor misconception (second tracked, 2026-09-12)
 "Floor = model's entropy" — answered 1 bit (model H(P)) instead of H(Q) ≈ 0.811 for Q=(0.75,0.25). Corrected same session; re-sealed on exit ticket E3 (picked H(Q)≈0.47 over near-miss H(P)≈0.81 on a new coin). Mistakes row → review, retries=1.
-⚠️ REGRESSED 2026-09-14 resume warm-up: W4 picked the REVERSED inequality H(P,Q) ≤ H(Q) (tag sure) while W2 identified floor=H(Q)≈0.881 correctly — floor's identity known, direction re-inverted. Own Mistakes row dated 2026-09-14 (active, due 2026-09-17). Attempt logged under canonical key Cross-Entropy from NLL (fail, then same-day re-seal pass; next_review 2026-09-21).
+⚠️ REGRESSED 2026-09-14 resume warm-up: W4 picked the REVERSED inequality H(P,Q) ≤ H(Q) (tag sure) while W2 identified floor=H(Q)≈0.881 correctly — floor's identity known, direction re-inverted. Own Mistakes row dated 2026-09-14 (active, due 2026-09-17). Attempt logged under canonical key Cross-Entropy from NLL (fail, then same-day CP4-practice pass — NOT a floor-direction retrieval re-test; next_review 2026-09-21).
