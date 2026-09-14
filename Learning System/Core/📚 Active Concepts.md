@@ -19,7 +19,7 @@
 ## Live System Notes
 
 - Use **"review"** to trigger AIEFS track reviews (SWE `swe` is archived — redirects to AIEFS)
-- Use **"lesson"/"continue"** to run the next AIEFS curriculum lesson: Mission 0 Catch-Up is **done**; Phase 1 L07 (Bayes) **done**; Phase 1 L08 Optimization **done** (2026-09-10); **resume Phase 1 L09 — Information Theory at CP4 Pause #2 (Checkpoint 4/6; CP4 done, graded pass 2026-09-14) → CP5 — mutual information**. See `Learning System/CURRICULUM.md`; delegated to `learning-teach` — probe → plan → teach, live fact-checking.
+- Use **"lesson"/"continue"** to run the next AIEFS curriculum lesson: Mission 0 Catch-Up is **done**; Phase 1 L07 (Bayes) **done**; Phase 1 L08 Optimization **done** (2026-09-10); **resume Phase 1 L09 — Information Theory at CP5 — mutual information (paused at Checkpoint 4/6, 2026-09-14; CP4 done graded pass)**. See `Learning System/CURRICULUM.md`; delegated to `learning-teach` — probe → plan → teach, live fact-checking.
 - Each trigger runs a separate review session limited to that track's due concepts (cap of 5 per session)
 - `Sessions/` is the session history for the active learning system
 - `Reviews/` stores spaced-repetition review notes
@@ -39,7 +39,7 @@
 > Archived 2026-09-01: 43 concepts paused. No active SWE rows.
 ## Mastery Summary
 
-- **AIEFS (AI Engineering from Scratch):** Mission 0 catch-up done; P1 L07 done; P1 L08 Optimization **done** (2026-09-10); P1 L09 Information Theory in-progress (Checkpoint 4/6; CP4 done graded pass 09-14, at Pause #2 — resume CP5 mutual information) — **28 live concepts** (all `developing`; counted from the `aiefs` rows of the table below on 2026-09-12: Mission 0 Catch-Up section 6 · Bayes & Statistical Thinking section 20 — of which 12 are L07 Bayes and 8 are L08 Optimization — · Information Theory section 2; total 6 + 20 + 2 = 28. Supersedes the stale "21 live concepts" figure.)
+- **AIEFS (AI Engineering from Scratch):** Mission 0 catch-up done; P1 L07 done; P1 L08 Optimization **done** (2026-09-10); P1 L09 Information Theory paused at Checkpoint 4/6 (09-14; CP4 done graded pass — resume CP5 mutual information) — **28 live concepts** (all `developing`; counted from the `aiefs` rows of the table below on 2026-09-12: Mission 0 Catch-Up section 6 · Bayes & Statistical Thinking section 20 — of which 12 are L07 Bayes and 8 are L08 Optimization — · Information Theory section 2; total 6 + 20 + 2 = 28. Supersedes the stale "21 live concepts" figure.)
 - **Not Started:** 20 phases (Phases 0–19) navigational; after each phase decide to go deeper / branch.
 - **Paused:** ~146 (103 prior + 43 SWE archived 2026-09-01) — see `📦 Concept Archive.md` (SWE visibility strictly out of scope)
 - **Consolidated:** 0
@@ -89,7 +89,7 @@
 | Learning-rate Schedules (four types) | aiefs | concept | developing | Rohit P1 L08 + Ruder + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-09-17 | definitional | Read η-vs-t curves: early phase (only warmup ramps up) + end behavior (only cosine has nonzero floor η_min; exponential→0 no floor; step=staircase). 0.999 halves η every ~700 steps. |
 | Optimizer Selection (Rohit heuristic) | aiefs | concept | developing | Rohit P1 L08 + handwritten notes 2026-09-10 (Python) | 2026-09-10 | 2026-10-10 | definitional | Adam 0.001 default → SGD+M 0.01/0.9 for best final accuracy → AdamW for transformers; always schedule long runs. Rosenbrock race is an artifact. |
 
-### Information Theory — Entropy, KL Divergence (Phase 1 Lesson 09) — in-progress (Checkpoint 4/6; CP4 done, at Pause #2)
+### Information Theory — Entropy, KL Divergence (Phase 1 Lesson 09) — in-progress (paused 4/6; CP4 done, resume CP5)
 
 | Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |
 |---------|-------|------|--------|--------|---------------|-------------|-------------|---------------|
