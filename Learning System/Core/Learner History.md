@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-14)
+# Learner History — compact tutor context (generated 2026-09-15)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -20,7 +20,7 @@ Totals: 308 concepts (78 with attempt history + 230 paused) — aiefs 29 · swe 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
 | 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-12 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-12.md |
-| PMF vs PDF | concept | fuzzy | 2026-09-11 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-05.md |
+| MLE vs MAP Estimation | concept | fuzzy | 2026-09-15 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
@@ -28,21 +28,21 @@ Totals: 308 concepts (78 with attempt history + 230 paused) — aiefs 29 · swe 
 | Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Conjugate Priors | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-08.md |
-| Cosine Similarity | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-08.md |
+| Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-14.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-14 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
 | KL Divergence | concept | neutral | 2026-09-14 | last reviewed 2026-09-14 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
-| Learning Rate | concept | neutral | 2026-09-08 | last reviewed 2026-09-08 |
+| Learning Rate | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Learning Rate — 2026-09-14.md |
 | Learning-rate Schedules (four types) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | Likelihood | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
-| Mini-batch Noise (two effects) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| MLE vs MAP Estimation | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
+| Mini-batch Noise (two effects) | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
 | Momentum (SGD with Momentum) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
 | Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
+| PMF vs PDF | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-14.md |
 | Posterior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Prior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
