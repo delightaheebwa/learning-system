@@ -63,3 +63,10 @@ Resolved tangent (Open Questions): "is the floor H(P,Q) ≥ H(Q) or ≥ H(P)?" �
 E1 (weights from truth Q, surprises from model P) B sure ✅ · E2 H(P,Q) for Q=(0.9,0.1), P=(0.25,0.75) = 1.84 bits sure ✅ (direction stripped from stem — convention applied from recall) · E3 floor = H(Q) ≈ 0.47 bits (chose C over near-miss D = H(P) ≈ 0.81) sure ✅ — floor misconception re-sealed on a new distribution. All grade-audit agreed.
 
 State: Cross-entropy attempt logged (pass, mastery 0.80, next_review 2026-10-12). Mistakes row (floor) → review/retries=1. Resume at CP4 (re-emit CP4 fresh).
+
+## Resume 3 (2026-09-14)
+CP3 warm-up issued (quiz-audit PASS_WITH_FLAGS after 1 fix cycle). Results: W1 H(P,Q)=1 bit sure ✅ · W2 floor=H(Q)≈0.881 (A) sure ✅ · W3 Q=label distribution (C) sure ✅ · W4 FAIL — picked reversed inequality H(P,Q) ≤ H(Q) (tag sure); correct is B, H(P,Q) ≥ H(Q). Grade-audit agreed (correct_verdict fail).
+
+Floor-direction REGRESSION logged: own Mistakes row dated 2026-09-14 (active, due 2026-09-17); attempt logged under canonical key Cross-Entropy from NLL (fail, next_review 2026-09-17; alias key merged away per 09-12 ingest). Active Concepts row updated (last_reviewed 09-14, next_review 09-17 + regression note).
+
+Next: re-seal floor direction briefly, then CP4 (KL) — re-emit fresh, learner has NOT practiced CP4.

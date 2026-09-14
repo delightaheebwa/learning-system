@@ -10,8 +10,8 @@ Lettering used throughout this list: **this lesson's Olah letters — model P, t
 
 1. CP1 — Surprise I(x) = −log p — ✅ done (sign fixed: 3 / 0.014 / 0 all correct)
 2. CP2 — Entropy H(P) = expected surprise — ✅ done (sign re-sealed on the 2026-09-11 exit ticket; die entropy +2.585 bits)
-3. CP3 — Cross-entropy H(P,Q) = CE loss = NLL — ✅ done (2026-09-12: practice 1 bit exact; floor misconception corrected + re-sealed on exit ticket E3; convention question answered, verified)
-4. CP4 — KL = CE − H(data), i.e. KL(Q∥P) = H(P,Q) − H(Q) in this lesson's letters (not H(P) — H(P) is the model's own entropy) — pending
+3. CP3 — Cross-entropy H(P,Q) = CE loss = NLL — ✅ done (2026-09-12: practice 1 bit exact; floor misconception corrected + re-sealed on exit ticket E3; convention question answered, verified). ⚠️ 2026-09-14 resume warm-up W4 REGRESSED the floor DIRECTION (picked H(P,Q) ≤ H(Q), tag sure; floor identity itself correct on W2) — re-seal due 2026-09-17 before/alongside CP4.
+4. CP4 — KL = CE − H(data), i.e. KL(Q∥P) = H(P,Q) − H(Q) in this lesson's letters (not H(P) — H(P) is the model's own entropy) — pending. 2026-09-14 resume started: CP3 warm-up issued.
 5. CP5 — Mutual information I(X;Y) — pending
 6. CP6 — Perplexity + bits/nats + label smoothing — pending
 
@@ -27,3 +27,4 @@ Python (Rohit `Language: Python`)
 
 ## Floor misconception (second tracked, 2026-09-12)
 "Floor = model's entropy" — answered 1 bit (model H(P)) instead of H(Q) ≈ 0.811 for Q=(0.75,0.25). Corrected same session; re-sealed on exit ticket E3 (picked H(Q)≈0.47 over near-miss H(P)≈0.81 on a new coin). Mistakes row → review, retries=1.
+⚠️ REGRESSED 2026-09-14 resume warm-up: W4 picked the REVERSED inequality H(P,Q) ≤ H(Q) (tag sure) while W2 identified floor=H(Q)≈0.881 correctly — floor's identity known, direction re-inverted. Own Mistakes row dated 2026-09-14 (active, due 2026-09-17). Attempt logged under canonical key Cross-Entropy from NLL (fail; next_review 2026-09-17).
