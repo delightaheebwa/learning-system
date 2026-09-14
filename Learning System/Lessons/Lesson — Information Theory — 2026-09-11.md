@@ -3,7 +3,7 @@
 Status: **paused at Checkpoint 3/6** — resume at CP4 (KL divergence)
 
 ## Resume from
-Resume at **CP4 — KL divergence** (KL = CE − H(data); re-emit the full CP4 teaching block from the 2026-09-12 session — the learner asked for it to be brought back, and it has NOT been answered/practiced yet). Convention note for CP4: this lesson uses Olah-style H(P,Q) with weights from truth Q, surprises from model P, so the floor is H(Q); Rohit/ML convention flips the letters (P = data → H(P,Q) ≥ H(P)). The learner asked about this and got the verified reconciliation — anchor phrase: "the entropy term is always the data's entropy".
+Resume at **CP4 — KL divergence** (KL = CE − H(data); idea block already re-emitted 2026-09-14 — fact-check PASS 5/5, opens with the KL ≥ 0 → H(P,Q) ≥ H(data) re-seal → next: invite questions, then issue CP4 practice. CP4 has NOT been practiced yet). Convention note for CP4: this lesson uses Olah-style H(P,Q) with weights from truth Q, surprises from model P, so the floor is H(Q); Rohit/ML convention flips the letters (P = data → H(P,Q) ≥ H(P)). The learner asked about this and got the verified reconciliation — anchor phrase: "the entropy term is always the data's entropy".
 **Before/with CP4:** re-seal the regressed CP3 floor DIRECTION (2026-09-14 warm-up W4 picked H(P,Q) ≤ H(Q); Mistakes row dated 2026-09-14, active, due 2026-09-17) — the CP4 idea block opens with the KL ≥ 0 → H(P,Q) ≥ H(data) re-seal.
 
 ## Checkpoints

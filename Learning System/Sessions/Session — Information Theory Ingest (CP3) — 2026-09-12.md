@@ -32,7 +32,7 @@ None — no new row was needed once the overlap check came back positive.
 
 ## Lesson status
 
-In-progress, **paused 3/6**, resume at **CP4 — KL divergence** (re-emit fresh; CP4's teaching block was never practiced). `Core/Pending Ingest.json` cleared. The Scout digest `context-p1l09-information-theory.json` is **not present in this working copy** (`Learning System/.tmp/` does not exist; the directory is gitignored) — nothing was deleted, and the 7-day TTL could not be checked here.
+In-progress, **paused 3/6**, resume at **CP4 — KL divergence** (CP4 idea block re-emitted 2026-09-14, fact-check PASS 5/5 — see Session — Information Theory (P1 L09) — 2026-09-11.md §Resume 3; next: invite questions, then issue CP4 practice. CP4's teaching block was never practiced). `Core/Pending Ingest.json` cleared. The Scout digest `context-p1l09-information-theory.json` is **not present in this working copy** (`Learning System/.tmp/` does not exist; the directory is gitignored) — nothing was deleted, and the 7-day TTL could not be checked here.
 
 Interleaving: n/a (ingest, not review — 1 concept enriched; next review 2026-09-15).
 
