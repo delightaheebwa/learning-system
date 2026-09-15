@@ -228,6 +228,7 @@
 - [[Information Content (Surprise)]] — I(x)=−log p(x); rare events surprise more, certain events zero
 - [[Entropy (Average Surprise)]] — H(P)=expected surprise; max at uniform, 0 at deterministic
 - [[KL Divergence]] — KL(Q∥P)=H(P,Q)−H(Q)=Σ q·log₂(q/p); ≥0, 0 iff P=Q, not symmetric; ∞ when the model zeroes a data event (smoothing)
+- [[Mutual Information]] — I(X;Y)=H(X)−H(X|Y)=H(Y)−H(Y|X)=H(X)+H(Y)−H(X,Y)=KL(p(x,y)∥p(x)p(y)); ≥0, 0 iff independent, symmetric; Olah bars = overlap; used for feature ranking + decision-tree gain
 - [[Bayes rule]]
 - [[Covariance and correlation]]
 - [[Euler number e]]
