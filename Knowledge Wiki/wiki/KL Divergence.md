@@ -38,7 +38,7 @@ KL(Q∥P) = 0.6·log₂(0.6/0.9) + 0.4·log₂(0.4/0.1) ≈ −0.3510 + 0.8000 �
 KL(P∥Q) = 0.9·log₂(0.9/0.6) + 0.1·log₂(0.1/0.4) ≈  0.5265 − 0.2000 ≈ 0.326 bits
 ```
 
-The gap is ≈ 0.12 bits, and which direction is larger is not something you can read off the shape of the two distributions — it depends on which event each distribution over-weights. Compute both, then name the direction. (This pair is the re-check that held the non-symmetry rule on 2026-09-15, after a resume warm-up had regressed it: the rule survives re-testing, not re-recalling.)
+The gap is ≈ 0.12 bits, and which direction is larger is not something you can read off the shape of the two distributions — it depends on which event each distribution over-weights. Compute both, then name the direction. (This pair is the re-check that held the non-symmetry rule on 2026-09-15, after a resume warm-up had regressed it: the rule survives re-testing, not re-recalling. On 2026-09-16 a fresh non-symmetry item passed again, so the rule now holds across two sessions.)
 
 ## Why minimizing cross-entropy ≡ minimizing KL
 
@@ -58,7 +58,20 @@ The same measure, built from a different pair of distributions, gives informatio
 
 I(X;Y) = KL( p(x,y) ∥ p(x)·p(y) )
 
-— the *joint* distribution measured against the product of its own marginals, i.e. exactly "how many bits are wasted by treating X and Y as independent". It is the one place where the direction stops mattering: the arguments are the joint and the product of the marginals, so relabelling X ↔ Y relabels both sides together, the value is symmetric (I(X;Y) = I(Y;X)), and it is 0 iff X and Y are independent. Full treatment: [[Mutual Information]].
+— the *joint* distribution measured against the product of its own marginals, i.e. exactly "how many bits are wasted by treating X and Y as independent". It is built in the same four moves as any other KL application:
+
+1. **Roles.** The first argument is the truth and supplies the weights — the joint, what actually happens. The second is the model being scored — the independence claim p(x)·p(y).
+2. **Baseline.** "X and Y are unrelated" is a *distribution*, not a vibe: for a joint with 0.5/0.5 marginals the independence claim is the uniform table [[0.25, 0.25], [0.25, 0.25]] — every cell predicted from the marginals alone.
+3. **Score.** KL( p(x,y) ∥ p(x)·p(y) ) = Σ Σ p(x,y)·log₂( p(x,y) / (p(x)·p(y)) ).
+4. **Number.** On [[0.45, 0.05], [0.05, 0.45]] the diagonal cells contribute +0.3816 bits each and the off-diagonal cells −0.1161 bits each: 2(0.3816) + 2(−0.1161) ≈ 0.531 bits — the same value the entropy route (H(X) − H(X|Y) = 1.000 − 0.469) and the bars route give.
+
+Three notes that matter:
+
+- **The arguments are distributions, not variables.** It is KL between the joint and the product of the marginals — not "between X and Y". Both are distributions over the same cells; swapping X ↔ Y relabels both sides together, which is why this is the one KL application that comes out **symmetric** (I(X;Y) = I(Y;X)) and 0 exactly when X and Y are independent.
+- **MI inherits KL ≥ 0.** Its non-negativity needs no separate proof — it *is* Gibbs' inequality, read on a joint and its marginals. That inheritance settles the anti-correlation case: X fair with Y = 1 − X gives the joint [[0, 0.5], [0.5, 0]], so I = H(X) + H(Y) − H(X,Y) = 1 + 1 − 1 = 1 bit, the maximum for two binary variables. Signed direction is correlation's job; KL and MI measure distance from a baseline, not co-movement.
+- **"Wasted bits" is the right reading.** The independence claim is the model, the joint is the truth, and the number is how many bits of the truth the independence story fails to capture — which is why a *high* KL here means "far from independence", not "a bad model of the joint".
+
+Full treatment: [[Mutual Information]].
 
 ## Units
 

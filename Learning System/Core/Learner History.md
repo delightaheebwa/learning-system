@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-15)
+# Learner History — compact tutor context (generated 2026-09-18)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,14 +13,14 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 5 · neutral 295 · fuzzy 9
+Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 294 · fuzzy 8
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-12 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-12.md |
 | MLE vs MAP Estimation | concept | fuzzy | 2026-09-15 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
+| 4-Layer AI Environment Stack | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-16.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
@@ -29,25 +29,25 @@ Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Conjugate Priors | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-08.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
-| Cross-Entropy from NLL | concept | neutral | 2026-09-14 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-09.md |
+| Cross-Entropy from NLL | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-16.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
-| KL Divergence | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
+| KL Divergence | concept | neutral | 2026-09-17 | last reviewed 2026-09-17 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Learning Rate | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Learning Rate — 2026-09-15.md |
 | Learning-rate Schedules (four types) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | Likelihood | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Mini-batch Noise (two effects) | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
-| Momentum (SGD with Momentum) | procedure | neutral | 2026-09-08 | last reviewed 2026-09-08 |
-| Mutual Information | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
+| Momentum (SGD with Momentum) | procedure | solid | 2026-09-16 | last reviewed 2026-09-16 |
+| Mutual Information | concept | neutral | 2026-09-17 | last reviewed 2026-09-17 |
 | Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | PMF vs PDF | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-15.md |
 | Posterior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
-| Prior Probability | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| Sequential Bayesian Updating | concept | neutral | 2026-09-08 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-09.md |
+| Sequential Bayesian Updating | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
 | Softmax Subtract-Max Trick | procedure | solid | 2026-09-11 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-05.md |
 
 ## SWE era — frozen 2026-09-01 (see `Archive/SWE-2026-09-01/`)
