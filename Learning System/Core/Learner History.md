@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-18)
+# Learner History — compact tutor context (generated 2026-09-19)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 291 · fuzzy 11
+Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 290 · fuzzy 12
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -22,6 +22,7 @@ Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 
 | Learning-rate Schedules (four types) | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-17.md |
 | Likelihood | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Likelihood — 2026-09-17.md |
 | MLE vs MAP Estimation | concept | fuzzy | 2026-09-15 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
+| Mutual Information | concept | fuzzy | 2026-09-18 | last reviewed 2026-09-18 |
 | Posterior Probability | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Posterior Probability — 2026-09-17.md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-16.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
@@ -36,12 +37,11 @@ Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
-| KL Divergence | concept | neutral | 2026-09-17 | last reviewed 2026-09-17 |
+| KL Divergence | concept | neutral | 2026-09-19 | last reviewed 2026-09-19 |
 | Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Learning Rate | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Learning Rate — 2026-09-15.md |
 | Mini-batch Noise (two effects) | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-16 | last reviewed 2026-09-16 |
-| Mutual Information | concept | neutral | 2026-09-17 | last reviewed 2026-09-17 |
 | Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | PMF vs PDF | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-15.md |

@@ -39,12 +39,12 @@ total:         2(0.3816) + 2(−0.1161) ≈ 0.7632 − 0.2322 = 0.531 bits
 
 Two things this walk pins down:
 
-- **The arguments are distributions, not variables.** "The KL between X and Y" is not a thing — X and Y are random variables; p(x,y) and p(x)·p(y) are distributions over the same cells. Joint first (the truth, supplying the weights), product-of-marginals second (the independence model being scored). This wording is a retrieval item.
+- **The arguments are distributions, not variables.** "The KL between X and Y" is not a thing — X and Y are random variables; p(x,y) and p(x)·p(y) are distributions over the same cells. Joint first (the truth, supplying the weights), product-of-marginals second (the independence model being scored). This wording is a retrieval item — and as of 2026-09-18 it is **still not banked**: asked directly to fill I(X;Y) = KL( ___ ∥ ___ ), the learner wrote the variables "X (the truth) then Y" again (the truth slot in position one was right; the distributions were replaced by variables), repeating the 2026-09-16 exit-ticket slip.
 - **"High relationship = high KL" is not a paradox.** KL measures distance from truth, and here the *independence claim* is the thing being measured — against the joint. So MI reads as "how many bits of truth the independence story fails to capture". The joint does not drift; the independence claim is scored against it.
 
 ## Properties
 
-- **I(X;Y) ≥ 0** — read off form 4 with KL ≥ 0 (Gibbs' inequality); no separate proof is needed (see the next section).
+- **I(X;Y) ≥ 0** — read off form 4 with KL ≥ 0 (Gibbs' inequality); no separate proof is needed (see the next section — and the one-line Jensen proof of Gibbs' inequality on [[KL Divergence]]).
 - **I(X;Y) = 0 iff X and Y are independent** — then p(x,y) = p(x)·p(y) for every cell, every log-ratio is 0, and the shared information is 0.
 - **Symmetric: I(X;Y) = I(Y;X).** "How much Y tells me about X" is the same number as the reverse. This is exactly what [[KL Divergence]] does *not* do — here the arguments are the joint and the product of its marginals, and relabelling X ↔ Y relabels both together, so nothing changes.
 - **I(X;X) = H(X)** — a variable tells you everything about itself (H(X) − H(X|X) = H(X) − 0). So MI is bounded above by the entropy of either variable.
@@ -55,7 +55,7 @@ Two things this walk pins down:
 - **Anti-correlated is not punished.** Take X fair on {0,1} and Y = 1 − X. The joint is [[0, 0.5], [0.5, 0]] — no mass on the diagonal. H(X) = H(Y) = 1 bit and H(X,Y) = 1 bit, so I(X;Y) = 1 + 1 − 1 = **1 bit**, the maximum for two binary variables. Knowing Y determines X completely, so MI is maximal; and MI is direction-agnostic — it measures distance from chance, not the sign of co-movement.
 - **Individual cell terms can be negative; the weighted total cannot.** In the walkthrough the off-diagonal cells each contribute ≈ −0.1161 bits, because there the pair is *less* likely than independence predicts. Terms are signed; the p-weighted sum is not (Gibbs' inequality / Jensen). The negative cells are the ones where the truth sits closer to the independence baseline than the baseline expects — averaged over what actually happens, the diagonal surpluses outweigh them.
 - **There is no absolute value anywhere in the construction.** A mod sign around a log-ratio would be a different quantity, and nothing in the derivation produces it. MI is already non-negative by construction, so wrapping it in bars would change the number — and would break I(X;X) = H(X).
-- **The coding reductio (why KL ≥ 0).** H(X) is the average length of the optimal code for X's own distribution; cross-entropy is what your code actually costs. If KL were negative, some code would be *shorter on average than the truth's own optimal code* — the model's code beating the best possible code for the data, "the model more true than the truth". That cannot happen (Gibbs/Jensen for the formal inequality), which is exactly why cross-entropy has a floor at H(data) and MI a floor at 0.
+- **The coding reductio (why KL ≥ 0).** H(X) is the average length of the optimal code for X's own distribution; cross-entropy is what your code actually costs. If KL were negative, some code would be *shorter on average than the truth's own optimal code* — the model's code beating the best possible code for the data, "the model more true than the truth". That cannot happen — the formal version is Gibbs' inequality, proved in one line from the concavity of log by Jensen ([[KL Divergence]] carries the proof and the numerator reversal) — which is exactly why cross-entropy has a floor at H(data) and MI a floor at 0.
 
 ## The bars picture (Olah)
 
@@ -139,6 +139,7 @@ They coexist because they answer different questions: correlation reports the *d
 ## Open questions
 
 - **Variation of information, V(X,Y) = H(X,Y) − I(X,Y)** — introduced 2026-09-16 as a wonder-out and **not yet consolidated**: a perfect bijection gives V = 0 while I = H(X) = H(Y), and on the running joint V = 1.469 − 0.531 = 0.938 bits (= H(X|Y) + H(Y|X)). Open: what exactly makes it a metric, and when you would reach for it instead of MI.
+- **Nonnegativity — closed 2026-09-18:** Gibbs' inequality stated formally (Σ_i Q_i·log₂(Q_i/P_i) ≥ 0, equality iff P = Q) and its one-line Jensen proof walked, including the deliberate numerator reversal (only P/Q collapses: Σ_i Q_i·(P_i/Q_i) = Σ_i P_i = 1; the KL direction gives Σ_i Q_i²/P_i ≈ 2.778, no collapse) and the Jensen-vs-Gibbs division of labour. Exit ticket 3/3 under `sure` (theorem MCQ, collapse-mechanism MCQ, rebate/cost free recall), so "MI inherits KL ≥ 0" now rests on a proved theorem rather than only on form 4's shape. Still open on this page's account: the fresh I(X;Y) computation on a **new** joint has never been tested.
 - **Maximum possible overlap of two binary bars:** ≤ min(H(X), H(Y)) = 1 bit, and the bound is *achieved* — Y = X and Y = 1 − X both give I = 1 bit. Planted 2026-09-15, closed by the anti-correlation case on 2026-09-16; the bound itself is general (I ≤ min(H(X), H(Y)) for any pair).
 
 ## Source

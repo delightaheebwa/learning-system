@@ -205,7 +205,7 @@
 - [[Softmax Subtract-Max Trick]] — Subtract max(z) for numerical stability
 - [[Cosine Similarity]] — Unit vector dot product = cos(θ)
 - [[4-Layer AI Environment Stack]] — System→Packages→Runtimes→AI Libraries
-- [[Cross-Entropy from NLL]] — H(P,Q)=Σ q·(−log p); = CE loss = NLL; floor = the data's entropy H(Q); CE − H(data) = KL (also: Cross-entropy (H(P,Q), CE loss, NLL))
+- [[Cross-Entropy from NLL]] — H(P,Q)=Σ q·(−log p); = CE loss = NLL; floor = the data's entropy H(Q); CE − H(data) = KL; the floor rule is Gibbs' inequality (KL ≥ 0) with the one-line Jensen proof (also: Cross-entropy (H(P,Q), CE loss, NLL))
 - [[Bayes' Theorem]] — P(H|E) = P(E|H)·P(H)/P(E); update beliefs with evidence
 - [[Prior Probability]] — P(H); belief before evidence (base rate)
 - [[Likelihood]] — P(E|H); probability of evidence given hypothesis
@@ -227,8 +227,8 @@
 - [[Optimizer Selection (Rohit heuristic)]] — Adam → SGD+M → AdamW; race-result caveat
 - [[Information Content (Surprise)]] — I(x)=−log p(x); rare events surprise more, certain events zero
 - [[Entropy (Average Surprise)]] — H(P)=expected surprise; max at uniform, 0 at deterministic
-- [[KL Divergence]] — KL(Q∥P)=H(P,Q)−H(Q)=Σ q·log₂(q/p); ≥0, 0 iff P=Q, not symmetric; ∞ when the model zeroes a data event (smoothing)
-- [[Mutual Information]] — I(X;Y)=H(X)−H(X|Y)=H(Y)−H(Y|X)=H(X)+H(Y)−H(X,Y)=KL(p(x,y)∥p(x)p(y)); ≥0, 0 iff independent, symmetric; truth-first KL walkthrough (joint ∥ product of marginals); Olah bars = overlap; used for feature ranking + decision-tree gain
+- [[KL Divergence]] — KL(Q∥P)=H(P,Q)−H(Q)=Σ q·log₂(q/p); ≥0, 0 iff P=Q, not symmetric; KL ≥ 0 = Gibbs' inequality, one-line Jensen proof (weights from the truth Q; the P/Q direction collapses to Σ P = 1), rebate/cost reading of the per-term signs; ∞ when the model zeroes a data event (smoothing)
+- [[Mutual Information]] — I(X;Y)=H(X)−H(X|Y)=H(Y)−H(Y|X)=H(X)+H(Y)−H(X,Y)=KL(p(x,y)∥p(x)p(y)); ≥0, 0 iff independent, symmetric; truth-first KL walkthrough (joint ∥ product of marginals); Olah bars = overlap; inherits KL ≥ 0 from Gibbs/Jensen; used for feature ranking + decision-tree gain
 - [[Bayes rule]]
 - [[Covariance and correlation]]
 - [[Euler number e]]

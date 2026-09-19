@@ -61,7 +61,9 @@ H(P)   = 1.0 bit (the model is a fair coin)              ← NOT the floor
 KL(Q∥P) = 1.0 − 0.811                     ≈ 0.189 bits
 ```
 
-Misconception to avoid: calling the floor "the model's own entropy H(P)". Here H(P) = 1.0 bit is the *model's* entropy, not the floor; the floor is the truth's 0.811 bits. The floor is set by the data, not by the model. (Tracked in `Core/🧯 Mistakes.md`, 2026-09-12 row; re-sealed on exit-ticket E3 with a different coin: Q = (0.9, 0.1), P = (0.25, 0.75) → H(P,Q) = 1.84 bits, floor H(Q) ≈ 0.47 bits, not the near-miss H(P) ≈ 0.81 bits.)
+Misconception to avoid: calling the floor "the model's own entropy H(P)". Here H(P) = 1.0 bit is the *model's* entropy, not the floor; the floor is the truth's 0.811 bits. The floor is set by the data, not by the model. (Tracked in `Core/🧯 Mistakes.md`, 2026-09-12 row; re-sealed on exit-ticket E3 with a different coin: Q = (0.9, 0.1), P = (0.25, 0.75) → H(P,Q) = 1.84 bits, floor H(Q) ≈ 0.47 bits, not the near-miss H(P) ≈ 0.81 bits.) The 2026-09-14 regression on the **direction** (picked H(P,Q) ≤ H(Q), tag sure) was re-tested by retrieval on 2026-09-18: H(P,Q) ≥ H(Q) picked under `sure`, with the grade-audit agreeing — so the direction now holds both after the explanation and under retrieval, and that ledger row graduates.
+
+**Why the floor is a theorem, not a coincidence.** H(P,Q) = H(Q) + KL(Q∥P), and KL ≥ 0 *is* Gibbs' inequality — proved in one line from the concavity of log (Jensen): Σ_i Q_i·log₂(P_i/Q_i) ≤ log₂( Σ_i Q_i·(P_i/Q_i) ) = log₂( Σ_i P_i ) = log₂ 1 = 0, then negate term by term. So the floor rule and KL's non-negativity are one fact stated twice; [[KL Divergence]] carries the proof, the deliberate numerator reversal (P/Q collapses to Σ P = 1 — the KL direction Σ Q_i²/P_i does not) and the rebate/cost reading of the per-term signs.
 
 ## KL bridge — [[KL Divergence]]
 

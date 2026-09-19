@@ -16,7 +16,43 @@ The operational form is cross-entropy minus the data's entropy:
 ## Two properties that define it
 
 - **KL(Q∥P) ≥ 0** (Gibbs' inequality) — H(Q) is the average length of the optimal code for the truth ([[Entropy (Average Surprise)]]), and no other code beats it; the difference is the excess the model's distribution costs. For the coin below: 1.0 − 0.811 ≈ 0.189 bits.
-- **KL(Q∥P) = 0 iff P = Q** — equality exactly when the model agrees with the data on every event. Terms where q < p contribute negatively and terms where q > p positively, and Gibbs' inequality says the positives always win unless the two distributions match.
+- **KL(Q∥P) = 0 iff P = Q** — equality exactly when the model agrees with the data on every event. Terms where q < p contribute negatively and terms where q > p positively, and Gibbs' inequality says the positives always win unless the two distributions match — a theorem, not a coincidence: the one-line Jensen proof is in the section below.
+
+## KL ≥ 0 is Gibbs' inequality — proved in one line of Jensen
+
+The non-negativity of KL is not something you read off the shape of the formula; it is a theorem with a name and a one-line proof.
+
+**Gibbs' inequality.** For any two distributions Q and P over the same outcome space (finite, or continuous densities), Σ_i Q_i·log₂(Q_i/P_i) ≥ 0, with equality **iff P = Q** — and KL *is* that sum. No joint structure and no independence assumption is needed: any two distributions on the same outcome space qualify.
+
+**The one-line proof (Jensen).** log is concave, so for any weights w_i and inputs x_i, f(Σ w_i x_i) ≥ Σ w_i f(x_i). Take w_i = Q_i and x_i = P_i/Q_i:
+
+```
+Σ_i Q_i·log₂(P_i/Q_i)  ≤  log₂( Σ_i Q_i·(P_i/Q_i) )  =  log₂( Σ_i P_i )  =  log₂ 1  =  0
+```
+
+The inner sum collapses precisely because the weights are Q and Q is normalised: Σ_i Q_i·(P_i/Q_i) = Σ_i P_i = 1 — a number we know *without* knowing anything else about the two distributions. Now negate both sides (multiply the whole inequality by −1: arithmetic, not logical; ≤ flips to ≥). The negated left side is exactly KL, because log(a/b) = −log(b/a) term by term:
+
+```
+Σ_i Q_i·log₂(Q_i/P_i)  ≥  0        ⟺   KL(Q∥P) ≥ 0
+```
+
+**The deliberate numerator reversal.** KL keeps Q on top *and* Q is the weighting, but the Jensen step is applied to the flipped ratio P_i/Q_i. That is not a typo — only that direction collapses: Q_i·(P_i/Q_i) = P_i sums to 1, while the KL direction gives Σ_i Q_i·(Q_i/P_i) = Σ_i Q_i²/P_i, which on the Q = (0.5, 0.5) vs P = (0.9, 0.1) pair equals 0.25/0.9 + 0.25/0.1 ≈ 2.778 — a number that still depends on both distributions and collapses to nothing. So the proof routes through the Jensen-friendly twin (≤ 0) and flips back by term-wise negation. Rule to carry: **the weights are always the truth Q; the numerator tells you which direction the sum points** (Q on top → KL ≥ 0; P on top → the Jensen-friendly twin ≤ 0).
+
+**Concavity means "the curve sits above its chords".** That is the definition doing the work: the average of the function values lies on the chord at the mixed input, while the function of the average lies on the curve above it. Numeric feel: log₂ at equal weights between 1 and 9 gives f(5) = 2.32 ≥ 1.585 = ½(0 + 3.17). In this proof it does exactly one job — swap "average, then function" for "function of the average", and the function of *that particular* average is log 1 = 0, a number we already know.
+
+**Jensen vs Gibbs — the division of labour.** Johan Jensen (Danish; the inequality published 1906) supplied the *general* concave-function tool: f(Σ w_i x_i) ≥ Σ w_i f(x_i), equality iff all the x_i are equal (strictly concave f). Josiah Willard Gibbs (the distribution statement appears in his 1902 statistical-mechanics work) supplied the *specific* statement Σ p_i·log(p_i/q_i) ≥ 0, equality iff p = q. **"Gibbs is the what, Jensen is the how."**
+
+**The rebate/cost reading (why the per-term signs behave).** Each term Q_i·log₂(Q_i/P_i) is signed by *who assigned more weight to that outcome*:
+
+- **P_i > Q_i** (the model overestimates the outcome) → log₂(Q_i/P_i) < 0 → a per-outcome **rebate**: the model's code is shorter than the truth-optimal code there.
+- **P_i < Q_i** (it underestimates the outcome) → log₂(Q_i/P_i) > 0 → a per-outcome **cost**.
+- **P_i = Q_i** → exactly 0.
+
+Both distributions sum to 1, so every overestimation is matched by an underestimation somewhere; and because the truth supplies the weights, the rebates can never out-pay the costs — that *is* Gibbs' inequality. Worked on Q = (0.5, 0.5) vs P = (0.9, 0.1): a rebate of 0.5·log₂(0.5/0.9) = −0.424 bits plus a cost of 0.5·log₂(0.5/0.1) = +1.161 bits gives KL = −0.424 + 1.161 = **0.737 bits** > 0. A large negative term does not make the floor harder to reach — it pulls the total *down* toward 0.
+
+⚠️ **A per-term sign says nothing about "the relationship between P and Q".** The two distributions live over one outcome space with no pairing, so a negative term is *not* evidence of a negative relationship the way a correlation sign between two *variables* would be. The anti-correlated case is the trap in the other direction: X fair with Y = 1 − X has negative correlation yet *maximal* MI = 1 bit ([[Mutual Information]]). Terms are signed; the Q-weighted total is not.
+
+**What it buys.** In the lesson's letters the floor follows immediately: H(P,Q) = H(Q) + KL(Q∥P) ≥ H(Q) ([[Cross-Entropy from NLL]]), and [[Mutual Information]] = KL(joint ∥ product of marginals) inherits ≥ 0 for free — no separate proof. The information-theoretic reading is the coding reductio: a negative KL would mean some code is shorter *on average* than the truth's own optimal code, which cannot happen.
 
 ## Not symmetric
 
