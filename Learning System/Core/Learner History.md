@@ -13,27 +13,27 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 290 · fuzzy 12
+Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 288 · fuzzy 14
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| Learning-rate Schedules (four types) | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-17.md |
+| Base Rate Fallacy | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-19.md |
+| Conjugate Priors | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-19.md |
+| Learning-rate Schedules (four types) | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-19.md |
 | Likelihood | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Likelihood — 2026-09-17.md |
-| MLE vs MAP Estimation | concept | fuzzy | 2026-09-15 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-08.md |
+| MLE vs MAP Estimation | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-19.md |
 | Mutual Information | concept | fuzzy | 2026-09-18 | last reviewed 2026-09-18 |
 | Posterior Probability | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Posterior Probability — 2026-09-17.md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-16.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
-| Base Rate Fallacy | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral | 2026-09-07 | last reviewed 2026-09-07 |
 | Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
-| Conjugate Priors | concept | neutral | 2026-09-07 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-08.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
-| Cross-Entropy from NLL | concept | neutral | 2026-09-18 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-17.md |
+| Cross-Entropy from NLL | concept | neutral | 2026-09-19 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-19.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
