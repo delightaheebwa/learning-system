@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-19)
+# Learner History — compact tutor context (generated 2026-09-21)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,36 +13,36 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 7 · neutral 288 · fuzzy 14
+Totals: 309 concepts (79 with attempt history + 230 paused) — aiefs 30 · swe 66 · aie 213 · solid 8 · neutral 286 · fuzzy 15
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
 | Base Rate Fallacy | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-19.md |
+| Conditional Independence | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Conditional Independence — 2026-09-20.md |
 | Conjugate Priors | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-19.md |
-| Learning-rate Schedules (four types) | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-19.md |
 | Likelihood | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Likelihood — 2026-09-17.md |
 | MLE vs MAP Estimation | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-19.md |
 | Mutual Information | concept | fuzzy | 2026-09-18 | last reviewed 2026-09-18 |
+| Naive Bayes | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Naive Bayes — 2026-09-20.md |
 | Posterior Probability | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Posterior Probability — 2026-09-17.md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-16.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral | 2026-09-07 | last reviewed 2026-09-07 |
 | Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
-| Conditional Independence | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-19 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-19.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
-| KL Divergence | concept | neutral | 2026-09-19 | last reviewed 2026-09-19 |
-| Laplace Smoothing | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
+| KL Divergence | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — KL Divergence — 2026-09-20.md |
+| Laplace Smoothing | concept | solid | 2026-09-21 | Learning System/Reviews/Review — Laplace Smoothing — 2026-09-20.md |
 | Learning Rate | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Learning Rate — 2026-09-15.md |
+| Learning-rate Schedules (four types) | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-19.md |
 | Mini-batch Noise (two effects) | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-16 | last reviewed 2026-09-16 |
-| Naive Bayes | concept | neutral | 2026-09-05 | last reviewed 2026-09-05 |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | PMF vs PDF | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-15.md |
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
