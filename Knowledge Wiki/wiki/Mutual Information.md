@@ -39,7 +39,7 @@ total:         2(0.3816) + 2(−0.1161) ≈ 0.7632 − 0.2322 = 0.531 bits
 
 Two things this walk pins down:
 
-- **The arguments are distributions, not variables.** "The KL between X and Y" is not a thing — X and Y are random variables; p(x,y) and p(x)·p(y) are distributions over the same cells. Joint first (the truth, supplying the weights), product-of-marginals second (the independence model being scored). This wording is a retrieval item — and as of 2026-09-18 it is **still not banked**: asked directly to fill I(X;Y) = KL( ___ ∥ ___ ), the learner wrote the variables "X (the truth) then Y" again (the truth slot in position one was right; the distributions were replaced by variables), repeating the 2026-09-16 exit-ticket slip.
+- **The arguments are distributions, not variables.** "The KL between X and Y" is not a thing — X and Y are random variables; p(x,y) and p(x)·p(y) are distributions over the same cells. Joint first (the truth, supplying the weights), product-of-marginals second (the independence model being scored). This wording is a retrieval item — and as of 2026-09-21 it has been **retrieved**: asked directly to fill I(X;Y) = KL( ___ ∥ ___ ), the learner wrote the variables "X (the truth) then Y" again (the truth slot in position one was right; the distributions were replaced by variables), repeating the 2026-09-16 exit-ticket slip — repaired under retrieval on 2026-09-21, when the same fill-in-the-blanks item came back as the joint distribution of X and Y ∥ the product of the marginals (tag `sure`, grade-audit agreed): the first successful recall after the two failures. The ledger row moves `active` → `review` (one consecutive correct); the second consecutive recall is due 2026-09-28.
 - **"High relationship = high KL" is not a paradox.** KL measures distance from truth, and here the *independence claim* is the thing being measured — against the joint. So MI reads as "how many bits of truth the independence story fails to capture". The joint does not drift; the independence claim is scored against it.
 
 ## Properties
@@ -73,11 +73,11 @@ The fused-bar version is the same arithmetic rearranged. Writing the union as it
 
 and on the running joint 1.469 − 0.469 − 0.469 = 0.531 bits. One fused bar, subtract the two exclusive strips (the "A-only part" and the "B-only part"), and what remains is counted once — the same move as subtracting the union from the stacked bars.
 
-The same picture yields **variation of information**, a distance between two variables:
+The same picture yields **variation of information** — the two wings, i.e. everything the overlap is not:
 
 V(X,Y) = H(X|Y) + H(Y|X) = H(X,Y) − I(X,Y)
 
-It is 0 exactly when each variable determines the other (the bars coincide), and as large as H(X) + H(Y) when they are independent (no overlap at all) — a genuine metric built out of MI.
+It is 0 exactly when each variable determines the other (the bars coincide), and as large as H(X) + H(Y) when they are independent (no overlap at all). Consolidated on 2026-09-21, including the part MI cannot supply: V is a **true metric** (symmetry, identity, triangle inequality — Meilă 2003 COLT / 2007 *J. Multivariate Analysis*), while MI is an anti-distance (MI(X,X) = H(X) ≠ 0) and every *arithmetic* flip of it dies at axiom 1. Own page: [[Variation of Information]].
 
 ## Worked example — the joint [[0.45, 0.05], [0.05, 0.45]]
 
@@ -107,6 +107,32 @@ Cell by cell, the surprise form reads the correlation straight off the table: th
 
 Contrast with independence: the joint [[0.25, 0.25], [0.25, 0.25]] has the same marginals but every cell equals p(x)·p(y), so every log-ratio is 0 and I(X;Y) = 0. Same marginals, zero shared information — MI measures the *dependence*, not the marginals.
 
+## Worked example — the fresh joint [[0.35, 0.15], [0.15, 0.35]] (2026-09-21)
+
+The first I(X;Y) computed on a joint that was not already on this page — the 2026-09-21 CP5 practice item.
+
+| P(X,Y) | Y = 0 | Y = 1 | p(x) |
+|---|---|---|---|
+| **X = 0** | 0.35 | 0.15 | 0.5 |
+| **X = 1** | 0.15 | 0.35 | 0.5 |
+| **p(y)** | 0.5 | 0.5 | 1 |
+
+Marginals are a fair coin each, so H(X) = H(Y) = 1 bit, and H(X|Y) comes from the (0.7, 0.3) conditional column:
+
+```
+H(X,Y) = −[2·0.35·log₂0.35 + 2·0.15·log₂0.15] ≈ 1.8813 bits
+H(X|Y) = 0.7·log₂0.7 + 0.3·log₂0.3 ≈ 0.8813 bits   (= H(Y|X))
+
+entropy difference: I = H(X) + H(Y) − H(X,Y) = 2 − 1.8813 = 0.1187 bits
+KL / ratio route:   diagonal 0.35/0.25 = 1.4 → 2(0.35·log₂1.4) ≈ +0.3398 (costs)
+                    off-diagonal 0.15/0.25 = 0.6 → 2(0.15·log₂0.6) ≈ −0.2211 (rebates)
+                    total ≈ +0.1187 bits
+```
+
+Both routes land on the same 0.1187 bits. On this joint V(X,Y) = 1.8813 − 0.1187 = 1.7626 bits ([[Variation of Information]]).
+
+**The sign slip, and the theorem as an error detector.** The first answer was **−0.119 bits** (tag `sure`) — magnitude exactly right, sign impossible, because the arithmetic had been arranged as H(X,Y) − H(X) − H(Y) instead of H(X) + H(Y) − H(X,Y). I(X;Y) ≥ 0 (Gibbs' inequality, from form 4) says no mutual information can be negative: a negative MI should feel like a negative probability. The theorem was known in isolation — it had been exit-ticketed 3/3 on 2026-09-18 — but it was not *used* to reject the impossible number until the grade landed; corrected in the same session, and then reused as a detector on the exit ticket, where a reported I(X;Y) = −0.3 bits was rejected on nonnegativity alone. That is the practical payoff of a floor: **H(P,Q) ≥ H(Q), KL ≥ 0 and I ≥ 0 are free sanity checks on any computation in this family** (the cross-entropy page carries the detector note).
+
 ## MI vs correlation — the division of labor
 
 | | [[Covariance and correlation]] | Mutual information |
@@ -131,6 +157,7 @@ They coexist because they answer different questions: correlation reports the *d
 
 - [[Entropy (Average Surprise)]]
 - [[KL Divergence]]
+- [[Variation of Information]]
 - [[Cross-Entropy from NLL]]
 - [[Information Content (Surprise)]]
 - [[Joint, marginal, and conditional probabilities]]
@@ -138,8 +165,8 @@ They coexist because they answer different questions: correlation reports the *d
 
 ## Open questions
 
-- **Variation of information, V(X,Y) = H(X,Y) − I(X,Y)** — introduced 2026-09-16 as a wonder-out and **not yet consolidated**: a perfect bijection gives V = 0 while I = H(X) = H(Y), and on the running joint V = 1.469 − 0.531 = 0.938 bits (= H(X|Y) + H(Y|X)). Open: what exactly makes it a metric, and when you would reach for it instead of MI.
-- **Nonnegativity — closed 2026-09-18:** Gibbs' inequality stated formally (Σ_i Q_i·log₂(Q_i/P_i) ≥ 0, equality iff P = Q) and its one-line Jensen proof walked, including the deliberate numerator reversal (only P/Q collapses: Σ_i Q_i·(P_i/Q_i) = Σ_i P_i = 1; the KL direction gives Σ_i Q_i²/P_i ≈ 2.778, no collapse) and the Jensen-vs-Gibbs division of labour. Exit ticket 3/3 under `sure` (theorem MCQ, collapse-mechanism MCQ, rebate/cost free recall), so "MI inherits KL ≥ 0" now rests on a proved theorem rather than only on form 4's shape. Still open on this page's account: the fresh I(X;Y) computation on a **new** joint has never been tested.
+- **Variation of information — CLOSED 2026-09-21.** Introduced 2026-09-16 as a wonder-out, consolidated 2026-09-21: a perfect bijection gives V = 0 while I = H(X) = H(Y), and on the running joint V = 1.469 − 0.531 = 0.938 bits (= H(X|Y) + H(Y|X)). Answered: V = H(X|Y) + H(Y|X) = H(X,Y) − I = H(X) + H(Y) − 2I, with 0 ≤ V ≤ H(X) + H(Y), V = 0 at mutual determinism (so V is blind to the *sign* of the relationship — Y = 1 − X gives 0 as well) and V = H(X) + H(Y) at independence; VI is a true metric (Meilă 2003/2007 — triangle inequality, used to compare clusterings) while MI is not (MI(X,X) = H(X)); the arithmetic flips f(I) die at axiom 1 because d(X,X) = f(H(X)) cannot vanish for every entropy, whereas the geometric Venn-complement flip works because its H(X) + H(Y) offsets cancel identically. Reached for when a *distance* between two variables or two clusterings is wanted (cluster comparison, stability, bounds through a reference), not a similarity. Exit ticket 3/3 under `sure`; own page [[Variation of Information]].
+- **Nonnegativity — closed 2026-09-18:** Gibbs' inequality stated formally (Σ_i Q_i·log₂(Q_i/P_i) ≥ 0, equality iff P = Q) and its one-line Jensen proof walked, including the deliberate numerator reversal (only P/Q collapses: Σ_i Q_i·(P_i/Q_i) = Σ_i P_i = 1; the KL direction gives Σ_i Q_i²/P_i ≈ 2.778, no collapse) and the Jensen-vs-Gibbs division of labour. Exit ticket 3/3 under `sure` (theorem MCQ, collapse-mechanism MCQ, rebate/cost free recall), so "MI inherits KL ≥ 0" now rests on a proved theorem rather than only on form 4's shape. Still open on this page's account: the fresh I(X;Y) computation on a **new** joint was done on 2026-09-21 — 0.1187 bits via two routes on [[0.35, 0.15], [0.15, 0.35]], with the first attempt's −0.119 rejected by this very theorem.
 - **Maximum possible overlap of two binary bars:** ≤ min(H(X), H(Y)) = 1 bit, and the bound is *achieved* — Y = X and Y = 1 − X both give I = 1 bit. Planted 2026-09-15, closed by the anti-correlation case on 2026-09-16; the bound itself is general (I ≤ min(H(X), H(Y)) for any pair).
 
 ## Source

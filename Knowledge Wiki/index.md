@@ -228,7 +228,8 @@
 - [[Information Content (Surprise)]] — I(x)=−log p(x); rare events surprise more, certain events zero
 - [[Entropy (Average Surprise)]] — H(P)=expected surprise; max at uniform, 0 at deterministic
 - [[KL Divergence]] — KL(Q∥P)=H(P,Q)−H(Q)=Σ q·log₂(q/p); ≥0, 0 iff P=Q, not symmetric; KL ≥ 0 = Gibbs' inequality, one-line Jensen proof (weights from the truth Q; the P/Q direction collapses to Σ P = 1), rebate/cost reading of the per-term signs; ∞ when the model zeroes a data event (smoothing)
-- [[Mutual Information]] — I(X;Y)=H(X)−H(X|Y)=H(Y)−H(Y|X)=H(X)+H(Y)−H(X,Y)=KL(p(x,y)∥p(x)p(y)); ≥0, 0 iff independent, symmetric; truth-first KL walkthrough (joint ∥ product of marginals); Olah bars = overlap; inherits KL ≥ 0 from Gibbs/Jensen; used for feature ranking + decision-tree gain
+- [[Mutual Information]] — I(X;Y)=H(X)−H(X|Y)=H(Y)−H(Y|X)=H(X)+H(Y)−H(X,Y)=KL(p(x,y)∥p(x)p(y)); ≥0, 0 iff independent, symmetric; truth-first KL walkthrough (joint ∥ product of marginals); Olah bars = overlap; inherits KL ≥ 0 from Gibbs/Jensen; fresh joint tested 2026-09-21 (0.1187 bits via two routes — the first attempt's −0.119 caught by MI ≥ 0); used for feature ranking + decision-tree gain
+- [[Variation of Information]] — V(X,Y)=H(X|Y)+H(Y|X)=H(X,Y)−I=H(X)+H(Y)−2I: the two Olah wings — what the two variables do not tell each other; 0 iff mutual determinism (blind to the sign of the relationship), H(X)+H(Y) iff independent; a true metric per Meilă 2003 COLT / 2007 J. Multivariate Analysis (triangle inequality) — used to compare clusterings; MI is an anti-distance (MI(X,X)=H(X)); arithmetic flips of I die at axiom 1, the geometric Venn-complement flip survives
 - [[Bayes rule]]
 - [[Covariance and correlation]]
 - [[Euler number e]]

@@ -65,6 +65,23 @@ Misconception to avoid: calling the floor "the model's own entropy H(P)". Here H
 
 **Why the floor is a theorem, not a coincidence.** H(P,Q) = H(Q) + KL(Q∥P), and KL ≥ 0 *is* Gibbs' inequality — proved in one line from the concavity of log (Jensen): Σ_i Q_i·log₂(P_i/Q_i) ≤ log₂( Σ_i Q_i·(P_i/Q_i) ) = log₂( Σ_i P_i ) = log₂ 1 = 0, then negate term by term. So the floor rule and KL's non-negativity are one fact stated twice; [[KL Divergence]] carries the proof, the deliberate numerator reversal (P/Q collapses to Σ P = 1 — the KL direction Σ Q_i²/P_i does not) and the rebate/cost reading of the per-term signs.
 
+## The floor as an error detector (2026-09-21)
+
+H(P,Q) ≥ H(Q) is not only a fact to recall — it is a free sanity check on every computation in this family. On 2026-09-21 a mutual information computed on a fresh joint came out as **−0.119 bits**: magnitude exact, sign impossible, because the arithmetic had been arranged as H(X,Y) − H(X) − H(Y) instead of H(X) + H(Y) − H(X,Y). I(X;Y) ≥ 0 is the same statement as H(P,Q) ≥ H(Q) and KL ≥ 0, read on a joint and its marginals, and it caught the flip even though the ordering had been recalled correctly in isolation — a negative information quantity should feel like a negative probability. The learner then reused the rule as a detector on the exit ticket, rejecting a reported I(X;Y) = −0.3 bits on nonnegativity alone. Cross-entropy below its own H(Q) — or any of these quantities below its floor — is a flip, never a discovery.
+
+The paired arithmetic that makes the floor usable in practice: two routes to one number, on the fresh joint [[0.35, 0.15], [0.15, 0.35]] (marginals 0.5/0.5, so independence predicts 0.25 per cell).
+
+```
+entropy difference: H(X) + H(Y) − H(X,Y) = 1 + 1 − 1.8813 = 0.1187 bits
+KL / ratio route:   diagonal ratio 1.4 → 2(0.35·log₂1.4) ≈ +0.3398 (costs)
+                    off-diagonal 0.6   → 2(0.15·log₂0.6) ≈ −0.2211 (rebates)
+                    total ≈ +0.1187 bits
+cross-entropy route: 2.000 bits (every cell at −log₂0.25 = 2) − H(X,Y) 1.8813
+                    = 0.1187 bits of KL
+```
+
+The last line is the identity of this page doing its job: the joint scored against the uniform independence model costs exactly 2.000 bits, the joint's own entropy is 1.8813 bits, and the difference is the KL — which for this pair *is* the mutual information. Every term in the ratio route is that cell's cross-entropy contribution q·(−log₂ p) minus its entropy contribution q·(−log₂ q), summed under the truth's weights.
+
 ## KL bridge — [[KL Divergence]]
 
 KL(Q∥P) = H(P,Q) − H(Q) ≥ 0    (Olah convention: weights from Q)
