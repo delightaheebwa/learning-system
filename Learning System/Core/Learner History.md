@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 310 concepts (80 with attempt history + 230 paused) — aiefs 31 · swe 66 · aie 213 · solid 8 · neutral 288 · fuzzy 14
+Totals: 310 concepts (80 with attempt history + 230 paused) — aiefs 32 · swe 65 · aie 213 · solid 8 · neutral 288 · fuzzy 14
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -22,10 +22,10 @@ Totals: 310 concepts (80 with attempt history + 230 paused) — aiefs 31 · swe 
 | Base Rate Fallacy | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-19.md |
 | Conditional Independence | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Conditional Independence — 2026-09-21.md |
 | Conjugate Priors | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-19.md |
-| Likelihood | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Likelihood — 2026-09-17.md |
+| Gradient Descent Failure Modes (zigzag vs overshoot) | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-09-21 (II).md |
 | MLE vs MAP Estimation | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-19.md |
 | Naive Bayes | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Naive Bayes — 2026-09-21.md |
-| Posterior Probability | concept | fuzzy | 2026-09-18 | Learning System/Reviews/Review — Posterior Probability — 2026-09-17.md |
+| Posterior Probability | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Posterior Probability — 2026-09-21 (II).md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-16.md |
 | Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
@@ -39,7 +39,8 @@ Totals: 310 concepts (80 with attempt history + 230 paused) — aiefs 31 · swe 
 | KL Divergence | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — KL Divergence — 2026-09-21.md |
 | Laplace Smoothing | concept | solid | 2026-09-21 | Learning System/Reviews/Review — Laplace Smoothing — 2026-09-21.md |
 | Learning Rate | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Learning Rate — 2026-09-15.md |
-| Learning-rate Schedules (four types) | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-19.md |
+| Learning-rate Schedules (four types) | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-21 (II).md |
+| Likelihood | concept | neutral | 2026-09-21 | Learning System/Reviews/Review — Likelihood — 2026-09-21 (II).md |
 | Mini-batch Noise (two effects) | concept | neutral | 2026-09-15 | last reviewed 2026-09-15 |
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-16 | last reviewed 2026-09-16 |
 | Mutual Information | concept | neutral | 2026-09-21 | last reviewed 2026-09-21 |
@@ -86,7 +87,6 @@ Totals: 310 concepts (80 with attempt history + 230 paused) — aiefs 31 · swe 
 | find | procedure | neutral | 2026-08-28 | Learning System/Archive/SWE-2026-09-01/reviews/Review — find — 2026-08-28.md |
 | GCC Compilation Stages |  | neutral | 2026-08-20 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |
 | Git commit message conventions | memory | neutral | 2026-08-25 | Learning System/Archive/SWE-2026-09-01/reviews/Review — Git commit message conventions — 2026-08-04.md |
-| Gradient Descent Failure Modes (zigzag vs overshoot) | concept | neutral | 2026-09-12 | last reviewed 2026-09-12 |
 | Intermediate Object Files (.o) |  | neutral | 2026-08-04 | 📦 Concept Archive.md §Paused Concepts — C Project (Terminal System Monitor / cstack / C tutoring) |
 | Job Control (Ctrl-Z, fg/bg, nohup/disown) | procedure | neutral | 2026-08-21 | last reviewed 2026-08-21 |
 | jq | procedure | neutral | 2026-08-26 | Learning System/Archive/SWE-2026-09-01/reviews/Review — jq — 2026-08-17.md |
