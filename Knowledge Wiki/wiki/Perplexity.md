@@ -25,7 +25,11 @@ Same word, unrelated mechanisms. The staging differs too: perplexity is an **eva
 
 ## Unit discipline (the practiced slip, 2026-09-24)
 
-Give the entropy in the base whose exponential you use: cross-entropy in bits → 2^H; in nats → e^H. A 5-bit cross-entropy converted with e^H gave 11.048 ≈ e^{2.4} instead of 2^5 = 32; the repair is the detector on [[Bits vs Nats]] ("bits → base 2, nats → base e"). Cross-model comparison must convert first — 4 nats = 5.77 bits > 5 bits.
+Give the entropy in the base whose exponential you use: cross-entropy in bits → 2^H; in nats → e^H (the two bases differ by a factor 1.4427 — 1 nat = 1.4427 bits).
+
+Worked example, one H on both sides — **H = 5 bits**: the correct perplexity is 2^5 = 32; applying the nats base to that same 5-bit H instead gives e^5 ≈ 148.4, not 32. The repair is the detector on [[Bits vs Nats]] ("bits → base 2, nats → base e"). Cross-model comparison must convert first — 4 nats = 5.77 bits > 5 bits.
+
+*Recorded session slip (not part of the worked example above): the CP6 practice answer on that 5-bit item was "11.048 ≈ e^{2.4}" — the learner's verbatim answer as recorded, kept for the record (Learning Record 0008).*
 
 ## Nearest neighbour
 

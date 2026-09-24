@@ -19,7 +19,11 @@ The base is a constant factor on every surprise term, so it rescales entropies a
 
 ## The detector (from the practiced slip, 2026-09-24)
 
-**Read the unit before choosing the exponent:** cross-entropy in bits → [[Perplexity]] = 2^H; in nats → PPL = e^H. Applying e^H to a bits-valued H gave 11.048 ≈ e^{2.4} instead of 2^5 = 32 — the formula was right in shape, the unit was ignored. Cross-model comparison (final-quiz Q5) needs a common base first.
+**Read the unit before choosing the exponent:** cross-entropy in bits → [[Perplexity]] = 2^H; in nats → PPL = e^H (the bases differ by a factor 1.4427 — 1 nat = 1.4427 bits).
+
+Worked example, one H on both sides — **H = 5 bits**: 2^5 = 32 is the correct perplexity; the nats base applied to that same 5-bit H gives e^5 ≈ 148.4, not 32. The formula was right in shape; the unit was ignored. Cross-model comparison (final-quiz Q5) needs a common base first.
+
+*Recorded session slip (not part of the worked example above): the CP6 practice answer on that 5-bit item was "11.048 ≈ e^{2.4}" — the learner's verbatim answer as recorded, kept for the record (Learning Record 0008).*
 
 ## Nearest neighbour
 
