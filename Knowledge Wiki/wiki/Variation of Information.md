@@ -98,6 +98,10 @@ for *every* H(X). The H(X) + H(Y) offsets cancel identically, so nothing has to 
 - **Continuous variables.** Meilă's theorem is a finite-partition statement; with differential entropies H(X|Y) can be negative and V loses non-negativity. Open: which continuous analogue (a regularized/quantized VI, or a different divergence) is the standard replacement when clusterings are density-based rather than discrete.
 - **Quotienting.** V = 0 identifies variables that are bijections of one another, so V is really a metric on the quotient of random variables by mutual determinism — worth naming explicitly when comparing variables on different alphabets (it is why VI can compare a clustering into 3 groups with one into 7).
 
+## Retrieval log (2026-09-24)
+
+Open of the lesson's final session — warm-up 2/2 (pass, sure, grade-audit agreed): the independence MCQ picked **H(X) + H(Y)** (dodging the MI-zero distractor — independence is MI's minimum *and* V's maximum), and the on-paper two-route computation gave V = H(X) + H(Y) − 2I = 1.2 + 0.9 − 1.0 = **1.1 bits**. V's row now returns 2026-10-24. The subtraction V = H(X,Y) − I(X,Y) sits directly on [[Mutual Information]] and, through it, on [[KL Divergence]].
+
 ## Source
 
 Rohit P1 L09 `docs/en.md` (https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/09-information-theory/docs/en.md) + Olah, *Visual Information Theory* (https://colah.github.io/posts/2015-09-Visual-Information/) — the wings and the union/overlap picture; Meilă, *Comparing Clusterings by the Variation of Information* (COLT 2003) and *Comparing clusterings — an information based distance* (J. Multivariate Analysis 98 (2007) 873–895) — the metric theorem and the clustering application. Introduced in this track 2026-09-16 as a wonder-out; consolidated 2026-09-21 (idea + practice 2/2 + exit ticket 3/3, all under `sure`).

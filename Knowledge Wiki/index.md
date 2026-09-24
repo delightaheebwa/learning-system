@@ -240,6 +240,10 @@
 - [[Newtons law of cooling]]
 - [[Parameter Expansion]]
 - [[Shell Built-ins & Process Isolation]]
+- [[Perplexity]] — PPL = 2^H (bits) / e^H (nats) = the effective number of equally likely choices; uniform over k → PPL exactly k (GPT-2 ≈ 30, frontier models single digits); evaluation-time, output-side conversion; its uniform is a hypothetical yardstick, not label smoothing's real ingredient; the e^2.4-on-5-bits unit slip and its fix
+- [[Bits vs Nats]] — the log base is a unit, not a change of quantity: 1 nat = 1.4427 bits; PyTorch/TF cross-entropy is in nats by default; detector — bits → base 2, nats → base e
+- [[Label Smoothing]] — soft target = (1−ε)·one-hot + ε/K (0.84 / 0.04 at ε=0.2, K=5); L = (1−ε)·CE(hard) + ε·H_uniform with ε/K in the second term; removes the one-hot demand for probability 1 (infinite logits); ε=1 erases the label; PyTorch label_smoothing ∈ [0,1], default 0.0
+- [[Logits & Log-odds]] — logits are unnormalized scores (softmax = exp/normalize, shift-invariant); 'logit = log-odds' exact only in two-class; multi-class log-odds = logit differences (z_c − z_j = log p_c/p_j); probability 1 ⇔ log-odds +∞
 
 ## Entities
 

@@ -169,6 +169,10 @@ They coexist because they answer different questions: correlation reports the *d
 - **Nonnegativity — closed 2026-09-18:** Gibbs' inequality stated formally (Σ_i Q_i·log₂(Q_i/P_i) ≥ 0, equality iff P = Q) and its one-line Jensen proof walked, including the deliberate numerator reversal (only P/Q collapses: Σ_i Q_i·(P_i/Q_i) = Σ_i P_i = 1; the KL direction gives Σ_i Q_i²/P_i ≈ 2.778, no collapse) and the Jensen-vs-Gibbs division of labour. Exit ticket 3/3 under `sure` (theorem MCQ, collapse-mechanism MCQ, rebate/cost free recall), so "MI inherits KL ≥ 0" now rests on a proved theorem rather than only on form 4's shape. Still open on this page's account: the fresh I(X;Y) computation on a **new** joint was done on 2026-09-21 — 0.1187 bits via two routes on [[0.35, 0.15], [0.15, 0.35]], with the first attempt's −0.119 rejected by this very theorem.
 - **Maximum possible overlap of two binary bars:** ≤ min(H(X), H(Y)) = 1 bit, and the bound is *achieved* — Y = X and Y = 1 − X both give I = 1 bit. Planted 2026-09-15, closed by the anti-correlation case on 2026-09-16; the bound itself is general (I ≤ min(H(X), H(Y)) for any pair).
 
+## Retrieval log (2026-09-24)
+
+Final cumulative quiz of P1 L09, Q3: the KL form (joint ∥ product of the marginals) was retrieved **cold** — first try, under retrieval, not merely after the in-session repair pass — so the 2026-09-16 / 2026-09-18 variables-vs-distributions slip now holds across two later sessions. The 2026-09-21 sign/ordering slip (application) has the MI ≥ 0 detector behind it, rehearsed live on the exit ticket. This is the same KL quantity the new [[Perplexity]] and [[Label Smoothing]] pages orbit — dependence, not calibration.
+
 ## Source
 
 Rohit P1 L09 `docs/en.md` (https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/09-information-theory/docs/en.md) + Olah, *Visual Information Theory* (https://colah.github.io/posts/2015-09-Visual-Information/) — the four forms, the bars picture and the variation of information follow Olah; Rohit supplies the ML framing and the feature-selection/decision-tree uses.

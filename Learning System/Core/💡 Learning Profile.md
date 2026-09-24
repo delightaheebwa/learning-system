@@ -15,12 +15,13 @@
 - **Last Updated:** 2026-09-16 — position pointers realigned to the lesson file (L09 paused mid-Checkpoint 5/6; the CP5 KL-connection walkthrough is delivered — resume inside CP5 at the nonnegativity re-digest and the E1 KL-form repair, then CP5 practice on a fresh joint); `Mutual Information` / `KL Divergence` rows synced to Attempts.json.
 - **Last Updated:** 2026-09-18 — position pointers realigned to the lesson file (L09 paused mid-Checkpoint 5/6; the CP5 nonnegativity re-digest is delivered and exit-ticketed 3/3 — resume inside CP5 at CP5 practice on a fresh joint, then V(X,Y), CP6 and the Feynman); `KL Divergence` / `Mutual Information` / `Cross-Entropy from NLL` rows synced to Attempts.json.
 - **Last Updated:** 2026-09-21 — position pointers realigned to the lesson file (L09 paused after CP5.5; CP5 practice on a fresh joint + CP5.5 variation of information consolidated — resume at (1) CP6 (perplexity + bits/nats + label smoothing), (2) Feynman explain-back, (3) final cumulative quiz); `Mutual Information` (next_review 2026-09-28) and `KL Divergence` (2026-10-21) rows synced to Attempts.json; new `Variation of Information` row.
+- **Last Updated:** 2026-09-24 — L09 Information Theory **done** (CP6 + Feynman explain-back + final cumulative quiz 5/6, Q1 entropy slip repaired in-session); position advanced to Phase 1 **L10 Dimensionality Reduction**; new `Perplexity` / `Bits vs Nats` / `Label Smoothing` rows, `Entropy (Average Surprise)` / `KL Divergence` / `Mutual Information` / `Variation of Information` rows synced to Attempts.json (2026-09-24); the `Entropy` Attempts alias canonicalized into `Entropy (Average Surprise)`.
 
 ## Academic Context
 
 - **Year:** 2nd Year University Student
 - **Field:** AI/ML (Artificial Intelligence / Machine Learning)
-- **Current Focus:** AI Engineering from Scratch (Rohit) — Phase 1, Lesson 09 (Information Theory; paused after CP5.5, 2026-09-21 — resume at CP6)
+- **Current Focus:** AI Engineering from Scratch (Rohit) — Phase 1, **Lesson 10 (Dimensionality Reduction — PCA, t-SNE, UMAP)**; L09 Information Theory done 2026-09-24
 
 ## Current Roadmap
 
@@ -28,9 +29,9 @@
 - **Goal:** Build real AI systems end-to-end (math → DL → LLMs → agents → multimodal → production), shipping one artifact per lesson — Rohit is a source, not the source (Scout synthesizes docs/en.md + Further Reading).
 - **Source:** https://github.com/rohitg00/ai-engineering-from-scratch — `ROADMAP.md` (order) + `phases/<phase>/<lesson>/docs/en.md` + Further Reading external refs + `code/` per lesson.
 - **Roadmap stored at:** `Knowledge Wiki/wiki/AI Engineering from Scratch — Roadmap.md`; mission at `Learning System/MISSION.md`; curriculum at `Learning System/CURRICULUM.md`
-- **Current Position:** Phase 1 — Math Foundations: L07 Bayes ✅ (2026-09-05) · L08 Optimization ✅ (2026-09-10) · **L09 Information Theory paused after CP5.5 (2026-09-21)** — CP1–CP5 banked (CP4 re-sealed; CP5 practice on a fresh joint banked 2026-09-21, I = 0.1187 bits, the first answer 0.119 magnitude with the sign flipped, caught by MI ≥ 0; the 2026-09-18 KL-form slip repaired under retrieval) and CP5.5 variation of information consolidated (idea + practice 2/2 + exit ticket 3/3; VI a true metric per Meilă 2003/2007); earlier CP5 material — the nonnegativity re-digest (Gibbs' inequality, one-line Jensen proof) delivered and exit-ticketed 3/3; resume at (1) CP6 (perplexity + bits/nats + label smoothing), (2) Feynman explain-back, (3) final cumulative quiz — no Feynman yet for CP5/CP5.5
+- **Current Position:** Phase 1 — Math Foundations: L07 Bayes ✅ (2026-09-05) · L08 Optimization ✅ (2026-09-10) · **L09 Information Theory ✅ (2026-09-24)** — CP1–CP6 banked (CP4 re-sealed; CP5 practice on a fresh joint I = 0.1187 bits with the sign slip caught by MI ≥ 0; CP5.5 variation of information consolidated; CP6 perplexity + bits/nats + label smoothing with both practice slips repaired in-session), Feynman explain-back pass (attempt 3), final cumulative quiz 5/6 (Q1 entropy unweighted-surprise slip repaired in-session + isomorphic re-test 1.75 bits) · **next: L10 Dimensionality Reduction (not-started)**
 - **Archived:** SWE Primary Colors roadmap (archived 2026-09-01 — see `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` + wiki banner, 43 concepts paused) · Terminal System Monitor C project (archived 2026-08-24) · AI Engineering — Primary Colors Roadmap v2 (paused 2026-08-16) — see `Knowledge Wiki/wiki/AI Engineering Roadmap v2.md`
-- **Sequencing:** Phase 1 sequential (L07 ✅, L08 ✅, L09 in-progress) → Phases 2–19. Mission 0 catch-up and Phase 0 are done/covered. Full 20-phase map present for navigation; not a contract — after each phase, decide to go deeper / branch / build.
+- **Sequencing:** Phase 1 sequential (L07 ✅, L08 ✅, L09 ✅ 2026-09-24) → L10 Dimensionality Reduction (not-started) → Phases 2–19. Mission 0 catch-up and Phase 0 are done/covered. Full 20-phase map present for navigation; not a contract — after each phase, decide to go deeper / branch / build.
 
 ## Learning Style Preferences
 

@@ -111,6 +111,10 @@ Three notes that matter:
 
 Full treatment: [[Mutual Information]].
 
+## Retrieval log (2026-09-24)
+
+Final cumulative quiz of P1 L09: the floor identity carried the arithmetic (cross-entropy 1.75 bits − H(Q) 1.50 bits = **KL 0.25 bits**, pass), and the KL form of dependence — I(X;Y) = KL(p(x,y) ∥ p(x)p(y)) — came back **cold** (final-quiz Q3, pass) after the 2026-09-16 → 2026-09-21 repairs. Both `sure`, grade-audit agreed. The ∞ case rehearsed here is exactly what the smoothing family exists to remove: [[Label Smoothing]] on the target side, [[Laplace Smoothing]] / [[Add-1 Smoothing]] on the counts side.
+
 ## Units
 
 log₂ → bits, ln → nats (1 nat ≈ 1.4427 bits, so 0.189 bits ≈ 0.131 nats). Changing the base multiplies every KL and cross-entropy number by the same constant, so it never moves the minimum — but mixing bits and nats is a silent factor of 1.4427. PyTorch's native losses report nats.
