@@ -19,7 +19,7 @@ After any multi-file session (wiki page + index + log + Active Concepts + sessio
 
 Teaching sessions additionally verify (per `Skills/learning-teach/SKILL.md`):
 
-- Lesson file → exists in `Learning System/Lessons/` with today's date (on `/pause`: partial file with `Status: paused at Checkpoint N/M` + `Resume from:` pointer; curriculum row `in-progress (paused N/M)`, Scout digest kept)
+- Lesson file → exists in `Learning System/Lessons/` with today's date (on `/pause`: partial file with `Status: paused at Checkpoint N/M, mini K/L` + `Resume from:` pointer to the next mini-checkpoint or the checkpoint practice; curriculum row `in-progress (paused N/M)`, Scout digest kept)
 - Learning record → numbered `highest + 1` in `Learning System/Learning Records/`, with Bloom level + Feynman explain-back in Evidence (final checkpoint only; pauses write session note + partial ingest, no full record)
 - Curriculum lesson advanced → only if practice + retrieval pass + Feynman pass; status in `Learning System/CURRICULUM.md` matches reality
 - New concepts from teaching → `developing` with `last_reviewed` = today, `next_review` = +3d

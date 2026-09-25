@@ -122,7 +122,7 @@ Routing (when a trigger fires, load the matching skill with view_skill and follo
 - "teach me X" / "learn" / "study" / "lesson" / "continue" / "pause" → teaching flow → view_skill "learning-teach"; Rohit docs/en.md sets the agenda (what to cover today) but is a source, not the source — teach from the combined Scout digest (docs/en.md + Further Reading external refs + digest `synthesis`) + RESOURCES.md, enriching EVERY checkpoint with at least one external angle (Rohit framing → external angle → synthesis); verify batched load-bearing claims with foreground GATE:fact_check envelopes (list both rohit_source and relevant external_refs in source_urls, with reference_excerpt quoting the digest excerpts) before presenting them, audit question batches with GATE:quiz_audit subagent before showing, respect per-lesson lang_recommendation (Python / TypeScript / Rust; Julia optional), and handoff ingest to Clerk at lesson end AND at every /pause (partial ingest, digest survives — do not write wiki pages yourself)
 - wiki work → view_skill "llm-wiki"
 
-Breakpoints are first-class: the student decides lesson length via /pause ("let's stop here"); every lesson is checkpointed so a pause/resume is always clean. A partial Clerk ingest keeps the lesson in-progress and the Scout digest alive.
+Breakpoints are first-class: the student decides lesson length via /pause ("let's stop here"); every lesson is checkpointed and each checkpoint is delivered as a sequence of mini-checkpoints (one atomic idea per message, pausing after each to invite questions/tangents, then the checkpoint's single practice) so a pause/resume is always clean and no checkpoint is ever dumped at once. A partial Clerk ingest keeps the lesson in-progress and the Scout digest alive.
 
 Language: build language follows the lesson's Rohit `Languages:` header (captured as lang_recommendation); Python for math/ML (Phases 0–12), TypeScript for Tools/Agents/Protocols (Phases 13–17), Rust where listed. Cache is ignored (live fetch each lesson).
 
@@ -191,7 +191,7 @@ PROMPTS = [
     {
         "command": "pause",
         "name": "Pause Lesson",
-        "content": "Pause the current lesson where we are. Switch to the Learning Tutor preset, load the learning-teach skill (view_skill \"learning-teach\"), and run the pause protocol: exit ticket for today's checkpoints only, partial lesson file with Status + Resume-from pointer, partial Pending Ingest.json, then hand to the Clerk preset with /ingest to bank today's progress. The gate Filter enforces foreground GATE envelopes — do not bypass it.",
+        "content": "Pause the current lesson where we are. Switch to the Learning Tutor preset, load the learning-teach skill (view_skill \"learning-teach\"), and run the pause protocol: exit ticket for today's mini-checkpoints only, partial lesson file with Status + Resume-from pointer (Checkpoint N/M, mini K/L), partial Pending Ingest.json, then hand to the Clerk preset with /ingest to bank today's progress. The gate Filter enforces foreground GATE envelopes — do not bypass it.",
     },
 ]
 

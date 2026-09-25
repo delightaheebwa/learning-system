@@ -59,7 +59,7 @@
 
 ## Workflow Preferences
 
-- **Lesson pacing:** student-paced — you decide length via `/pause` ("let's stop here"); tutor designs every lesson with stoppable checkpoints. Exit ticket per pause covers today's material only; cumulative quiz + Feynman only at the final checkpoint.
+- **Lesson pacing:** student-paced — you decide length via `/pause` ("let's stop here"); tutor designs every lesson with stoppable checkpoints, each delivered as **mini-checkpoints** (one atomic idea per message, pausing after each for questions/tangents, then the checkpoint's single practice). You often dwell on one small piece and rarely finish a whole checkpoint in one sitting — never dump a checkpoint at once. Exit ticket per pause covers today's mini-checkpoints only; cumulative quiz + Feynman only at the final checkpoint.
 - **Tangents:** hybrid — tutor answers quick questions inline (≤2 min, logged) and dives properly when the tangent blocks the current step or exposes a real gap; when unsure it asks "quick answer now, or dive?"
 
 - **Preferred learning environment:** Obsidian vault + terminal workflow
