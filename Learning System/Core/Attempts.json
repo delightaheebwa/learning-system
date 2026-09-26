@@ -915,13 +915,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "discriminative"
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
-      "interval_index": 2,
-      "consecutive_correct": 2,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-11",
-      "next_review": "2026-09-25",
+      "interval_index": 1,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-03",
       "feynman": null
     },
     "Cosine Similarity": {
@@ -1294,13 +1300,31 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-09-21",
-      "next_review": "2026-09-24",
+      "interval_index": 3,
+      "consecutive_correct": 3,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-26",
       "feynman": "pass"
     },
     "MLE vs MAP Estimation": {
@@ -1462,13 +1486,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
       "interval_index": 2,
-      "consecutive_correct": 2,
+      "consecutive_correct": 3,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-10",
-      "next_review": "2026-09-24",
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-10",
       "feynman": "pass"
     },
     "Sequential Bayesian Updating": {

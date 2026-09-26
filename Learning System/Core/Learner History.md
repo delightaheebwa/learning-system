@@ -22,20 +22,21 @@ Totals: 315 concepts (86 with attempt history + 229 paused) — aiefs 37 · swe 
 | Adam (adaptive moments) | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-09-26.md |
 | Base Rate Fallacy | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-24.md |
 | Chain Rule for Neural Networks | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-26.md |
-| Conditional Independence | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Conditional Independence — 2026-09-21.md |
-| Conjugate Priors | concept | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-19.md |
+| Conjugate Priors | concept | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-26.md |
 | Entropy (Average Surprise) | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-09-24.md |
 | Naive Bayes | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Naive Bayes — 2026-09-24.md |
 | PMF vs PDF | concept | fuzzy | 2026-09-26 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-24.md |
 | Posterior Probability | concept | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Posterior Probability — 2026-09-26.md |
+| Softmax Subtract-Max Trick | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-26.md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-09-26 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-26.md |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral | 2026-09-26 | last reviewed 2026-09-26 |
 | Bits vs Nats | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
+| Conditional Independence | concept | solid | 2026-09-26 | Learning System/Reviews/Review — Conditional Independence — 2026-09-26.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
 | Eigenvalues & Eigenvectors | concept | neutral | 2026-09-26 | Learning System/Archive/AIE-2026-07-28/reviews/Review — Eigenvalues & Eigenvectors — 2026-07-16.md |
-| Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
+| Gradient Descent (vanilla) | procedure | solid | 2026-09-26 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-09-26.md |
 | Gradient Descent Failure Modes (zigzag vs overshoot) | concept | neutral | 2026-09-25 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-09-24.md |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
 | KL Divergence | concept | neutral | 2026-09-26 | Learning System/Reviews/Review — KL Divergence — 2026-09-21.md |
@@ -53,7 +54,6 @@ Totals: 315 concepts (86 with attempt history + 229 paused) — aiefs 37 · swe 
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
-| Softmax Subtract-Max Trick | procedure | solid | 2026-09-11 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-05.md |
 | Variance & Covariance | concept | neutral | 2026-09-26 | last reviewed 2026-09-26 |
 | Variation of Information | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
 

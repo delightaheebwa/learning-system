@@ -1,6 +1,6 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status: paused at Checkpoint 1/6, mini 1/2** (CP1 mini 1 sealed; exit ticket 3/3)
+**Status:** paused at Checkpoint 1/6, mini 1/2 (CP1 mini 1 sealed; exit ticket 3/3)
 **Resume from:** CP1 mini 2 — where the new directions come from ($Av = \lambda v$ on the covariance matrix: eigenvectors = the new basis, eigenvalues = variance along each) — then CP1 practice, then CP2.
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
