@@ -886,13 +886,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-09-25",
-      "next_review": "2026-09-28",
+      "consecutive_wrong": 2,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-09-29",
       "feynman": "fail"
     },
     "Softmax Subtract-Max Trick": {
@@ -1346,13 +1352,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
         }
       ],
       "interval_index": 0,
       "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-09-19",
-      "next_review": "2026-09-22",
+      "consecutive_wrong": 2,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-09-29",
       "feynman": null
     },
     "Bayesian A/B Testing": {
@@ -1814,13 +1826,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 10,
+      "consecutive_correct": 11,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-24",
-      "next_review": "2026-10-24",
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-26",
       "feynman": null
     },
     "Learning Rate": {
@@ -1955,13 +1973,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-09-24",
-      "next_review": "2026-09-27",
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-03",
       "feynman": null
     },
     "Bits vs Nats": {
@@ -2026,6 +2050,46 @@
       "last_reviewed": "2026-09-24",
       "next_review": "2026-10-01",
       "feynman": "pass"
+    },
+    "Eigenvalues & Eigenvectors": {
+      "type": "concept",
+      "attempts": [
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-03",
+      "feynman": null
+    },
+    "Variance & Covariance": {
+      "type": "concept",
+      "attempts": [
+        {
+          "date": "2026-09-26",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": null
+        },
+        {
+          "date": "2026-09-26",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": null
+        }
+      ],
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-09-26",
+      "next_review": "2026-10-03",
+      "feynman": null
     }
   },
   "meta": {
