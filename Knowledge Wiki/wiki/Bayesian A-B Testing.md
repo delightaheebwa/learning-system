@@ -34,3 +34,7 @@ Ship B if P(B>A) > 0.95; ship A if < 0.05; otherwise keep collecting.
 | Prior knowledge | Not used | Encoded as Beta prior |
 
 Three killer advantages: a **direct probability statement** ('97% chance B is better'); **no peeking problem** (check anytime — the posterior doesn't depend on when you looked); and **prior knowledge** (encode past tests as the Beta prior to decide faster on scarce early data).
+
+## Retrieval log (2026-09-26)
+
+- Review retry PASS (MCQ "B"): the Bayesian A/B test REPORTS a direct posterior probability P(B beats A | data) with a credible interval on the lift; the p-value side is the reverse conditional P(data ≥ observed \| no difference), and sequential updating is the mechanism, not the report (the 09-23 slip, now avoided under retrieval). Grade-audit agreed. The 2026-09-23 mistake row moves to `review` (retries 1, next 2026-10-03); graduation needs a second consecutive correct. `next_review` 2026-10-03 (interval_index 1).

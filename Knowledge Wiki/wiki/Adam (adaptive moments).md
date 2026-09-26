@@ -65,3 +65,7 @@ SGD with momentum also achieves lower final loss on many practical tasks because
 Consistently large gradient → v is large → scale down → steps stay bounded. Rare weight with very large movement → the size of the scaling matrix rescales the direction.
 
 Adam is the reliable default — a self-tuner for weight learning rates. On messy real neural-net objective function landscapes with wildly different gradient scales across parameters, it just works out of the box. But Adam isn't "better" in all senses: SGD + momentum often beats Adam on final test accuracy because SGD's residual noise keeps it from settling into sharp minima (worse generalizers), whereas Adam's smooth adaptation can land in a sharp narrow valley that doesn't perform well on unseen data.
+
+## Retrieval log (2026-09-26)
+
+- Review FAIL metacognitive ("didn't know", own words) at the first graded retrieval of the m̂₂/v̂₂ machinery since L08. Walk-through delivered same session (fact-checked): m = smoothed direction (0.9 old + 0.1 new), v = smoothed ∣g∣²; the averages START at zero so early estimates are only a fraction of the way home — the hats divide by that fraction: m̂₂ = 0.00019/(1−0.81) = 0.001; v̂₂ = 1.999e−9/(1−0.998001) = 1e−6; step = 0.001/√1e−6 = 1.0 × lr. The units story: m̂/√v̂ is dimensionless (gradient units over gradient units) ≈ ±1 — Adam asks only which SIGN and steps by a fixed lr, i.e. scale-invariant sign-descent behavior. New Mistakes row (metacognitive); retry 2026-10-03. `next_review` 2026-10-03 (interval_index 1, consecutive_wrong 1).

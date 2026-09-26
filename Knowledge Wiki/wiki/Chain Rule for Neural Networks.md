@@ -34,3 +34,7 @@ Using **addition** (+) instead of **multiplication** (×) when computing gradien
 - [[Backpropagation]]
 - [[Reverse-Mode Autodiff & Backprop]]
 - [[Chain Rule Decomposition]]
+
+## Retrieval log (2026-09-26)
+
+- Review FAIL (first graded retrieval of the two-path chain rule since L05): df/dx for f = (x+y)·x² at (2,3) answered as the fused product 2x(x+y)(x²+1) — which evaluates to 100 — instead of the two-path sum (x+y)(2x) + x² = 20 + 4 = **24** (closed form 3x² + 2xy). Repair delivered same session: x is one pipe feeding f through two parallel valves (u = x+y and z = x²); one nudge of x changes f through both slots simultaneously and the changes ADD (the additive form IS the product rule g′h + gh′); the multiplicative fusion also fails the plug-in test (100 ≠ 24). Nudge-y contrast seeded (y reaches f only through u: df/dy = x² = 4, single path). New Mistakes row (application); retry 2026-10-03.

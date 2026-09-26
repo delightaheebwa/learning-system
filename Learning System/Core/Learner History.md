@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-09-24)
+# Learner History — compact tutor context (generated 2026-09-26)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,29 +13,30 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 314 concepts (84 with attempt history + 230 paused) — aiefs 35 · swe 66 · aie 213 · solid 8 · neutral 290 · fuzzy 16
+Totals: 314 concepts (84 with attempt history + 230 paused) — aiefs 35 · swe 66 · aie 213 · solid 6 · neutral 291 · fuzzy 17
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| 4-Layer AI Environment Stack | concept | fuzzy | 2026-09-23 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-23.md |
-| Base Rate Fallacy | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-19.md |
-| Bayesian A/B Testing | concept | fuzzy | 2026-09-23 | last reviewed 2026-09-23 |
+| Adam (adaptive moments) | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-09-26.md |
+| Base Rate Fallacy | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-24.md |
+| Chain Rule for Neural Networks | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-26.md |
 | Conditional Independence | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Conditional Independence — 2026-09-21.md |
 | Conjugate Priors | concept | fuzzy | 2026-09-19 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-19.md |
-| Gradient Descent Failure Modes (zigzag vs overshoot) | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-09-21 (II).md |
-| Naive Bayes | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Naive Bayes — 2026-09-21.md |
+| Entropy (Average Surprise) | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-09-24.md |
+| Naive Bayes | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — Naive Bayes — 2026-09-24.md |
 | Perplexity | concept | fuzzy | 2026-09-24 | last reviewed 2026-09-24 |
-| Posterior Probability | concept | fuzzy | 2026-09-21 | Learning System/Reviews/Review — Posterior Probability — 2026-09-21 (II).md |
-| Adam (adaptive moments) | procedure | solid | 2026-09-12 | last reviewed 2026-09-12 |
+| PMF vs PDF | concept | fuzzy | 2026-09-25 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-24.md |
+| Posterior Probability | concept | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Posterior Probability — 2026-09-26.md |
+| 4-Layer AI Environment Stack | concept | neutral | 2026-09-26 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-26.md |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
+| Bayesian A/B Testing | concept | neutral | 2026-09-26 | last reviewed 2026-09-26 |
 | Bits vs Nats | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
-| Chain Rule for Neural Networks | procedure | solid | 2026-09-12 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-05.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
-| Entropy (Average Surprise) | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-10 | last reviewed 2026-09-10 |
+| Gradient Descent Failure Modes (zigzag vs overshoot) | concept | neutral | 2026-09-25 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-09-24.md |
 | Information Content (Surprise) | concept | neutral | 2026-09-11 | last reviewed 2026-09-11 |
 | KL Divergence | concept | neutral | 2026-09-24 | Learning System/Reviews/Review — KL Divergence — 2026-09-21.md |
 | Label Smoothing | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
@@ -48,7 +49,6 @@ Totals: 314 concepts (84 with attempt history + 230 paused) — aiefs 35 · swe 
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-16 | last reviewed 2026-09-16 |
 | Mutual Information | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| PMF vs PDF | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-15.md |
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
