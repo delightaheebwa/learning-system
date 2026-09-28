@@ -188,5 +188,162 @@ class TestAttemptCommand(unittest.TestCase):
         self.assertIn("0.50", out)
 
 
+class TestQueueCommand(unittest.TestCase):
+    """The deterministic review queue (ops.py queue): due-mistake priority,
+    scheduler-truth due reviews, question-type alternation, adjacency guard,
+    drift notes, and the digest skeleton."""
+
+    def _seed(self, active_rows, mistakes_rows, attempts):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        (core / "Attempts.json").write_text(
+            json.dumps({"concepts": attempts, "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS}}),
+            encoding="utf-8")
+        header = "| Concept | Track | Type | Status | Source | Last Reviewed | Next Review | Last Q Type | Open Question |"
+        sep = "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
+        (core / "📚 Active Concepts.md").write_text(
+            "\n".join(["# KNOWLEDGE BASE", "", header, sep, *active_rows]) + "\n", encoding="utf-8")
+        mheader = ("| Date | Concept | Question | Expected | Error Type | Self-Attribution | "
+                   "Status | Retries | Next Retry |")
+        msep = "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
+        (core / "🧯 Mistakes.md").write_text(
+            "\n".join(["# Mistakes", "", mheader, msep, *mistakes_rows]) + "\n", encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        return Path(tmp.name)
+
+    @staticmethod
+    def _attempt(next_review, ctype="concept", last_q=None, feynman=None):
+        return {"type": ctype, "attempts": [{"date": "2026-09-01", "is_correct": True,
+                "result": "pass", "q_type": last_q}], "interval_index": 0,
+                "consecutive_correct": 1, "consecutive_wrong": 0,
+                "last_reviewed": "2026-09-01", "next_review": next_review, "feynman": feynman}
+
+    @staticmethod
+    def _active(name, next_review="2026-09-20", last_q="definitional", source="Rohit P1 L01 (Python)",
+                ctype="concept", track="aiefs"):
+        return (f"| {name} | {track} | {ctype} | developing | {source} | 2026-09-01 | "
+                f"{next_review} | {last_q} | note |")
+
+    @staticmethod
+    def _mistake(date, name, next_retry, status="active", error_type="structural"):
+        return (f"| {date} | {name} | Q? | Expected | {error_type} | why | {status} | 0 | "
+                f"{next_retry} |")
+
+    def test_prioritizes_oldest_due_mistakes_then_reviews(self):
+        self._seed(
+            active_rows=[
+                self._active("M1", next_review="2026-09-01", source="Rohit P1 L01 (Python)"),
+                self._active("M2", next_review="2026-09-01", source="Rohit P1 L02 (Python)"),
+                self._active("R1", next_review="2026-09-01", source="Rohit P1 L03 (Python)"),
+            ],
+            mistakes_rows=[
+                self._mistake("2026-09-05", "M1", "2026-09-06"),
+                self._mistake("2026-09-02", "M2", "2026-09-03"),  # oldest
+            ],
+            attempts={"M1": self._attempt("2026-09-01"), "M2": self._attempt("2026-09-01"),
+                      "R1": self._attempt("2026-09-01")},
+        )
+        q = ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)
+        self.assertEqual([e["concept"] for e in q["queue"][:2]], ["M2", "M1"])
+        self.assertTrue(all(e["due_kind"] == "mistake" for e in q["queue"][:2]))
+        self.assertEqual(q["queue"][2]["concept"], "R1")
+        self.assertEqual(q["queue"][2]["due_kind"], "review")
+
+    def test_excludes_not_due_and_other_tracks(self):
+        self._seed(
+            active_rows=[
+                self._active("Due", next_review="2026-09-01"),
+                self._active("NotDue", next_review="2026-10-30"),
+                self._active("OtherTrack", next_review="2026-09-01", track="swe"),
+            ],
+            mistakes_rows=[self._mistake("2026-09-01", "NotDue", "2026-10-30")],
+            attempts={"Due": self._attempt("2026-09-01"), "NotDue": self._attempt("2026-10-30"),
+                      "OtherTrack": self._attempt("2026-09-01")},
+        )
+        q = ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)
+        names = [e["concept"] for e in q["queue"]]
+        self.assertEqual(names, ["Due"])
+
+    def test_question_type_alternates_by_last_q_type(self):
+        self._seed(
+            active_rows=[
+                self._active("Defn", next_review="2026-09-01", last_q="definitional"),
+                self._active("Disc", next_review="2026-09-01", last_q="discriminative"),
+                self._active("Blank", next_review="2026-09-01", last_q=""),
+            ],
+            mistakes_rows=[],
+            attempts={"Defn": self._attempt("2026-09-01"), "Disc": self._attempt("2026-09-01"),
+                      "Blank": self._attempt("2026-09-01")},
+        )
+        by = {e["concept"]: e for e in ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)["queue"]}
+        self.assertEqual(by["Defn"]["question_type"], "discriminative")
+        self.assertEqual(by["Disc"]["question_type"], "definitional")
+        self.assertEqual(by["Blank"]["question_type"], "discriminative")
+
+    def test_adjacency_guard_avoids_consecutive_same_source(self):
+        self._seed(
+            active_rows=[
+                self._active("A1", next_review="2026-09-01", source="Rohit P1 L01 (Python)"),
+                self._active("A2", next_review="2026-09-01", source="Rohit P1 L01 (Python)"),
+                self._active("B1", next_review="2026-09-01", source="Rohit P1 L02 (Python)"),
+            ],
+            mistakes_rows=[],
+            attempts={"A1": self._attempt("2026-09-01"), "A2": self._attempt("2026-09-01"),
+                      "B1": self._attempt("2026-09-01")},
+        )
+        keys = [ops._source_key(e) for e in ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 3)["queue"]]
+        self.assertFalse(any(a == b for a, b in zip(keys, keys[1:])))
+
+    def test_dedupes_same_concept_and_caps_mistakes_at_two(self):
+        self._seed(
+            active_rows=[
+                self._active("M1", next_review="2026-09-01"),
+                self._active("M2", next_review="2026-09-01"),
+                self._active("M3", next_review="2026-09-01"),
+            ],
+            mistakes_rows=[
+                self._mistake("2026-09-01", "M1", "2026-09-02"),
+                self._mistake("2026-09-02", "M1", "2026-09-02"),  # duplicate concept
+                self._mistake("2026-09-03", "M2", "2026-09-02"),
+                self._mistake("2026-09-04", "M3", "2026-09-02"),
+            ],
+            attempts={"M1": self._attempt("2026-09-01"), "M2": self._attempt("2026-09-01"),
+                      "M3": self._attempt("2026-09-01")},
+        )
+        q = ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)
+        mistakes = [e["concept"] for e in q["queue"] if e["due_kind"] == "mistake"]
+        self.assertEqual(mistakes, ["M1", "M2"])
+
+    def test_reports_next_review_drift(self):
+        self._seed(
+            active_rows=[self._active("Drift", next_review="2026-09-01")],
+            mistakes_rows=[],
+            attempts={"Drift": self._attempt("2026-09-15")},  # scheduler disagrees with AC
+        )
+        q = ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)
+        self.assertEqual(q["queue"], [])
+        self.assertTrue(any("Drift" in w and "!=" in w for w in q["warnings"]))
+
+    def test_digest_skeleton_written(self):
+        self._seed(
+            active_rows=[self._active("Due", next_review="2026-09-01")],
+            mistakes_rows=[],
+            attempts={"Due": self._attempt("2026-09-01")},
+        )
+        rel = "Learning System/.tmp/review-test-aiefs.json"
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_queue("aiefs", ops._parse_date("2026-09-10"), 5, digest_path=rel)
+        self.assertIn("WROTE", buf.getvalue())
+        digest = json.loads((ops.ROOT / rel).read_text(encoding="utf-8"))
+        self.assertIsNone(digest["position"])
+        self.assertEqual(digest["queue"][0]["concept"], "Due")
+        self.assertIn(digest["queue"][0]["source_excerpt"], ("note",))  # notes fallback
+
+
 if __name__ == "__main__":
     unittest.main()

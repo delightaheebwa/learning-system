@@ -9,6 +9,18 @@ Usage:
                                   One call replaces: Learning Profile read, Active
                                   Concepts track slice, Attempts.json, Mistakes.md,
                                   log tail, index head.
+  ops.py state TRACK --review     Compact review-session context: Learning Profile +
+                                  the computed due queue (same as `queue`). Use this
+                                  instead of the full `state` dump when starting a
+                                  /review session.
+  ops.py queue TRACK [--date YYYY-MM-DD] [--slots N] [--json] [--digest PATH]
+                                  Compute the deterministic review queue: up to 2
+                                  priority-1 due mistakes (oldest first) then due
+                                  reviews from Attempts.json, shuffled with a
+                                  same-Source adjacency guard and per-concept
+                                  question-type alternation. Prints a human table
+                                  (default), the queue JSON (--json), or writes the
+                                  review digest skeleton to PATH (--digest).
   ops.py bundle SPEC [SPEC...]    Read many targets in one call. SPEC syntax:
                                     PATH            whole file
                                     PATH:N-M        lines N..M (1-based, inclusive)
@@ -33,6 +45,7 @@ All paths resolve under the workspace root (/home/user/learning-system). Escapes
 
 import json
 import os
+import random
 import re
 import sys
 from datetime import date, datetime, timedelta
@@ -81,7 +94,10 @@ DEFAULT_INTERVALS = {
 }
 ATTEMPTS_PATH = "Learning System/Core/Attempts.json"
 MISTAKES_PATH = "Learning System/Core/🧯 Mistakes.md"
+ACTIVE_PATH = "Learning System/Core/📚 Active Concepts.md"
+WIKI_DIR = "Knowledge Wiki/wiki"
 MASTERY_WEIGHTS = [0.4, 0.25, 0.15, 0.1, 0.1]
+ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
 
 
 def _resolve(p: str) -> Path:
@@ -236,6 +252,294 @@ def compute_mastery(attempts: list) -> float:
     return round(score, 2)
 
 
+def _parse_date(s: str):
+    s = (s or "").strip()
+    try:
+        return datetime.strptime(s, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _parse_table_rows(path: Path, min_cols: int):
+    """Parse markdown table rows into cell lists, skipping the header and the
+    separator row. Cells are split on '|'; ragged rows shorter than min_cols are
+    dropped. The caller is responsible for joining any over-flowing trailing
+    cells (e.g. free-text notes that contain a literal '|')."""
+    if not path.is_file():
+        return []
+    rows = []
+    for ln in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        s = ln.strip()
+        if not s.startswith("|"):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if len(cells) < min_cols:
+            continue
+        if all(re.fullmatch(r":?-{2,}:?", c) for c in cells if c != ""):
+            continue
+        rows.append(cells)
+    return rows
+
+
+def _track_matches(row_track: str, track: str) -> bool:
+    rt = (row_track or "").lower().strip()
+    t = track.lower().strip()
+    if t in ("aiefs", "aie"):
+        return rt in ("aiefs", "aie")
+    return rt == t
+
+
+def _active_rows(track: str):
+    """Return (track_rows map, all_rows list) parsed from Active Concepts.md."""
+    rows = _parse_table_rows(_resolve(ACTIVE_PATH), 8)
+    all_rows, track_rows = [], {}
+    for c in rows:
+        if c[0].lower() == "concept":
+            continue
+        rec = {
+            "concept": c[0], "track": c[1], "type": c[2], "status": c[3],
+            "source": c[4], "last_reviewed": c[5], "next_review": c[6],
+            "last_q_type": c[7], "notes": " | ".join(c[8:]).strip(),
+        }
+        all_rows.append(rec)
+        track_rows[rec["concept"]] = rec
+    if track:
+        track_rows = {k: v for k, v in track_rows.items() if _track_matches(v["track"], track)}
+    return track_rows, all_rows
+
+
+def _mistakes_rows():
+    """Parse the mistakes ledger. error_type is located by matching the enum
+    (robust to literal '|' in the question/expected/self-attribution cells);
+    status/retries/next_retry are always the last three cells."""
+    rows = _parse_table_rows(_resolve(MISTAKES_PATH), 9)
+    out = []
+    for c in rows:
+        if c[0].lower() == "date":
+            continue
+        idx = next((i for i in range(4, len(c)) if c[i].lower() in ERROR_TYPES), None)
+        if idx is None or len(c) < 9:
+            continue
+        out.append({
+            "date": c[0], "concept": c[1], "question": c[2],
+            "expected": " | ".join(c[3:idx]),
+            "error_type": c[idx].lower(),
+            "self_attribution": " | ".join(c[idx + 1:len(c) - 3]),
+            "status": c[-3].lower(), "retries": c[-2], "next_retry": c[-1],
+        })
+    return out
+
+
+def _source_key(entry: dict) -> str:
+    """Normalize the Source column so the adjacency guard compares the same
+    lesson/mission origin: drop the language parenthetical, prefer a
+    'rohit pn lnn' token, else the lowercased text."""
+    src = (entry.get("source") or "").lower()
+    src = re.sub(r"\([^)]*\)", "", src)
+    m = re.search(r"rohit\s+p\d+\s+l\d+", src)
+    return (m.group(0) if m else src).strip()
+
+
+def _concept_excerpt(name: str, notes: str) -> str:
+    """Best-effort grounding excerpt for a queue entry: the wiki page's Insight
+    line + first body paragraph, else the Active Concepts notes cell."""
+    try:
+        wiki = _resolve(WIKI_DIR)
+        target = None
+        direct = _resolve(f"{WIKI_DIR}/{name}.md")
+        if direct.is_file():
+            target = direct
+        elif wiki.is_dir():
+            files = os.listdir(wiki)
+            low = name.lower()
+            exact = [f for f in files if f.lower() == f"{low}.md"]
+            fuzzy = [f for f in files if low in f.lower() or f[:-3].lower() in low]
+            pick = (exact or fuzzy or [None])[0]
+            if pick:
+                target = _resolve(f"{WIKI_DIR}/{pick}")
+        if target is not None and target.is_file():
+            lines = [l.strip() for l in target.read_text(encoding="utf-8", errors="replace").splitlines()]
+            insight = next((l for l in lines if "**Insight:**" in l), "")
+            insight = re.sub(r"^>\s*", "", insight)
+            body = [l for l in lines if l and not l.startswith(("#", ">", "|"))]
+            parts = [insight] if insight else []
+            if body:
+                parts.append(" ".join(body[:3]))
+            ex = " ".join(parts).strip()
+            if ex:
+                return ex[:500]
+    except Exception:
+        pass
+    return (notes or "").strip()[:500]
+
+
+def _question_type(last_q: str) -> str:
+    """Alternate by Last Q Type: definitional -> discriminative; everything else
+    (discriminative, computational, memory, blank) -> definitional."""
+    return "definitional" if (last_q or "").strip().lower() == "discriminative" else "discriminative"
+
+
+def _order_adjacency(entries, keyfn, initial_key=None):
+    """Reorder so no two consecutive entries share a Source key whenever a valid
+    arrangement exists (most-frequent-remaining-key first, never the previous
+    key). Falls back to the remaining order when the constraint is impossible."""
+    groups = {}
+    for e in entries:
+        groups.setdefault(keyfn(e), []).append(e)
+    result = []
+    last = initial_key
+    while len(result) < len(entries):
+        keys = [k for k, v in groups.items() if v]
+        if not keys:
+            break
+        pickable = [k for k in keys if k != last] or keys
+        best = max(pickable, key=lambda k: len(groups[k]))
+        result.append(groups[best].pop(0))
+        last = best
+    return result
+
+
+def _queue_entry(row: dict, attempts: dict, due_kind: str, mistake=None) -> dict:
+    name = row["concept"]
+    e = attempts.get(name, {}) or {}
+    last_q = row.get("last_q_type") or ""
+    return {
+        "concept": name,
+        "type": row.get("type", "concept"),
+        "source": row.get("source", ""),
+        "last_q_type": last_q,
+        "question_type": _question_type(last_q),
+        "due_kind": due_kind,
+        "last_reviewed": row.get("last_reviewed", ""),
+        "next_review": e.get("next_review") or row.get("next_review", ""),
+        "mastery": compute_mastery(e.get("attempts", [])),
+        "feynman": e.get("feynman") or None,
+        "error_type": (mistake or {}).get("error_type"),
+        "self_attribution": (mistake or {}).get("self_attribution"),
+        "source_excerpt": _concept_excerpt(name, row.get("notes", "")),
+    }
+
+
+def _build_queue(track: str, day: date, slots: int = 5) -> dict:
+    """Compute the deterministic review queue and return the payload dict."""
+    data, _ = _load_attempts()
+    attempts = data.get("concepts", {})
+    track = (track or "aiefs").lower().strip()
+    track_rows, all_rows = _active_rows(track)
+    notes = []
+
+    # Slots 1-2: due mistakes (active/review, next retry <= day), oldest first,
+    # one per concept.
+    due_mistakes, seen = [], set()
+    for m in sorted(_mistakes_rows(), key=lambda r: r["date"]):
+        if m["status"] not in ("active", "review"):
+            continue
+        nr = _parse_date(m["next_retry"])
+        if not nr or nr > day:
+            continue
+        if m["concept"] in seen:
+            continue
+        row = track_rows.get(m["concept"])
+        if row is None:
+            other = next((r for r in all_rows if r["concept"] == m["concept"]), None)
+            if other is not None:
+                notes.append(f"due mistake '{m['concept']}' is in track '{other['track']}', not '{track}'")
+            else:
+                notes.append(f"due mistake '{m['concept']}' has no Active Concepts row")
+            continue
+        seen.add(m["concept"])
+        due_mistakes.append((m, row))
+        if len(due_mistakes) >= 2:
+            break
+
+    # Remaining slots: due reviews from Attempts.json (scheduler truth).
+    candidates = []
+    for name, row in track_rows.items():
+        if name in seen:
+            continue
+        e = attempts.get(name)
+        if not e:
+            if (_parse_date(row.get("next_review")) or date.max) <= day:
+                notes.append(f"'{name}' due in Active Concepts ({row['next_review']}) but missing from Attempts.json")
+            continue
+        nr = _parse_date(e.get("next_review"))
+        if nr and nr <= day:
+            candidates.append((name, row, e))
+
+    rng = random.Random(f"{track}:{day.isoformat()}")
+    rng.shuffle(candidates)
+    ordered = _order_adjacency(
+        candidates, keyfn=lambda t: _source_key(t[1]),
+        initial_key=_source_key(due_mistakes[-1][1]) if due_mistakes else None)
+
+    queue = [_queue_entry(row, attempts, "mistake", m) for m, row in due_mistakes]
+    for name, row, _e in ordered[:max(0, slots - len(queue))]:
+        queue.append(_queue_entry(row, attempts, "review"))
+
+    # Drift: Active Concepts next_review vs Attempts.json (scheduler truth).
+    for name, row in track_rows.items():
+        e = attempts.get(name)
+        if e and row.get("next_review") and e.get("next_review") and row["next_review"] != e["next_review"]:
+            notes.append(f"'{name}' Next Review {row['next_review']} (AC) != {e['next_review']} (Attempts)")
+
+    # Dedupe + cap the drift notes (report, never fix).
+    notes = list(dict.fromkeys(notes))[:12]
+
+    return {
+        "track": track, "date": day.isoformat(),
+        "due_mistakes": len(due_mistakes), "due_reviews": len(queue) - len(due_mistakes),
+        "slots": slots, "queue": queue, "warnings": notes,
+    }
+
+
+def do_queue(track: str, day: date, slots: int = 5, as_json: bool = False,
+             digest_path: str = None) -> None:
+    payload = _build_queue(track, day, slots)
+
+    if digest_path:
+        p = _resolve(digest_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        digest = {
+            "track": payload["track"], "digest": digest_path,
+            "generated_at": datetime.now().isoformat(timespec="seconds"),
+            "position": None, "queue": payload["queue"],
+            "due_mistakes": payload["due_mistakes"], "due_reviews": payload["due_reviews"],
+            "warnings": payload["warnings"],
+        }
+        p.write_text(json.dumps(digest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"WROTE {digest_path} ({len(payload['queue'])} queue entr"
+              f"{'y' if len(payload['queue']) == 1 else 'ies'})")
+        if not as_json:
+            _print_queue_table(payload)
+        return
+
+    if as_json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+
+    _print_queue_table(payload)
+
+
+def _print_queue_table(payload: dict) -> None:
+    q = payload["queue"]
+    print(f"REVIEW QUEUE — track {payload['track']} — {payload['date']}    "
+          f"({len(q)} slot(s): {payload['due_mistakes']} due mistake(s), {payload['due_reviews']} due review(s))")
+    if not q:
+        print("(nothing due — no mistakes or reviews on or before today)")
+    for i, e in enumerate(q, 1):
+        tail = f"mastery {e['mastery']:.2f}"
+        if e["due_kind"] == "mistake":
+            tail += f" · error_type {e['error_type']}"
+        print(f"{i}. [{e['due_kind']}] {e['concept']} — {e['type']} · {e['source']} · "
+              f"last Q {e['last_q_type'] or '—'} → ask {e['question_type']} · {tail}")
+        if e.get("self_attribution"):
+            print(f"     self-attribution: {e['self_attribution'][:160]}")
+    if payload["warnings"]:
+        print("NOTES:")
+        for n in payload["warnings"]:
+            print(f" - {n}")
+
+
 def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
                qtype: str = None, ctype: str = None) -> None:
     result = (result or "").lower().strip()
@@ -374,9 +678,43 @@ def main() -> None:
         do_bundle(*rest)
     elif cmd == "state":
         if not rest:
-            print("usage: ops.py state TRACK")
+            print("usage: ops.py state TRACK [--review]")
             sys.exit(2)
-        do_state(rest[0])
+        track = next((t for t in rest if not t.startswith("--")), "aiefs")
+        if "--review" in rest:
+            do_bundle("Learning System/Core/💡 Learning Profile.md")
+            do_queue(track, date.today(), 5)
+        else:
+            do_state(track)
+    elif cmd == "queue":
+        track = next((t for t in rest if not t.startswith("--")), "aiefs")
+        day = date.today()
+        slots = 5
+        as_json = False
+        digest_path = None
+        i = 0
+        while i < len(rest):
+            tok = rest[i]
+            if tok == "--date" and i + 1 < len(rest):
+                parsed = _parse_date(rest[i + 1])
+                if parsed is None:
+                    print(f"queue: bad --date {rest[i + 1]!r}, want YYYY-MM-DD")
+                    sys.exit(2)
+                day = parsed; i += 2
+            elif tok == "--slots" and i + 1 < len(rest):
+                try:
+                    slots = max(1, int(rest[i + 1]))
+                except ValueError:
+                    print(f"queue: bad --slots {rest[i + 1]!r}")
+                    sys.exit(2)
+                i += 2
+            elif tok == "--digest" and i + 1 < len(rest):
+                digest_path = rest[i + 1]; i += 2
+            elif tok == "--json":
+                as_json = True; i += 1
+            else:
+                i += 1
+        do_queue(track, day, slots, as_json=as_json, digest_path=digest_path)
     elif cmd == "apply":
         do_apply(sys.stdin)
     elif cmd == "attempt":

@@ -51,9 +51,16 @@ OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 # Sidecar "dense tool call" helper used by the skills at runtime. NOTE the path
 # mismatch below — it is a real gotcha, do not "fix" it blindly.
 python3 scripts/ops.py state <aiefs|aie|swe>
+python3 scripts/ops.py state <track> --review    # compact profile + deterministic due queue
+python3 scripts/ops.py queue <track> [--date YYYY-MM-DD] [--slots N] [--json] [--digest PATH]
 python3 scripts/ops.py bundle "PATH:N-M" "PATH:-N" "PATH@REGEX"
 python3 scripts/ops.py apply <<'SPEC'  # JSON on stdin
 ```
+
+The review queue is computed deterministically by `ops.py queue` (2 oldest due
+mistakes + due reviews from `Attempts.json`, date-seeded shuffle, same-Source
+adjacency guard, per-concept question-type alternation, plus drift `warnings`) —
+the LLM must not re-derive or re-sort it. `ops_test.py` covers it.
 
 There is **no `npm`/package/build/test step**. Do not add one unless asked.
 

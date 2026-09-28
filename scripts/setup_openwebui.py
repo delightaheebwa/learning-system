@@ -166,7 +166,7 @@ PROMPTS = [
     {
         "command": "review",
         "name": "Review Session",
-        "content": "Run a review session. Switch to the Clerk preset, load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. The gate Filter enforces foreground GATE:grade_audit envelopes on grades and a foreground GATE:review_session envelope auditing the end-of-review writes at the session close — do not bypass either.",
+        "content": "Run a review session. Switch to the Clerk preset, load the learning-system skill (view_skill \"learning-system\"), then follow its Review flow. Get the due queue from ONE call — `python3 scripts/ops.py state <track> --review` (or `python3 scripts/ops.py queue <track> --json`) — and use it verbatim; do not hand-build or re-sort the queue. Ask the whole queue in one message. The gate Filter enforces foreground GATE:grade_audit envelopes on grades and a foreground GATE:review_session envelope auditing the end-of-review writes at the session close — do not bypass either.",
     },
     {
         "command": "ingest",
