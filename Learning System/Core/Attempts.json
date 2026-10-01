@@ -1173,13 +1173,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": "definitional"
+        },
+        {
+          "date": "2026-10-02",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative"
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-09-28",
-      "next_review": "2026-10-01",
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-10-02",
+      "next_review": "2026-10-09",
       "feynman": "fail"
     },
     "Posterior Probability": {
@@ -1284,13 +1290,19 @@
           "is_correct": false,
           "result": "fail",
           "q_type": "definitional"
+        },
+        {
+          "date": "2026-10-02",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative"
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 3,
-      "last_reviewed": "2026-09-28",
-      "next_review": "2026-10-01",
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-10-02",
+      "next_review": "2026-10-09",
       "feynman": "fail"
     },
     "Laplace Smoothing": {
@@ -1821,13 +1833,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-02",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative"
         }
       ],
-      "interval_index": 1,
-      "consecutive_correct": 1,
+      "interval_index": 3,
+      "consecutive_correct": 2,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-25",
-      "next_review": "2026-10-02",
+      "last_reviewed": "2026-10-02",
+      "next_review": "2026-11-01",
       "feynman": "pass"
     },
     "KL Divergence": {
@@ -2115,13 +2133,19 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "free_recall"
+        },
+        {
+          "date": "2026-10-02",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative"
         }
       ],
-      "interval_index": 1,
-      "consecutive_correct": 1,
+      "interval_index": 3,
+      "consecutive_correct": 2,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-24",
-      "next_review": "2026-10-01",
+      "last_reviewed": "2026-10-02",
+      "next_review": "2026-11-01",
       "feynman": null
     },
     "Information Theory": {
