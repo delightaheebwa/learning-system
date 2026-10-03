@@ -26,7 +26,7 @@ Xp = Xc @ V                          # n x k  (rows = points)
 
 - **Shape detector:** a shape containing `n` can hold points; an all-`d` shape holds directions only. `vecs` is `d×d` even when `n` is large — its rows are **component slots** (the x-/y-slots of each direction), never data points. `d == n` is the trap: both shapes then read `d×d`, so inspect what the array *holds*, not the shape alone.
 - **`rowvar` detector:** `np.cov` defaults to `rowvar=True` — **each row is a variable**. For the points-as-rows, features-as-columns layout you must pass `rowvar=False` (or transpose first), otherwise the covariance is built along the wrong axis.
-- **Slice detector:** `[::-1]` **reverses** (keeps every element, order flipped); `[:-1]` **drops the last**. `vals.argsort()[:, :-1]` is therefore a different, silently wrong object — descending λ is a reversal of the ascending order, not a truncation.
+- **Slice detector:** `[::-1]` **reverses** (keeps every element, order flipped); `[:-1]` **drops the last element**. `vals.argsort()` is **1-D** (shape `(d,)`), so `vals.argsort()[:, :-1]` is an **`IndexError`** — *loud*, not silent; the `[rows, cols]` slice shape belongs to `vecs`, never to the 1-D index array. The genuinely **silent** trap is the *missing reversal*: `order = vals.argsort()` then `order[:k]` quietly keeps the **smallest**-λ vectors in `components_` (no error raised); `vals.argsort()[:-1]` is merely a 1-D truncation — it drops the last (largest-λ) index. Descending λ is a **reversal** of the ascending order, not a truncation.
 
 ## Silent failures
 
