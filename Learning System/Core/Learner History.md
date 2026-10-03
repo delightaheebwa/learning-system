@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-02)
+# Learner History — compact tutor context (generated 2026-10-03)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,27 +13,26 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 66 · aie 212 · solid 7 · neutral 296 · fuzzy 13
+Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 66 · aie 212 · solid 7 · neutral 300 · fuzzy 9
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
-| Adam (adaptive moments) | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-09-26.md |
-| Chain Rule for Neural Networks | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-09-26.md |
-| Conjugate Priors | concept | fuzzy | 2026-09-30 | Learning System/Reviews/Review — Conjugate Priors — 2026-09-30.md |
 | Naive Bayes | concept | fuzzy | 2026-10-02 | Learning System/Reviews/Review — Naive Bayes — 2026-10-02.md |
-| PCA (Dimensionality Reduction) | concept | fuzzy | 2026-10-02 | last reviewed 2026-10-02 |
 | Softmax Subtract-Max Trick | procedure | fuzzy | 2026-09-26 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-09-26.md |
-| 4-Layer AI Environment Stack | concept | neutral | 2026-09-26 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-09-26.md |
+| 4-Layer AI Environment Stack | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
+| Adam (adaptive moments) | procedure | neutral | 2026-10-03 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-03.md |
 | Base Rate Fallacy | concept | neutral | 2026-09-28 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-09-28.md |
 | Bayes' Theorem | concept | solid | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral | 2026-09-26 | last reviewed 2026-09-26 |
 | Bits vs Nats | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
+| Chain Rule for Neural Networks | procedure | neutral | 2026-10-03 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-03.md |
 | Conditional Independence | concept | solid | 2026-09-26 | Learning System/Reviews/Review — Conditional Independence — 2026-09-26.md |
+| Conjugate Priors | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Conjugate Priors — 2026-10-03.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
-| Eigenvalues & Eigenvectors | concept | neutral | 2026-10-02 | Learning System/Archive/AIE-2026-07-28/reviews/Review — Eigenvalues & Eigenvectors — 2026-07-16.md |
+| Eigenvalues & Eigenvectors | concept | neutral | 2026-10-03 | Learning System/Archive/AIE-2026-07-28/reviews/Review — Eigenvalues & Eigenvectors — 2026-07-16.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-09-28 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-09-28.md |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-26 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-09-26.md |
 | Gradient Descent Failure Modes (zigzag vs overshoot) | concept | solid | 2026-10-02 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-10-02.md |
@@ -49,7 +48,8 @@ Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-30 | Learning System/Reviews/Review — Momentum (SGD with Momentum) — 2026-09-30.md |
 | Mutual Information | concept | neutral | 2026-09-28 | Learning System/Reviews/Review — Mutual Information — 2026-09-28.md |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| Perplexity | concept | neutral | 2026-09-26 | last reviewed 2026-09-26 |
+| PCA (Dimensionality Reduction) | concept | neutral | 2026-10-03 | last reviewed 2026-10-03 |
+| Perplexity | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Perplexity — 2026-10-03.md |
 | PMF vs PDF | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-30.md |
 | Posterior Probability | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — Posterior Probability — 2026-09-30.md |
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
