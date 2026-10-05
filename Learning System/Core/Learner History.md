@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-03)
+# Learner History — compact tutor context (generated 2026-10-05)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -48,7 +48,7 @@ Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-30 | Learning System/Reviews/Review — Momentum (SGD with Momentum) — 2026-09-30.md |
 | Mutual Information | concept | neutral | 2026-09-28 | Learning System/Reviews/Review — Mutual Information — 2026-09-28.md |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| PCA (Dimensionality Reduction) | concept | neutral | 2026-10-03 | last reviewed 2026-10-03 |
+| PCA (Dimensionality Reduction) | concept | neutral | 2026-10-05 | last reviewed 2026-10-05 |
 | Perplexity | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Perplexity — 2026-10-03.md |
 | PMF vs PDF | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-30.md |
 | Posterior Probability | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — Posterior Probability — 2026-09-30.md |

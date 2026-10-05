@@ -23,7 +23,7 @@ Covariance tells you about joint variation, while correlation tells you the same
 
 ## In NumPy
 
-`np.cov` computes the sample covariance with the `1/(n-1)` normalization, so the sample count appears **only inside the entries** — never as a matrix dimension.
+`np.cov` computes the sample covariance with the `1/(n-1)` normalization, so the sample count appears **only inside the entries** — never as a matrix dimension. The divisor is one less than the number of rows you summed: centering has already consumed one degree of freedom, so dividing by `n` gives a plausible-looking but wrong covariance (paper walk 2026-10-05).
 
 - `np.cov(Xc, rowvar=False)` — each **column** is a variable (features-as-variables), giving a `d×d` matrix for `d` features. This is the layout the PCA recipe assumes.
 - The **default is `rowvar=True`**: each *row* is a variable. On a points-as-rows matrix the default silently builds the covariance along the wrong axis (an `n×n` object of point-pairings).
