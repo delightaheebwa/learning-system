@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-07)
+# Learner History — compact tutor context (generated 2026-10-08)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 66 · aie 212 · solid 6 · neutral 301 · fuzzy 10
+Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 66 · aie 212 · solid 7 · neutral 300 · fuzzy 10
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -51,8 +51,8 @@ Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
 | PCA (Dimensionality Reduction) | concept | neutral | 2026-10-06 | last reviewed 2026-10-06 |
 | Perplexity | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Perplexity — 2026-10-03.md |
-| PMF vs PDF | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — PMF vs PDF — 2026-09-30.md |
-| Posterior Probability | concept | neutral | 2026-09-30 | Learning System/Reviews/Review — Posterior Probability — 2026-09-30.md |
+| PMF vs PDF | concept | neutral | 2026-10-08 | Learning System/Reviews/Review — PMF vs PDF — 2026-10-08.md |
+| Posterior Probability | concept | solid | 2026-10-08 | Learning System/Reviews/Review — Posterior Probability — 2026-10-08.md |
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
