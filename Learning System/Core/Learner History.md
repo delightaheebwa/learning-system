@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-06)
+# Learner History — compact tutor context (generated 2026-10-07)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -13,12 +13,13 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 66 · aie 212 · solid 7 · neutral 300 · fuzzy 9
+Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 66 · aie 212 · solid 6 · neutral 301 · fuzzy 10
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- |
+| Conditional Independence | concept | fuzzy | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
 | Naive Bayes | concept | fuzzy | 2026-10-02 | Learning System/Reviews/Review — Naive Bayes — 2026-10-02.md |
 | Softmax Subtract-Max Trick | procedure | fuzzy | 2026-10-05 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-05.md |
 | 4-Layer AI Environment Stack | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
@@ -28,10 +29,10 @@ Totals: 316 concepts (87 with attempt history + 229 paused) — aiefs 38 · swe 
 | Bayesian A/B Testing | concept | neutral | 2026-10-05 | last reviewed 2026-10-05 |
 | Bits vs Nats | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
 | Chain Rule for Neural Networks | procedure | neutral | 2026-10-03 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-03.md |
-| Conditional Independence | concept | solid | 2026-09-26 | Learning System/Reviews/Review — Conditional Independence — 2026-09-26.md |
 | Conjugate Priors | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Conjugate Priors — 2026-10-03.md |
 | Cosine Similarity | concept | neutral | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
+| Curse of dimensionality | concept | neutral | 2026-10-07 | last reviewed 2026-10-07 |
 | Eigenvalues & Eigenvectors | concept | neutral | 2026-10-03 | Learning System/Archive/AIE-2026-07-28/reviews/Review — Eigenvalues & Eigenvectors — 2026-07-16.md |
 | Entropy (Average Surprise) | concept | neutral | 2026-10-05 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-10-05.md |
 | Gradient Descent (vanilla) | procedure | solid | 2026-09-26 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-09-26.md |

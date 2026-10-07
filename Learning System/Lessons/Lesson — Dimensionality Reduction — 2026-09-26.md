@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 3/6 — **CP3 minis 1–3 sealed 2026-10-06** (CP2 fully sealed 2026-10-05; CP1 sealed 2026-09-30)
-**Resume from:** CP3 mini 4 — PCA as anomaly detector, then the round-cloud degenerate case (pocketed 2026-09-30), then the CP3 practice (paper walk / graded MCQ per the practice rule) and pause exit ticket. **Practice rule (learner, 2026-10-05, extends the no-code preference):** the from-memory code write is **off the books entirely** — no code in chat, none in the learner's own environment as a learning-system task; practices are paper walks (compute on paper, reply numbers/prose) or graded MCQ batches. The parked CP2 code-write integration is folded into the final cumulative quiz. Anchors: cov shape d×d + rowvar=False idiom (n only via 1/(n−1)), eigh ascending/columns + `vals.argsort()[::-1]` + `vecs[:, order[:k]]` (d×k), `Xp = Xc @ V` (n×k), sign reflection (sklearn `svd_flip` cosmetic), shape detector (shape has n ⇒ points possible; all-d ⇒ directions only), race detector (compare magnitudes/variances, never signed values; signed max gap = 2× biggest |coordinate| = cloud size, not error), variance = sum of squared deviations ⇒ eigenvalues ≥ 0.
+**Status:** paused at Checkpoint 3/6 — **CP3 fully sealed 2026-10-07** (CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
+**Resume from:** CP4 mini 1 — t-SNE neighborhoods (then perplexity as 2^H name-collision reframe, KL(P‖Q) objective, Distill misreading protocol + the Rohit unconditional-rule contradiction), following the CP4 plan below. **Practice rule still in force (learner, 2026-10-05):** paper walks / graded MCQ batches only; no code writes as a learning-system task; parked code-write integration stays folded into the final cumulative quiz.
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25, hashes in Scout digest):**
@@ -10,14 +10,15 @@
 - Wattenberg et al., *How to Use t-SNE Effectively* (Distill 2016) — `…- distill.md`
 - UMAP docs + parameters + FAQ — `…- umap.md`, `…- umap-params.md`, `…- umap-faq.md`
 - 3Blue1Brown, Eigenvectors & eigenvalues — `…- 3b1b-eigen.md`
-- Scout digest: `Learning System/.tmp/context-01a0d78c-dbff-7362-bcea-13f8df10005b-dimensionality-reduction.json` (first-fetch baseline, no drift check possible; no failed refs)
+- Wikipedia, Scree plot (etymology, cited live 2026-10-07 in-session)
+- Scout digest: `Learning System/.tmp/context-01a0d78c-dbff-7362-bcea-13f8df10005b-dimensionality-reduction.json` (first-fetch baseline, past TTL — re-scout before CP4 if fresh sources wanted)
 
-## Probe (graded, verifier-agreed 7/9)
+## Probe (graded, verifier-agreed 7/9) — 2026-09-26
 
 | # | Strand | Result |
 |---|---|---|
 | 1 | Eigen picture (Av=λv, stays on own span) | ✅ C sure |
-| 2 | Curse of dimensionality (distance concentration) | ❌ "I don't know" — new material |
+| 2 | Curse of dimensionality (distance concentration) | ❌ "I don't know" — **surfaced at CP3 mini 5 + tangent, sealed see below** |
 | 3 | Covariance entries (off-diag co-movement, diag variance) | ✅ A sure |
 | 4 | After centering: "features are orthogonal" (hunch) | ❌ structural slip — repaired in-session |
 | 5 | Projection = dot product along u | ✅ B sure |
@@ -29,7 +30,7 @@
 
 **Strand verdicts:** eigen solid · projection solid · KL solid · perplexity recovering · covariance unstable (orthogonality slip) · PMF/PDF unstable (label slip, mechanism intact per Q10) · curse-of-dim unknown/new.
 
-## CP1 — The object PCA decomposes ✅ mini 1
+## CP1 — The object PCA decomposes ✅ mini 1 (2026-09-26)
 
 - **Elicit (ungraded):** cm/inches pair, centered — off-diagonal large or zero? → learner: **large**, "indicates high variance which is what PCA prioritizes."
 - **Consolidate (fact-check PASS 5/5):** centering is NOT decorrelation — after centering, entry (i,j) = dot product of the two centered feature columns (×1/(n−1)); diagonal = individual variances. Centering shifts the origin (uncentered PCA finds the mean direction, not spread directions). Making off-diagonals zero = PCA's goal, not centering's effect. Sharpened learner's "high variance" reasoning: diagonal = variance of one feature; off-diagonal = co-movement of two.
@@ -40,7 +41,7 @@
 
 - **Warm-up (verifier-agreed 2/2):** diagonal = variance around center (C sure); centering ≠ decorrelation, off-diagonal = co-movement, PCA zeroes it (sure). Attempts: V&C pass.
 - **Mini 2 delivered in slow-down mode (learner asked to properly grasp the three pieces):**
-  - **Piece 1 — variance bookkeeping:** toy cloud (2,1), (−2,−0.5), (0,−0.5); learner first misread bracketed pairs as feature columns (5/4.25/−4.5), self-diagnosed on a locating question, second attempt still had two arithmetic slips (C11 4.5: extra unit in sum of squares; C12 1.25: (−2)×(−0.5) taken as 0.5 not +1), repaired with detectors (sum twice before dividing; negative×negative = positive); final re-attempt exact: **4 / 0.75 / 1.5** ✓ (grade-audit agreed).
+  - **Piece 1 — variance bookkeeping:** toy cloud (2,1), (−2,−0.5), (0,−0.5); learner first misread bracketed pairs as feature columns (5/4.25/−4.5), self-diagnosed on a locating question, second attempt still had two arithmetic slips (C11 4.5: extra unit in sum of squares; C12 1.25: (−2)×(−0.5) taken as 0.5 not +1), repaired with detectors (sum twice before dividing; negative×negative = positive); final re-attempt exact: **4 / 0.75 / 1.5** ✓ (grade-audit agreed). Scalar-product note: C12 = ((−2)(−0.5))/2 = **+1** (corrected from initial −0.5/−1 readings).
   - **Piece 2 — where λ comes from:** elicit prediction correct ("one to be bigger than the other… one direction is more elongated/scaled"); consolidated: λ ≥ 0 always (eigenvalues of a covariance = variances along directions), det route $\det(C−\lambda I)=0$ with the 3B1B squish-into-a-line anchor. Practice: on $C=\begin{bmatrix}4&1.5\\1.5&0.75\end{bmatrix}$ learner derived $\lambda^2−4.75\lambda+0.75=0$, roots **4.59 / 0.16** ✓ (trace sanity 4.75, ratio ~28).
   - **Piece 3 — eigenbasis diagonalization:** elicit prediction correct in learner's own words ("movement in one direction has absolutely no co-movement with the other since they are perpendicular"); consolidated: entry = overlap of spread between two axes; eigenbasis = THE perpendicular basis along the blob's own long/short axes → off-diagonal exactly 0; any symmetric matrix goes diagonal in its eigenbasis (3B1B); PCA = that coordinate change manufactured on purpose (Shlens: choosing P diagonalizes $C_Y$ — "this was the goal for PCA"). Round-cloud degenerate case pocketed for CP3.
   - **Figure:** standalone viz turn (cm/inches cloud + λ bars 10.1/0.016 + two-bases covariance table 3.41→0), viz-audit PASS (numbers recomputed from the 20 plotted points). Follow-up clarify answered: all numbers come from the same 20 dots; λ's are eigenvalues of the same matrix, not new data; trace balance 8.79+1.34 ≈ 10.1+0.016.
@@ -57,7 +58,7 @@
   - **eigh line:** elicited — ascending `0, 10` ✓, column 2 = big axis ✓, top-1 = "extract the last eigenvector, 2×1" ✓; fixed the generalization: top-k slice is $d \times k$, **not** $d \times d/2$. Consolidated Rohit's idiom: `vals, vecs = np.linalg.eigh(C)`; `order = vals.argsort()[::-1]`; `V = vecs[:, order[:k]]`; columns-never-rows (`vecs[-1]` grabs a meaningless row); keep `vals[order[:k]]` too (λ's star in CP3).
   - **Projection + sign:** elicited $\sqrt5$ and "$\sqrt{(-5)}$" + "sign only changes, magnitude same" → consolidated: $-\sqrt5$, **minus outside the radical** (detector: a real projection can only carry a sign, never a non-real root); sign reflection invariance ($C(-u)=10(-u)$ — output reflects, magnitudes/λ's unchanged; sklearn `svd_flip` is cosmetic); `Xp = Xc @ V` ($n \times k$). Learner confirmed $n \times k$, "all clear."
 - **Pause exit ticket (quiz-audit PASS cycle 2 after an exactly-one-correct fix on X2; grade-audit agreed):** X1 **B** ✓ (recipe order) · X2 **C** ✓ (`rowvar=False`) · X3 ✗ **fail** — `vals.argsort()[:, :-1]` instead of `[::-1]`, "ascending output is n×d" (`vecs` is $d\times d$), and "rows of vecs are the projected points" (points live in `Xc`/`Xp`; rows are **component slots**). Learner said "I'm not sure" on the locate → repair told directly, sealed with the **shape detector** (shape has $n$ ⇒ points possible; all-$d$ ⇒ directions only). Toy `vecs ≈ [[0.89, -0.45],[0.45, 0.89]]`: column 1 = main axis $(0.89,0.45)$, column 2 = collapsed $(-0.45,0.89)$, rows = x-/y-component slots.
-- **Attempts this session (ops.py):** Variance & Covariance pass, fail, pass → mastery 0.65, interval_index 3 · Eigenvalues & Eigenvectors pass, pass → mastery 1.00, interval_index 3 · **PCA (Dimensionality Reduction)** pass, pass, fail (X1, X2 ✓ / X3 ✗) → mastery 0.50, interval_index 2, next_review 2026-10-16. (The first V&C/E&E pass rows were logged on warm-up emission before the learner answered — sequence kept honest here; net state unaffected.)
+- **Attempts this session (ops.py):** Variance & Covariance pass, fail, pass → mastery 0.65, interval_index 3 · Eigenvalues & Eigenvectors pass, pass → mastery 1.00, interval_index 3 · **PCA (Dimensionality Reduction)** pass, pass, fail (X1, X2 ✓ / X3 ✗) → mastery 0.50, interval_index 2, next_review 2026-10-16. (First V&C/E&E pass rows were logged on warm-up emission before the learner answered — sequence kept honest here; net state unaffected.)
 
 ## Resume session 2026-10-03 — CP2 mini 3 sealed (assembly + race)
 
@@ -95,17 +96,47 @@
 - **No mistakes this session** (no repairs, no Mistakes candidates); probes were ungraded (no attempts logged for C1–C3).
 - **Attempts this session (ops.py):** Variance & Covariance pass (0.75, next 2026-11-05) · PCA pass ×2 (1.00, interval_index 3, next 2026-11-05).
 
-## Checkpoint plan (remaining)
+## Resume session 2026-10-07 — CP3 fully sealed (mini 4, mini 5, practice)
 
-- **CP3:** choosing k — explained-variance ratio (λ/Σλ, the trace-as-pie detector just sealed), elbow, reconstruction error = sum of dropped eigenvalues; PCA anomaly detection; round-cloud degenerate case (pocketed). ~~Re-elicit the parked prediction question (λ 4.59/0.16, fraction kept) at CP3 open~~ **done 2026-10-06 — re-elicited, learner answered ≈0.966 unprompted (see session log below).**
-- **CP4:** t-SNE — neighborhoods; perplexity = the learner's banked 2^H applied to the neighbor distribution (name-collision reframe); objective = KL(P‖Q) — L09 bridge; Distill misreading protocol (sizes meaningless; distances only at tuned perplexity — ⚠️ contradiction with Rohit's unconditional rule, resolved as safe-default vs fragile exception).
+- **Warm-up (quiz-audit PASS cycle 2 after W3 dual-key/length fixes, W2 trim, W1 91-fix; grade-audit agreed 3/3):** W1 B ✓ (dropped λ 35+33+30+28 = 126) · W2 D ✓ (exact zero ⇔ every dropped λ = 0) · W3 C ✓ (kept + dropped split the same Σλ pie). All sure. No attempts logged for the warm-up (PCA next review 2026-11-05 stands).
+- **CP3 mini 4 — PCA as anomaly detector (sealed):** elicited prediction ("big — the cloud falls short by a lot in reconstruction") → guiding question 1 (which direction is the huge coordinate on?) → learner said kept direction + "projection keeps that coordinate" → guiding question 2 via their own CP1 pure-line anchor (a kept-direction offset lands far along the line, still on the line, small error) → learner resolved: **huge coordinate lives on a dropped direction**, confusion named: tutor's "far off the main direction" initially read as "along the line of sight" — clarified: along = normal, across = suspect; limitation banked (a point 1000 units out along the subspace is also missed — the detector sees subspace-relative geometry only). Consolidated (fact-check PASS 4/4 incl. Shlens-has-no-anomaly-section attribution): **per-point error = Σ(coordinate)² along the dropped axes = across-the-subspace distance²**; recipe = train PCA on normal data → top-k → flag points whose own error crosses a threshold (Rohit: "samples with high reconstruction error are outliers that do not fit the learned subspace"; the production framing).
+- **CP3 mini 5 — the round cloud (sealed):** elicited prediction ("10 equal bars; keep-95% cuts off too much since all are equal") — a `no idea`→around-the-corner turn; consolidated directly (ladder compressed, learner's prediction already correct): isotropic covariance (λI) ⇒ every direction is an eigenvector, ranking is a total tie, axes arbitrary (3B1B anchor: scalar-multiple-of-identity matrix, every vector an eigenvector); 10 bars of 100 ⇒ Σλ = 1000, keep-95% needs 950 — can't even drop one bar (−10%); flat scree = the whole plot, no elbow anywhere; **PCA's compression power needs unequal spread — a round cloud has nothing to compress**; curse of dimensionality walked in: Rohit's max/min ratio ~1.8 (d=10) → ~1.02 (d=1000), distances becoming more alike — the same regime where PCA finds no dominant direction.
+- **Curse-of-dimensionality double-click (learner tangent, sealed with micro-check):** learner's initial read "distances get smaller → less to compress; PCA makes the smallest cloud possible" — two mix-ups answered: (1) distance concentration = more alike, not smaller (contrast lost, not magnitude); (2) **PCA never shrinks the cloud — the trace pie is fixed under rotation**; it only redistributes the fixed spread into as few directions as the data allows. Micro-check: λ=(99,1) vs λ=(50,50), same total 100 → compress A cheaply (lose 1), B loses 50 ✓ (grade-audit agreed). Learner's synthesis accepted with two sharpenings: PCA bakes before it cuts (rotation creates the cuttable thin layers — isotropy defeats rotation); "distortion" = per-point reconstruction error (mini 4's across-subspace distance²); nuance: "can't cut anything" comes from equal λ's; distance similarity travels with it but blocks the cut only via equal spread.
+- **Scree etymology bonus (verified):** Cattell's scree test named for the rock pile at a cliff's base — cliff = structure, rubble = noise tail, elbow = cliff-meets-rubble.
+- **CP3 practice (paper walk, quiz-audit PASS; 4/4 effective):**
+  - Pt1 ✓ pass — kept fraction 37/40 (=74/80, fraction-reduced), error 6 (grade-audit agreed).
+  - Pt2 ✗ fail → **two-step repair** (grade-audit agreed both steps): first answer "elbow at 24, threshold k=2, rules figurative-swap" — locate question on position-vs-height + 95% arithmetic (76 needed vs 74) → learner: "since we want 95% elbow is at 4, threshold-k 3" (half right) → then "slows down after 4" (still height-steering) → **tutor correction of the tutor:** tutor's interim "35 was the third bar / keep k=2 here" was a mis-steer — fact-check receipt refuted it (35 is the fourth bar of 100,80,40,35,…; elbow = first bar whose incoming drop is small, keep the bars before it). Learner's bend reading ("slows down after 4", "the bar of 2") was right: **elbow k = 3 on the practice scree** (kept 78, error 2 — just the flat bar dropped); threshold rule also picks k=3 (78 ≥ 76) ⇒ **the two rules agree on this scree** (earlier "disagree by one" retracted — that phenomenon lives on the mini-3 scree). Micro-check: kept 78/80 = **39/40**, error **2** ✓ (grade-audit agreed).
+  - Pt3 ✓ pass — 5.7 vs normal <0.3 ⇒ outlier; error = across-subspace component.
+  - Pt4 ✓ pass — ten equal bars ≈100 = flat scree; "PCA lives and dies on whether the spread is irregular or not… no minor directions to chop off" (own words).
+- **Slip named (panels the lesson):** steering by bar heights ("elbow at 24", "after 4") instead of positions — value-on-an-axis vs index; detector: on a scree, k is the *position* you choose, heights are the λ menu; walk the *drops*. **Tutor's own mis-steer logged in-session** (told the learner "the confusion was mine" — kept honest in the record).
+- **No Mistakes rows carried out of CP3:** the Pt2 repair chain was resolved to the elbow-convention re-anchor; no new Mistakes candidates (the height-vs-position slip is folded into the existing values-vs-positions detector thread; the tutor mis-steer is self-caught, not a learner mistake).
+- **Attempts this session (ops.py):** CP3-practice items and the synthesis restate were ungraded-elicitation/high-fidelity walks — no separate attempt rows beyond the Pre-session state (PCA 1.00 / next 2026-11-05, V&C 0.75 / next 2026-11-05 stand; no new rows added).
+
+## CP4 plan (CP4 = t-SNE)
+
+- CP4.1 — t-SNE neighborhoods: the why (linear projections crush/fold curved manifolds; t-SNE = preserve neighborhoods), the probability picture (near = high prob, far = low prob, symmetric-ish; Rohit lines 65–73).
+- CP4.2 — perplexity = the learner's banked 2^H applied to the neighbor distribution (name-collision reframe: perplexity ≈ smooth neighbor-count knob, Rohit's typical 5–50).
+- CP4.3 — objective = KL(P‖Q) — L09 bridge; asymmetry reminder (minimize KL(P‖Q), not KL(Q‖P)) → the heavy-tail t justification (Distill).
+- CP4.4 — Distill misreading protocol (cluster sizes meaningless; cluster distances meaningless at arbitrary perplexity; distances meaningful only at tuned perplexity) + **⚠️ contradiction with Rohit's unconditional "distances between clusters in the output are not meaningful" — resolved as: Rohit = safe default, Distill = the fragile exception under tuning; both true at their own scope.**
+- Other flags to carry: stochastic (different runs differ); slow, O(n²) pairwise.
+- Practice: graded MCQ batch (per the standing practice rule).
+
+## CP5/CP6 (standing plan, unchanged)
+
 - **CP5:** UMAP — manifold learning, n_neighbors/min_dist as local↔global dials (umap-params sweep); ⚠️ Rohit's "better global structure" vs umap-faq's goal-not-guarantee (outlier pull-together failure mode); centering-only vs standardize decision (umap-faq conditional default).
 - **CP6:** kernel PCA (RBF) + the real contradiction: Rohit's "high variance = important" as definition vs Shlens's assumption-that-can-fail (ferris wheel; MSE-optimal for reconstruction). Method-choice map → SHIP `outputs/skill-dimensionality-reduction.md`.
 - **Final:** cumulative quiz + Feynman explain-back.
 
-## Verification summary (this session)
+## Verification summary (sessions to date)
 
-- quiz-audit: probe batch (3 cycles: cycle-1 ISSUES position/length parity, cycle-2 ISSUES p6 key transposition + p8 length, cycle-3 PASS) · exit ticket (cycle-1 ISSUES length/stem leaks, cycle-2 PASS_WITH_FLAGS lows-only, accepted silently).
-- grade-audit: probe batch 9 items (agrees:true on all: pass 1,3,5,6,8,10; fail 2,4,9) · exit ticket 3/3 (agrees:true).
-- fact-check: CP1 mini-1 consolidation 5/5 PASS · learner check-back confirmation 4/4 PASS.
-- Attempts logged (ops.py): Eigenvalues & Eigenvectors pass · Variance & Covariance fail (probe Q4) then pass (exit ticket) · Perplexity pass · KL Divergence pass · PMF vs PDF fail (probe Q9).
+- quiz-audit: probe batch (3 cycles: position/length parity, key transposition, length) → PASS; CP1 exit (2 cycles: lows-only accept); CP2 exit X2 one-correct fix (2 cycles) → PASS; CP2 race exit (1 fix cycle) → PASS; paper-walk batch (1 leak fix) → PASS; CP3 warm-up ×3 (09-26 probe, 10-06 choosing-k warmup, 10-07 warm-up W1/W2/W3) → PASS at ≤3 cycles each; CP3 practice 4-item paper walk → PASS first cycle; elicitations for minis 4 & 5 → PASS first cycle.
+- grade-audit: verifier-agreed across probe batches, all exit tickets, the CP2 paper walk (ledger in session logs), CP3 warm-up 3/3, CP3 practice (Pt1/Pt3/Pt4 pass, Pt2 fail→fail→pass with two grade-audit receipts agreeing), micro-checks (99/1 vs 50/50; 39/40 & error 2).
+- fact-check: every consolidation step of CP1–CP3 verified (recipe, eigh layout, sign, race reading, choosing-k, scree conventions incl. the re-anchored elbow convention, reconstruction error, anomaly detection, round cloud, curse tangent, tutor's elbow mis-steer correcting the tutor in-session).
+- viz-audit: one figure, PASS, 2026-09-30.
+
+## Attempts ledger (cumulative, from ops.py)
+
+- Eigenvalues & Eigenvectors — 6 consecutive passes → mastery 1.00, next 2026-11-02 (per Active Concepts 2026-10-03 sync).
+- Variance & Covariance — mastery 0.75, next 2026-11-05 (2026-10-06 sync).
+- PCA (Dimensionality Reduction) — mastery 1.00, interval_index 3, next 2026-11-05 (2026-10-06 sync); no new attempt rows logged in the 2026-10-07 session.
+- Perplexity pass · KL Divergence pass · PMF vs PDF fail (2026-09-26 probe; regression tracked).

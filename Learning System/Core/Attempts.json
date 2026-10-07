@@ -2349,6 +2349,16 @@
       "next_review": "2026-11-05",
       "feynman": null
     },
+    "Curse of dimensionality": {
+      "type": "concept",
+      "attempts": [],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-10-07",
+      "next_review": "2026-10-10",
+      "feynman": null
+    },
     "PCA (Dimensionality Reduction)": {
       "type": "concept",
       "attempts": [
