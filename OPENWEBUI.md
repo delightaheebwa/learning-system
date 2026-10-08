@@ -7,7 +7,7 @@
 > this repo are a frozen snapshot — do not add teaching-behavior changes to them. This guide is kept
 > for historical reference only.
 
-This file is the canonical guide for running the learning system in **Open WebUI**
+This file is the legacy guide for running the learning system in **Open WebUI**
 using native features. The repo checkout (Open Terminal
 workspace) is the source of truth for all state; Open WebUI holds the control
 layer (skills, subagents, model presets, prompts, gate Pipe) that routes triggers.

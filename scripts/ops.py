@@ -409,7 +409,10 @@ def compute_dimensions(entry: dict) -> dict:
         "procedural": dim([a for a in attempts if a.get("q_type") in PROCEDURAL_Q_TYPES]),
         "transfer": dim([a for a in attempts if a.get("q_type") in TRANSFER_Q_TYPES]),
         "independence": (3 if solo[-1].get("is_correct") else 0) if solo else None,
-        "stability": min(3, int(entry.get("interval_index", 0) or 0)),
+        # Stability has no evidencing attempt for a concept with no history, so it
+        # is None (unknown), never a false 0 — matching the docstring and the
+        # other dimensions.
+        "stability": min(3, int(entry.get("interval_index", 0) or 0)) if attempts else None,
     }
 
 
@@ -601,12 +604,24 @@ def _queue_entry(row: dict, attempts: dict, due_kind: str, mistake=None) -> dict
     name = row["concept"]
     e = attempts.get(name, {}) or {}
     last_q = row.get("last_q_type") or ""
+    ctype = row.get("type", "concept")
+    qtype = _question_type(last_q)
+    # P1.5: deterministic far-transfer cadence. For a concept/design concept
+    # with no transfer attempt on record, every third review asks a
+    # `transfer-far` item. The "use the queue verbatim" rule then has the
+    # transfer item inside the queue instead of requiring the Tutor to improvise
+    # against it.
+    if due_kind == "review" and ctype in ("concept", "design"):
+        hist = e.get("attempts", []) or []
+        has_transfer = any(a.get("q_type") in TRANSFER_Q_TYPES for a in hist)
+        if not has_transfer and len(hist) >= 3 and len(hist) % 3 == 0:
+            qtype = "transfer-far"
     return {
         "concept": name,
-        "type": row.get("type", "concept"),
+        "type": ctype,
         "source": row.get("source", ""),
         "last_q_type": last_q,
-        "question_type": _question_type(last_q),
+        "question_type": qtype,
         "due_kind": due_kind,
         "last_reviewed": row.get("last_reviewed", ""),
         "next_review": e.get("next_review") or row.get("next_review", ""),
@@ -755,6 +770,14 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
             sys.exit(2)
         qtype = normalized
     confidence = normalize_confidence(confidence)
+    if confidence is not None and confidence not in CONFIDENCE_LEVELS:
+        print(f"ATTEMPT FAILED: unknown --confidence {confidence!r}; expected one of: {', '.join(CONFIDENCE_LEVELS)}")
+        sys.exit(2)
+    if mode is not None:
+        mode = str(mode).strip().lower()
+        if mode not in ("normal", "solo"):
+            print(f"ATTEMPT FAILED: --mode must be normal|solo, got {mode!r}")
+            sys.exit(2)
     is_correct = result == "pass"
     day = date or datetime.now().strftime("%Y-%m-%d")
     try:
@@ -777,7 +800,11 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
         }
         data["concepts"][concept] = entry
     if prereqs is not None:
-        entry["prereqs"] = [p for p in prereqs if p]
+        # Merge with existing edges: recording one prereq per attempt must not
+        # silently drop the others (the graph would lose blocking edges).
+        # `prereqs --set` keeps replace semantics.
+        existing = entry.get("prereqs", []) or []
+        entry["prereqs"] = sorted(set(existing) | {p for p in prereqs if p})
     if is_correct:
         entry["consecutive_correct"] = int(entry.get("consecutive_correct", 0)) + 1
         entry["consecutive_wrong"] = 0
@@ -846,9 +873,16 @@ def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
         if value is None or value.strip() == "":
             print("AMEND FAILED: --field requires a non-empty --value")
             sys.exit(2)
-    if new_date is not None and _parse_date(new_date) is None:
-        print(f"AMEND FAILED: bad --new-date {new_date!r}, want YYYY-MM-DD")
-        sys.exit(2)
+    if new_date is not None:
+        nd = _parse_date(new_date)
+        if nd is None:
+            print(f"AMEND FAILED: bad --new-date {new_date!r}, want YYYY-MM-DD")
+            sys.exit(2)
+        # A far-future re-date would silently hide the concept from SRS; allow a
+        # one-day skew for timezone/session boundaries only.
+        if nd > datetime.now().date() + timedelta(days=1):
+            print(f"AMEND FAILED: --new-date {new_date!r} is in the future")
+            sys.exit(2)
 
     data, path = _load_attempts()
     entry = data.get("concepts", {}).get(concept)
@@ -886,10 +920,14 @@ def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
             set_field("confidence", normalized)
         elif field == "hints":
             try:
-                set_field("hints", int(value))
+                hints_value = int(value)
             except ValueError:
                 print(f"AMEND FAILED: --hints value must be an integer, got {value!r}")
                 sys.exit(2)
+            if hints_value < 0:
+                print(f"AMEND FAILED: --hints must be non-negative, got {hints_value}")
+                sys.exit(2)
+            set_field("hints", hints_value)
         elif field == "mode":
             if value not in ("normal", "solo"):
                 print(f"AMEND FAILED: --mode must be normal|solo, got {value!r}")
@@ -963,9 +1001,11 @@ def compute_calibration(attempts: list) -> dict:
     wrong too often, or `underconfident` when `hunch` is right too often. Only
     tagged attempts count; untagged history is ignored (no false signal)."""
     buckets = {}
+    untagged = 0
     for a in attempts or []:
         c = normalize_confidence(a.get("confidence"))
         if not c:
+            untagged += 1
             continue
         b = buckets.setdefault(c, {"n": 0, "correct": 0})
         b["n"] += 1
@@ -980,7 +1020,9 @@ def compute_calibration(attempts: list) -> dict:
     hunch = buckets.get("hunch")
     if hunch and hunch["n"] >= 3 and hunch["correct"] / hunch["n"] >= 0.75:
         flags.append("underconfident")
-    return {"buckets": buckets, "flags": flags}
+    # Untagged attempts are surfaced so a flow that silently drops the
+    # confidence tag is visible, not just "no data".
+    return {"buckets": buckets, "flags": flags, "untagged": untagged}
 
 
 def _open_mistake_concepts() -> set:
@@ -1070,7 +1112,7 @@ def do_calibration(track: str = "", as_json: bool = False) -> None:
         return
     print(f"CALIBRATION — track {track or 'all'} ({len(names)} concept(s))")
     if not cal["buckets"]:
-        print("  (no confidence-tagged attempts)")
+        print(f"  (no confidence-tagged attempts; {cal['untagged']} untagged)")
         return
     for level in ("sure", "hunch", "no-idea"):
         b = cal["buckets"].get(level)
@@ -1084,6 +1126,7 @@ def do_calibration(track: str = "", as_json: bool = False) -> None:
             print(f"  {extra:8s} {b['correct']}/{b['n']} correct")
     if cal["flags"]:
         print(f"  flag: {', '.join(cal['flags'])}")
+    print(f"  untagged: {cal['untagged']}")
 
 
 def do_grade_mcq(key: str, answers: str, as_json: bool = False) -> None:
@@ -1098,6 +1141,11 @@ def do_grade_mcq(key: str, answers: str, as_json: bool = False) -> None:
         sys.exit(2)
     if len(keys) != len(ans):
         print(f"GRADE-MCQ FAILED: {len(keys)} key(s) vs {len(ans)} answer(s) — must match")
+        sys.exit(2)
+    bad = [k for k in keys if not re.fullmatch(r"[A-E]", k)]
+    bad += [a for a in ans if a not in ("", "-") and not re.fullmatch(r"[A-E]", a)]
+    if bad:
+        print(f"GRADE-MCQ FAILED: key/answer tokens must be letters A-E (empty/`-` = unanswered), got {', '.join(sorted(set(bad)))}")
         sys.exit(2)
     items = [
         {"id": i + 1, "key": k, "answer": a if a not in ("", "-") else "—", "pass": a == k}

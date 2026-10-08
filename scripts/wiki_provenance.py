@@ -33,7 +33,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 WIKI_DIR = REPO_ROOT / "Knowledge Wiki" / "wiki"
 MARKER_RE = re.compile(r"<!--\s*provenance:\s*(.*?)-->", re.IGNORECASE | re.DOTALL)
 STATUS_RE = re.compile(r"status\s*=\s*([a-z][a-z-]*)", re.IGNORECASE)
+SOURCE_RE = re.compile(r"source\s*=\s*([^|]*)", re.IGNORECASE)
+VERIFIED_BY_RE = re.compile(r"verified-by\s*=\s*([^|]*)", re.IGNORECASE)
+DATE_RE = re.compile(r"date\s*=\s*(\d{4}-\d{2}-\d{2})")
 VALID_STATUS = {"verified", "synthesis", "learner-note", "unverified"}
+# The marker must be at the top of the page (it is a header, not a footnote).
+MARKER_LINE_WINDOW = 5
 
 
 def _pages() -> list[Path]:
@@ -42,15 +47,55 @@ def _pages() -> list[Path]:
     return sorted(p for p in WIKI_DIR.glob("*.md") if p.is_file())
 
 
+def _marker_match(text: str):
+    """The provenance marker, but only in the first `MARKER_LINE_WINDOW` lines.
+
+    A marker buried mid-file is not a page header and must not validate the page
+    (a stray comment in prose should never count as provenance)."""
+    head = "\n".join((text or "").splitlines()[:MARKER_LINE_WINDOW])
+    return MARKER_RE.search(head)
+
+
 def read_status(text: str) -> str | None:
-    m = MARKER_RE.search(text)
+    """The raw `status=` value, or None when the marker/status is absent.
+
+    Unknown status values are returned verbatim (never silently coerced to
+    `unverified`), so `marker_problem` can reject them as malformed."""
+    m = _marker_match(text)
     if not m:
         return None
     s = STATUS_RE.search(m.group(1))
     if not s:
         return None
+    return s.group(1).lower()
+
+
+def marker_problem(text: str) -> str | None:
+    """Human-readable reason a page's provenance marker is invalid, or None.
+
+    A missing marker, an unknown status, or a `verified` claim with no source /
+    verifier / date is a problem. This is what makes `--check` able to fail on
+    content, not only on absent markers."""
+    m = _marker_match(text)
+    if not m:
+        return "missing marker"
+    body = m.group(1)
+    s = STATUS_RE.search(body)
+    if not s:
+        return "marker has no status="
     status = s.group(1).lower()
-    return status if status in VALID_STATUS else "unverified"
+    if status not in VALID_STATUS:
+        return f"unknown status={status}"
+    if status == "verified":
+        src = (SOURCE_RE.search(body).group(1).strip() if SOURCE_RE.search(body) else "")
+        vb = (VERIFIED_BY_RE.search(body).group(1).strip() if VERIFIED_BY_RE.search(body) else "")
+        if not src or src in ("—", "-"):
+            return "status=verified requires a source"
+        if not vb or vb in ("—", "-"):
+            return "status=verified requires verified-by"
+        if not DATE_RE.search(body):
+            return "status=verified requires a valid date=YYYY-MM-DD"
+    return None
 
 
 def marker(status: str, source: str, verified_by: str, date: str) -> str:
@@ -63,16 +108,19 @@ def marker(status: str, source: str, verified_by: str, date: str) -> str:
 def scan() -> dict:
     counts: dict[str, int] = {s: 0 for s in VALID_STATUS}
     missing: list[str] = []
-    invalid: list[str] = []
+    invalid: list[dict] = []
     for p in _pages():
         text = p.read_text(encoding="utf-8", errors="replace")
-        status = read_status(text)
-        if status is None:
+        m = _marker_match(text)
+        if m is None:
             missing.append(p.name)
-        else:
-            counts[status] = counts.get(status, 0) + 1
-            if status not in VALID_STATUS:
-                invalid.append(p.name)
+            continue
+        problem = marker_problem(text)
+        if problem is not None:
+            invalid.append({"file": p.name, "reason": problem})
+            continue
+        status = read_status(text)
+        counts[status] = counts.get(status, 0) + 1
     return {
         "total": len(_pages()),
         "counts": counts,
@@ -96,6 +144,12 @@ def do_report(report: dict, as_json: bool) -> None:
             print(f"  - {name}")
         if len(report["missing"]) > 30:
             print(f"  … and {len(report['missing']) - 30} more")
+    if report["invalid"]:
+        print("malformed markers:")
+        for item in report["invalid"][:30]:
+            print(f"  - {item['file']}: {item['reason']}")
+        if len(report["invalid"]) > 30:
+            print(f"  … and {len(report['invalid']) - 30} more")
 
 
 def do_stamp(status: str, date: str) -> int:
@@ -105,7 +159,7 @@ def do_stamp(status: str, date: str) -> int:
     stamped = 0
     for p in _pages():
         text = p.read_text(encoding="utf-8", errors="replace")
-        if MARKER_RE.search(text):
+        if _marker_match(text):
             continue
         line = marker(status, source="legacy", verified_by="—", date=date)
         p.write_text(line + text, encoding="utf-8")

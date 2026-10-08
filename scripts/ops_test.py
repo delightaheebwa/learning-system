@@ -187,6 +187,28 @@ class TestAttemptCommand(unittest.TestCase):
         self.assertIn("Test Concept", out)
         self.assertIn("0.50", out)
 
+    def test_attempt_rejects_bad_mode(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", mode="duo", date="2026-09-04")
+        self.assertEqual(cm.exception.code, 2)
+
+    def test_attempt_rejects_bad_confidence(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", confidence="maybe", date="2026-09-04")
+        self.assertEqual(cm.exception.code, 2)
+
+    def test_prereq_attempt_merges_existing_edges(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()):
+            ops.do_attempt("Test Concept", "pass", date="2026-09-04", prereqs=["A"])
+            ops.do_attempt("Test Concept", "pass", date="2026-09-05", prereqs=["B"])
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["Test Concept"]["prereqs"], ["A", "B"])
+
 
 class TestQueueCommand(unittest.TestCase):
     """The deterministic review queue (ops.py queue): due-mistake priority,
@@ -284,6 +306,37 @@ class TestQueueCommand(unittest.TestCase):
         self.assertEqual(by["Disc"]["question_type"], "definitional")
         self.assertEqual(by["Blank"]["question_type"], "discriminative")
 
+    @staticmethod
+    def _hist(ctype, qtypes):
+        return {
+            "type": ctype,
+            "attempts": [
+                {"date": f"2026-08-{i + 1:02d}", "is_correct": True, "result": "pass", "q_type": q}
+                for i, q in enumerate(qtypes)
+            ],
+            "interval_index": 0, "consecutive_correct": len(qtypes), "consecutive_wrong": 0,
+            "last_reviewed": "2026-09-01", "next_review": "2026-09-01", "feynman": None,
+        }
+
+    def test_queue_schedules_far_transfer_on_cadence(self):
+        self._seed(
+            active_rows=[self._active("Cadence", next_review="2026-09-01", ctype="concept")],
+            mistakes_rows=[],
+            attempts={"Cadence": self._hist("concept", ["definitional", "discriminative", "definitional"])},
+        )
+        by = {e["concept"]: e for e in ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)["queue"]}
+        self.assertEqual(by["Cadence"]["question_type"], "transfer-far")
+        self.assertEqual(by["Cadence"]["due_kind"], "review")
+
+    def test_queue_does_not_force_transfer_for_memory(self):
+        self._seed(
+            active_rows=[self._active("Mem", next_review="2026-09-01", ctype="memory")],
+            mistakes_rows=[],
+            attempts={"Mem": self._hist("memory", ["definitional", "discriminative", "definitional"])},
+        )
+        by = {e["concept"]: e for e in ops._build_queue("aiefs", ops._parse_date("2026-09-10"), 5)["queue"]}
+        self.assertNotEqual(by["Mem"]["question_type"], "transfer-far")
+
     def test_adjacency_guard_avoids_consecutive_same_source(self):
         self._seed(
             active_rows=[
@@ -372,6 +425,16 @@ class TestMasteryDimensions(unittest.TestCase):
         self.assertIsNone(d["transfer"])
         self.assertIsNone(d["independence"])
         self.assertEqual(d["recall"], 3)  # untagged counts as general recall
+
+    def test_stability_is_none_without_attempts(self):
+        d = ops.compute_dimensions({"type": "concept", "attempts": [], "interval_index": 0})
+        self.assertIsNone(d["stability"])
+
+    def test_stability_uses_interval_when_attempts_exist(self):
+        d = ops.compute_dimensions(
+            {"type": "concept", "attempts": [{"date": "2026-10-01", "is_correct": True}], "interval_index": 2}
+        )
+        self.assertEqual(d["stability"], 2)
 
     def test_independence_gate_blocks_solid_after_a_failed_solo(self):
         passed = {"attempts": [{"date": "2026-10-01", "is_correct": True, "mode": "solo"}]}
@@ -473,6 +536,12 @@ class TestGradeMcq(unittest.TestCase):
                 ops.do_grade_mcq("A,B", "A")
         self.assertEqual(cm.exception.code, 2)
 
+    def test_grade_mcq_rejects_non_letter_token(self):
+        with redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_grade_mcq("A1,B?", "A1,B?")
+        self.assertEqual(cm.exception.code, 2)
+
 
 class TestPrereqs(unittest.TestCase):
     """P1.3: prerequisite edges in live state; a fuzzy direct prereq blocks."""
@@ -552,6 +621,13 @@ class TestCalibration(unittest.TestCase):
     def test_calibration_ignores_untagged(self):
         cal = ops.compute_calibration([{"is_correct": True}, {"is_correct": False}])
         self.assertEqual(cal["buckets"], {})
+
+    def test_calibration_reports_untagged_count(self):
+        cal = ops.compute_calibration(
+            [{"is_correct": True, "confidence": "sure"}, {"is_correct": False}, {"is_correct": True}]
+        )
+        self.assertEqual(cal["untagged"], 2)
+        self.assertEqual(cal["buckets"]["sure"]["n"], 1)
 
     def test_mastery_json_includes_calibration_and_transfer(self):
         tmp = tempfile.TemporaryDirectory()
@@ -706,6 +782,22 @@ class TestAmend(unittest.TestCase):
                 ops.do_amend("Test Concept", "2020-01-01", new_date="2026-10-08", reason="x")
         self.assertEqual(cm.exception.code, 2)
         self.assertIn("no attempt dated", buf.getvalue())
+
+    def test_amend_rejects_negative_hints(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", field="hints", value="-3", reason="x")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("non-negative", buf.getvalue())
+
+    def test_amend_rejects_future_date(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", new_date="2099-01-01", reason="x")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("future", buf.getvalue())
 
 
 class TestMistakePrereqLink(unittest.TestCase):
