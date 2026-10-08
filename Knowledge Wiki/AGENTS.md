@@ -49,6 +49,24 @@ change on the page. If a source is retracted, mark the dependent pages
 
 Lint / stamp: `python3 scripts/wiki_provenance.py [--check | --json | --stamp]`.
 
+## Learner-authored understanding ("My understanding")
+
+Concept pages carry a `## My understanding` section written in the **learner's
+own words** (captured during the session at the learner-consolidation rung).
+This section is authored by the learner, not the AI:
+
+- The Clerk **preserves and appends** it — never overwrites, paraphrases, or
+  rewrites it. The AI may annotate *around* it (a `Source framing:` /
+  `External angle:` note beside it) but the learner's words stay verbatim.
+- When the section is the learner's own text, the page provenance records
+  `status=learner-note` for it (a page may be `status=synthesis` overall while
+  its `## My understanding` block is the learner's note).
+- The learner's words are captured at consolidate (`learning-teach`) and passed
+  to the Clerk in the lesson handoff; the Clerk places them on the page.
+- Trust order still holds: the learner's note is *their* model, not a verified
+  claim — the AI's job is to check it against the cited source and name what is
+  missing, not to replace it.
+
 ## Source of truth
 
 This repo is authoritative. Any Open WebUI mirror (Knowledge base / Notes) is a convenience copy that must never be edited and pushed back; always update the repo copy first.
