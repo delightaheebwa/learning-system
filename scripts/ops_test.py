@@ -631,5 +631,116 @@ class TestLearnerHistoryFeynmanGate(unittest.TestCase):
         self.assertEqual(learner_history.tag("Memory", entry, set()), "solid")
 
 
+class TestAmend(unittest.TestCase):
+    """P2.5: `ops.py amend` is the audited replacement for .tmp state surgery."""
+
+    def _make_root(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        seed = {
+            "concepts": {
+                "Test Concept": {
+                    "type": "concept",
+                    "attempts": [
+                        {"date": "2026-10-09", "is_correct": True, "result": "pass", "q_type": "computational"},
+                    ],
+                    "interval_index": 0,
+                    "consecutive_correct": 1,
+                    "consecutive_wrong": 0,
+                    "last_reviewed": "2026-10-09",
+                    "next_review": "2026-10-12",
+                    "feynman": None,
+                }
+            },
+            "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS},
+        }
+        (core / "Attempts.json").write_text(json.dumps(seed), encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        return Path(tmp.name)
+
+    def test_amend_redates_and_logs_reason(self):
+        root = self._make_root()
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_amend("Test Concept", "2026-10-09", new_date="2026-10-08", reason="envelope date slip")
+        data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
+        entry = data["concepts"]["Test Concept"]
+        self.assertEqual(entry["attempts"][0]["date"], "2026-10-08")
+        self.assertEqual(entry["last_reviewed"], "2026-10-08")
+        self.assertEqual(entry["next_review"], "2026-10-11")  # concept interval +3d from the re-dated attempt
+        amend = data["meta"]["amendments"][-1]
+        self.assertEqual(amend["reason"], "envelope date slip")
+        self.assertEqual(amend["changes"]["date"], {"from": "2026-10-09", "to": "2026-10-08"})
+
+    def test_amend_fixes_metadata_field(self):
+        root = self._make_root()
+        with redirect_stdout(io.StringIO()):
+            ops.do_amend("Test Concept", "2026-10-09", field="q_type", value="transfer", reason="wrong tag")
+        data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["Test Concept"]["attempts"][0]["q_type"], "transfer-near")
+
+    def test_amend_requires_reason(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", new_date="2026-10-08")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("--reason", buf.getvalue())
+
+    def test_amend_rejects_unknown_field(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", field="is_correct", value="false", reason="x")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("--field", buf.getvalue())
+
+    def test_amend_rejects_missing_attempt(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2020-01-01", new_date="2026-10-08", reason="x")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("no attempt dated", buf.getvalue())
+
+
+class TestMistakePrereqLink(unittest.TestCase):
+    """P2.8: a Mistakes row may name the broken prerequisite it exposes."""
+
+    def _seed(self, attribution):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        (core / "Attempts.json").write_text(
+            json.dumps({"concepts": {}, "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS}}),
+            encoding="utf-8")
+        header = ("| Date | Concept | Question | Expected | Error Type | Self-Attribution | "
+                  "Status | Retries | Next Retry |")
+        sep = "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
+        row = f"| 2026-10-01 | X | Q? | Expected | structural | {attribution} | active | 0 | 2026-10-02 |"
+        (core / "🧯 Mistakes.md").write_text(
+            "\n".join(["# Mistakes", "", header, sep, row]) + "\n", encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+
+    def test_prereq_marker_parsed_and_stripped(self):
+        self._seed("[prereq: Matrix Multiplication] slipped on the frame inversion")
+        rows = ops._mistakes_rows()
+        self.assertEqual(rows[0]["prereq"], "Matrix Multiplication")
+        self.assertEqual(rows[0]["self_attribution"], "slipped on the frame inversion")
+
+    def test_no_prereq_marker_is_empty(self):
+        self._seed("just a slip")
+        rows = ops._mistakes_rows()
+        self.assertEqual(rows[0]["prereq"], "")
+        self.assertEqual(rows[0]["self_attribution"], "just a slip")
+
+
 if __name__ == "__main__":
     unittest.main()

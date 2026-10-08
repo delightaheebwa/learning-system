@@ -41,6 +41,15 @@ Usage:
                                    (repeatable) records the concept's direct prerequisite
                                    edges. Prints mastery + next_review for the skill to
                                    copy via apply.
+  ops.py amend "Concept" --date OLD [--new-date NEW] [--field FIELD --value VALUE] --reason "..." [--occurrence N] [--json]
+                                   Audited in-place correction of ONE recorded attempt:
+                                   re-date it and/or fix a metadata field (date|q_type|
+                                   confidence|hints|mode), appending a `meta.amendments`
+                                   record with the reason. Recomputes last_reviewed /
+                                   next_review. This replaces the ad-hoc, gitignored
+                                   `.tmp/gen_review_*.py` surgery scripts (RETIRED — do
+                                   not rewrite Attempts.json outside ops.py). Correctness
+                                   (result/is_correct) is not amendable; re-grade instead.
   ops.py grade-mcq --key A,B,C --answers A,C,C [--json]
                                    Deterministic MCQ grading: per-item pass/fail for a
                                    comma-separated answer key vs the learner's answers
@@ -122,6 +131,12 @@ ACTIVE_PATH = "Learning System/Core/📚 Active Concepts.md"
 WIKI_DIR = "Knowledge Wiki/wiki"
 MASTERY_WEIGHTS = [0.4, 0.25, 0.15, 0.1, 0.1]
 ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
+# Attempt fields `ops.py amend` may correct in place. Correctness is deliberately
+# NOT here: fixing a wrong pass/fail is a re-grade, not a typo fix — record a new
+# attempt instead. Re-dating and metadata fixes are the audited amend path that
+# replaces ad-hoc `.tmp/gen_review_*.py` state surgery.
+AMENDABLE_ATTEMPT_FIELDS = ("date", "q_type", "confidence", "hints", "mode")
+PREREQ_MARKER_RE = re.compile(r"^\s*\[prereq:\s*([^\]]+?)\s*\]\s*", re.I)
 
 # Question types that evidence each mastery dimension (P0.4). Untagged or
 # unknown q_types count toward recall only. Dimensions without any evidencing
@@ -474,10 +489,25 @@ def _active_rows(track: str):
     return track_rows, all_rows
 
 
+def _extract_prereq(text: str):
+    """Split a `[prereq: NAME]` marker off the front of a self-attribution cell.
+
+    The Clerk may prefix a Mistakes row's Self-Attribution with
+    `[prereq: <name>]` to link the mistake to the prerequisite it exposes (P2.8).
+    Returns (prereq, rest); prereq is "" when the marker is absent. Kept as a
+    cell prefix (not a new column) so existing rows need no schema migration."""
+    m = PREREQ_MARKER_RE.match(text or "")
+    if not m:
+        return "", text or ""
+    return m.group(1).strip(), (text or "")[m.end():].lstrip()
+
+
 def _mistakes_rows():
     """Parse the mistakes ledger. error_type is located by matching the enum
     (robust to literal '|' in the question/expected/self-attribution cells);
-    status/retries/next_retry are always the last three cells."""
+    status/retries/next_retry are always the last three cells. An optional
+    `[prereq: NAME]` prefix on Self-Attribution links the mistake to the
+    prerequisite it exposes (P2.8); `prereq` is "" when absent."""
     rows = _parse_table_rows(_resolve(MISTAKES_PATH), 9)
     out = []
     for c in rows:
@@ -486,11 +516,13 @@ def _mistakes_rows():
         idx = next((i for i in range(4, len(c)) if c[i].lower() in ERROR_TYPES), None)
         if idx is None or len(c) < 9:
             continue
+        prereq, attribution = _extract_prereq(" | ".join(c[idx + 1:len(c) - 3]))
         out.append({
             "date": c[0], "concept": c[1], "question": c[2],
             "expected": " | ".join(c[3:idx]),
             "error_type": c[idx].lower(),
-            "self_attribution": " | ".join(c[idx + 1:len(c) - 3]),
+            "self_attribution": attribution,
+            "prereq": prereq,
             "status": c[-3].lower(), "retries": c[-2], "next_retry": c[-1],
         })
     return out
@@ -582,6 +614,7 @@ def _queue_entry(row: dict, attempts: dict, due_kind: str, mistake=None) -> dict
         "feynman": e.get("feynman") or None,
         "error_type": (mistake or {}).get("error_type"),
         "self_attribution": (mistake or {}).get("self_attribution"),
+        "prereq": (mistake or {}).get("prereq") or "",
         "source_excerpt": _concept_excerpt(name, row.get("notes", "")),
     }
 
@@ -698,6 +731,8 @@ def _print_queue_table(payload: dict) -> None:
             tail += f" · error_type {e['error_type']}"
         print(f"{i}. [{e['due_kind']}] {e['concept']} — {e['type']} · {e['source']} · "
               f"last Q {e['last_q_type'] or '—'} → ask {e['question_type']} · {tail}")
+        if e.get("prereq"):
+            print(f"     repair prereq: {e['prereq']} (re-derive it before the concept)")
         if e.get("self_attribution"):
             print(f"     self-attribution: {e['self_attribution'][:160]}")
     if payload["warnings"]:
@@ -779,6 +814,126 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
     feyn = entry.get("feynman") or "—"
     print(f"ATTEMPT OK: {concept} {result} mastery {mastery:.2f} — Feynman: {feyn}")
     print(f"next_review {entry['next_review']} (interval_index {entry['interval_index']})")
+
+
+def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
+             value: str = None, reason: str = None, occurrence: int = 1,
+             as_json: bool = False) -> None:
+    """Audited in-place correction of one recorded attempt (P2.5).
+
+    Re-dates an attempt and/or fixes a metadata field (`date`, `q_type`,
+    `confidence`, `hints`, `mode`), records who/why in `meta.amendments`, and
+    recomputes `last_reviewed`/`next_review` from the attempt history. This is
+    the first-class replacement for the ad-hoc `.tmp/gen_review_*.py` surgery
+    scripts: every correction is logged and passes through ops.py rather than
+    rewriting state outside any gate. Correctness (`result`/`is_correct`) is not
+    amendable — that is a re-grade, recorded with `ops.py attempt`."""
+    if not reason or not reason.strip():
+        print("AMEND FAILED: --reason is required (the audit trail must say why)")
+        sys.exit(2)
+    old_date = _parse_date(date)
+    if old_date is None:
+        print(f"AMEND FAILED: bad --date {date!r}, want YYYY-MM-DD")
+        sys.exit(2)
+    if new_date is None and field is None:
+        print("AMEND FAILED: give --new-date and/or --field FIELD --value VALUE")
+        sys.exit(2)
+    if field is not None:
+        field = field.strip().lower()
+        if field not in AMENDABLE_ATTEMPT_FIELDS:
+            print(f"AMEND FAILED: --field must be one of: {', '.join(AMENDABLE_ATTEMPT_FIELDS)}")
+            sys.exit(2)
+        if value is None or value.strip() == "":
+            print("AMEND FAILED: --field requires a non-empty --value")
+            sys.exit(2)
+    if new_date is not None and _parse_date(new_date) is None:
+        print(f"AMEND FAILED: bad --new-date {new_date!r}, want YYYY-MM-DD")
+        sys.exit(2)
+
+    data, path = _load_attempts()
+    entry = data.get("concepts", {}).get(concept)
+    if entry is None:
+        print(f"AMEND FAILED: no Attempts.json entry for {concept!r}")
+        sys.exit(2)
+    matches = [a for a in entry.get("attempts", []) or [] if a.get("date") == date]
+    if not matches:
+        print(f"AMEND FAILED: {concept!r} has no attempt dated {date}")
+        sys.exit(2)
+    if occurrence < 1 or occurrence > len(matches):
+        print(f"AMEND FAILED: --occurrence {occurrence} out of range (1..{len(matches)} on {date})")
+        sys.exit(2)
+    attempt = matches[occurrence - 1]
+
+    changes = {}
+
+    def set_field(name: str, new_value) -> None:
+        if attempt.get(name) != new_value:
+            changes[name] = [attempt.get(name), new_value]
+            attempt[name] = new_value
+
+    if field is not None:
+        if field == "q_type":
+            normalized = normalize_qtype(value)
+            if normalized is None:
+                print(f"AMEND FAILED: unknown --qtype {value!r}; expected one of: {', '.join(Q_TYPES)}")
+                sys.exit(2)
+            set_field("q_type", normalized)
+        elif field == "confidence":
+            normalized = normalize_confidence(value)
+            if normalized not in CONFIDENCE_LEVELS:
+                print(f"AMEND FAILED: --confidence must be one of: {', '.join(CONFIDENCE_LEVELS)}")
+                sys.exit(2)
+            set_field("confidence", normalized)
+        elif field == "hints":
+            try:
+                set_field("hints", int(value))
+            except ValueError:
+                print(f"AMEND FAILED: --hints value must be an integer, got {value!r}")
+                sys.exit(2)
+        elif field == "mode":
+            if value not in ("normal", "solo"):
+                print(f"AMEND FAILED: --mode must be normal|solo, got {value!r}")
+                sys.exit(2)
+            set_field("mode", value)
+        elif field == "date":
+            set_field("date", new_date or value)
+    if new_date is not None:
+        set_field("date", new_date)
+
+    if not changes:
+        print(f"AMEND NO-OP: {concept} attempt {date} already has the requested values")
+        return
+
+    # Recompute the schedule from the (possibly re-dated) attempt history so a
+    # date fix cannot leave last_reviewed/next_review stale.
+    dates = [a.get("date") for a in entry.get("attempts", []) or [] if _parse_date(a.get("date"))]
+    if dates:
+        last = max(dates)
+        entry["last_reviewed"] = last
+        sched = _intervals_for(data, entry.get("type", "concept"))
+        idx = max(0, min(int(entry.get("interval_index", 0) or 0), len(sched) - 1))
+        entry["next_review"] = (datetime.strptime(last, "%Y-%m-%d").date()
+                                + timedelta(days=sched[idx])).isoformat()
+
+    record = {
+        "at": datetime.now().isoformat(timespec="seconds"),
+        "concept": concept,
+        "attempt_date": date,
+        "occurrence": occurrence,
+        "changes": {k: {"from": v[0], "to": v[1]} for k, v in changes.items()},
+        "reason": reason.strip(),
+    }
+    data.setdefault("meta", {}).setdefault("amendments", []).append(record)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+    if as_json:
+        print(json.dumps(record, indent=2, ensure_ascii=False))
+        return
+    changed = ", ".join(f"{k}: {v[0]!r} → {v[1]!r}" for k, v in changes.items())
+    print(f"AMEND OK: {concept} attempt {date} — {changed}")
+    print(f"reason: {reason.strip()}")
+    print(f"next_review {entry.get('next_review')} (last_reviewed {entry.get('last_reviewed')})")
 
 
 def _track_concept_names(concepts: dict, track: str):
@@ -1153,6 +1308,41 @@ def main() -> None:
             else:
                 i += 1
         do_prereqs(concept, set_list=set_list, as_json=as_json)
+    elif cmd == "amend":
+        if not rest or rest[0].startswith("--"):
+            print('usage: ops.py amend "Concept" --date OLD [--new-date NEW] '
+                  '[--field FIELD --value VALUE] --reason "..." [--occurrence N] [--json]')
+            sys.exit(2)
+        concept = rest[0]
+        date = new_date = field = value = reason = None
+        occurrence = 1
+        as_json = False
+        i = 1
+        while i < len(rest):
+            tok = rest[i]
+            if tok == "--date" and i + 1 < len(rest):
+                date = rest[i + 1]; i += 2
+            elif tok == "--new-date" and i + 1 < len(rest):
+                new_date = rest[i + 1]; i += 2
+            elif tok == "--field" and i + 1 < len(rest):
+                field = rest[i + 1]; i += 2
+            elif tok == "--value" and i + 1 < len(rest):
+                value = rest[i + 1]; i += 2
+            elif tok == "--reason" and i + 1 < len(rest):
+                reason = rest[i + 1]; i += 2
+            elif tok == "--occurrence" and i + 1 < len(rest):
+                try:
+                    occurrence = int(rest[i + 1])
+                except ValueError:
+                    print(f"amend: bad --occurrence {rest[i + 1]!r}")
+                    sys.exit(2)
+                i += 2
+            elif tok == "--json":
+                as_json = True; i += 1
+            else:
+                i += 1
+        do_amend(concept, date or "", new_date=new_date, field=field, value=value,
+                 reason=reason, occurrence=occurrence, as_json=as_json)
     elif cmd == "calibration":
         as_json = "--json" in rest
         track = next((t for t in rest if not t.startswith("--")), "")
