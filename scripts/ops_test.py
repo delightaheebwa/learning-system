@@ -345,5 +345,71 @@ class TestQueueCommand(unittest.TestCase):
         self.assertIn(digest["queue"][0]["source_excerpt"], ("note",))  # notes fallback
 
 
+class TestMasteryDimensions(unittest.TestCase):
+    """P0.4: mastery is per-dimension, and a failed AI-free (solo) attempt
+    blocks the independence gate; absent evidence is unknown, not zero."""
+
+    def test_dimensions_split_by_question_type(self):
+        entry = {
+            "type": "concept", "interval_index": 2, "feynman": "pass",
+            "attempts": [
+                {"date": "2026-10-01", "is_correct": True, "q_type": "definitional"},
+                {"date": "2026-10-02", "is_correct": False, "q_type": "computational"},
+                {"date": "2026-10-03", "is_correct": True, "q_type": "transfer"},
+            ],
+        }
+        d = ops.compute_dimensions(entry)
+        self.assertEqual(d["recall"], 3)
+        self.assertEqual(d["procedural"], 0)
+        self.assertEqual(d["transfer"], 3)
+        self.assertEqual(d["conceptual"], 3)
+        self.assertEqual(d["stability"], 2)
+        self.assertIsNone(d["independence"])
+
+    def test_unknown_dimension_is_none_not_zero(self):
+        d = ops.compute_dimensions({"attempts": [{"date": "2026-10-01", "is_correct": True}]})
+        self.assertIsNone(d["procedural"])
+        self.assertIsNone(d["transfer"])
+        self.assertIsNone(d["independence"])
+        self.assertEqual(d["recall"], 3)  # untagged counts as general recall
+
+    def test_independence_gate_blocks_solid_after_a_failed_solo(self):
+        passed = {"attempts": [{"date": "2026-10-01", "is_correct": True, "mode": "solo"}]}
+        self.assertTrue(ops.independence_ok(passed))
+        failed = {"attempts": [{"date": "2026-10-01", "is_correct": False, "mode": "solo"}]}
+        self.assertFalse(ops.independence_ok(failed))
+        # No solo evidence is unknown, not failure (grandfathered).
+        self.assertTrue(ops.independence_ok({"attempts": [{"date": "2026-10-01", "is_correct": True}]}))
+
+    def test_attempt_records_optional_evidence(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        (core / "Attempts.json").write_text(
+            json.dumps({"concepts": {}, "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS}}),
+            encoding="utf-8",
+        )
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_attempt("X", "fail", qtype="transfer", confidence="hunch", hints=2, mode="solo")
+        data = json.loads((core / "Attempts.json").read_text(encoding="utf-8"))
+        a = data["concepts"]["X"]["attempts"][0]
+        self.assertEqual(a["confidence"], "hunch")
+        self.assertEqual(a["hints"], 2)
+        self.assertEqual(a["mode"], "solo")
+        self.assertFalse(ops.independence_ok(data["concepts"]["X"]))
+        # Optional fields are omitted when not supplied (back-compat).
+        with redirect_stdout(io.StringIO()):
+            ops.do_attempt("Y", "pass")
+        y = json.loads((core / "Attempts.json").read_text(encoding="utf-8"))["concepts"]["Y"]["attempts"][0]
+        self.assertNotIn("confidence", y)
+        self.assertNotIn("hints", y)
+        self.assertNotIn("mode", y)
+
+
 if __name__ == "__main__":
     unittest.main()

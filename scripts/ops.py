@@ -32,12 +32,15 @@ Usage:
                                       "replaces": [{"path": "...", "find": "...",
                                                     "replace_with": "..."}]}
                                    Prints a per-op summary. Use with a quoted heredoc.
-  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design]
+  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design] [--confidence sure|hunch|no-idea] [--hints N] [--mode normal|solo]
                                   Record one answer in Attempts.json (interval_index
                                   +1 pass / +2 on 2 consecutive passes / -1 fail,
                                   next_review from type schedule). Prints mastery +
                                   next_review for the skill to copy via apply.
-  ops.py mastery [TRACK]           Advisory recency-weighted mastery report
+  ops.py mastery [TRACK] [--json]  Advisory mastery report: recency-weighted
+                                  score plus per-dimension (recall, conceptual,
+                                  procedural, transfer, independence, stability)
+                                  from the attempt evidence. --json for machines.
                                    (0.00-1.00 + Feynman status, not blocking).
 
 All paths resolve under the workspace root (/home/user/learning-system). Escapes are rejected.
@@ -98,6 +101,13 @@ ACTIVE_PATH = "Learning System/Core/📚 Active Concepts.md"
 WIKI_DIR = "Knowledge Wiki/wiki"
 MASTERY_WEIGHTS = [0.4, 0.25, 0.15, 0.1, 0.1]
 ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
+
+# Question types that evidence each mastery dimension (P0.4). Untagged or
+# unknown q_types count toward recall only. Dimensions without any evidencing
+# attempt report None ("unknown"), never a false zero.
+RECALL_Q_TYPES = {"definitional", "free_recall", "recall-mcq", "recall_mcq", "micro-check"}
+PROCEDURAL_Q_TYPES = {"computational", "applied", "procedure"}
+TRANSFER_Q_TYPES = {"transfer", "novel", "error-detect", "error_detect"}
 
 
 def _resolve(p: str) -> Path:
@@ -236,20 +246,82 @@ def _intervals_for(data: dict, ctype: str):
     return sched.get(ctype, sched.get("concept", [3, 7, 14, 30]))
 
 
-def compute_mastery(attempts: list) -> float:
-    """Recency-weighted mastery 0-1 with confidence caps ({1:0.5, 2:0.8})."""
+def _recent_correctness(attempts: list) -> float:
+    """Recency-weighted correctness 0-1 over the last (up to 5) attempts."""
     if not attempts:
         return 0.0
     recent = attempts[-5:][::-1]  # most recent first
     weights = MASTERY_WEIGHTS[: len(recent)]
     total = sum(weights)
-    score = sum(w * (1.0 if a.get("is_correct") else 0.0) for w, a in zip(weights, recent)) / total
+    return sum(w * (1.0 if a.get("is_correct") else 0.0) for w, a in zip(weights, recent)) / total
+
+
+def compute_mastery(attempts: list) -> float:
+    """Recency-weighted mastery 0-1 with confidence caps ({1:0.5, 2:0.8})."""
+    if not attempts:
+        return 0.0
+    score = _recent_correctness(attempts)
     n = len(attempts)
     if n == 1:
         score = min(score, 0.5)
     elif n == 2:
         score = min(score, 0.8)
     return round(score, 2)
+
+
+def _feynman_state(entry: dict):
+    """Normalise the feynman field to True/False/None."""
+    f = entry.get("feynman")
+    if isinstance(f, dict):
+        f = f.get("pass")
+    if f in (True, "pass"):
+        return True
+    if f in (False, "fail"):
+        return False
+    return None
+
+
+def compute_dimensions(entry: dict) -> dict:
+    """Per-dimension mastery (0-3, or None when no evidence exists).
+
+    Advisory, heuristic, and deliberately explicit about its inputs (P0.4):
+      recall        recency-weighted correctness of recall-type attempts
+      conceptual    driven by the Feynman explain-back flag
+      procedural    correctness of computational/applied/procedure attempts
+      transfer      correctness of transfer/novel/error-detect attempts
+      independence  the last AI-free (mode="solo") attempt; None if never tested
+      stability     interval_index (how long a gap the concept has survived)
+    A dimension with no evidencing attempt is None (unknown), never 0, so an
+    untested dimension cannot masquerade as a failed one."""
+    attempts = entry.get("attempts", []) or []
+
+    def dim(sel):
+        if not sel:
+            return None
+        return int(round(3 * _recent_correctness(sel)))
+
+    recall_sel = [a for a in attempts if (a.get("q_type") in RECALL_Q_TYPES) or not a.get("q_type")]
+    solo = [a for a in attempts if a.get("mode") == "solo"]
+    conceptual = None
+    feyn = _feynman_state(entry)
+    if feyn is not None:
+        conceptual = 3 if feyn else 0
+    return {
+        "recall": dim(recall_sel),
+        "conceptual": conceptual,
+        "procedural": dim([a for a in attempts if a.get("q_type") in PROCEDURAL_Q_TYPES]),
+        "transfer": dim([a for a in attempts if a.get("q_type") in TRANSFER_Q_TYPES]),
+        "independence": (3 if solo[-1].get("is_correct") else 0) if solo else None,
+        "stability": min(3, int(entry.get("interval_index", 0) or 0)),
+    }
+
+
+def independence_ok(entry: dict) -> bool:
+    """False only when a failed AI-free (solo) attempt is on record.
+
+    Absence of solo evidence is *unknown*, not failure, so existing concepts
+    are grandfathered until `/solo` produces a real test (P0.4/P0.5)."""
+    return compute_dimensions(entry).get("independence") != 0
 
 
 def _parse_date(s: str):
@@ -541,7 +613,8 @@ def _print_queue_table(payload: dict) -> None:
 
 
 def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
-               qtype: str = None, ctype: str = None) -> None:
+               qtype: str = None, ctype: str = None, confidence: str = None,
+               hints: int = None, mode: str = None) -> None:
     result = (result or "").lower().strip()
     if result not in ("pass", "fail"):
         print(f"ATTEMPT FAILED: result must be pass|fail, got {result!r}")
@@ -578,8 +651,17 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
         entry["interval_index"] = int(entry.get("interval_index", 0)) - 1
     sched = _intervals_for(data, entry.get("type", "concept"))
     entry["interval_index"] = max(0, min(int(entry["interval_index"]), len(sched) - 1))
-    entry["attempts"].append({"date": day, "is_correct": is_correct,
-                              "result": result, "q_type": qtype})
+    rec = {"date": day, "is_correct": is_correct, "result": result, "q_type": qtype}
+    # Optional per-attempt evidence (P0.4): confidence tag, hints used, and
+    # whether the attempt was AI-free ("solo"). Recorded only when supplied so
+    # existing callers and stored attempts are unaffected.
+    if confidence:
+        rec["confidence"] = confidence
+    if hints is not None:
+        rec["hints"] = int(hints)
+    if mode:
+        rec["mode"] = mode
+    entry["attempts"].append(rec)
     entry["last_reviewed"] = day
     entry["next_review"] = (datetime.strptime(day, "%Y-%m-%d").date()
                             + timedelta(days=sched[entry["interval_index"]])).isoformat()
@@ -596,7 +678,7 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
     print(f"next_review {entry['next_review']} (interval_index {entry['interval_index']})")
 
 
-def do_mastery(track: str = "") -> None:
+def do_mastery(track: str = "", as_json: bool = False) -> None:
     data, _ = _load_attempts()
     concepts = data.get("concepts", {})
     names = sorted(concepts)
@@ -616,11 +698,27 @@ def do_mastery(track: str = "") -> None:
     if not names:
         print("(no concepts)")
         return
+    rows = []
     for n in names:
         e = concepts[n]
-        m = compute_mastery(e.get("attempts", []))
-        print(f"{n} mastery {m:.2f} — Feynman: {e.get('feynman') or '—'} "
-              f"(next {e.get('next_review')})")
+        rows.append({
+            "concept": n,
+            "mastery": compute_mastery(e.get("attempts", [])),
+            "feynman": e.get("feynman"),
+            "next_review": e.get("next_review"),
+            "dimensions": compute_dimensions(e),
+        })
+    if as_json:
+        print(json.dumps(rows, indent=2, ensure_ascii=False))
+        return
+    for r in rows:
+        d = r["dimensions"]
+        pretty = " ".join(
+            f"{k[:4]} {'—' if v is None else v}"
+            for k, v in d.items()
+        )
+        print(f"{r['concept']} mastery {r['mastery']:.2f} — Feynman: {r['feynman'] or '—'} "
+              f"(next {r['next_review']}) | {pretty}")
 
 
 def _apply_op(kind: str, op: dict) -> str:
@@ -723,7 +821,8 @@ def main() -> None:
             print('usage: ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type C]')
             sys.exit(2)
         concept, result = rest[0], rest[1]
-        feynman = qtype = ctype = day = None
+        feynman = qtype = ctype = day = confidence = mode = None
+        hints = None
         positional = []
         i = 2
         while i < len(rest):
@@ -734,13 +833,27 @@ def main() -> None:
                 qtype = rest[i + 1]; i += 2
             elif tok == "--type" and i + 1 < len(rest):
                 ctype = rest[i + 1]; i += 2
+            elif tok == "--confidence" and i + 1 < len(rest):
+                confidence = rest[i + 1]; i += 2
+            elif tok == "--hints" and i + 1 < len(rest):
+                try:
+                    hints = int(rest[i + 1])
+                except ValueError:
+                    print(f"ATTEMPT FAILED: --hints must be an integer, got {rest[i + 1]!r}")
+                    sys.exit(2)
+                i += 2
+            elif tok == "--mode" and i + 1 < len(rest):
+                mode = rest[i + 1]; i += 2
             else:
                 positional.append(tok); i += 1
         if positional:
             feynman = positional[0]
-        do_attempt(concept, result, feynman=feynman, date=day, qtype=qtype, ctype=ctype)
+        do_attempt(concept, result, feynman=feynman, date=day, qtype=qtype, ctype=ctype,
+                   confidence=confidence, hints=hints, mode=mode)
     elif cmd == "mastery":
-        do_mastery(rest[0] if rest else "")
+        as_json = "--json" in rest
+        track = next((t for t in rest if not t.startswith("--")), "")
+        do_mastery(track, as_json=as_json)
     else:
         print(f"unknown command: {cmd}")
         sys.exit(2)

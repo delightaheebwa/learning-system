@@ -11,6 +11,8 @@ Tag rules (strict solid):
   solid   = consecutive_correct >= 2 AND interval_index >= 2
             AND (type in {memory, procedure} OR feynman pass)
             AND last attempt passed AND no open (active/review) mistake
+            AND no failed AI-free (solo) attempt on record (P0.4); no solo
+            evidence is unknown and does not block (grandfathered)
   fuzzy   = open mistake OR consecutive_wrong > 0 OR last attempt failed
   neutral = everything else
 
@@ -25,6 +27,15 @@ import json
 import os
 import re
 import sys
+
+# P0.4: reuse ops.py's dimension model for the independence gate. Imported
+# defensively so a path/setup problem degrades to "unknown" (grandfather), never
+# a crash or a false demotion.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    import ops  # noqa: E402
+except Exception:  # pragma: no cover - defensive
+    ops = None
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORE = os.path.join(REPO_ROOT, "Learning System", "Core")
@@ -169,6 +180,10 @@ def tag(concept, entry, open_mistakes):
         entry.get("consecutive_correct", 0) >= 2
         and entry.get("interval_index", 0) >= 2
         and last_ok
+        # P0.4 independence gate: a concept with a failed AI-free (solo) attempt
+        # on record cannot be solid. No solo evidence is unknown, so existing
+        # concepts are grandfathered until /solo produces a real test.
+        and (ops.independence_ok(entry) if ops else True)
         and (
             entry.get("type") in ("memory", "procedure")
             or feynman_passed(entry.get("feynman"))
