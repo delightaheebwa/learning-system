@@ -32,16 +32,37 @@ Usage:
                                       "replaces": [{"path": "...", "find": "...",
                                                     "replace_with": "..."}]}
                                    Prints a per-op summary. Use with a quoted heredoc.
-  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design] [--confidence sure|hunch|no-idea] [--hints N] [--mode normal|solo]
-                                  Record one answer in Attempts.json (interval_index
-                                  +1 pass / +2 on 2 consecutive passes / -1 fail,
-                                  next_review from type schedule). Prints mastery +
-                                  next_review for the skill to copy via apply.
+  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design] [--confidence sure|hunch|no-idea] [--hints N] [--mode normal|solo] [--prereq NAME ...]
+                                   Record one answer in Attempts.json (interval_index
+                                   +1 pass / +2 on 2 consecutive passes / -1 fail,
+                                   next_review from type schedule). --qtype is
+                                   validated against the enum (legacy aliases are
+                                   normalized; unknown values are rejected). --prereq
+                                   (repeatable) records the concept's direct prerequisite
+                                   edges. Prints mastery + next_review for the skill to
+                                   copy via apply.
+  ops.py grade-mcq --key A,B,C --answers A,C,C [--json]
+                                   Deterministic MCQ grading: per-item pass/fail for a
+                                   comma-separated answer key vs the learner's answers
+                                   (empty/`-` = unanswered). No LLM in the mechanical
+                                   path. Prints correct/total + per-item rows.
+  ops.py prereqs "Concept" [--set NAME,...] [--json]
+                                   Report the concept's direct prerequisites and their
+                                   live state (solid|neutral|fuzzy|unknown). `blocks`
+                                   is true when a direct prereq is fuzzy or has an open
+                                   mistake, so a flow can refuse to advance. --set
+                                   writes the prereq list; missing evidence is unknown
+                                   (advisory, never blocks).
+  ops.py calibration [TRACK] [--json]
+                                   Confidence calibration: for attempts tagged with a
+                                   confidence, % correct when `sure` vs `hunch` (and
+                                   `no-idea`), with an over/under-confidence flag.
   ops.py mastery [TRACK] [--json]  Advisory mastery report: recency-weighted
-                                  score plus per-dimension (recall, conceptual,
-                                  procedural, transfer, independence, stability)
-                                  from the attempt evidence. --json for machines.
-                                   (0.00-1.00 + Feynman status, not blocking).
+                                   score plus per-dimension (recall, conceptual,
+                                   procedural, transfer, independence, stability)
+                                   from the attempt evidence. --json for machines
+                                   (also carries per-concept calibration + transfer
+                                   state). (0.00-1.00 + Feynman status, not blocking).
 
 All paths resolve under the workspace root (/home/user/learning-system). Escapes are rejected.
 """
@@ -105,9 +126,66 @@ ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
 # Question types that evidence each mastery dimension (P0.4). Untagged or
 # unknown q_types count toward recall only. Dimensions without any evidencing
 # attempt report None ("unknown"), never a false zero.
-RECALL_Q_TYPES = {"definitional", "free_recall", "recall-mcq", "recall_mcq", "micro-check"}
+#
+# The canonical enum (P1.2) is enforced in `ops.py attempt`; legacy aliases
+# (`free_recall`, `transfer`, `novel`, `error_detect`, `recall-mcq`, …) are
+# normalized to canonical form. The dimension sets keep the legacy spellings too
+# so already-stored attempts keep counting.
+Q_TYPES = (
+    "definitional",
+    "discriminative",
+    "computational",
+    "free-recall",
+    "transfer-near",
+    "transfer-far",
+    "explain-back",
+    "error-detect",
+    "micro-check",
+    "applied",
+    "procedure",
+)
+Q_TYPE_ALIASES = {
+    "free_recall": "free-recall",
+    "recall-mcq": "definitional",
+    "recall_mcq": "definitional",
+    "transfer": "transfer-near",
+    "novel": "transfer-far",
+    "error_detect": "error-detect",
+    "explain_back": "explain-back",
+}
+RECALL_Q_TYPES = {"definitional", "free-recall", "free_recall", "recall-mcq", "recall_mcq", "micro-check"}
 PROCEDURAL_Q_TYPES = {"computational", "applied", "procedure"}
-TRANSFER_Q_TYPES = {"transfer", "novel", "error-detect", "error_detect"}
+TRANSFER_Q_TYPES = {"transfer", "transfer-near", "transfer-far", "novel", "error-detect", "error_detect"}
+TRANSFER_FAR_Q_TYPES = {"transfer-far", "novel"}
+EXPLAIN_BACK_Q_TYPES = {"explain-back", "explain_back"}
+CONFIDENCE_LEVELS = ("sure", "hunch", "no-idea")
+
+
+def normalize_qtype(qtype):
+    """Canonical q_type, or None when unknown/empty.
+
+    Legacy aliases map to canonical form; an unrecognized value returns None so
+    the caller can reject it with a clear error."""
+    if qtype is None:
+        return None
+    q = str(qtype).strip().lower()
+    if not q:
+        return None
+    q = Q_TYPE_ALIASES.get(q, q)
+    return q if q in Q_TYPES else None
+
+
+def normalize_confidence(confidence):
+    """Normalise `sure` / `hunch` / `no idea` (→ `no-idea`). Unknown values are
+    returned lowercased, never rejected (back-compat)."""
+    if confidence is None:
+        return None
+    c = str(confidence).strip().lower().replace(" ", "-")
+    if not c:
+        return None
+    if c == "noidea":
+        c = "no-idea"
+    return c
 
 
 def _resolve(p: str) -> Path:
@@ -286,9 +364,9 @@ def compute_dimensions(entry: dict) -> dict:
 
     Advisory, heuristic, and deliberately explicit about its inputs (P0.4):
       recall        recency-weighted correctness of recall-type attempts
-      conceptual    driven by the Feynman explain-back flag
+      conceptual    driven by the Feynman explain-back flag (or explain-back items)
       procedural    correctness of computational/applied/procedure attempts
-      transfer      correctness of transfer/novel/error-detect attempts
+      transfer      correctness of transfer-near/far + error-detect attempts
       independence  the last AI-free (mode="solo") attempt; None if never tested
       stability     interval_index (how long a gap the concept has survived)
     A dimension with no evidencing attempt is None (unknown), never 0, so an
@@ -306,6 +384,10 @@ def compute_dimensions(entry: dict) -> dict:
     feyn = _feynman_state(entry)
     if feyn is not None:
         conceptual = 3 if feyn else 0
+    else:
+        explain = [a for a in attempts if a.get("q_type") in EXPLAIN_BACK_Q_TYPES]
+        if explain:
+            conceptual = dim(explain)
     return {
         "recall": dim(recall_sel),
         "conceptual": conceptual,
@@ -314,6 +396,18 @@ def compute_dimensions(entry: dict) -> dict:
         "independence": (3 if solo[-1].get("is_correct") else 0) if solo else None,
         "stability": min(3, int(entry.get("interval_index", 0) or 0)),
     }
+
+
+def transfer_ok(entry: dict) -> bool:
+    """True when at least one passed far-transfer attempt is on record (P1.5).
+
+    `consolidated` graduation (when it exists) requires a delayed far-transfer
+    pass, so near-isomorphic-only evidence cannot consolidate a concept. Absence
+    of far-transfer evidence is *unknown*, not failure, and does not block."""
+    return any(
+        a.get("is_correct") and a.get("q_type") in TRANSFER_FAR_Q_TYPES
+        for a in (entry.get("attempts", []) or [])
+    )
 
 
 def independence_ok(entry: dict) -> bool:
@@ -614,11 +708,18 @@ def _print_queue_table(payload: dict) -> None:
 
 def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
                qtype: str = None, ctype: str = None, confidence: str = None,
-               hints: int = None, mode: str = None) -> None:
+               hints: int = None, mode: str = None, prereqs: list = None) -> None:
     result = (result or "").lower().strip()
     if result not in ("pass", "fail"):
         print(f"ATTEMPT FAILED: result must be pass|fail, got {result!r}")
         sys.exit(2)
+    if qtype is not None:
+        normalized = normalize_qtype(qtype)
+        if normalized is None:
+            print(f"ATTEMPT FAILED: unknown --qtype {qtype!r}; expected one of: {', '.join(Q_TYPES)}")
+            sys.exit(2)
+        qtype = normalized
+    confidence = normalize_confidence(confidence)
     is_correct = result == "pass"
     day = date or datetime.now().strftime("%Y-%m-%d")
     try:
@@ -640,6 +741,8 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
             "feynman": None,
         }
         data["concepts"][concept] = entry
+    if prereqs is not None:
+        entry["prereqs"] = [p for p in prereqs if p]
     if is_correct:
         entry["consecutive_correct"] = int(entry.get("consecutive_correct", 0)) + 1
         entry["consecutive_wrong"] = 0
@@ -678,23 +781,187 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
     print(f"next_review {entry['next_review']} (interval_index {entry['interval_index']})")
 
 
+def _track_concept_names(concepts: dict, track: str):
+    """Concept names, filtered to a track's Active Concepts section when the
+    track is given and the section resolves."""
+    names = sorted(concepts)
+    if not track:
+        return names
+    try:
+        apath = _resolve("Learning System/Core/📚 Active Concepts.md")
+        if apath.is_file():
+            lines = apath.read_text(encoding="utf-8", errors="replace").splitlines()
+            section, err = _section_slice(lines, rf"^## {re.escape(track)}\b")
+            if not err and section:
+                in_section = {n for n in names if n in section}
+                if in_section:
+                    names = sorted(in_section)
+    except Exception:
+        pass
+    return names
+
+
+def compute_calibration(attempts: list) -> dict:
+    """Confidence calibration over attempts that carry a `confidence` tag (P1.4).
+
+    Reports per-level counts/accuracy and flags `overconfident` when `sure` is
+    wrong too often, or `underconfident` when `hunch` is right too often. Only
+    tagged attempts count; untagged history is ignored (no false signal)."""
+    buckets = {}
+    for a in attempts or []:
+        c = normalize_confidence(a.get("confidence"))
+        if not c:
+            continue
+        b = buckets.setdefault(c, {"n": 0, "correct": 0})
+        b["n"] += 1
+        if a.get("is_correct"):
+            b["correct"] += 1
+    for b in buckets.values():
+        b["accuracy"] = round(b["correct"] / b["n"], 2) if b["n"] else None
+    flags = []
+    sure = buckets.get("sure")
+    if sure and sure["n"] >= 3 and (sure["n"] - sure["correct"]) / sure["n"] > 0.3:
+        flags.append("overconfident")
+    hunch = buckets.get("hunch")
+    if hunch and hunch["n"] >= 3 and hunch["correct"] / hunch["n"] >= 0.75:
+        flags.append("underconfident")
+    return {"buckets": buckets, "flags": flags}
+
+
+def _open_mistake_concepts() -> set:
+    """Concept names with an active/review mistake row (the live queue)."""
+    return {m["concept"] for m in _mistakes_rows() if m["status"] in ("active", "review")}
+
+
+def _prereq_state(name: str, concepts: dict, open_mistakes: set) -> str:
+    """Live state of a prerequisite concept: solid|neutral|fuzzy|unknown.
+
+    Mirrors `learner_history.tag`'s strictness closely enough for the gate: an
+    open mistake, a wrong streak, or a failed last attempt is `fuzzy`; two-plus
+    consecutive correct at interval >= 2 (with Feynman for concept/design) is
+    `solid`; no evidence at all is `unknown` (advisory — never blocks)."""
+    entry = concepts.get(name)
+    if entry is None:
+        return "unknown"
+    if name in open_mistakes:
+        return "fuzzy"
+    if int(entry.get("consecutive_wrong", 0) or 0) > 0:
+        return "fuzzy"
+    attempts = entry.get("attempts", []) or []
+    if attempts and not attempts[-1].get("is_correct"):
+        return "fuzzy"
+    if (
+        int(entry.get("consecutive_correct", 0) or 0) >= 2
+        and int(entry.get("interval_index", 0) or 0) >= 2
+        and (entry.get("type") in ("memory", "procedure") or _feynman_state(entry))
+    ):
+        return "solid"
+    return "neutral"
+
+
+def do_prereqs(concept: str, set_list=None, as_json: bool = False) -> None:
+    """Report (or set) a concept's direct prerequisite edges and their state.
+
+    `blocks` is true when a direct prereq is `fuzzy` (or has an open mistake): the
+    teach/review flow must refuse to advance and re-derive the prereq first. A
+    prereq with no evidence is `unknown` and never blocks (advisory)."""
+    data, path = _load_attempts()
+    concepts = data.get("concepts", {})
+    entry = concepts.get(concept)
+    if set_list is not None:
+        if entry is None:
+            entry = {
+                "type": "concept",
+                "attempts": [],
+                "interval_index": 0,
+                "consecutive_correct": 0,
+                "consecutive_wrong": 0,
+                "last_reviewed": "",
+                "next_review": "",
+                "feynman": None,
+            }
+            concepts[concept] = entry
+        entry["prereqs"] = [p for p in set_list if p]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    prereqs = (entry or {}).get("prereqs", []) or []
+    open_m = _open_mistake_concepts()
+    states = [{"concept": p, "state": _prereq_state(p, concepts, open_m)} for p in prereqs]
+    blocks = any(s["state"] == "fuzzy" for s in states)
+    payload = {"concept": concept, "prereqs": states, "blocks": blocks}
+    if as_json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+    if not prereqs:
+        print(f"PREREQS {concept}: (none recorded)")
+        return
+    print(f"PREREQS {concept}: " + ("BLOCKS — re-derive a fuzzy prereq first" if blocks else "ok"))
+    for s in states:
+        print(f"  - {s['concept']}: {s['state']}")
+
+
+def do_calibration(track: str = "", as_json: bool = False) -> None:
+    """Aggregate confidence calibration for a track (or all concepts)."""
+    data, _ = _load_attempts()
+    concepts = data.get("concepts", {})
+    names = _track_concept_names(concepts, track)
+    attempts = []
+    for n in names:
+        attempts.extend(concepts[n].get("attempts", []) or [])
+    cal = compute_calibration(attempts)
+    payload = {"track": track or "all", "concepts": len(names), **cal}
+    if as_json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+    print(f"CALIBRATION — track {track or 'all'} ({len(names)} concept(s))")
+    if not cal["buckets"]:
+        print("  (no confidence-tagged attempts)")
+        return
+    for level in ("sure", "hunch", "no-idea"):
+        b = cal["buckets"].get(level)
+        if not b:
+            continue
+        pct = f"{round(100 * b['accuracy'])}%" if b["accuracy"] is not None else "—"
+        print(f"  {level:8s} {b['correct']}/{b['n']} correct ({pct})")
+    for extra in cal["buckets"]:
+        if extra not in ("sure", "hunch", "no-idea"):
+            b = cal["buckets"][extra]
+            print(f"  {extra:8s} {b['correct']}/{b['n']} correct")
+    if cal["flags"]:
+        print(f"  flag: {', '.join(cal['flags'])}")
+
+
+def do_grade_mcq(key: str, answers: str, as_json: bool = False) -> None:
+    """Deterministic MCQ grading: per-item pass/fail for an answer key vs answers.
+
+    Comma-separated letters (case-insensitive). An empty or `-` answer is
+    unanswered (always wrong). No LLM is involved in the mechanical path."""
+    keys = [k.strip().upper() for k in (key or "").split(",")]
+    ans = [a.strip().upper() for a in (answers or "").split(",")]
+    if not keys or any(not k for k in keys):
+        print("GRADE-MCQ FAILED: --key must be a comma list of letters, e.g. A,B,C")
+        sys.exit(2)
+    if len(keys) != len(ans):
+        print(f"GRADE-MCQ FAILED: {len(keys)} key(s) vs {len(ans)} answer(s) — must match")
+        sys.exit(2)
+    items = [
+        {"id": i + 1, "key": k, "answer": a if a not in ("", "-") else "—", "pass": a == k}
+        for i, (k, a) in enumerate(zip(keys, ans))
+    ]
+    correct = sum(1 for it in items if it["pass"])
+    payload = {"correct": correct, "total": len(items), "items": items}
+    if as_json:
+        print(json.dumps(payload, indent=2, ensure_ascii=False))
+        return
+    print(f"MCQ GRADE: {correct}/{len(items)} correct")
+    for it in items:
+        print(f"  {it['id']}. key {it['key']} · answer {it['answer']} → {'PASS' if it['pass'] else 'FAIL'}")
+
+
 def do_mastery(track: str = "", as_json: bool = False) -> None:
     data, _ = _load_attempts()
     concepts = data.get("concepts", {})
-    names = sorted(concepts)
-    if track:
-        # Filter to the track's Active Concepts section when available.
-        try:
-            apath = _resolve("Learning System/Core/📚 Active Concepts.md")
-            if apath.is_file():
-                lines = apath.read_text(encoding="utf-8", errors="replace").splitlines()
-                section, err = _section_slice(lines, rf"^## {re.escape(track)}\b")
-                if not err and section:
-                    in_section = {n for n in names if n in section}
-                    if in_section:
-                        names = sorted(in_section)
-        except Exception:
-            pass
+    names = _track_concept_names(concepts, track)
     if not names:
         print("(no concepts)")
         return
@@ -707,6 +974,8 @@ def do_mastery(track: str = "", as_json: bool = False) -> None:
             "feynman": e.get("feynman"),
             "next_review": e.get("next_review"),
             "dimensions": compute_dimensions(e),
+            "calibration": compute_calibration(e.get("attempts", [])),
+            "transfer_ok": transfer_ok(e),
         })
     if as_json:
         print(json.dumps(rows, indent=2, ensure_ascii=False))
@@ -823,6 +1092,7 @@ def main() -> None:
         concept, result = rest[0], rest[1]
         feynman = qtype = ctype = day = confidence = mode = None
         hints = None
+        prereqs = []
         positional = []
         i = 2
         while i < len(rest):
@@ -835,6 +1105,8 @@ def main() -> None:
                 ctype = rest[i + 1]; i += 2
             elif tok == "--confidence" and i + 1 < len(rest):
                 confidence = rest[i + 1]; i += 2
+            elif tok == "--prereq" and i + 1 < len(rest):
+                prereqs.append(rest[i + 1]); i += 2
             elif tok == "--hints" and i + 1 < len(rest):
                 try:
                     hints = int(rest[i + 1])
@@ -849,7 +1121,42 @@ def main() -> None:
         if positional:
             feynman = positional[0]
         do_attempt(concept, result, feynman=feynman, date=day, qtype=qtype, ctype=ctype,
-                   confidence=confidence, hints=hints, mode=mode)
+                   confidence=confidence, hints=hints, mode=mode,
+                   prereqs=prereqs if prereqs else None)
+    elif cmd == "grade-mcq":
+        key = answers = ""
+        as_json = False
+        i = 0
+        while i < len(rest):
+            tok = rest[i]
+            if tok == "--key" and i + 1 < len(rest):
+                key = rest[i + 1]; i += 2
+            elif tok == "--answers" and i + 1 < len(rest):
+                answers = rest[i + 1]; i += 2
+            elif tok == "--json":
+                as_json = True; i += 1
+            else:
+                i += 1
+        do_grade_mcq(key, answers, as_json=as_json)
+    elif cmd == "prereqs":
+        concept = next((t for t in rest if not t.startswith("--")), "")
+        if not concept:
+            print('usage: ops.py prereqs "Concept" [--set NAME,...] [--json]')
+            sys.exit(2)
+        set_list = None
+        as_json = "--json" in rest
+        i = 0
+        while i < len(rest):
+            if rest[i] == "--set" and i + 1 < len(rest):
+                set_list = [p.strip() for p in rest[i + 1].split(",")]
+                i += 2
+            else:
+                i += 1
+        do_prereqs(concept, set_list=set_list, as_json=as_json)
+    elif cmd == "calibration":
+        as_json = "--json" in rest
+        track = next((t for t in rest if not t.startswith("--")), "")
+        do_calibration(track, as_json=as_json)
     elif cmd == "mastery":
         as_json = "--json" in rest
         track = next((t for t in rest if not t.startswith("--")), "")

@@ -411,5 +411,225 @@ class TestMasteryDimensions(unittest.TestCase):
         self.assertNotIn("mode", y)
 
 
+class TestQTypeEnum(unittest.TestCase):
+    """P1.2: q_type is an enum, not a free string; legacy aliases normalize."""
+
+    def _make_root(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        (core / "Attempts.json").write_text(
+            json.dumps({"concepts": {}, "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS}}),
+            encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        return Path(tmp.name)
+
+    def test_unknown_qtype_is_rejected(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("X", "pass", qtype="bogus-type")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("unknown --qtype", buf.getvalue())
+
+    def test_legacy_qtype_alias_is_normalized(self):
+        root = self._make_root()
+        with redirect_stdout(io.StringIO()):
+            ops.do_attempt("X", "pass", qtype="free_recall")
+        data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["X"]["attempts"][0]["q_type"], "free-recall")
+
+    def test_transfer_alias_normalizes_to_near(self):
+        self.assertIsNone(ops.normalize_qtype("bogus"))
+        self.assertEqual(ops.normalize_qtype("transfer"), "transfer-near")
+        self.assertEqual(ops.normalize_qtype("novel"), "transfer-far")
+        self.assertEqual(ops.normalize_qtype("transfer-far"), "transfer-far")
+
+
+class TestGradeMcq(unittest.TestCase):
+    """P1.2: deterministic MCQ grading — no LLM in the mechanical path."""
+
+    def test_grade_mcq_mixed_letters(self):
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_grade_mcq("A,B,C", "A,C,C")
+        out = buf.getvalue()
+        self.assertIn("2/3 correct", out)
+        self.assertIn("key B · answer C → FAIL", out)
+        self.assertIn("key C · answer C → PASS", out)
+
+    def test_grade_mcq_empty_answer_is_wrong(self):
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_grade_mcq("A,B", "A,-")
+        self.assertIn("1/2 correct", buf.getvalue())
+
+    def test_grade_mcq_length_mismatch_exits(self):
+        with redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_grade_mcq("A,B", "A")
+        self.assertEqual(cm.exception.code, 2)
+
+
+class TestPrereqs(unittest.TestCase):
+    """P1.3: prerequisite edges in live state; a fuzzy direct prereq blocks."""
+
+    def _seed(self, concepts, mistakes=()):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        (core / "Attempts.json").write_text(
+            json.dumps({"concepts": concepts, "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS}}),
+            encoding="utf-8")
+        header = ("| Date | Concept | Question | Expected | Error Type | Self-Attribution | "
+                  "Status | Retries | Next Retry |")
+        sep = "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"
+        rows = [f"| 2026-09-01 | {c} | Q? | Expected | structural | why | active | 0 | 2026-09-02 |"
+                for c in mistakes]
+        (core / "🧯 Mistakes.md").write_text(
+            "\n".join(["# Mistakes", "", header, sep, *rows]) + "\n", encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        return Path(tmp.name)
+
+    @staticmethod
+    def _entry(feynman=None, wrong=0, correct=0, interval=0, last_ok=True):
+        return {"type": "concept", "feynman": feynman, "consecutive_wrong": wrong,
+                "consecutive_correct": correct, "interval_index": interval,
+                "attempts": [{"date": "2026-09-01", "is_correct": last_ok, "result": "pass"}]}
+
+    def test_fuzzy_prereq_blocks(self):
+        self._seed({"A": self._entry(wrong=1, last_ok=False)})
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_prereqs("B", set_list=["A"])
+        out = buf.getvalue()
+        self.assertIn("BLOCKS", out)
+        self.assertIn("A: fuzzy", out)
+
+    def test_open_mistake_prereq_blocks(self):
+        self._seed({"A": self._entry()}, mistakes=["A"])
+        payload = ops._prereq_state("A", {"A": self._entry()}, ops._open_mistake_concepts())
+        self.assertEqual(payload, "fuzzy")
+
+    def test_unknown_prereq_does_not_block(self):
+        self._seed({"A": self._entry()})
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_prereqs("B", set_list=["Missing"])
+        out = buf.getvalue()
+        self.assertNotIn("BLOCKS", out)
+        self.assertIn("Missing: unknown", out)
+
+    def test_set_persists_prereqs(self):
+        root = self._seed({})
+        with redirect_stdout(io.StringIO()):
+            ops.do_prereqs("B", set_list=["A", "C"])
+        data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["B"]["prereqs"], ["A", "C"])
+
+
+class TestCalibration(unittest.TestCase):
+    """P1.4: confidence is measured, not just elicited."""
+
+    def test_calibration_flags_overconfidence(self):
+        attempts = [
+            {"is_correct": True, "confidence": "sure"},
+            {"is_correct": False, "confidence": "sure"},
+            {"is_correct": False, "confidence": "sure"},
+            {"is_correct": True, "confidence": "hunch"},
+        ]
+        cal = ops.compute_calibration(attempts)
+        self.assertIn("overconfident", cal["flags"])
+        self.assertEqual(cal["buckets"]["sure"]["n"], 3)
+        self.assertEqual(cal["buckets"]["sure"]["correct"], 1)
+
+    def test_calibration_ignores_untagged(self):
+        cal = ops.compute_calibration([{"is_correct": True}, {"is_correct": False}])
+        self.assertEqual(cal["buckets"], {})
+
+    def test_mastery_json_includes_calibration_and_transfer(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        core = Path(tmp.name) / "Learning System" / "Core"
+        core.mkdir(parents=True)
+        seed = {
+            "concepts": {
+                "X": {
+                    "type": "concept", "feynman": None, "interval_index": 1,
+                    "consecutive_correct": 1, "consecutive_wrong": 0,
+                    "attempts": [
+                        {"date": "2026-10-01", "is_correct": True,
+                         "confidence": "sure", "q_type": "transfer-far"},
+                    ],
+                }
+            },
+            "meta": {"version": 1, "intervals": ops.DEFAULT_INTERVALS},
+        }
+        (core / "Attempts.json").write_text(json.dumps(seed), encoding="utf-8")
+        old = ops.ROOT
+        ops.ROOT = Path(tmp.name)
+        self.addCleanup(setattr, ops, "ROOT", old)
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            ops.do_mastery("", as_json=True)
+        rows = json.loads(buf.getvalue())
+        row = rows[0]
+        self.assertIn("calibration", row)
+        self.assertTrue(row["transfer_ok"])
+
+
+class TestTransferDimension(unittest.TestCase):
+    """P1.5: transfer-near/far feed the transfer dimension; far transfer gates
+    consolidation (when it exists)."""
+
+    def test_transfer_dimension_from_transfer_far(self):
+        entry = {
+            "type": "concept", "interval_index": 2, "feynman": None,
+            "attempts": [
+                {"date": "2026-10-01", "is_correct": True, "q_type": "transfer-far"},
+            ],
+        }
+        self.assertEqual(ops.compute_dimensions(entry)["transfer"], 3)
+        self.assertTrue(ops.transfer_ok(entry))
+
+    def test_transfer_far_fail_is_not_transfer_ok(self):
+        entry = {"attempts": [{"date": "2026-10-01", "is_correct": False, "q_type": "transfer-far"}]}
+        self.assertEqual(ops.compute_dimensions(entry)["transfer"], 0)
+        self.assertFalse(ops.transfer_ok(entry))
+
+
+class TestLearnerHistoryFeynmanGate(unittest.TestCase):
+    """P1.1: a concept/design entry cannot be `solid` without a Feynman pass;
+    memory/procedure stay exempt."""
+
+    def test_concept_cannot_be_solid_without_feynman(self):
+        import learner_history  # noqa: E402
+
+        entry = {
+            "type": "concept", "consecutive_correct": 3, "interval_index": 3,
+            "consecutive_wrong": 0, "attempts": [{"date": "2026-10-01", "is_correct": True}],
+            "feynman": None,
+        }
+        self.assertNotEqual(learner_history.tag("Concept", entry, set()), "solid")
+        entry["feynman"] = "pass"
+        self.assertEqual(learner_history.tag("Concept", entry, set()), "solid")
+
+    def test_memory_is_exempt_from_feynman(self):
+        import learner_history  # noqa: E402
+
+        entry = {
+            "type": "memory", "consecutive_correct": 3, "interval_index": 3,
+            "consecutive_wrong": 0, "attempts": [{"date": "2026-10-01", "is_correct": True}],
+            "feynman": None,
+        }
+        self.assertEqual(learner_history.tag("Memory", entry, set()), "solid")
+
+
 if __name__ == "__main__":
     unittest.main()
