@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # MIT Missing Semester — Shell
 
 **Source:** [Course Overview + The Shell](https://missing.csail.mit.edu/2026/course-shell/)

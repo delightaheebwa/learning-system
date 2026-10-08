@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineering — Primary Colors Roadmap
 
 **Learn the primitives (the "primary colors") so you can confidently build anything by mixing and remixing them.**

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Professional Responsibility
 
 A set of attitudes and behaviors for taking ownership of your work as a software developer.

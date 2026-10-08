@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Posterior Probability P(H|E)
 
 > **Source:** Phase 1, Lesson 07 — Bayes' Theorem & Statistical Thinking (AIEFS Rohit)

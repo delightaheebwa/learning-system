@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Matrix Operations from Scratch
 
 > Every neural network is just matrix multiplication with extra steps.

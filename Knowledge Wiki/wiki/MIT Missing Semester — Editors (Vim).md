@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # MIT Missing Semester — Editors (Vim)
 
 > Source: handwritten class notes, Lesson 3 "Development Environment & Tools" (MIT Missing Semester editors lecture, https://missing.csail.mit.edu/2020/editors/) transcribed 2026-08-25 → 2026-08-28, cross-referenced with the live lecture. Ingested 2026-08-28 (Clerk). This page fills the gap left by the 2026-08-28 concept seeding: the three Vim rows (Modal Editing, Composable Commands, Buffers & Windows) existed but their wiki page was marked "pending Clerk ingest".

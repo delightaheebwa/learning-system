@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Editor & Remote Dev Setup
 
 > Your editor is your co-pilot. Configure it once to stay out of your way.

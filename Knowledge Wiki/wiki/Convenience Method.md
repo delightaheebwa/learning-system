@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Convenience Method
 
 A method that exists strictly for the convenience of the programmer using the class. It reduces boilerplate by filling in sensible defaults and delegating to a more complete version.

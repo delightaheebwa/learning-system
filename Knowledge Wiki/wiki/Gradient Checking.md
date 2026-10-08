@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Gradient Checking
 
 Comparing autodiff gradients against numerical finite-difference approximations to verify the backward pass is correct. The core method: compute the central difference f'(x) ≈ (f(x+h) - f(x-h))/(2h) with h ≈ 10⁻⁶, giving O(h²) accuracy. Compare against autodiff gradient; if the difference exceeds a tolerance (~10⁻⁵), there's a bug in a backward rule.

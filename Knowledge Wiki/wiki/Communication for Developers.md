@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Communication for Developers
 
 Software development is a social activity. The best code in the world is useless if you can't communicate what it does, why it matters, or how to use it.

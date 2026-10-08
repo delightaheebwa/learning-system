@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Softmax Function
 
 Converts raw logits into a probability distribution. Two steps:

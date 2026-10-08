@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Curse of Dimensionality
 
 > Related: [[PCA (Dimensionality Reduction)]], [[Covariance and correlation]], [[Variance is Non-Negative (PSD Covariance)]]

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Cumulative distribution function
 
 The **cumulative distribution function (cdf)** of a random variable $X$ gives the probability that $X$ is less than or equal to some value $x$:

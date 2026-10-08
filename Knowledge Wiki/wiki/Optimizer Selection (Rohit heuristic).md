@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Optimizer Selection (Rohit Heuristic)
 
 Given a training run, which optimizer do you reach for?

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Jacobian determinant
 
 The Jacobian determinant is the determinant of a Jacobian matrix.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Formal Grammar
 
 A **formal grammar** is a set of production rules that define which strings of symbols from an alphabet are valid in a given language. It provides the mathematical foundation for both lexical analysis and parsing.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Jupyter Notebook Workflow
 
 > Notebooks are the lab bench of AI engineering: prototype here, ship what works as scripts.

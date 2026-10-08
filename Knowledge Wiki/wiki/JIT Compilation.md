@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # JIT Compilation
 
 **JIT (Just-In-Time) compilation** is a technique where [[Bytecode]] is compiled to native machine code *at runtime* — while the program is running — rather than ahead of time.

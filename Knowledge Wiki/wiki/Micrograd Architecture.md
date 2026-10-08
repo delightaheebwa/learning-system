@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Micrograd Architecture
 
 A five-level hierarchy that builds from a single scalar autograd Value to a full neural network training loop:

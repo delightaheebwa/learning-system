@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineering — Debugging and Profiling
 
 > **Source:** [ai-engineering-from-scratch, Phase 0, Lesson 12](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/12-debugging-and-profiling/docs/en.md)

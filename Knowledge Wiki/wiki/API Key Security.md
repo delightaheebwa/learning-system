@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # API Key Security
 
 > Every AI API works the same way: send a request, get a response. The pattern never changes.

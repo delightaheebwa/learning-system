@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # PCA Sign Ambiguity (svd_flip)
 
 > Related: [[PCA (Dimensionality Reduction)]], [[Variance is Non-Negative (PSD Covariance)]], [[Covariance and correlation]]

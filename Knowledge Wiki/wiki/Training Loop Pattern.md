@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Training Loop Pattern
 
 The engine of every deep learning model. Every Marconi Lab model — cervical cell classifier, crop disease detector, Luganda text generator — runs on this same loop.

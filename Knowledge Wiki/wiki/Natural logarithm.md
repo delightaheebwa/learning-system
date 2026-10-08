@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Natural logarithm
 
 The natural logarithm \(\ln(a)\) is the conversion factor that appears when expressing an exponential base \(a\) in terms of base \(e\):

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Tensors (PyTorch)
 
 A **tensor** is a multi-dimensional array of numbers — the universal data container in deep learning. Images, text, audio, and tabular data all become tensors before a model processes them.

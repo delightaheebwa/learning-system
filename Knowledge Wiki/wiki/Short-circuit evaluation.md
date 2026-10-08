@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Short-Circuit Evaluation
 
 Logical operators (`and`, `or`) in languages like Python and JavaScript are not just boolean operators — they act as **implicit control flow structures** because they conditionally evaluate their second operand.

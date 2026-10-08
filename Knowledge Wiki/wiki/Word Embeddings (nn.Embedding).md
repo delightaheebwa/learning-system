@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Word Embeddings (nn.Embedding)
 
 **Source:** Marconi Lab DL Course, Day 4

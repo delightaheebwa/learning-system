@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineer Weekly — July 25, 2026
 
 **10 talks from AI Engineer Conf — selected for someone tinkering with agents**

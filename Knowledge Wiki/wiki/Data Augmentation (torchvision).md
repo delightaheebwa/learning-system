@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Data Augmentation (torchvision)
 
 Medical and agricultural datasets are typically **small** (e.g., 200 cervical cell images). Data augmentation artificially expands your dataset by applying random but realistic transformations.

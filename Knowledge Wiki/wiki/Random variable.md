@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Random variable
 
 A random variable is a function that maps outcomes from the sample space to values in a target space.

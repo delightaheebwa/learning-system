@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Environment Variables (Shell)
 
 > Source: Lecture 2 written notes (website, Fri 2026-08-21) + MIT Missing Semester. Ingested 2026-08-24.

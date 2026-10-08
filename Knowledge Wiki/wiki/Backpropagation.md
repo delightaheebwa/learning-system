@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Backpropagation
 
 Backpropagation is the standard way to compute gradients in layered neural networks by applying the chain rule efficiently from the output back to earlier layers. It is the reverse-mode form of [[Automatic differentiation]] specialized to layered neural networks.

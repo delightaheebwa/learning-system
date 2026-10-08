@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Programming Paradigms Comparison
 
 A programming paradigm is a style or approach to structuring code. The three most popular are Imperative, Functional, and Object-Oriented Programming (OOP).

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Linear Algebra Intuition
 
 > Every AI model is just matrix math wearing a fancy hat.

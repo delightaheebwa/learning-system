@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Evaluation Protocol
 
 Training loss going down doesn't prove your model works. You must evaluate on data the model has never seen (validation/test set).

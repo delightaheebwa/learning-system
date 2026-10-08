@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Waterbed Theory
 
 The **Waterbed Theory** (also called the Law of Conservation of Complexity) states that in complex systems — programming languages, tools, software designs — you cannot eliminate complexity. If you "push it down" in one place, it will "bulge" somewhere else, much like pressing on a waterbed.

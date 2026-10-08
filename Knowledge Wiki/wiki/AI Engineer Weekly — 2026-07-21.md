@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineer Weekly — July 21, 2026
 
 **Source:** AI Engineer (@aiDotEngineer) — AI Engineer World's Fair 2026

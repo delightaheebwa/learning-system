@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Bernoulli Distribution
 
 The simplest probability distribution: one trial with exactly two outcomes (success/failure, 1/0).

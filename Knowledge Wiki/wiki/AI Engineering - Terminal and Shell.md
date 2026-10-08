@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineering — Terminal & Shell
 
 > The terminal is where AI engineers live. Get comfortable here. Every AI workflow touches the shell: training runs, GPU monitoring, log tailing, remote SSH sessions, environment management.

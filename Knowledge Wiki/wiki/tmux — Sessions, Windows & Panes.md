@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # tmux — Sessions, Windows & Panes
 
 > Source: Saturday 2026-08-22 lecture notes (website). Starter page — deepen during the Command-line Environment lesson.

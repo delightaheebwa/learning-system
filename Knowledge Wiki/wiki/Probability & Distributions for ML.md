@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Probability & Distributions for ML
 
 > **Source:** AI Engineering from Scratch, Phase 1, Lesson 06 — Probability & Distributions

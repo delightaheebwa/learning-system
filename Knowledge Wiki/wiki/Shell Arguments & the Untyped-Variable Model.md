@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Shell Arguments & the Untyped-Variable Model
 
 Two foundational facts about how the shell handles data:

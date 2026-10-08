@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Interdeveloper Duplication
 
 A form of DRY violation where different programmers on the same team unknowingly write the same code. Unlike representational duplication (external interfaces), this is about **internal** redundancy across team members.

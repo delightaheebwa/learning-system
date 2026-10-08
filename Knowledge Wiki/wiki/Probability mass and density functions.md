@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Probability mass and density functions
 
 A PMF and a PDF are two different ways to describe uncertainty, depending on whether the random variable is discrete or continuous.

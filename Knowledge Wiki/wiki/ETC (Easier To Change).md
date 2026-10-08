@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # ETC (Easier To Change)
 
 A design heuristic from The Pragmatic Programmer: good design is design that is **easier to change**. Whenever you add code, ask yourself: "Is this the easy-to-change path? Will this be easy to change later?"

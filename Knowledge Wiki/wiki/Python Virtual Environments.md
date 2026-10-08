@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Python Virtual Environments
 
 > Dependency hell is real in AI/ML. Virtual environments are the cure.

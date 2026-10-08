@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Lexer
 
 The **lexical analyzer** (lexer/scanner) is the first stage of a compiler or interpreter pipeline. It walks through raw source code character by character and groups characters into meaningful chunks called **tokens**.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # One-Hot Encoding
 
 Categorical variables (like character indices 0-26) can't be directly multiplied by a weight matrix. One-hot encoding converts each integer index into a binary vector of length `num_classes` — all zeros except a single 1 at the index.

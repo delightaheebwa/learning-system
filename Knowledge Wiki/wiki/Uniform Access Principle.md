@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Uniform Access Principle
 
 From Bertrand Meyer's *Object-Oriented Software Construction*: all services offered by a module should be available through a **uniform notation** that does not reveal whether they are implemented through storage (a field) or computation (a method).

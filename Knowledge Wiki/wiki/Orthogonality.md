@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Orthogonality
 
 > Related: [[ETC (Easier To Change)]], [[DRY Principle]], [[Self-Contained Components]], [[Global Data Avoidance]]

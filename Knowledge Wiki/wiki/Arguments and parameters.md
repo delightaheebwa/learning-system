@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Arguments and Parameters
 
 Although often used interchangeably in casual conversation, **argument** and **parameter** refer to distinctly different things.

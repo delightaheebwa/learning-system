@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Compiled vs Interpreted
 
 The distinction between how languages execute: compiled upfront vs. interpreted at runtime. In practice, this is a spectrum.

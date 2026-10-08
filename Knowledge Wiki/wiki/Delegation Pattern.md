@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Delegation Pattern
 
 A structural design pattern where one method hands off its work to another helper method rather than doing the work itself.

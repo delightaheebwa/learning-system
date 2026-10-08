@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineer Weekly — July 13, 2026
 
 A synthesis of the 8 most impactful talks from AI Engineer (@aiDotEngineer) this week, curated for a 2nd-year AI/ML student building practical data science skills.

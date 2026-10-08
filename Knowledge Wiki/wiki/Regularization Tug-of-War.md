@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Regularization Tug-of-War
 
 The total loss is a compromise between two competing forces:

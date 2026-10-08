@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Saddle Points (Critical-Point Triage)
 
 A critical point is where the gradient is exactly zero. A **saddle point** is a critical point that is a minimum in some directions and a maximum in others — flat, but not a minimum.

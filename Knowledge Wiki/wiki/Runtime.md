@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Runtime
 
 The **runtime** is the invisible background system that keeps a program alive while it executes. Your code never runs completely alone — it has a "crew" of background assistants.

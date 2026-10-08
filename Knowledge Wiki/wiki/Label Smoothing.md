@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Label Smoothing
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L09 (CP6) + PyTorch `CrossEntropyLoss` docs + Inception (Szegedy et al., 2016) · **Lang:** Python

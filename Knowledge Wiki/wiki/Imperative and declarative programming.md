@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Imperative and Declarative Programming
 
 Two contrasting paradigms for expressing computation:

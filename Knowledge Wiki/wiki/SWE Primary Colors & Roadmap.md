@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # SWE Primary Colors & Roadmap — ARCHIVED 2026-09-01
 
 > **Archived 2026-09-01 — superseded by AI Engineering from Scratch (Rohit).** See active map: [[AI Engineering from Scratch — Roadmap]] · `Learning System/CURRICULUM.md` (Rohit 20 phases) · archive copies: `Learning System/Archive/CURRICULUM — SWE Primary Colors — archived 2026-09-01.md` and `Learning System/Core/📦 Concept Archive.md` section `Paused Concepts — SWE (Archived 2026-09-01)` (visibility strictly out of scope — Scout/Tutor do not grep). This page kept for reference only.

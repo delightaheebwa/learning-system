@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Closures
 
 A **closure** is the combination of a function bundled together with references to its surrounding state. It allows inner functions to access variables from outer functions **even after the outer function has finished executing**.

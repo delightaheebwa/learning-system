@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Neural Network Training Loop
 
 The complete cycle that every deep learning framework implements: (1) **Forward pass** — compute predictions and loss; (2) **Backward pass** — loss.backward() computes gradients for all parameters via autodiff; (3) **Parameter update** — w -= lr × w.grad (gradient descent step); (4) **Zero gradients** — reset all .grad values to 0 before the next iteration.

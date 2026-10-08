@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Single Responsibility Principle (SRP)
 
 One of the SOLID principles of object-oriented design.

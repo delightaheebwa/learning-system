@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Learning-Rate Schedules (Four Types)
 
 A fixed learning rate is a compromise: large steps early for fast progress, small steps late for fine-tuning. A schedule changes \(\eta\) over time to get both. Read every schedule as a curve of \(\eta\) vs training step — they differ on **two axes**: the early phase and the end behavior.

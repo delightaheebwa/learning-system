@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Gradient descent
 
 Gradient descent is a first-order optimization method that updates parameters by moving in the direction of steepest decrease predicted by the local linear model.

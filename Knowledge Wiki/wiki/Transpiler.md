@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Transpiler
 
 A **transpiler** (source-to-source compiler) translates code from one high-level language to another high-level language, rather than to machine code.

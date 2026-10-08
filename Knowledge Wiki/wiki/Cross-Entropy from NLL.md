@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Cross-Entropy from NLL
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L06 + Rohit P1 L09 (its `en.md` uses the ML lettering — see the conventions table) + Olah (Visual Information Theory) + PyTorch `CrossEntropyLoss` · **Lang:** Python

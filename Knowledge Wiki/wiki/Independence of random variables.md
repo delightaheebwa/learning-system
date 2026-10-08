@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Independence of random variables
 
 Two random variables $X$ and $Y$ are **independent** when knowing the value of one gives you **no information** about the other.

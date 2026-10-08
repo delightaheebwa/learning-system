@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Total differential
 
 The total differential is the linearized change of a multivariable scalar function.

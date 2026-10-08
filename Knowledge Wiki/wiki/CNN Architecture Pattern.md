@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # CNN Architecture Pattern
 
 The standard CNN pattern: **Conv → ReLU → MaxPool**, repeated 2–4 times, then flattened and fed into a small fully-connected classifier.

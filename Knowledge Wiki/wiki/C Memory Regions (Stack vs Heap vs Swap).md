@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # C Memory Regions (Stack vs Heap vs Swap)
 
 ## Overview

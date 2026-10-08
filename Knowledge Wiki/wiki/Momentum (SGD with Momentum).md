@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Momentum (SGD with Momentum)
 
 Momentum accumulates past gradients into a velocity term instead of stepping on the current gradient alone:

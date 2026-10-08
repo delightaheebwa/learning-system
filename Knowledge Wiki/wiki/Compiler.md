@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Compiler
 
 A **compiler** is a pipeline that translates source code (C++, Rust, Go) into machine code that a CPU can execute directly.

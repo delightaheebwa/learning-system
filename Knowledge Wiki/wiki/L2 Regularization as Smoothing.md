@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # L2 Regularization as Smoothing
 
 In the counting approach, add-1 smoothing prevents zero probabilities. In the neural approach, the equivalent is L2 regularization — penalizing large weights:

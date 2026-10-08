@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Two-Pass Autodiff Algorithm
 
 Every autodiff system follows the same two-pass algorithm:

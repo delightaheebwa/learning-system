@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Implicit differentiation
 
 Implicit differentiation is the process of differentiating an equation that defines \(y\) implicitly rather than solving for \(y\) first.

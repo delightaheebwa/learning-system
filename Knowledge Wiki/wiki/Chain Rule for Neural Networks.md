@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Chain Rule for Neural Networks
 
 > **Type:** procedure · **Track:** AIEFS · **Source:** Rohit P1 L05 + CS231n optimization-2 · **Lang:** Python

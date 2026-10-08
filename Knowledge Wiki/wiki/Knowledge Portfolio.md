@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Knowledge Portfolio
 
 Your knowledge and experience is an **expiring asset**. Like a financial portfolio, it needs active management and diversification.

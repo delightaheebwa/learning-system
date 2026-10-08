@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Value Class Architecture
 
 The `Value` class is the core data structure of a micrograd-style autograd engine. Each instance has five fields:

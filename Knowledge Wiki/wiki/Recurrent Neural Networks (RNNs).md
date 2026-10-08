@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Recurrent Neural Networks (RNNs)
 
 All models so far process one fixed-size input → one output. RNNs handle **sequences**: time-series, text, audio, video. They process one element at a time, maintaining a **hidden state** that carries information from previous steps.

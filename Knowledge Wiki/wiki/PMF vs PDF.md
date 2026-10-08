@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # PMF vs PDF
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L06 + CS229 probability review · **Lang:** Python

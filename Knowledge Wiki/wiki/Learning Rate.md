@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Learning Rate
 
 The scalar that controls how far each gradient-descent step moves: \(w \leftarrow w - \eta\,\nabla L(w)\). It is the single most important hyperparameter in optimization.

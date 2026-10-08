@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Bytecode
 
 **Bytecode** is a portable intermediate representation between source code and machine code. It is not tied to any specific CPU architecture.

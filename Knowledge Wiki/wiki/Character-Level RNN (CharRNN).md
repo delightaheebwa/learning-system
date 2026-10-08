@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Character-Level RNN (CharRNN)
 
 **Source:** Marconi Lab DL Course, Day 4

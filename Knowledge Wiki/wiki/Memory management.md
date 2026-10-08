@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Memory Management
 
 Memory management keeps programs running smoothly by cleaning up unused data. There are three primary strategies, distinguished by **who decides when memory is freed**.

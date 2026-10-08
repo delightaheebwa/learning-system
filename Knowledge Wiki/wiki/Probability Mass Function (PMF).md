@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Probability Mass Function (PMF)
 
 A function $P(X = k)$ that maps each discrete outcome $k$ to its exact probability of occurring.

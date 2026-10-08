@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Multi-Input & Multi-Modal Models
 
 Real-world problems often have **multiple data sources**. Example: a cervical cancer diagnosis might combine a Pap smear **image** with patient **tabular data** (age, HPV status, previous screenings). PyTorch makes this straightforward with separate pathways that merge.

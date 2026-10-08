@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Transfer Learning (PyTorch)
 
 The technique you'll actually use at Marconi Lab. Instead of training a CNN from scratch (millions of images needed), take a model pre-trained on ImageNet (1.2M images) and **fine-tune** it on your small medical/agricultural dataset.

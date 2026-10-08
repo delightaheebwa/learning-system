@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Joint, marginal, and conditional probabilities
 
 When working with two (or more) random variables, three types of probability describe different aspects of their relationship. Example 6.2 from MML illustrates them with a probability table of two discrete variables $X$ and $Y$.

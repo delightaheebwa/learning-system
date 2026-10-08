@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Adam (adaptive moments)
 
 Adam combines two running averages per weight — momentum (first moment, mean gradient) and RMSProp (second moment, mean squared gradient) — with a bias-correction step, to give each weight its own adaptive learning rate without manual tuning.

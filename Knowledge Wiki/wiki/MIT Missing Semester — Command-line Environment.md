@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # MIT Missing Semester — Command-line Environment
 
 **Source:** [Command-line Environment](https://missing.csail.mit.edu/2026/command-line-environment/)

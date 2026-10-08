@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Gaussian distribution
 
 The Gaussian distribution, also called the normal distribution, is one of the most important probability distributions in machine learning.

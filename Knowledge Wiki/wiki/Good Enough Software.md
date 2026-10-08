@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Good Enough Software
 
 The principle that software doesn't need to be perfect — it needs to be **good enough**. Knowing when to stop is a critical skill.

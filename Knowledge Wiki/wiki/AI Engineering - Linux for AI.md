@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Linux for AI
 
 > Most AI runs on Linux. You need to know enough to not be stuck.

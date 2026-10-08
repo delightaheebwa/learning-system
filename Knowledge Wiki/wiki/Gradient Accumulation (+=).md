@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Gradient Accumulation (+=)
 
 When a variable is used in multiple operations, it receives gradient contributions from **each** path through the computational graph. The total gradient is the **sum** of all path contributions — this is the multivariable chain rule.

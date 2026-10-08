@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineering from Scratch — Roadmap (Rohit)
 
 > **Active roadmap** (2026-09-01 — switched from SWE Primary Colors). Source: **AI Engineering from Scratch** by Rohit Ghumare — https://github.com/rohitg00/ai-engineering-from-scratch — `ROADMAP.md` (~323h, 20 phases, 523 lessons, each ships an artifact `outputs/`). Canonical order: `Learning System/CURRICULUM.md` (Mission 0 Catch-Up + Missions 1–21 = Phases 0–19). Mission docs: `Learning System/MISSION.md`. Curated readings: `Learning System/RESOURCES.md`.

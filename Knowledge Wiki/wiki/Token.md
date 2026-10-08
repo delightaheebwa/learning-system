@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Token
 
 A **token** is the abstract unit of currency in compiler design — a package that bundles a raw text string with its identity and location. Tokens are produced by the \[\[Lexer\]\] and consumed by the parser.

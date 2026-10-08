@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Categorical Distribution
 
 Generalizes Bernoulli to k possible outcomes: one trial, k mutually exclusive categories.

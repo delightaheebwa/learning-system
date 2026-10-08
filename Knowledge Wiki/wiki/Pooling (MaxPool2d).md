@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Pooling (MaxPool2d)
 
 After a convolution, **pooling** downsamples the feature map. **Max Pooling** slides a 2×2 window and keeps only the maximum value in each window.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Maintenance Mindset
 
 The recognition that **we are always in maintenance mode**. Software is never "finished" — our thinking and understanding about it changes day by day.

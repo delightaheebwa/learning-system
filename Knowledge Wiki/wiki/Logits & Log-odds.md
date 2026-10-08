@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Logits & Log-odds
 
 > **Type:** concept (supporting) · **Track:** AIEFS · **Source:** Rohit P1 L09 (CP6 follow-ups) + PyTorch `CrossEntropyLoss` docs · **Lang:** Python

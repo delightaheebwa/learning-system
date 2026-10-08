@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Chain Rule Decomposition
 
 The chain rule decomposes a complex derivative into a product of **simple local derivatives**. For `y = f(g(x))`:

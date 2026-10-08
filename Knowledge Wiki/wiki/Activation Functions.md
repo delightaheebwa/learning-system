@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Activation Functions
 
 Without activations, stacking linear layers collapses into one big linear function — no matter how deep. Activation functions introduce **non-linearity**, the source of neural networks' representational power.

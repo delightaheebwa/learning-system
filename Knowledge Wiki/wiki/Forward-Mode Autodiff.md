@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Forward-Mode Autodiff
 
 Forward-mode autodiff computes derivatives **alongside** values during the forward pass using **dual numbers**: each value carries a *primal* (actual value) and a *tangent* (derivative with respect to the input of interest).

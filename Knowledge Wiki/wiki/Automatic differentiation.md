@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Automatic differentiation
 
 Automatic differentiation is a way to compute exact derivatives of a program by decomposing it into basic operations and applying local derivative rules through the chain rule.

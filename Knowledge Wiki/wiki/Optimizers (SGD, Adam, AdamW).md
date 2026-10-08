@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Optimizers (SGD, Adam, AdamW)
 
 The optimizer decides *how* to update weights after computing gradients. Different optimizers behave very differently.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Local Autograd Derivative Rules
 
 Each operation in an autograd engine only needs to know its own local derivative rule. The graph handles composing them via the chain rule.

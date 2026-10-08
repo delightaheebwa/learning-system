@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Euler's number e
 
 \(e\) is the special base for which the exponential function equals its own derivative:

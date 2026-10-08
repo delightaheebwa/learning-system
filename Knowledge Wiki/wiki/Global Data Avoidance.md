@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Global Data Avoidance
 
 > Related: [[Orthogonality]], [[Shy Code]], [[Self-Contained Components]]

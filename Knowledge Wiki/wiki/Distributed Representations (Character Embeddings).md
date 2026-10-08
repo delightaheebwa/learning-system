@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Distributed Representations (Character Embeddings)
 
 Instead of one-hot vectors (27-dim, sparse), each character is mapped to a small **dense** vector — say 10 floating-point numbers. These are learned during training.

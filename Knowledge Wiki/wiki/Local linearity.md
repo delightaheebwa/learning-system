@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Local linearity
 
 A smooth multivariable function looks linear if you zoom in close enough around a point. The matrix that captures that local linear behavior is the [[Jacobian matrix]].

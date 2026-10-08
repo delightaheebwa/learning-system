@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Newton's law of cooling
 
 Newton's law of cooling says that the rate of temperature change is proportional to the current temperature difference from the surroundings:

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Loss Functions (PyTorch)
 
 A **loss function** measures how far the model's predictions are from ground truth. Training minimizes this number.

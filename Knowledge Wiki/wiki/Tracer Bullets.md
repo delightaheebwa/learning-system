@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Tracer Bullets
 
 A metaphor from The Pragmatic Programmer: in night combat, tracer rounds leave a visible trail so you can see where your shots are landing and adjust. In software, tracer bullets are thin, end-to-end slices of functionality that give visibility into the final system.

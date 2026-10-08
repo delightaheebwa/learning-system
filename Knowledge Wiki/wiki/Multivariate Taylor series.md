@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Multivariate Taylor series
 
 The multivariate Taylor series approximates a smooth scalar function near a point by combining its value, gradient, Hessian, and higher-order derivative tensors.

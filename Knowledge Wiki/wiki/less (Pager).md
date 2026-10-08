@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # less — The Terminal Pager
 
 > Source: handwritten lecture notes, Monday 2026-08-24. Expanded lightly from standard Unix knowledge; pairs with the inspect-first `curl` pattern in [[MIT Missing Semester — Shell]].

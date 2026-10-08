@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Self-Contained Components
 
 > Related: [[Orthogonality]], [[Shy Code]], [[Global Data Avoidance]], [[ETC (Easier To Change)]]

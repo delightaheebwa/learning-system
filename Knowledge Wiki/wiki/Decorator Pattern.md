@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Decorator Pattern
 
 > Related: [[Strategy Pattern]], [[Shy Code]]

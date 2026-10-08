@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Python Performance Tradeoffs
 
 > **Status:** developing | **Last Reviewed:** 2026-05-30 | **Next Review:** 2026-06-02

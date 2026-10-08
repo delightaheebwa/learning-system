@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Probability foundations
 
 This page is a beginner-friendly verbal overview of the probability ideas in `raw/sources/2026-05-16 - probability-foundations-pmf-pdf-bayes-covariance-gaussian.md`.

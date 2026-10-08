@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # PyTorch Model Building
 
 Every neural network in PyTorch is a subclass of `nn.Module`. You define **layers** in `__init__` and data flow in `forward`.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # PCA (Dimensionality Reduction)
 
 > Related: [[Covariance and correlation]], [[Variance is Non-Negative (PSD Covariance)]], [[PCA Sign Ambiguity (svd_flip)]], [[Curse of Dimensionality]], [[Linear Algebra Intuition]], [[Matrix Transformations]]

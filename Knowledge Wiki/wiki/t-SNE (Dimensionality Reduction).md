@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # t-SNE (Dimensionality Reduction)
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L10 (Dimensionality Reduction) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively*, Distill 2016 · **Lang:** Python (`sklearn.manifold.TSNE`)

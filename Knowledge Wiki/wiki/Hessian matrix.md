@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Hessian matrix
 
 The Hessian matrix is the matrix of second-order partial derivatives of a scalar-valued function.

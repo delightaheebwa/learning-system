@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Representational Duplication
 
 A form of DRY violation that occurs when your code connects to external systems — APIs, databases, third-party services — and you manually recreate the external system's data model in your code.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Softmax Subtract-Max Trick
 
 > **Type:** procedure · **Track:** AIEFS · **Source:** Rohit P1 L06 + Gundersen log-sum-exp · **Lang:** Python

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Virtual Machine
 
 A **Virtual Machine (VM)** is a program that emulates a hypothetical chip — a "fake chip" that acts as a lightning-fast translator on the user's computer.

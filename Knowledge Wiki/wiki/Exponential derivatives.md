@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Exponential derivatives
 
 Exponential functions are special because their derivative is proportional to the function itself.

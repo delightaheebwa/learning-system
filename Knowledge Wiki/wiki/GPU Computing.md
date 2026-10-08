@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # GPU Computing
 
 > GPU acceleration is the difference between an 8-hour training run and a 10-minute one.

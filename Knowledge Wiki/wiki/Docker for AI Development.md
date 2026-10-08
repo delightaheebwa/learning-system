@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Docker for AI Development
 
 > Containers make "works on my machine" a thing of the past — critical for AI projects with complex dependency chains.

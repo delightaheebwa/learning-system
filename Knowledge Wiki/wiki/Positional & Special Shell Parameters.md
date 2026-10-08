@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Positional & Special Shell Parameters
 
 When you run a program or script, **arguments arrive as plain strings**. Inside the script you reach them through special shell syntax — not named parameters.

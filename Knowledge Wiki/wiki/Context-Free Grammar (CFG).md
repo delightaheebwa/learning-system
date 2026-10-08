@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Context-Free Grammar (CFG)
 
 A **context-free grammar** is a formal grammar where each production rule maps a single non-terminal symbol to a string of terminals and non-terminals. The "context-free" property means the rule applies regardless of surrounding context — a non-terminal expands the same way everywhere.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Row-Select Property
 
 When you multiply a one-hot vector by a matrix `W`, the result is just the corresponding row of `W`:

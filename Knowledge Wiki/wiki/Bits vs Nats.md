@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Bits vs Nats
 
 > **Type:** memory · **Track:** AIEFS · **Source:** Rohit P1 L09 + PyTorch `CrossEntropyLoss` docs · **Lang:** Python

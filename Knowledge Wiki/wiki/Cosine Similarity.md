@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Cosine Similarity
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L02 + 3Blue1Brown · **Lang:** Python

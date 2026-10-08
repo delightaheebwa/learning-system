@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Bayes rule
 
 Bayes' rule updates a belief after seeing data.

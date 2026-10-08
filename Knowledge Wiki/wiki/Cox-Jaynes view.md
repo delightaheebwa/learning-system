@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Cox-Jaynes view
 
 Cox-Jaynes says that if you represent degrees of plausibility with real numbers and demand rational consistency, you are essentially forced into the usual rules of probability.

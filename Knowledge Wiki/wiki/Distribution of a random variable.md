@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Distribution of a random variable
 
 The **distribution** (or **law**) of a random variable X is the function that assigns a probability to every set of possible values S ⊆ T:

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # 4-Layer AI Environment Stack
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P0 L01-L12 · **Lang:** Python

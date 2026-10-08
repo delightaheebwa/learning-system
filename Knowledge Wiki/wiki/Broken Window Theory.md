@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Broken Window Theory
 
 A software development principle adapted from criminology: one "broken window" (messy code, ignored bug, hacky workaround) signals that nobody cares, which invites more neglect and accelerates decay.

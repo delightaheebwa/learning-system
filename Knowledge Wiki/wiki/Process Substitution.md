@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Process Substitution (<(CMD))
 
 **Process substitution** runs a command, sends its output to a temporary file (typically a `/dev/fd/N` pipe), and substitutes that file's path in place of `<(CMD)`. It lets you hand command output to another command that expects a **file path argument** rather than stdin.

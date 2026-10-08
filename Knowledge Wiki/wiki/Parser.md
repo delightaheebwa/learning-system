@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Parser
 
 The **parser** is the compiler/interpreter stage that consumes the flat token stream produced by the lexer and builds a structured representation (syntax tree) of the program according to a context-free grammar.

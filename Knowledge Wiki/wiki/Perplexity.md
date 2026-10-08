@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Perplexity
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L09 (Information Theory) + PyTorch `CrossEntropyLoss` docs · **Lang:** Python

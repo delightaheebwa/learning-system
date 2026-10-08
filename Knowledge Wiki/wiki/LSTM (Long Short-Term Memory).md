@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # LSTM (Long Short-Term Memory)
 
 **LSTM** networks solve the vanishing gradient problem of basic RNNs with **gates** — learned mechanisms that decide what to *remember* and what to *forget*. LSTMs are the workhorse of sequence modeling.

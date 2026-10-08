@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Mini-batch Noise (Two Effects)
 
 The noise in SGD and mini-batches is not a bug. It does two genuinely different things — keep them on two different questions.

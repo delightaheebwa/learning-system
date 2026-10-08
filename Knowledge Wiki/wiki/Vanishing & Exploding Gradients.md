@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Vanishing & Exploding Gradients
 
 During backpropagation, gradients flow backward through every layer. With sigmoid/tanh activations, each layer multiplies the gradient by a number ≤ 1 — after 10+ layers the gradient at the input is essentially zero **(vanishing)**. The opposite: large weight values compound multiplicatively, gradients become huge, and loss goes to NaN **(exploding)**.

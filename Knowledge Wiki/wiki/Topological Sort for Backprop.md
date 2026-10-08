@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Topological Sort for Backprop
 
 The backward pass must process nodes in an order where each node receives **all** incoming gradient contributions **before** it propagates to its own children. Topological sort guarantees this.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Reverse-Mode Autodiff & Backprop
 
 Reverse-mode autodiff computes derivatives **after** the forward pass by walking backward through the computational graph. It propagates **adjoints** (∂output/∂this_node).

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Regularization Techniques
 
 Overfitting = model memorizes training data but fails on new data. With small medical/agricultural datasets, this is the #1 enemy.

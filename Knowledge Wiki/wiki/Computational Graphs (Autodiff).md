@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Computational Graphs (Autodiff)
 
 A computational graph is a **directed acyclic graph (DAG)** where:

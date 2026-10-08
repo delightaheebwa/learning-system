@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Directional derivative
 
 The directional derivative measures how a function changes at a point when you move in a chosen direction instead of only along a coordinate axis.

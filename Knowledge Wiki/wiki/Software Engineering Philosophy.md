@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Software Engineering Philosophy
 
 > A personal synthesis of professionalism, engineering mindset, and software design principles — drawn from *The Pragmatic Programmer*, *Clean Architecture*, and applied lessons in code craftsmanship.

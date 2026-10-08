@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Hidden Layers Generalize via Shared Weights
 
 **The problem:** A trigram needs 27³ entries. A 10-character context needs 27¹⁰ ≈ 200 trillion entries. Counting tables explode exponentially with context length.

@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # MIT Missing Semester — Shell Configuration & Dotfiles
 
 **Source:** [Command-line Environment](https://missing.csail.mit.edu/2026/command-line-environment/) · MIT Missing Semester (Lecture 2, second half)

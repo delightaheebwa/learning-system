@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Variation of Information
 
 > **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L09 + Olah (Visual Information Theory) + Meilă 2003 (COLT) / 2007 (*J. Multivariate Analysis*) · **Lang:** Python

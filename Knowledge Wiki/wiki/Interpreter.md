@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Interpreter
 
 An **interpreter** translates and executes source code line by line, without producing a standalone executable.

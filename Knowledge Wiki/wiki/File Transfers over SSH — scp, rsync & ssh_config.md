@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # File Transfers over SSH — scp, rsync & ssh_config
 
 > Source: Lecture 2 written notes (website, Fri 2026-08-21), cross-checked against MIT Missing Semester (Command-line Environment). Ingested 2026-08-24.

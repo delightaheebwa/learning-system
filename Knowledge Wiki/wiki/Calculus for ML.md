@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Calculus for Machine Learning
 
 > Derivatives tell you which way is downhill. That is all a neural network needs to learn.

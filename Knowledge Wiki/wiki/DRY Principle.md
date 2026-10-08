@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # DRY Principle
 
 **Don't Repeat Yourself** is about the duplication of **knowledge and intent**, not just code. It's about expressing the same thing in two different places, possibly in two totally different ways.

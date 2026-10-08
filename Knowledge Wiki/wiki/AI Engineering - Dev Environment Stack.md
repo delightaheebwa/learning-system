@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # AI Engineering — Dev Environment Stack
 
 > The foundation of all AI engineering work: a four-layer environment stack that every engineer needs to set up once, correctly.

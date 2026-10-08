@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Convolution Operation
 
 A **convolution** slides a small filter (kernel) across the image. At each position, it multiplies the filter values by the overlapping image pixels and sums them up. The result is a **feature map** — a new image where bright spots show where the filter detected its pattern.

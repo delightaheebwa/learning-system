@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # SSH — Public-Key Auth & Remote Commands
 
 **Source:** [Command-line Environment](https://missing.csail.mit.edu/2026/command-line-environment/) · MIT Missing Semester (YouTube: Lecture on Shell/Environment)

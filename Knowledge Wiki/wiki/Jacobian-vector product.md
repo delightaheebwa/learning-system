@@ -1,3 +1,5 @@
+<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+
 # Jacobian-vector product
 
 A Jacobian-vector product, or JVP, is the product \(J_f(x) r\): the Jacobian of \(f\) at \(x\) applied to a direction vector \(r\).
