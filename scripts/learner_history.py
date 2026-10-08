@@ -167,6 +167,16 @@ def load_archive_concepts(known):
     return found
 
 
+def prereq_states(entry, concepts, open_mistakes):
+    """Compact per-concept prerequisite state for the Learner History table
+    (P1.3): `A: fuzzy, B: solid`. Empty when the concept records no prereqs."""
+    out = []
+    for p in entry.get("prereqs") or []:
+        st = ops._prereq_state(p, concepts, open_mistakes) if ops else "unknown"
+        out.append(f"{p}: {st}")
+    return ", ".join(out)
+
+
 def tag(concept, entry, open_mistakes):
     attempts = entry.get("attempts", [])
     last_ok = bool(attempts) and bool(attempts[-1].get("is_correct"))
@@ -215,6 +225,7 @@ def main():
                 "concept": name,
                 "type": entry.get("type", ""),
                 "tag": tag(name, entry, open_mistakes),
+                "prereqs": prereq_states(entry, concepts, open_mistakes),
                 "last": last_rev,
                 "evidence": evidence,
             }
@@ -230,6 +241,7 @@ def main():
                 "concept": name,
                 "type": info["type"],
                 "tag": "neutral",
+                "prereqs": "",
                 "last": info["last"],
                 "evidence": info["evidence"],
             }
@@ -244,7 +256,8 @@ def main():
         "",
         "> **For models: read THIS file for learner background, not `Archive/`.**",
         "> One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +",
-        "> evidence pointer. Regenerate with `python3 scripts/learner_history.py`.",
+        "> a `Prereqs` column (each direct prereq's live state) + evidence pointer.",
+        "> Regenerate with `python3 scripts/learner_history.py`.",
         "> Clerk updates the AIEFS section after every session (see `learning-system` skill).",
         "> Era sections are frozen at archive time.",
         "",
@@ -271,12 +284,13 @@ def main():
         lines += [
             titles[track],
             "",
-            "| Concept | Type | Tag | Last evidenced | Evidence |",
-            "| --- | --- | --- | --- | --- |",
+            "| Concept | Type | Tag | Prereqs | Last evidenced | Evidence |",
+            "| --- | --- | --- | --- | --- | --- |",
         ]
         for r in rows[track]:
             lines.append(
-                f"| {r['concept']} | {r['type']} | {r['tag']} | {r['last']} | {r['evidence']} |"
+                f"| {r['concept']} | {r['type']} | {r['tag']} | {r['prereqs']} | "
+                f"{r['last']} | {r['evidence']} |"
             )
         lines.append("")
     with open(OUT, "w", encoding="utf-8") as f:
