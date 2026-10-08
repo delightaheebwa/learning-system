@@ -1362,14 +1362,14 @@ def main() -> None:
                   '[--field FIELD --value VALUE] --reason "..." [--occurrence N] [--json]')
             sys.exit(2)
         concept = rest[0]
-        date = new_date = field = value = reason = None
+        amend_date = new_date = field = value = reason = None
         occurrence = 1
         as_json = False
         i = 1
         while i < len(rest):
             tok = rest[i]
             if tok == "--date" and i + 1 < len(rest):
-                date = rest[i + 1]; i += 2
+                amend_date = rest[i + 1]; i += 2
             elif tok == "--new-date" and i + 1 < len(rest):
                 new_date = rest[i + 1]; i += 2
             elif tok == "--field" and i + 1 < len(rest):
@@ -1389,7 +1389,7 @@ def main() -> None:
                 as_json = True; i += 1
             else:
                 i += 1
-        do_amend(concept, date or "", new_date=new_date, field=field, value=value,
+        do_amend(concept, amend_date or "", new_date=new_date, field=field, value=value,
                  reason=reason, occurrence=occurrence, as_json=as_json)
     elif cmd == "calibration":
         as_json = "--json" in rest
