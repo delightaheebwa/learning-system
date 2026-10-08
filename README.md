@@ -61,3 +61,20 @@ see `OPENWEBUI.md` and `Learning System/AGENTS.md`.
 - Retrieval beats recognition
 - Open questions stay open until resolved
 - Active Concepts is the persistent memory
+
+## Community
+
+This system is built in public, and [Discussions](https://github.com/delightaheebwa/learning-system/discussions)
+is the front door:
+
+- 💬 [Discussions](https://github.com/delightaheebwa/learning-system/discussions) — Q&A, ideas, show-and-tell, and the build log.
+- 🐛 [Issues](https://github.com/delightaheebwa/learning-system/issues) — concrete bugs and tracked work.
+- 🔒 Security reports — see [SECURITY.md](.github/SECURITY.md) (do not post publicly).
+
+The pi control layer lives in [`delightaheebwa/learning-pi`](https://github.com/delightaheebwa/learning-pi),
+but its conversations happen here too. See [CONTRIBUTING.md](.github/CONTRIBUTING.md)
+and the [Code of Conduct](.github/CODE_OF_CONDUCT.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Delight Aheebwa
