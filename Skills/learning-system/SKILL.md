@@ -5,6 +5,13 @@ description: Run the spaced-repetition learning system in Open WebUI. Triggers �
 
 # Learning System
 
+> **⚠️ FROZEN / LEGACY — not the canonical teaching behavior.** This Open WebUI copy is kept for
+> branch history only and is **no longer maintained**. The canonical teaching skills live in
+> **`learning-pi/.pi/skills/`** (`learning-teach`, `learning-system`, `learning-review`,
+> `llm-wiki`). Do **not** add teaching-behavior changes here; make them in `learning-pi` and, if a
+> change is a behavior contract, update `CONTRACT.md`/`contracts/learning-core.json` in the same
+> commit. See `learning-pi/README.md`.
+
 The active learning system, running in Open WebUI against the repo checkout (Open Terminal workspace). Trigger by saying a track ("swe"), "ingest", a learning intent, or "lesson"/"continue" for the next curriculum lesson.
 
 **Trigger routing (read first):**

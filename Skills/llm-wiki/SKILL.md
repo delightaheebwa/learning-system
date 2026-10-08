@@ -5,6 +5,13 @@ description: Build and maintain a Karpathy-style personal LLM wiki from notes, s
 
 # LLM Wiki
 
+> **⚠️ FROZEN / LEGACY — not the canonical wiki behavior.** This Open WebUI copy is kept for branch
+> history only and is **no longer maintained**. The canonical skills live in
+> **`learning-pi/.pi/skills/`** (`learning-teach`, `learning-system`, `learning-review`,
+> `llm-wiki`). Do **not** add behavior changes here; make them in `learning-pi` and, if a change is
+> a behavior contract, update `CONTRACT.md`/`contracts/learning-core.json` in the same commit. See
+> `learning-pi/README.md`.
+
 ## Overview
 
 Turn raw sources into a persistent markdown wiki. Keep the source layer immutable, the wiki layer curated, and the index/log updated on every ingest.

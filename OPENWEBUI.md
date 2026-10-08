@@ -1,5 +1,12 @@
 # Open WebUI Setup & Operating Guide
 
+> **⚠️ FROZEN / LEGACY PATH.** The Open WebUI pedagogy path is **frozen and unmaintained**. The
+> canonical teaching behavior is the **pi** layer in `learning-pi` (`learning-pi/.pi/skills/`,
+> `learning-pi/.pi/agents/`, `learning-pi/.pi/prompts/`, `learning-pi/.pi/extensions/learning-gate/`);
+> `learning-pi/README.md` and `CONTRACT.md` are its references. The `Skills/*/SKILL.md` copies in
+> this repo are a frozen snapshot — do not add teaching-behavior changes to them. This guide is kept
+> for historical reference only.
+
 This file is the canonical guide for running the learning system in **Open WebUI**
 using native features. The repo checkout (Open Terminal
 workspace) is the source of truth for all state; Open WebUI holds the control

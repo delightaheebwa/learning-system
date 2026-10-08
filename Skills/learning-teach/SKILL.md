@@ -5,6 +5,13 @@ description: Teach the user through the probe → plan → teach loop, applying 
 
 # Learning Teach
 
+> **⚠️ FROZEN / LEGACY — not the canonical teaching behavior.** This Open WebUI copy is kept for
+> branch history only and is **no longer maintained**. The canonical teaching skills live in
+> **`learning-pi/.pi/skills/`** (`learning-teach`, `learning-system`, `learning-review`,
+> `llm-wiki`). Do **not** add teaching-behavior changes here; make them in `learning-pi` and, if a
+> change is a behavior contract, update `CONTRACT.md`/`contracts/learning-core.json` in the same
+> commit. See `learning-pi/README.md`.
+
 The teaching half of the learning system, running in Open WebUI on the tutor model (the Learning Tutor preset's base model — see `OPENWEBUI.md` for the model-per-task table).
 The pipeline is **Scout → Tutor → Clerk** in the same chat (switch presets).
 

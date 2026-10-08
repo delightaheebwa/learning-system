@@ -5,6 +5,13 @@ description: Quality-gate learning system output before it is finalized — wher
 
 # Learning System Review Gate
 
+> **⚠️ FROZEN / LEGACY — not the canonical teaching behavior.** This Open WebUI copy is kept for
+> branch history only and is **no longer maintained**. The canonical teaching skills live in
+> **`learning-pi/.pi/skills/`** (`learning-teach`, `learning-system`, `learning-review`,
+> `llm-wiki`). Do **not** add teaching-behavior changes here; make them in `learning-pi` and, if a
+> change is a behavior contract, update `CONTRACT.md`/`contracts/learning-core.json` in the same
+> commit. See `learning-pi/README.md`.
+
 Verification gate for the learning system's ingest output. Runs automatically:
 
 1. At the end of every standalone **ingest** session (delegated from the learning-system skill).
