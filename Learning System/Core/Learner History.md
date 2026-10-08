@@ -13,7 +13,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 66 · aie 212 · solid 7 · neutral 300 · fuzzy 10
+Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 7 · neutral 301 · fuzzy 10
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -49,13 +49,14 @@ Totals: 317 concepts (88 with attempt history + 229 paused) — aiefs 39 · swe 
 | Momentum (SGD with Momentum) | procedure | solid | 2026-09-30 | Learning System/Reviews/Review — Momentum (SGD with Momentum) — 2026-09-30.md |
 | Mutual Information | concept | neutral | 2026-09-28 | Learning System/Reviews/Review — Mutual Information — 2026-09-28.md |
 | Optimizer Selection (Rohit heuristic) | concept | neutral | 2026-09-10 | last reviewed 2026-09-10 |
-| PCA (Dimensionality Reduction) | concept | neutral | 2026-10-06 | last reviewed 2026-10-06 |
+| PCA (Dimensionality Reduction) | concept | neutral | 2026-10-08 | last reviewed 2026-10-08 |
 | Perplexity | concept | neutral | 2026-10-03 | Learning System/Reviews/Review — Perplexity — 2026-10-03.md |
 | PMF vs PDF | concept | neutral | 2026-10-08 | Learning System/Reviews/Review — PMF vs PDF — 2026-10-08.md |
 | Posterior Probability | concept | solid | 2026-10-08 | Learning System/Reviews/Review — Posterior Probability — 2026-10-08.md |
 | Prior Probability | concept | solid | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
+| t-SNE (Dimensionality Reduction) | concept | neutral | 2026-10-08 | last reviewed 2026-10-08 |
 | Variance & Covariance | concept | neutral | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral | 2026-09-24 | last reviewed 2026-09-24 |
 

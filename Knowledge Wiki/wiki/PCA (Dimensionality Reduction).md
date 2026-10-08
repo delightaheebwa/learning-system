@@ -63,6 +63,16 @@ error_i = ‖x_i − x̂_i‖² = Σ_{dropped axes} (coordinate)² = (distance f
 - **Limitation:** a point far out **along** the subspace is never flagged — the detector is subspace-relative, so "normal" means "fits the learned subspace", not "sits near the other points".
 - **Global vs per-sample:** `Σ_{dropped} λ_j` says how much structure the truncation discarded for the whole cloud; `error_i` says whether *this* point fits. Same decomposition, different scope — the first is a property of `k`, the second of the point.
 
+### Shape fit lives across, depth lives along (2026-10-08)
+
+The reconstruction error asks **one question only**: how far the point sits *across* the kept subspace. Three clarifications fall out of that.
+
+- **The error is a shape test, not a crowd test.** Normal data spreads enormously *along* the big-|λ| directions, so a point far out along the subspace is "more of the normal direction" — small error, silent flag. Catching it needs a **stacked depth-style check**: the kept coordinates compared against the *training* range (standard practice pairs the `Q`/SPE squared-prediction-error statistic with Hotelling's `T²` / Mahalanobis depth). Shape fit lives across; depth lives along.
+- **Unit vs signal.** Every residual lives in the dropped subspace *by construction* — that subspace is the **unit**, like degrees Celsius. "It is in the dropped directions" is therefore not evidence of anything; what the flag reads is the residual's **length**, against a threshold set from the training residuals.
+- **Directions get dropped; points never do.** The compression discards every point's across-coordinate identically. Residual size decides *flagged / not flagged*; it never decides *kept / dropped*.
+
+**Frame-inversion detector (the practiced slip, 2026-10-08).** Asked which point *escapes* the flag, the learner answered with the flagged signature (a huge coordinate on a dropped axis — the loudest alarm, not an escape). On "escapes / gets missed" questions, restate **what the detector measures** before choosing: the alarm fires on across-dropped-axis distance; far-along-kept is silent. Micro-check: a point 1,000 units out along a line-cloud's single kept axis → **missed**.
+
 ## The round cloud — the isotropic degenerate case (2026-10-07)
 
 When the covariance is a multiple of the identity, `C = λI`, **every direction is an eigenvector** (3Blue1Brown anchor: a matrix that scales everything equally has a single eigenvalue but *every* vector is an eigenvector). Consequences:
@@ -118,3 +128,9 @@ The learner's own words (2026-10-07, CP3 minis 4–5 + practice):
 - "the scree is a bunch of bars of equal height of 100."
 - Repairs locked in CP3: bar **heights** vs bar **positions** on a scree (k is the position you choose; the heights are the λ menu); distances **concentrate** (more alike) rather than shrink.
 - The tutor's own mid-practice mis-steer is recorded on the lesson side: the practice scree's "35" was called the third bar and the elbow pushed to `k = 2`; a fact-check receipt refuted it (35 is the fourth bar, keep the bars before the flat zone ⇒ `k = 3`) and it was retracted openly — the learner's bend-locating instinct had been right.
+
+The learner's own words (2026-10-08, the anomaly-detector tangent):
+
+- "a big residual tells me the point is an outlier as compared to the normal data" — accepted, sharpened: outlier-ness here is about *shape* (a mismatch with the learned subspace), not distance from the crowd.
+- "whether big or small, it's still in the dropped subspace" — the puzzle the **unit-vs-signal** split dissolved: being in the residual subspace is the unit, the *length* is the signal.
+- The two guiding rounds of the tangent, kept as the pair of detector phrases: **shape fit lives across, depth lives along**; **directions get dropped, points never do**.
