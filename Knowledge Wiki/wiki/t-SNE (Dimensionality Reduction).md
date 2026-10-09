@@ -1,8 +1,8 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-09 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note) -->
 
 # t-SNE (Dimensionality Reduction)
 
-> **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L10 (Dimensionality Reduction) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively*, Distill 2016 · **Lang:** Python (`sklearn.manifold.TSNE`)
+> **Type:** concept · **Track:** AIEFS · **Source:** Rohit P1 L10 (Dimensionality Reduction) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively*, Distill 2016 + van der Maaten & Hinton 2008, *Visualizing Data using t-SNE* (JMLR 9) · **Lang:** Python (`sklearn.manifold.TSNE`)
 > **Insight:** t-SNE maps high-dimensional data into 2D/3D by **preserving which points are near each other** — it builds a probability distribution over point *pairs* (near = high, far = low) and searches for an arrangement whose pair distribution matches it.
 > Related: [[PCA (Dimensionality Reduction)]], [[Curse of Dimensionality]], [[Perplexity]], [[KL Divergence]], [[Covariance and correlation]]
 
@@ -52,11 +52,45 @@ Distill's essay is a catalogue of ways to misread a t-SNE picture. The headline 
 
 **Resolution carried in this track:** Rohit's blanket rule is the **safe default**; Distill's "distances can be read if the perplexity is tuned" is the **fragile exception**. Both hold at their own scope — the unconditional claim is what to believe unless you have deliberately tuned perplexity and verified the picture is stable on your own data. It stays flagged as a live contradiction until CP4 mini 4 teaches it.
 
-## Perplexity (the knob) — opening, not yet taught here
+## Perplexity = `2^H` on one point's neighbour distribution (CP4 mini 2, 2026-10-09)
 
-Both sources describe perplexity as the neighbour-count knob. Rohit: it "controls how many neighbors to consider (typical range: 5-50)". Distill calls it "a guess about the number of close neighbors each point has" and quotes the original paper's "typical values are between 5 and 50", then adds two refinements: the effect "is more nuanced than that" — "getting the most from t-SNE may mean analyzing multiple plots with different perplexities" — and it should stay **smaller than the number of points** (the essay was edited to correct implementations that misbehave otherwise).
+Both sources describe perplexity as the neighbour-count knob. Rohit: it "controls how many neighbors to consider (typical range: 5-50)" and "Controls the **effective** number of neighbors each point considers". Distill calls it "a guess about the number of close neighbors each point has", quotes the original paper's 5–50, then adds two refinements: the effect "is more nuanced than that" — "getting the most from t-SNE may mean analyzing multiple plots with different perplexities" — and it must stay **smaller than the number of points**.
 
-The bridge to this track's existing math — perplexity as `2^H` applied to the neighbour distribution (see [[Perplexity]]) — is **CP4 mini 2**; this page records the source facts and leaves that derivation open.
+**The name collision resolves into a reuse.** t-SNE's perplexity is the *same* `2^H` banked in [[Perplexity]], now applied not to a model's token distribution but to **one point's neighbour distribution** `P_i`:
+
+$$\mathrm{Per}(P_i) = 2^{H(P_i)}, \qquad H(P_i) = -\sum_j p_{j|i}\log_2 p_{j|i}$$
+
+- Each point carries its own bandwidth `σ_i`; the algorithm tunes `σ_i` (a binary search in the original paper) until `Per(P_i)` equals the knob. The knob therefore rescales every point's neighbourhood to the same *effective* width.
+- **Effective, not exact.** It is a soft count — a distribution can have perplexity 23.7 — not a hard cutoff at *k* neighbours.
+- **What the knob buys:** low perplexity ⇒ very local attention; high ⇒ broader patterns. Distill frames the same dial as balancing attention between local and global structure.
+- **Ceiling.** `P_i` lives on the other `n−1` points, and the most spread-out it can be is uniform: `H = log₂(n−1)`, so `Per ≤ n−1`. On 20 points the ceiling is 19, which makes a knob of 30 an **unreachable target**. That is the precise mechanism behind Distill's "smaller than the number of points" guardrail.
+
+The difference from [[Perplexity]]'s uniform yardstick: there the uniform is hypothetical (a non-uniform model never realizes it); here it is *reachable* — a large enough `σ_i` flattens `P_i` toward uniform over the neighbours.
+
+## The objective: minimize KL(P‖Q) (CP4 mini 3, 2026-10-09)
+
+Rohit's recipe ends with "find a 2D arrangement where the same probability distribution holds"; the quantity being driven down is the mismatch between the high-dimensional pair distribution `P` and the 2D pair distribution `Q`, scored by [[KL Divergence]]:
+
+$$\min_{\{y_i\}}\ \mathrm{KL}(P \| Q) = \sum_{i}\sum_{j} P_{ij} \log \frac{P_{ij}}{Q_{ij}}$$
+
+Three load-bearing facts:
+
+- **Minimize, never zero.** A 2D map cannot honour every neighbourhood, so some deviation always survives; `KL = 0` is unattainable on real data.
+- **`P` is frozen — it *is* the data.** The only thing that moves is `Q`, through gradient descent on the 2D coordinates `{y_i}`.
+- **The asymmetry is the point.** The weights in the sum come from `P`, so the expensive mismatch is "data says near, map says far" — a pair that carries high weight in `P` but low probability under `Q`. The reverse ("data says far, map says near") is comparatively cheap because its `P`-weight is small.
+
+The learner's own statement of the weight direction — "the distribution of the actual data supplies the weights" — is exactly this, and it is the check-back that sealed the mini.
+
+## Why the low-dimensional kernel is a heavy-tailed Student-t (CP4 mini 3b, 2026-10-09)
+
+Squeezing 10-D (or 784-D) into a plane crowds the *moderately* related pairs — the medium-distance band has more pairs to place than the plane has room for. Whether those pairs can be pushed apart cheaply is decided by the shape of `Q`'s kernel:
+
+- **Gaussian `Q` (plain SNE):** `Q_{ij}` collapses toward 0 at distance, so `log(P_{ij}/Q_{ij})` blows up for every pair the map tries to separate — each escape is fined, and the crowded medium-distance pairs stay crowded.
+- **Student-t `Q` (t-SNE's change):** the fat tail keeps `Q_{ij}` from collapsing, so the `P`-weighted log-ratio for a moderately related pair stays affordable: spreading the crowded band is cheap, while pairs with genuinely large `P_{ij}` still pay to be separated. Local structure is preserved and the crowding is relieved.
+
+van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t distribution … allows … **mismatched tails [to] compensate for mismatched dimensionalities**." The tail is chosen to suit embedding a high-dimensional volume in a plane, not for convenience.
+
+*Cost is a log-ratio, not a product.* The cost of placing a pair far apart is `P_{ij}\log(P_{ij}/Q_{ij})` — a `P`-weighted **log-ratio** — not the product `P \times Q`. (Recorded slip of 2026-10-09: the conclusion was reached with the product reading as the reason; repaired in-session, and kept verbatim under `## My understanding` below.)
 
 ## Other flags from the source
 
@@ -66,13 +100,43 @@ The bridge to this track's existing math — perplexity as `2^H` applied to the 
 
 ## Open questions
 
-- **Perplexity as `2^H`** on the neighbour distribution (and the name-collision with [[Perplexity]]'s uniform yardstick) — **CP4 mini 2**.
-- **The objective:** how the mismatch between `P` and `Q` is scored, which direction the divergence runs, and why that asymmetry matters — **CP4 mini 3**, bridging to [[KL Divergence]].
-- **The Rohit-vs-Distill contradiction** above — currently resolved as safe-default vs fragile-exception; to be taught and stress-tested at **CP4 mini 4**.
+- ~~Perplexity as `2^H` on the neighbour distribution~~ — **closed 2026-10-09 (CP4 mini 2)**: the same `2^H`, applied per point, with a ceiling of `n−1`.
+- ~~The objective: how the mismatch between `P` and `Q` is scored, which direction the divergence runs, and why that asymmetry matters~~ — **closed 2026-10-09 (CP4 mini 3/3b)**: `min KL(P‖Q)`, `P` frozen, weights from `P`; the Student-t tail is what makes escaping the crowded band affordable.
+- **The Rohit-vs-Distill contradiction** above — still resolved in draft as safe-default vs fragile-exception; to be taught and stress-tested at **CP4 mini 4**.
 - **How much of the t-SNE fix is the objective and how much is redefining "neighbourhood" locally?** Raised on [[Curse of Dimensionality]] and still open; CP4–CP5.
+- **Still to come in this lesson:** UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back.
+
+## My understanding
+
+> **status=learner-note** — the learner's words, verbatim from the 2026-10-09 session (CP4 minis 2, 3, 3b), never rewritten. The annotations around them are the source's and the tutor's.
+
+**Perplexity — what the knob controls (mini 2):**
+
+> "i think it will control how many true neighbors each point will keep."
+
+**Perplexity — the ceiling check-back (20-point dataset, knob at 30):**
+
+> "now attention has to be made on effectively 30 points yet there are 20 and i think attention on some points that dont even exist will confuse the model."
+
+**The objective — what training is aiming at (mini 3):**
+
+> "it is trying to bring the kl divergence to zero since bringing it to zero would mean there is no deviation between the two distributions"
+
+*Missing piece (annotated, not rewritten):* the target is **minimize**, not zero. `KL = 0` is unattainable — a 2D map cannot honour every neighbourhood — so training drives the deviation as low as it can go, short of zero.
+
+**The objective — which distribution supplies the weights (check-back):**
+
+> "the distribution of the actual data supplies the weights. the mismatch that gets a big penalty is a high supplied weight(the data says a point is near) but the 2D map says the point is far(small probability)"
+
+**Heavy tails — why spreading the crowded band is affordable (mini 3b) — flagged: right conclusion, flipped reason:**
+
+> "I think it is cheap for the map to place moderately related pairs far apart. It is cheap because, if they are far away, we are multiplying the moderate weight by a low probability; hence, it is cheap to do so. Based on that, the map will then spread out the crowded medium-distance pairs."
+
+*Repair note (2026-10-09, in-session):* the conclusion — spreading the moderately related pairs is cheap, and the map does spread them — is correct; the **reason** was flipped. The cost is `P_{ij}\log(P_{ij}/Q_{ij})`, a `P`-weighted **log-ratio**, not the product of the weight and a probability. Under a Gaussian `Q` that log-ratio blows up as `Q_{ij} → 0`; the Student-t fat tail keeps `Q_{ij}` up, which is what makes the escape cheap. The learner's own words are preserved above unchanged.
 
 ## Field notes
 
 - "non-neighbors can become neighbors in the flatten and i guess that doesnt work for the vice versa case" — the CP4 mini 1 elicitation landing, in the learner's own words.
 - "flat 2D plane; neighbors stay neighbors" — the first prediction (right about the flatten, wrong about the neighbours), which set up the two guiding questions.
 - Check-back confirmed the "why now": PCA's squash blurs the neighbourhood pattern; t-SNE's job is defending it, with failure modes of its own to be named before trusting any picture.
+- **2026-10-09 pacing call:** the learner flagged the KL/heavy-tail chain (mini 3b) as loaded — "i feel we should unpack more… we should slow down there before moving ahead" — and asked to pause; mini 4 was deferred at his request and the heavy-tail cost picture is to be re-offered when it next comes up.

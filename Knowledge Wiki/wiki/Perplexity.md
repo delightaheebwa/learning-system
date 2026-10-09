@@ -25,6 +25,16 @@ Uniform over k → H = log₂ k → PPL = 2^{log₂ k} = k. So perplexity reads 
 
 Same word, unrelated mechanisms. The staging differs too: perplexity is an **evaluation-time, output-side** conversion (mainly LM reporting), while label smoothing is a **training-time, input-side** modification of the target. There is no cross-entropy → perplexity → smoothing pipeline.
 
+## A third use: t-SNE's per-point perplexity (2026-10-09)
+
+The same `2^H` reappears in t-SNE with a different object underneath it. Every point gets its own neighbour distribution `P_i`, and t-SNE tunes that point's bandwidth `σ_i` by binary search until `Per(P_i) = 2^{H(P_i)}` equals the user's **perplexity knob** (typical 5–50):
+
+- It reads as the *effective* number of neighbours the point attends to — a soft count (23.7 is a legal value), not a cutoff at *k*.
+- **Ceiling:** `P_i` lives on the other `n−1` points, so the most spread-out it can be is uniform → `H = log₂(n−1)` → `Per ≤ n−1`. On 20 points a knob of 30 is an unreachable target; this is the mechanism behind the "perplexity must be smaller than the number of points" guardrail.
+- **Difference from the reading above:** here the uniform anchor is *reachable* (a large enough `σ_i` flattens `P_i` toward uniform), whereas a language model's perplexity uniform is a hypothetical yardstick the model never realizes.
+
+See [[t-SNE (Dimensionality Reduction)]].
+
 ## Unit discipline (the practiced slip, 2026-09-24)
 
 Give the entropy in the base whose exponential you use: cross-entropy in bits → 2^H; in nats → e^H (the two bases differ by a factor 1.4427 — 1 nat = 1.4427 bits).
@@ -44,6 +54,7 @@ Worked example, one H on both sides — **H = 5 bits**: the correct perplexity i
 - [[Bits vs Nats]]
 - [[Label Smoothing]]
 - [[Logits & Log-odds]]
+- [[t-SNE (Dimensionality Reduction)]]
 
 ## Source
 

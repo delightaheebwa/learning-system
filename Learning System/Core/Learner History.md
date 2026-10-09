@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-08)
+# Learner History — compact tutor context (generated 2026-10-09)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -14,7 +14,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 7 · neutral 301 · fuzzy 10
+Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 7 · neutral 302 · fuzzy 9
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -22,7 +22,6 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | --- | --- | --- | --- | --- | --- |
 | Conditional Independence | concept | fuzzy |  | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-02 | Learning System/Reviews/Review — Naive Bayes — 2026-10-02.md |
-| Softmax Subtract-Max Trick | procedure | fuzzy |  | 2026-10-05 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-05.md |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
 | Adam (adaptive moments) | procedure | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-03.md |
 | Base Rate Fallacy | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-10-05.md |
@@ -57,7 +56,8 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Prior Probability | concept | solid |  | 2026-09-16 | Learning System/Reviews/Review — Prior Probability — 2026-09-16.md |
 | Saddle Points (critical point triage) | concept | neutral |  | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
-| t-SNE (Dimensionality Reduction) | concept | neutral |  | 2026-10-08 | last reviewed 2026-10-08 |
+| Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
+| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-09 | last reviewed 2026-10-09 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 
