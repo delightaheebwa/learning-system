@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-09 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-10 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note) -->
 
 # t-SNE (Dimensionality Reduction)
 
@@ -45,12 +45,22 @@ Distill's essay is a catalogue of ways to misread a t-SNE picture. The headline 
 - **Density equalisation distorts shape subtly even when it works.** Long parallel clusters come out slightly bowed outward, because the middles are denser and get magnified relative to the ends; contained clusters are exaggerated in size.
 - **For topology, use several plots.** Low and high perplexity can tell different stories about containment or connectedness, and the essay's own recommendation is to analyse multiple perplexities.
 
-## ⚠️ Sources disagree on cluster distances
+## The misreading protocol (CP4 mini 4, 2026-10-10)
+
+Distill's two headline cautions, taught and sealed at CP4 mini 4. Both are about *quantities read off the layout* — the sibling of CP4 mini 1's caution, which was about *pairwise relationships being spoofed*.
+
+**1. Cluster sizes are meaningless.** The apparent size of a cluster is nothing but the **spread of the 2-D coordinates the optimizer produced** inside it. There is no route by which the knob could manufacture a size difference: one plot carries **one** user-set perplexity target (only each point's `σ_i` adapts, per mini 2), so every point in every cluster is chased toward the same *effective* neighbour count. Consequences: sizes change with perplexity and change again on a re-run (the method is stochastic); pure noise at low perplexity still shows dramatic clumps. Distill's misreading #1: **never read group size off the plot** — check the raw data's counts.
+
+**2. Cluster distances mean little at an untuned perplexity.** The KL cost pins *neighbourhoods* — the pairs that carry real `P` weight — and leaves the rest to the optimizer. Pairs from different clusters carry `P_{ij} ≈ 0` at low perplexity, so their fine is ≈ 0 under *any* separation: the objective is indifferent to where whole clusters sit relative to one another. The visible gap is therefore dictated by the optimizer's arrangement (initialization, the other fines, the knob acting through `σ_i`), not by the data — and the objective guarantees **no direction**: the clusters are free to rearrange either way. Low-perplexity runs render clusters almost equidistant for exactly this reason.
+
+**The fragile exception.** Tuning perplexity to the data's **natural cluster structure** gives cross-cluster pairs small-but-real `P` weights, and inter-cluster distances become *somewhat* meaningful. Fragile on two counts: heterogeneous cluster densities may admit no single valid perplexity, and even then no directional bet is guaranteed.
+
+## ⚠️ Sources disagree on cluster distances — resolved at CP4 mini 4 (2026-10-10)
 
 - **Rohit (unconditional):** "Distances between clusters in the output are not meaningful. Only the clusters themselves are."
 - **Distill (conditional):** distances between well-separated clusters "may mean nothing" — *at arbitrary perplexity*. In their three-Gaussian example, perplexity 50 did give a good sense of the global geometry; low perplexity flattened the clusters to looking equidistant.
 
-**Resolution carried in this track:** Rohit's blanket rule is the **safe default**; Distill's "distances can be read if the perplexity is tuned" is the **fragile exception**. Both hold at their own scope — the unconditional claim is what to believe unless you have deliberately tuned perplexity and verified the picture is stable on your own data. It stays flagged as a live contradiction until CP4 mini 4 teaches it.
+**Resolution carried in this track:** Rohit's blanket rule is the **safe default**; Distill's "distances can be read if the perplexity is tuned" is the **fragile exception**. Both hold at their own scope — the unconditional claim is what to believe unless you have deliberately tuned perplexity and verified the picture is stable on your own data. **Resolved as taught (CP4 mini 4, 2026-10-10):** the two sources are not contradicting each other about the same quantity — Rohit speaks about the *default, untuned* picture, Distill about a *verified, tuned* one. So: **Rohit's blanket rule is the safe default rule; Distill's conditional is the fragile exception that only a deliberate tuning experiment on your own data can establish.** The ⚠️ stays on the page as the record of the split (nothing is smoothed away), but it is **closed**, not live.
 
 ## Perplexity = `2^H` on one point's neighbour distribution (CP4 mini 2, 2026-10-09)
 
@@ -92,6 +102,8 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 
 *Cost is a log-ratio, not a product.* The cost of placing a pair far apart is `P_{ij}\log(P_{ij}/Q_{ij})` — a `P`-weighted **log-ratio** — not the product `P \times Q`. (Recorded slip of 2026-10-09: the conclusion was reached with the product reading as the reason; repaired in-session, and kept verbatim under `## My understanding` below.)
 
+**Learner-computed worked example (3b re-walk, 2026-10-10).** The re-walk took one pair at a time: `P_{ij}` frozen from the data, `Q_{ij}` the steerable number, the fine `P_{ij} log(P_{ij}/Q_{ij})`. Agreement ⇒ `log(1) = 0`; a moderate disagreement (0.05 vs 0.001 ⇒ ratio 50 ⇒ `log 50 ≈ 3.9`) ⇒ cost ≈ 0.05 × 3.9 ≈ 0.2. The learner then computed the mismatch case himself: **P = 0.2, Q = 0.001 → `0.2 × log₂ 200 ≈ 0.2 × 7.64 ≈ 1.53 bits`** (his own log₂ route; the natural-log route gives ≈ 1.06 — a base-unit convention difference, not an error). The log-ratio mechanism now has a learner-owned number, and the 2026-10-09 pacing request that produced it is closed.
+
 ## Other flags from the source
 
 - **Stochastic:** "Different runs produce different layouts."
@@ -102,9 +114,9 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 
 - ~~Perplexity as `2^H` on the neighbour distribution~~ — **closed 2026-10-09 (CP4 mini 2)**: the same `2^H`, applied per point, with a ceiling of `n−1`.
 - ~~The objective: how the mismatch between `P` and `Q` is scored, which direction the divergence runs, and why that asymmetry matters~~ — **closed 2026-10-09 (CP4 mini 3/3b)**: `min KL(P‖Q)`, `P` frozen, weights from `P`; the Student-t tail is what makes escaping the crowded band affordable.
-- **The Rohit-vs-Distill contradiction** above — still resolved in draft as safe-default vs fragile-exception; to be taught and stress-tested at **CP4 mini 4**.
+- ~~The Rohit-vs-Distill contradiction~~ — **closed 2026-10-10 (CP4 mini 4)**: Rohit's blanket rule is the safe default; Distill's conditional is the fragile exception that only a deliberate tuning experiment on your own data can establish.
 - **How much of the t-SNE fix is the objective and how much is redefining "neighbourhood" locally?** Raised on [[Curse of Dimensionality]] and still open; CP4–CP5.
-- **Still to come in this lesson:** UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back.
+- **Still to come in this lesson:** the **CP4 practice** (one graded MCQ batch on the whole t-SNE chain — mini 2 perplexity incl. the `n−1` ceiling, mini 3 objective, mini 3b heavy tail, mini 4 misreading protocol), then UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back. **The Scout digest for this lesson is 15 days old (past its 7-day TTL) — re-scout before CP5** (the UMAP source bodies are still unconsumed).
 
 ## My understanding
 
@@ -134,9 +146,32 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 
 *Repair note (2026-10-09, in-session):* the conclusion — spreading the moderately related pairs is cheap, and the map does spread them — is correct; the **reason** was flipped. The cost is `P_{ij}\log(P_{ij}/Q_{ij})`, a `P`-weighted **log-ratio**, not the product of the weight and a probability. Under a Gaussian `Q` that log-ratio blows up as `Q_{ij} → 0`; the Student-t fat tail keeps `Q_{ij}` up, which is what makes the escape cheap. The learner's own words are preserved above unchanged.
 
+**Cluster sizes — where the apparent size comes from (mini 4, atom 1, 2026-10-10):**
+
+> "the user owns the target. the knob is really about per point."
+
+> "the 2d coordinates the otpimizer produced in cluster A are further apart than those in cluster B"
+
+**Cluster distances — what the inter-cluster gap tracks (mini 4, atom 2, 2026-10-10):**
+
+> "reading off those distances isnt about the data but about perplexity knob applied to the 2d neighbors the opimizer happended to arrange"
+
+> "i think whats left is perplexity so i think its free to rearrange either way the knob moves. the objective doesnt guarantee the direction of motion"
+
+**The heavy-tail cost, computed by the learner (3b re-walk, 2026-10-10):**
+
+> "the fine is approx 1.529"
+
+**Source framing:** the learner chose the log₂ route himself — `0.2 × log₂ 200 ≈ 0.2 × 7.64 ≈ 1.53` bits; the natural-log route for the same pair gives `0.2 × ln 200 ≈ 1.06` (nats). The difference is the base-unit convention (see [[Bits vs Nats]]), not a disagreement about the fine.
+
+**Missing piece (annotated, not rewritten):** the ownership sentence is exact, and the sentence that follows it in the same atom is where the size question is actually settled — because one plot carries *one* user-set target, the knob cannot make a cluster bigger, so the size comes from the map-internal spread of the 2-D coordinates. The distance statement also carries a scope: "not about the data" is the *default untuned* reading; a perplexity deliberately tuned to the data's natural cluster structure makes inter-cluster distances *somewhat* meaningful (see the ⚠️ section above).
+
 ## Field notes
 
 - "non-neighbors can become neighbors in the flatten and i guess that doesnt work for the vice versa case" — the CP4 mini 1 elicitation landing, in the learner's own words.
 - "flat 2D plane; neighbors stay neighbors" — the first prediction (right about the flatten, wrong about the neighbours), which set up the two guiding questions.
 - Check-back confirmed the "why now": PCA's squash blurs the neighbourhood pattern; t-SNE's job is defending it, with failure modes of its own to be named before trusting any picture.
 - **2026-10-09 pacing call:** the learner flagged the KL/heavy-tail chain (mini 3b) as loaded — "i feel we should unpack more… we should slow down there before moving ahead" — and asked to pause; mini 4 was deferred at his request and the heavy-tail cost picture is to be re-offered when it next comes up.
+- **CP4 mini 4 (2026-10-10), cluster sizes:** elicitation "each cluster has its own perplexity knob… tuning perplexity would increase the cluster sizes" (knob instinct right, ownership muddled) → guiding question 1 (who owns the target; the mini-2 anchor: per-point `σ_i` binary-searched toward ONE user-set target) → "the user owns the target. the knob is really about per point." ✓ → his first state attempt ("each point in cluster A has higher perplexity than each point in cluster B") contradicted that ownership → guiding question 2 (one plot ⇒ one target, so where does the size come from?) → the 2-D coordinate spread, in his own words.
+- **CP4 mini 4 (2026-10-10), cluster distances:** elicitation "tracking the KL objective" plus a directional bet that the gap grows with perplexity → guiding question 1 (the weightless pair: far-apart-in-data pairs get `P_ij ≈ 0`, so their fine is ≈ 0 under any separation) → "near zero, low fine" ✓ → guiding question 2 (what is left dictating the gap?) → "free to rearrange either way… the objective doesnt guarantee the direction of motion" ✓. The State-rung rounds were ungraded; the only graded items today were the warm-up batch and the re-walk micro-check, both with 0 hints.
+- **2026-10-10 pacing closure:** the 2026-10-09 heavy-tail request was honored — the pair-level re-walk plus the learner's own computed fine (≈1.53 bits). No new pacing requests, and no `just_tell_me` / declined-generation events this session.

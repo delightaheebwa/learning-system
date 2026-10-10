@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-09)
+# Learner History — compact tutor context (generated 2026-10-10)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -21,7 +21,7 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Concept | Type | Tag | Prereqs | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | Conditional Independence | concept | fuzzy |  | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
-| Naive Bayes | concept | fuzzy |  | 2026-10-02 | Learning System/Reviews/Review — Naive Bayes — 2026-10-02.md |
+| Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
 | Adam (adaptive moments) | procedure | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-03.md |
 | Base Rate Fallacy | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-10-05.md |
@@ -43,7 +43,7 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Laplace Smoothing | concept | solid |  | 2026-09-21 | Learning System/Reviews/Review — Laplace Smoothing — 2026-09-21.md |
 | Learning Rate | concept | neutral |  | 2026-09-23 | Learning System/Reviews/Review — Learning Rate — 2026-09-23.md |
 | Learning-rate Schedules (four types) | concept | neutral |  | 2026-09-21 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-21 (II).md |
-| Likelihood | concept | neutral |  | 2026-10-02 | Learning System/Reviews/Review — Likelihood — 2026-10-02.md |
+| Likelihood | concept | neutral |  | 2026-10-09 | Learning System/Reviews/Review — Likelihood — 2026-10-09.md |
 | Mini-batch Noise (two effects) | concept | neutral |  | 2026-09-15 | last reviewed 2026-09-15 |
 | MLE vs MAP Estimation | concept | neutral |  | 2026-09-30 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-30.md |
 | Momentum (SGD with Momentum) | procedure | solid |  | 2026-09-30 | Learning System/Reviews/Review — Momentum (SGD with Momentum) — 2026-09-30.md |
@@ -57,7 +57,7 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Saddle Points (critical point triage) | concept | neutral |  | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
 | Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
-| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-09 | last reviewed 2026-10-09 |
+| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-10 | last reviewed 2026-10-10 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 
