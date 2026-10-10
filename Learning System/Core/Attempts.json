@@ -2434,13 +2434,29 @@
           "q_type": "discriminative",
           "confidence": "sure",
           "hints": 0
+        },
+        {
+          "date": "2026-10-10",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-10",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "sure",
+          "hints": 0
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 2,
+      "consecutive_correct": 4,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-10-09",
-      "next_review": "2026-11-08",
+      "last_reviewed": "2026-10-10",
+      "next_review": "2026-11-09",
       "feynman": null,
       "prereqs": [
         "KL Divergence"
