@@ -1911,14 +1911,35 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "discriminative"
+        },
+        {
+          "date": "2026-10-11",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "definitional",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-11",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "transfer-far",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-11",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "explain-back",
+          "hints": 0
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 2,
+      "consecutive_correct": 5,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-11",
-      "next_review": "2026-10-11",
-      "feynman": null
+      "last_reviewed": "2026-10-11",
+      "next_review": "2026-11-10",
+      "feynman": "pass"
     },
     "Entropy (Average Surprise)": {
       "type": "concept",
