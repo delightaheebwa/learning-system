@@ -1,8 +1,17 @@
-# Learning System + Knowledge Wiki (Open WebUI)
+# Learning System + Knowledge Wiki
 
-A local-first, spaced-repetition learning system and Karpathy-style personal wiki,
-built to run in **self-hosted Open WebUI** using native features (Skills, Tools,
-a Model preset, and Prompts) with the repo as the source of truth.
+> **New here?** This is a reusable local-first learning system, currently mid-migration.
+> The **canonical runtime is [`learning-pi`](https://github.com/delightaheebwa/learning-pi)** (pi skills,
+> subagents, prompts, verification gate). The Open WebUI layer in this repo is a **frozen legacy
+> snapshot** — readable, but do not build new behavior on it. Start with the
+> [pi install](https://github.com/delightaheebwa/learning-pi#install) and the
+> [Discussions front door](https://github.com/delightaheebwa/learning-system/discussions).
+> Cloning this repo gives you the owner's live learning state as an example — to reuse it,
+> start a fresh track rather than continuing the AIEFS schedule below.
+
+A local-first, spaced-repetition learning system and Karpathy-style personal wiki.
+The repo is the source of truth for state; [`learning-pi`](https://github.com/delightaheebwa/learning-pi)
+is the canonical control/runtime layer over it (self-hosted Open WebUI support is frozen, see `OPENWEBUI.md`).
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
 - **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done, P1 L07 done — resume P1 L08 Optimization, paused 2/5). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
@@ -28,7 +37,7 @@ Learning System/          live state + history
   Archive/                  ALL legacy material, era-folded (AIE, SWE, C-project, legacy tools, plans, frozen) — do not grep
   AGENTS.md                 behavioral conventions (consistency checks, git sync)
 Knowledge Wiki/           curated wiki (raw/sources, raw/assets, wiki/, index.md, log.md, AGENTS.md)
-Skills/                   operating rules, imported into Open WebUI as Skills
+Skills/                   FROZEN Open WebUI snapshot (canonical behavior lives in learning-pi/.pi/skills/)
   learning-system/SKILL.md        review + ingest flows (Clerk runs reviews AND ingests)
   learning-teach/SKILL.md         probe → plan → teach loop (+ fact-check & quiz-audit subagent gates, lesson-end review gate)
   learning-review/SKILL.md        ingest quality gate (review-gate subagent task — standalone ingests AND lesson-end ingests)
@@ -36,7 +45,21 @@ Skills/                   operating rules, imported into Open WebUI as Skills
   learning-review/openwebui/      gate_pipe.py + gate_schema.py (the deterministic enforcement)
 ```
 
-## Setup in Open WebUI (one time)
+## Run it (canonical: pi)
+
+```bash
+git clone https://github.com/delightaheebwa/learning-pi.git ~/learning-pi
+git clone https://github.com/delightaheebwa/learning-system.git ~/learning-system
+~/learning-pi/install.sh ~/learning-system
+cd ~/learning-system && pi
+```
+
+Then `/review`, `/solo`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`, `/audit`.
+See [`learning-pi/README.md`](https://github.com/delightaheebwa/learning-pi#usage) for the full
+usage and [`AUDIT-ROADMAP.md`](https://github.com/delightaheebwa/learning-pi/blob/main/AUDIT-ROADMAP.md)
+for what is done (P0–P2) and deferred (P3).
+
+## Setup in Open WebUI (one time — frozen legacy)
 
 Run the installer, then start chatting:
 
@@ -68,7 +91,7 @@ This system is built in public, and [Discussions](https://github.com/delightahee
 is the front door:
 
 - 💬 [Discussions](https://github.com/delightaheebwa/learning-system/discussions) — Q&A, ideas, show-and-tell, and the build log.
-- 🐛 [Issues](https://github.com/delightaheebwa/learning-system/issues) — concrete bugs and tracked work.
+- 🐛 Issues — concrete bugs and tracked work. Route by layer: pi runtime / gate / skills → [`learning-pi/issues`](https://github.com/delightaheebwa/learning-pi/issues); state / wiki / Open WebUI snapshot → [learning-system issues](https://github.com/delightaheebwa/learning-system/issues). If unsure, open in learning-system and say which layer you think it is.
 - 🔒 Security reports — see [SECURITY.md](.github/SECURITY.md) (do not post publicly).
 
 The pi control layer lives in [`delightaheebwa/learning-pi`](https://github.com/delightaheebwa/learning-pi),

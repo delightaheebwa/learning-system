@@ -1,5 +1,10 @@
 # AGENTS.md — Repo Context for Agents Modifying This Codebase
 
+> **Canonical runtime: [`learning-pi`](https://github.com/delightaheebwa/learning-pi).**
+> The Open WebUI layer described below is a **frozen legacy snapshot** (see `OPENWEBUI.md`).
+> Do not add teaching-behavior changes to `Skills/*/SKILL.md` — canonical behavior lives in
+> `learning-pi/.pi/skills/`, `agents/`, `prompts/`, and `extensions/learning-gate/`.
+
 This file is the **highest-leverage context** for any agent about to modify the
 code, skills, or infrastructure in this repo. It is NOT the learner-facing
 behavior spec — that lives in the skill files and `AGENTS.md` files under
@@ -8,10 +13,11 @@ behavior spec — that lives in the skill files and `AGENTS.md` files under
 
 ## What this repo actually is
 
-A **local-first, spaced-repetition learning system + Karpathy-style wiki**, run
-inside self-hosted **Open WebUI** (https://github.com/open-webui/open-webui). The
-repo is the durable source of truth; Open WebUI is a control/runtime layer driven
-by the repo's contents. There is **no application server in this repo** — only:
+A **local-first, spaced-repetition learning system + Karpathy-style wiki.** The repo
+is the durable source of truth for state. The canonical control/runtime layer is
+**pi** (`learning-pi` overlay); self-hosted **Open WebUI** (https://github.com/open-webui/open-webui)
+is a frozen legacy runtime driven by the `Skills/` snapshot in this repo.
+There is **no application server in this repo** — only:
 
 1. **Skill files** (`Skills/*/SKILL.md`) — markdown "operating procedures" the
    LLM reads at runtime via `view_skill`. These are the real logic of the system.
