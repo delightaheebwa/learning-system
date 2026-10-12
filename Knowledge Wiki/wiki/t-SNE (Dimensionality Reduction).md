@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-10 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-12 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-12) -->
 
 # t-SNE (Dimensionality Reduction)
 
@@ -104,6 +104,43 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 
 **Learner-computed worked example (3b re-walk, 2026-10-10).** The re-walk took one pair at a time: `P_{ij}` frozen from the data, `Q_{ij}` the steerable number, the fine `P_{ij} log(P_{ij}/Q_{ij})`. Agreement ⇒ `log(1) = 0`; a moderate disagreement (0.05 vs 0.001 ⇒ ratio 50 ⇒ `ln 50 ≈ 3.9`) ⇒ cost ≈ 0.05 × 3.9 ≈ 0.2 nats. The learner then computed the mismatch case himself: **P = 0.2, Q = 0.001 → `0.2 × log₂ 200 ≈ 0.2 × 7.64 ≈ 1.53 bits`** (his own log₂ route; the natural-log route gives ≈ 1.06 — a base-unit convention difference, not an error). The log-ratio mechanism now has a learner-owned number, and the 2026-10-09 pacing request that produced it is closed.
 
+## Where the two kernels come from (kernel deep-dive, 2026-10-12)
+
+The two sides of t-SNE are two shapes doing **two different jobs under one shared idea**: turn a *distance* into a *probability of being neighbours*. The idea is shared in the source's framing ("Near points get high probability. Far points get low probability"); the shapes are chosen separately, and **neither is forced** by the other.
+
+| side | what it is | why that shape |
+|---|---|---|
+| **data side — `P`** | **Gaussian bells**, one per point, each with its own bandwidth `σ_i` | a bell makes "near ⇒ high probability" explicit and *tunable per point*: `σ_i` is binary-searched until `Per(P_i)` hits the user's knob (mini 2) |
+| **map side — `Q`** | **Student-t** with one degree of freedom: `q_{ij} ∝ 1/(1 + d_{ij}²)`, normalised | a 2-D **Gaussian `Q` collapses `Q_{ij} → 0` at distance** and strangles the crowded band's escapes (mini 3b); the `1/(1+d²)` polynomial tail keeps `Q_{ij}` alive |
+
+**The `σ_i` binary search, re-anchored.** One user-set target, per-point bell widths: a **dense** neighbourhood already has many companions, so the bell that realises the target is *narrow*; a **sparse** neighbourhood needs a *wider* bell to reach the same effective count. The sweep runs until each point's `Per(P_i) = 2^{H(P_i)}` equals the knob — the point-wise version of the mini-2 rule.
+
+## The two tails: a widening gap, no "flip point" (2026-10-12)
+
+Asked where the Gaussian and the Student-t hand over to each other, the answer taught and sealed is: **nowhere**.
+
+- Near `d ≈ 0` the two curves are **twins** — both sit at their maximum and fall away with a quadratic drop (`exp(−d²/2σ²)` vs `1/(1+d²)`).
+- The gap then **opens gradually and keeps widening**: the Gaussian dies **exponentially**, the Student-t decays only like **`1/d²`**.
+- So the distance axis is not split half-and-half into "Gaussian territory" and "`t` territory" — the *ratio* between them grows monotonically toward "the Gaussian is dead, the `t` is not".
+
+That is the mechanical content behind "the fat tail keeps `Q` up": at the distances where the crowd sits, a Gaussian `Q` is already ≈ 0 while the Student-t still assigns real probability.
+
+## Why the crowd sits in the tail region — by construction (2026-10-12)
+
+The chain, in order (every step is a fact banked earlier in this lesson):
+
+1. **`P` is sharply peaked.** A point's `P_i` carries real weight on roughly *perplexity* pairs and ≈ 0 everywhere else (mini 2).
+2. **Close range is scarce, and the big-`P` pairs claim it first.** A 2-D plane holds only so many near-neighbours, and the [[KL Divergence|KL]] asymmetry makes "data says near, map says far" the expensive mismatch — so the pairs carrying real `P` weight win the close positions.
+3. **The mid-range crowd has nowhere else to go.** In high dimensions everything sits at middling distance (the [[Curse of Dimensionality|distance-concentration]] anchor from CP3), so there are far more *moderately* related pairs than there are close slots.
+4. **They land exactly where the Gaussian `Q` is dead and the `t` is alive.** Pushed outward by the crowding, they occupy the band the Student-t keeps affordable.
+
+So "the crowd sits in the tail region" is not an observation about real data — it is what the objective produces **by construction**, which is why the heavy tail (mini 3b) is the mechanism of relief rather than decoration.
+
+## CP4 fully sealed (2026-10-12)
+
+- **CP4 practice — one graded MCQ batch on the whole t-SNE chain: 4/4, all `sure`.** The knob 40 against a 24-point ceiling (`H = log₂24 ≈ 4.58` bits, so `σ_i` saturates and the target is unreachable); the big-`P`-tiny-`Q` pair as the *data-near / map-far* mismatch that actually costs; the Gaussian tail decaying too fast to keep the mid-range `Q` affordable; and no single valid global perplexity under heterogeneous densities.
+- **Pause exit ticket: 3/3, all `sure`.** Gaussian on the data side / Student-t on the map side; close range claimed first so the crowd takes the leftover room; and bells that stop short ⇒ `P_{ij} ≈ 0` ⇒ nothing pins the inter-cluster gaps.
+
 ## Other flags from the source
 
 - **Stochastic:** "Different runs produce different layouts."
@@ -116,7 +153,9 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 - ~~The objective: how the mismatch between `P` and `Q` is scored, which direction the divergence runs, and why that asymmetry matters~~ — **closed 2026-10-09 (CP4 mini 3/3b)**: `min KL(P‖Q)`, `P` frozen, weights from `P`; the Student-t tail is what makes escaping the crowded band affordable.
 - ~~The Rohit-vs-Distill contradiction~~ — **closed 2026-10-10 (CP4 mini 4)**: Rohit's blanket rule is the safe default; Distill's conditional is the fragile exception that only a deliberate tuning experiment on your own data can establish.
 - **How much of the t-SNE fix is the objective and how much is redefining "neighbourhood" locally?** Raised on [[Curse of Dimensionality]] and still open; CP4–CP5.
-- **Still to come in this lesson:** the **CP4 practice** (one graded MCQ batch on the whole t-SNE chain — mini 2 perplexity incl. the `n−1` ceiling, mini 3 objective, mini 3b heavy tail, mini 4 misreading protocol), then UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back. **The Scout digest for this lesson is 15 days old (past its 7-day TTL) — re-scout before CP5** (the UMAP source bodies are still unconsumed).
+- ~~The CP4 practice~~ — **closed 2026-10-12 (CP4 fully sealed)**: the graded MCQ batch passed **4/4** and the pause exit ticket passed **3/3**, every item `sure`, 0 hints (details in the section above).
+- ~~Where the two kernels come from, how their tails compare, and where the crowding pushes the map's points~~ — **closed 2026-10-12 (kernel deep-dive)**: Gaussian bells with a per-point `σ_i` on the data side, `q_{ij} ∝ 1/(1+d²)` on the map side, the widening gap with no flip point, and the crowd-placement chain.
+- **Still to come in this lesson:** UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back. **The Scout digest for this lesson is 17 days old (past its 7-day TTL) — re-scout before CP5** (the UMAP source bodies are still unconsumed).
 
 ## My understanding
 
@@ -166,6 +205,18 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 
 **Missing piece (annotated, not rewritten):** the ownership sentence is exact, and the sentence that follows it in the same atom is where the size question is actually settled — because one plot carries *one* user-set target, the knob cannot make a cluster bigger, so the size comes from the map-internal spread of the 2-D coordinates. The distance statement also carries a scope: "not about the data" is the *default untuned* reading; a perplexity deliberately tuned to the data's natural cluster structure makes inter-cluster distances *somewhat* meaningful (see the ⚠️ section above).
 
+**The fine, the weights, and the misreading frame (CP4 practice + exit ticket, 2026-10-12):**
+
+> "P_ij is the probability provided by the data and Q_ij is the probability provided by the model"
+
+> "it weighs the punishment by the data"
+
+> "for an arbitrary perplexity, distances mean little since there is a negligible fine and optimizer's 2d arrangement can make some clusters have more points which are closer toghether than others hence some may be smaller than others"
+
+**Source framing:** the first two statements are the mini-3 split — a *data*-side `P` and a *model*-side `Q` — and the mini-3 asymmetry, where the weights in `Σ P_{ij} log(P_{ij}/Q_{ij})` come from the data. The sharpened phrasing from the same session's check-and-extend: **the fine only speaks for pairs that carry `P` weight; anything read across weightless territory is the optimizer's arrangement.**
+
+*Missing piece (annotated, not rewritten):* "it weighs the punishment by the data" names the *source* of the weight but not its form — the weight multiplies a **log-ratio**, not a probability (the 2026-10-09 slip, repaired above). The third statement's "negligible fine" is the cross-cluster `P_{ij} ≈ 0` of mini 4, and its scope is an *arbitrary (untuned)* perplexity: a perplexity deliberately tuned to the data's natural cluster structure makes inter-cluster distances *somewhat* meaningful (see the ⚠️ section above).
+
 ## Field notes
 
 - "non-neighbors can become neighbors in the flatten and i guess that doesnt work for the vice versa case" — the CP4 mini 1 elicitation landing, in the learner's own words.
@@ -175,3 +226,8 @@ van der Maaten & Hinton's stated reason (JMLR 2008): "the use of a Student-t dis
 - **CP4 mini 4 (2026-10-10), cluster sizes:** elicitation "each cluster has its own perplexity knob… tuning perplexity would increase the cluster sizes" (knob instinct right, ownership muddled) → guiding question 1 (who owns the target; the mini-2 anchor: per-point `σ_i` binary-searched toward ONE user-set target) → "the user owns the target. the knob is really about per point." ✓ → his first state attempt ("each point in cluster A has higher perplexity than each point in cluster B") contradicted that ownership → guiding question 2 (one plot ⇒ one target, so where does the size come from?) → the 2-D coordinate spread, in his own words.
 - **CP4 mini 4 (2026-10-10), cluster distances:** elicitation "tracking the KL objective" plus a directional bet that the gap grows with perplexity → guiding question 1 (the weightless pair: far-apart-in-data pairs get `P_ij ≈ 0`, so their fine is ≈ 0 under any separation) → "near zero, low fine" ✓ → guiding question 2 (what is left dictating the gap?) → "free to rearrange either way… the objective doesnt guarantee the direction of motion" ✓. The State-rung rounds were ungraded; the only graded items today were the warm-up batch and the re-walk micro-check, both with 0 hints.
 - **2026-10-10 pacing closure:** the 2026-10-09 heavy-tail request was honored — the pair-level re-walk plus the learner's own computed fine (≈1.53 bits). No new pacing requests, and no `just_tell_me` / declined-generation events this session.
+- **CP4 practice (2026-10-12; quiz-audit PASS, grade-audit agreed 4/4, all `sure`, 0 hints):** P1 ✓ the knob 40 vs the 24-point ceiling (`H = log₂24 ≈ 4.58` bits, `σ_i` saturates); P2 ✓ big `P` / tiny `Q` = data-near / map-far, the `P`-weighted mismatch; P3 ✓ the Gaussian tail decays too fast, the `t` keeps mid-range `Q` affordable; P4 ✓ no single valid global perplexity under heterogeneous densities (verify by tuning runs). One batch, two `Attempts.json` rows (`transfer-near` + `explain-back`); mastery 1.00.
+- **Pause exit ticket (2026-10-12; grade-audit agreed 3/3, all `sure`, 0 hints):** X1 ✓ Gaussian data side / Student-t map side; X2 ✓ close range claimed first, the crowd pushed into the leftover room; X3 ✓ bells stopping short ⇒ `P_ij ≈ 0` ⇒ nothing pins the gaps. `discriminative`; mastery 1.00, `interval_index` 3, `next_review` 2026-11-11.
+- **Kernel deep-dive tangent (2026-10-12, learner-initiated; fact-check PASS per turn):** the two kernels' origins (one shared idea, two jobs), the widening gap with no flip point, the crowd-in-the-tail-by-construction chain, and the `σ_i` binary-search re-anchor.
+- **Bookkeeping note:** the two practice rows in `Attempts.json` are stamped `2026-10-11` while the exit-ticket row, the session and the handoff are stamped 2026-10-12 — surfaced in the log, not rewritten (evidence dates are the Tutor's; an audited `ops.py amend` is the sanctioned route).
+- **Cosmetic client glitch:** the exit ticket first rendered as mixed Chinese/English on the learner's end; the same verified text was re-emitted cleanly — no content change, no re-verification.

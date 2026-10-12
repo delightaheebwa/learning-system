@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-10)
+# Learner History — compact tutor context (generated 2026-10-12)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -14,30 +14,31 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 7 · neutral 302 · fuzzy 9
+Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 9 · neutral 297 · fuzzy 12
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Prereqs | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- | --- |
+| Adam (adaptive moments) | procedure | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-10.md |
 | Conditional Independence | concept | fuzzy |  | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
+| Conjugate Priors | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Conjugate Priors — 2026-10-10.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
+| Optimizer Selection (Rohit heuristic) | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Optimizer Selection (Rohit heuristic) — 2026-10-10.md |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
-| Adam (adaptive moments) | procedure | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-03.md |
 | Base Rate Fallacy | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-10-05.md |
 | Bayes' Theorem | concept | solid |  | 2026-09-12 | last reviewed 2026-09-12 |
 | Bayesian A/B Testing | concept | neutral |  | 2026-10-05 | last reviewed 2026-10-05 |
 | Bits vs Nats | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 | Chain Rule for Neural Networks | procedure | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-03.md |
-| Conjugate Priors | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Conjugate Priors — 2026-10-03.md |
 | Cosine Similarity | concept | neutral |  | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral |  | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
-| Curse of dimensionality | concept | neutral |  | 2026-10-07 | last reviewed 2026-10-07 |
+| Curse of dimensionality | concept | solid |  | 2026-10-10 | Learning System/Reviews/Review — Curse of dimensionality — 2026-10-10.md |
 | Eigenvalues & Eigenvectors | concept | neutral |  | 2026-10-03 | Learning System/Archive/AIE-2026-07-28/reviews/Review — Eigenvalues & Eigenvectors — 2026-07-16.md |
 | Entropy (Average Surprise) | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-10-05.md |
-| Gradient Descent (vanilla) | procedure | solid |  | 2026-09-26 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-09-26.md |
+| Gradient Descent (vanilla) | procedure | solid |  | 2026-10-10 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-10-10.md |
 | Gradient Descent Failure Modes (zigzag vs overshoot) | concept | solid |  | 2026-10-02 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-10-02.md |
-| Information Content (Surprise) | concept | neutral |  | 2026-09-11 | last reviewed 2026-09-11 |
+| Information Content (Surprise) | concept | solid |  | 2026-10-11 | Learning System/Reviews/Review — Information Content (Surprise) — 2026-10-11.md |
 | KL Divergence | concept | neutral |  | 2026-09-26 | Learning System/Reviews/Review — KL Divergence — 2026-09-21.md |
 | Label Smoothing | concept | neutral |  | 2026-10-02 | Learning System/Reviews/Review — Label Smoothing — 2026-10-02.md |
 | Laplace Smoothing | concept | solid |  | 2026-09-21 | Learning System/Reviews/Review — Laplace Smoothing — 2026-09-21.md |
@@ -48,7 +49,6 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | MLE vs MAP Estimation | concept | neutral |  | 2026-09-30 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-30.md |
 | Momentum (SGD with Momentum) | procedure | solid |  | 2026-09-30 | Learning System/Reviews/Review — Momentum (SGD with Momentum) — 2026-09-30.md |
 | Mutual Information | concept | neutral |  | 2026-09-28 | Learning System/Reviews/Review — Mutual Information — 2026-09-28.md |
-| Optimizer Selection (Rohit heuristic) | concept | neutral |  | 2026-09-10 | last reviewed 2026-09-10 |
 | PCA (Dimensionality Reduction) | concept | neutral |  | 2026-10-08 | last reviewed 2026-10-08 |
 | Perplexity | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Perplexity — 2026-10-03.md |
 | PMF vs PDF | concept | neutral |  | 2026-10-08 | Learning System/Reviews/Review — PMF vs PDF — 2026-10-08.md |
@@ -57,7 +57,7 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Saddle Points (critical point triage) | concept | neutral |  | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
 | Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
 | Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
-| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-10 | last reviewed 2026-10-10 |
+| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-12 | last reviewed 2026-10-12 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 
