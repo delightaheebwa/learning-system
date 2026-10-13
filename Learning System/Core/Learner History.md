@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-12)
+# Learner History — compact tutor context (generated 2026-10-13)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -14,7 +14,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 66 · aie 212 · solid 9 · neutral 297 · fuzzy 12
+Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 298 · fuzzy 12
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -58,6 +58,7 @@ Totals: 318 concepts (89 with attempt history + 229 paused) — aiefs 40 · swe 
 | Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
 | Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
 | t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-12 | last reviewed 2026-10-12 |
+| UMAP (Dimensionality Reduction) | concept | neutral | t-SNE (Dimensionality Reduction): neutral | 2026-10-13 | last reviewed 2026-10-13 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 

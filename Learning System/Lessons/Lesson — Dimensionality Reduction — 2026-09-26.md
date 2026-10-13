@@ -1,10 +1,10 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 4/6 — **CP4 fully sealed 2026-10-12** (practice + exit ticket done; mini 4 sealed 2026-10-10; minis 2 and 3/3b sealed 2026-10-09; mini 1 sealed 2026-10-08; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
-**Resume from:** **CP5 (UMAP) mini 1** — **re-scout first**: the Scout digest is 17 days old (past TTL) and only the t-SNE halves of the cached sources have been consumed. Standing practice rule still in force (learner, 2026-10-05): paper walks / graded MCQ batches only; no code writes as a learning-system task; parked code-write integration stays folded into the final cumulative quiz.
+**Status:** paused at Checkpoint 5/6 — **CP5 mini 1 sealed 2026-10-13** (CP4 fully sealed 2026-10-12; mini 4 sealed 2026-10-10; minis 2 and 3/3b sealed 2026-10-09; mini 1 sealed 2026-10-08; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
+**Resume from:** **CP5 (UMAP) mini 2 — the `n_neighbors` dial.** The re-scout is DONE and audited (see Sources below) — no re-scout needed. Standing practice rule still in force (learner, 2026-10-05): paper walks / graded MCQ batches only; no code writes as a learning-system task; parked code-write integration stays folded into the final cumulative quiz.
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
-**Sources (live-fetched 2026-09-25, hashes in Scout digest):**
+**Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
 - Rohit P1 L10 `docs/en.md` — `Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md` (sha256 9b65271b…)
 - Shlens, *A Tutorial on PCA* — `…- shlens.md`
 - Wattenberg et al., *How to Use t-SNE Effectively* (Distill 2016) — `…- distill.md`
@@ -144,6 +144,20 @@
 - **Attempts this session (ops.py):** t-SNE (Dimensionality Reduction) pass ×2 (warm-up discriminative + re-walk micro-check, both sure, 0 hints) → mastery **1.00**, interval_index 3, next_review **2026-11-09**. *(Bookkeeping note: two extra rows for the ungraded guiding/statement rounds were briefly over-logged this same session and reverted before re-logging the two legit rows.)*
 - **Mistakes candidates:** none — the mini-4 ownership/state detour was repaired in-ladder (elicitation/state rungs, no graded attempt); no Mistakes rows.
 
+## Resume session 2026-10-13 — CP5 mini 1 sealed (manifold assumptions) + re-scout
+
+- **Re-scout done and audited:** fresh digest `context-01a134d5-4aeb-715d-8ab7-fe2f4f944481-dimensionality-reduction.json` (created 2026-10-13T13:55Z; replaces the 17-day-old past-TTL digest; 11 raw bodies re-fetched live under `Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - *`: rohit, umap, umap-params, umap-faq, umap-paper, shlens, distill, sklearn-kpca, cs229-prob, gundersen, 3b1b-eigen; scout-audit verdict PASS, zero issues).
+- **Warm-up CP4 recall (quiz-audit PASS cycle 3 — two length-parity fix cycles; grade-audit agreed 3/3, all `sure`):** W1 B ✓ (cluster size = spread of the 2-D coordinates, meaningless read off the plot) · W2 C ✓ (map side = Student-t $q_{ij} ∝ 1/(1+d_{ij}^2)$, fat tail keeps mid-range $q_{ij}$ up) · W3 A ✓ (Gaussian $q_{ij}→0$ at distance ⇒ escape fine explodes). Attempt: t-SNE pass (discriminative, sure, 0 hints).
+- **CP5 mini 1 — what UMAP is actually assuming (sealed):**
+  - **Elicitation (quiz-audit PASS first cycle):** learner's two-part prior — manifold = "an area of the plot whereby there are many folds (like our swiss roll example)"; needed assumption = "each layer of the fold is a plane."
+  - **Tie-downs ×2 (fact-check PASS 3/3):** (1) an unrolled flat sheet counts as a manifold too, so folding is not the definition — what do tube and flat sheet share? (2) patches glue where they share — what must be true for stitchting to be honest, and what breaks if a region is cut off?
+  - **State rung ×2 (both partial):** "A manifold is simply whatever shape is of dimension 2D or higher" · "There must be no sharing of points hence there must be distinct neighborhoods." Guiding-question budget spent (2 of 2; UMAP has no independence evidence).
+  - **Check-and-extend (idea turn, fact-check PASS 8/8):** manifold = a local property, NOT a dimension count (a straight line is a 1-D manifold, a flat plane a 2-D one; the learner's "each layer is a plane" instinct WAS the same idea — the frame was the slip) · stitching needs **continuity, not distinctness** — overlap is the stitching; a cut-off region breaks it, and the docs' "How UMAP can go wrong" page names the extreme case: a maximally-far point's k nearest neighbours come out random, all maximally similar, the optimizer drags them together — `disconnection_distance` exists to cut such edges · the three assumptions named (uniform on a Riemannian manifold / locally constant metric / locally connected) · mechanism = patches → glued fuzzy structure → low-D arrangement matching it · contrast: t-SNE states no data assumptions (pairwise probabilities, non-parametric); pointer banked that the Rohit-vs-FAQ global-structure disagreement surfaces at a later CP5 mini.
+  - **Exit ticket (quiz-audit PASS cycle 3 — X3 length-parity + X1 strawman fixes; grade-audit agreed 3/3, all `sure`):** X1 C ✓ (local flatness) · X2 B ✓ (patch→glue→match; C=t-SNE and D=PCA near-miss distractors) · X3 A ✓ (random maximally-similar k-NN, optimizer drags them together, `disconnection_distance`).
+- **Attempts this session (ops.py):** t-SNE pass (warm-up, discriminative, sure, 0 hints) · **UMAP (Dimensionality Reduction)** pass ×2 (exit ticket: definitional with hints 2, prereq edge recorded UMAP → t-SNE (Dimensionality Reduction); applied) → mastery 0.80, interval_index 3, next_review 2026-11-12.
+- **Mistakes candidates:** none — no graded fail today; the two partial State-rung statements were corrected in-ladder (standard check-and-extend, no attempt row). **Dependency events:** none — no opt-outs; the learner made both State-rung generations.
+- **Learner pacing:** asked to pause right after the mini sealed; exit ticket run first, graded 3/3, then the stop.
+
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
 - **Pre-practice elicitation (quiz-audit PASS; ungraded):** learner's three-part walk of the fine P_ij·log(P_ij/Q_ij): "P_ij is the probability provided by the data and Q_ij is the probability provided by the model" · "it weighs the punishment by the data" · at an arbitrary perplexity cross-cluster pairs get a negligible fine, so the optimizer's 2-D arrangement alone explains why size/distance readings are untrustworthy. Check-and-extend (fact-check PASS 5/5, incl. the Rohit-vs-Distill re-anchor): Q is computed from the 2-D coordinates through the heavy-tailed kernel (the only number that moves); "the fine only speaks for pairs with P weight; anything read off the plot across weightless territory is the optimizer's arrangement."
@@ -166,7 +180,7 @@
 
 ## CP5/CP6 (standing plan, unchanged)
 
-- **CP5:** UMAP — manifold learning, n_neighbors/min_dist as local↔global dials (umap-params sweep); ⚠️ Rohit's "better global structure" vs umap-faq's goal-not-guarantee (outlier pull-together failure mode); centering-only vs standardize decision (umap-faq conditional default).
+- **CP5:** UMAP — manifold learning, n_neighbors/min_dist as local↔global dials (umap-params sweep); ⚠️ Rohit's "better global structure" vs umap-faq's goal-not-guarantee (outlier pull-together failure mode); centering-only vs standardize decision (umap-faq conditional default). **Re-scouted 2026-10-13 (digest audited) — mini sequence:** mini 1 = the three assumptions + patch-glue-match (SEALED 2026-10-13); mini 2 = `n_neighbors` dial; mini 3 = `min_dist`; mini 4 = the global-structure claim + the ⚠️ Rohit-vs-umap-faq contradiction (feeder: the umap-faq "How UMAP can go wrong" outlier pull-together, already walked in mini 1); mini 5 = pipeline (PCA→UMAP→HDBSCAN) + center-only-vs-standardize.
 - **CP6:** kernel PCA (RBF) + the real contradiction: Rohit's "high variance = important" as definition vs Shlens's assumption-that-can-fail (ferris wheel; MSE-optimal for reconstruction). Method-choice map → SHIP `outputs/skill-dimensionality-reduction.md`.
 - **Final:** cumulative quiz + Feynman explain-back.
 

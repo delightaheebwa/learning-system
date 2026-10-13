@@ -2788,6 +2788,36 @@
       "last_reviewed": "2026-10-08",
       "next_review": "2026-11-07",
       "feynman": null
+    },
+    "UMAP (Dimensionality Reduction)": {
+      "type": "concept",
+      "attempts": [
+        {
+          "date": "2026-10-13",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "definitional",
+          "confidence": "sure",
+          "hints": 2
+        },
+        {
+          "date": "2026-10-13",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "applied",
+          "confidence": "sure",
+          "hints": 0
+        }
+      ],
+      "interval_index": 3,
+      "consecutive_correct": 2,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-10-13",
+      "next_review": "2026-11-12",
+      "feynman": null,
+      "prereqs": [
+        "t-SNE (Dimensionality Reduction)"
+      ]
     }
   },
   "meta": {
