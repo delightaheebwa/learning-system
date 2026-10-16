@@ -61,9 +61,9 @@ Minimal path once `git`, `python3`, and `mise` (pinned `pi`) are present:
 cd ~/learning-system && pi  # approve/trust once
 ```
 
-- Omarchy/Arch: `sudo pacman -S --needed git python base-devel curl unzip mise deno`
-- Ubuntu/Debian/WSL: `sudo apt-get update && sudo apt-get install -y git python3 curl unzip` + `curl https://mise.run | sh`
-- macOS: `brew install git python mise deno`
+- Omarchy/Arch: `sudo pacman -S --needed git openssh python base-devel curl unzip mise deno nodejs npm`
+- Ubuntu/Debian/WSL: `sudo apt-get update && sudo apt-get install -y git python3 curl unzip ca-certificates nodejs npm` + `curl -fsSL https://mise.run | sh`
+- macOS: `brew install git python mise deno node` (after `xcode-select --install`)
 - Windows: not natively supported — use WSL2 (see `learning-pi` setup section), keep repos on the Linux filesystem.
 
 ## Run it (canonical: pi)
