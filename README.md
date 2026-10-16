@@ -22,6 +22,10 @@ everything away — session notes, concept schedule, wiki pages. Later, `/review
 whatever is due, mistakes first. A verification gate fact-checks the tutor, so unverified
 claims never reach you.
 
+**Two ways in:** chat in your browser via **Open WebUI + pi** (`deploy/`, the face
+in front of the same tutor), or terminal-only **pi** (`cd <notebook> && pi`).
+Same tutor, same notebook — pick per session.
+
 - **Repo:** https://github.com/delightaheebwa/learning-system
 - **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done 2026-09-05, P1 L07 done 2026-09-05, P1 L08 Optimization done 2026-09-10, P1 L09 Information Theory done 2026-09-24, P1 L10 Dimensionality Reduction in-progress — paused 5/6, CP5 mini 4 taught 2026-10-16, exit ticket unrun). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
 - **Scheduling:** manual — `/review` reviews what's due, `/ingest` files new material away,
