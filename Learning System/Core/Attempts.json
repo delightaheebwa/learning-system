@@ -922,13 +922,37 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "micro-check"
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "definitional",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "sure",
+          "hints": 0
         }
       ],
       "interval_index": 1,
       "consecutive_correct": 1,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-10-08",
-      "next_review": "2026-10-15",
+      "last_reviewed": "2026-10-17",
+      "next_review": "2026-10-24",
       "feynman": "fail"
     },
     "Softmax Subtract-Max Trick": {
@@ -1181,13 +1205,21 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "transfer-near",
+          "confidence": "sure",
+          "hints": 0
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 2,
+      "consecutive_correct": 3,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-16",
-      "next_review": "2026-10-16",
+      "last_reviewed": "2026-10-17",
+      "next_review": "2026-11-16",
       "feynman": "pass"
     },
     "Likelihood": {
@@ -1547,13 +1579,37 @@
           "q_type": "definitional",
           "confidence": "sure",
           "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "explain-back",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 0
         }
       ],
-      "interval_index": 0,
-      "consecutive_correct": 0,
-      "consecutive_wrong": 1,
-      "last_reviewed": "2026-10-10",
-      "next_review": "2026-10-13",
+      "interval_index": 1,
+      "consecutive_correct": 1,
+      "consecutive_wrong": 0,
+      "last_reviewed": "2026-10-17",
+      "next_review": "2026-10-24",
       "feynman": "fail"
     },
     "Bayesian A/B Testing": {
@@ -1660,13 +1716,21 @@
           "is_correct": true,
           "result": "pass",
           "q_type": "definitional"
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "discriminative",
+          "confidence": "sure",
+          "hints": 0
         }
       ],
       "interval_index": 2,
-      "consecutive_correct": 3,
+      "consecutive_correct": 4,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-30",
-      "next_review": "2026-10-14",
+      "last_reviewed": "2026-10-17",
+      "next_review": "2026-10-31",
       "feynman": null
     },
     "Gradient Descent (vanilla)": {
@@ -1790,14 +1854,30 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "definitional",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-17",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "sure",
+          "hints": 0
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 2,
+      "consecutive_correct": 1,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-15",
-      "next_review": "2026-10-15",
-      "feynman": null
+      "last_reviewed": "2026-10-17",
+      "next_review": "2026-11-16",
+      "feynman": "fail"
     },
     "Learning-rate Schedules (four types)": {
       "type": "concept",
