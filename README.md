@@ -4,10 +4,11 @@
 > The **canonical runtime is [`learning-pi`](https://github.com/delightaheebwa/learning-pi)** (pi skills,
 > subagents, prompts, verification gate). The Open WebUI layer in this repo is a **frozen legacy
 > snapshot** — readable, but do not build new behavior on it. Start with the
-> [pi install](https://github.com/delightaheebwa/learning-pi#install) and the
+> [pi setup](https://github.com/delightaheebwa/learning-pi#set-up-one-shot-per-platform) and the
 > [Discussions front door](https://github.com/delightaheebwa/learning-system/discussions).
 > Cloning this repo gives you the owner's live learning state as an example — to reuse it,
-> start a fresh track rather than continuing the AIEFS schedule below.
+> build your own empty state with `learning-pi/init-state.sh` (Path B in Set up below) and fill it
+> with your own material, rather than continuing the AIEFS schedule below.
 
 A local-first, spaced-repetition learning system and Karpathy-style personal wiki.
 The repo is the source of truth for state; [`learning-pi`](https://github.com/delightaheebwa/learning-pi)
@@ -50,16 +51,33 @@ Skills/                   FROZEN Open WebUI snapshot (canonical behavior lives i
 
 ## Set up (one-shot per platform)
 
-Full prerequisites + verification live in
-[`learning-pi/README.md#setup-one-shot-per-platform`](https://github.com/delightaheebwa/learning-pi#set-up-one-shot-per-platform).
-Minimal path once `git`, `python3`, and `mise` (pinned `pi`) are present:
+Two paths. Full prerequisites + verification live in
+[`learning-pi/README.md#set-up-one-shot-per-platform`](https://github.com/delightaheebwa/learning-pi#set-up-one-shot-per-platform).
+
+**Path A — clone this repo (owner's live data, as an example):**
 
 ```bash
 [ -d ~/learning-pi ] || git clone https://github.com/delightaheebwa/learning-pi.git ~/learning-pi
-[ -d ~/learning-system ] || git clone https://github.com/delightaheebwa/learning-system.git ~/learning-system
+git clone https://github.com/delightaheebwa/learning-system.git ~/learning-system
 ~/learning-pi/install.sh ~/learning-system
 cd ~/learning-system && pi  # approve/trust once
 ```
+
+Start a fresh track rather than continuing the schedule below (you have no
+write access here anyway).
+
+**Path B — your own fresh state (recommended for actual use):**
+
+```bash
+[ -d ~/learning-pi ] || git clone https://github.com/delightaheebwa/learning-pi.git ~/learning-pi
+~/learning-pi/init-state.sh ~/my-learning  # empty scaffold, zero owner data, fresh git history
+~/learning-pi/install.sh ~/my-learning
+cd ~/my-learning && pi  # approve/trust once
+# then: git remote add origin <your-url> && git push -u origin main;
+# define your track in Learning System/MISSION.md + CURRICULUM.md; run /teach <topic> or /lesson
+```
+
+Dependency one-liners (once `git`, `python3`, and `mise` are present the minimal path above works):
 
 - Omarchy/Arch: `sudo pacman -S --needed git openssh python base-devel curl unzip mise deno nodejs npm`
 - Ubuntu/Debian/WSL: `sudo apt-get update && sudo apt-get install -y git python3 curl unzip ca-certificates nodejs npm` + `curl -fsSL https://mise.run | sh`
