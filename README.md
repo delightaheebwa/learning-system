@@ -10,13 +10,23 @@
 > build your own empty state with `learning-pi/init-state.sh` (Path B in Set up below) and fill it
 > with your own material, rather than continuing the AIEFS schedule below.
 
-A local-first, spaced-repetition learning system and Karpathy-style personal wiki.
-The repo is the source of truth for state; [`learning-pi`](https://github.com/delightaheebwa/learning-pi)
-is the canonical control/runtime layer over it (self-hosted Open WebUI support is frozen, see `OPENWEBUI.md`).
+This repo is **the notebook**: every session, concept, review, and wiki page lives
+here as Markdown + JSON. The tutor program that acts on it lives in
+[`learning-pi`](https://github.com/delightaheebwa/learning-pi) (self-hosted Open WebUI
+support is frozen, see `OPENWEBUI.md`).
+
+**How learning works here, in 30 seconds:** you open the notebook (`cd ~/learning-system && pi`)
+and say `/lesson` (next curriculum lesson) or `/teach <topic>`. A Scout gathers live sources,
+the Tutor checks what you know, teaches in small steps with questions, and a Clerk files
+everything away — session notes, concept schedule, wiki pages. Later, `/review` quizzes you on
+whatever is due, mistakes first. A verification gate fact-checks the tutor, so unverified
+claims never reach you.
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
 - **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done 2026-09-05, P1 L07 done 2026-09-05, P1 L08 Optimization done 2026-09-10, P1 L09 Information Theory done 2026-09-24, P1 L10 Dimensionality Reduction in-progress — paused 5/6, CP5 mini 4 taught 2026-10-16, exit ticket unrun). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
-- **Scheduling:** manual — say `/review` to run a review session (AIEFS; SWE `swe` is legacy); `/ingest` to add content; `/teach` / `/lesson` / `/continue` to learn. `Scout` now fetches live `phases/.../docs/en.md` + Further Reading per lesson and packs per-source excerpts/takeaways/`adds_vs_rohit` + synthesis into the digest (Rohit sets the agenda; externals enrich every checkpoint); language per lesson header (Python/TS/Rust).
+- **Scheduling:** manual — `/review` reviews what's due, `/ingest` files new material away,
+  `/teach` / `/lesson` / `/continue` learn. Each lesson pulls live sources (roadmap doc + Further Reading),
+  in the lesson's language (Python/TS/Rust).
 
 ## Layout
 
@@ -84,13 +94,10 @@ Dependency one-liners (once `git`, `python3`, and `mise` are present the minimal
 - macOS: `brew install git python mise deno node` (after `xcode-select --install`)
 - Windows: not natively supported — use WSL2 (see `learning-pi` setup section), keep repos on the Linux filesystem.
 
-## Run it (canonical: pi)
+## Daily use (once set up)
 
 ```bash
-git clone https://github.com/delightaheebwa/learning-pi.git ~/learning-pi
-git clone https://github.com/delightaheebwa/learning-system.git ~/learning-system
-~/learning-pi/install.sh ~/learning-system
-cd ~/learning-system && pi
+cd ~/learning-system && pi  # or ~/my-learning for your own state
 ```
 
 Then `/review`, `/solo`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`, `/audit` (`/solo`, `/audit`, `/show` are pi-only; `/swe` below is legacy Open WebUI-only).
