@@ -38,14 +38,17 @@ changes are to **skill markdown**, not Python.
   `open_webui.internal.db`, `sqlalchemy`) — it only runs *inside* an Open WebUI
   server, not standalone.
 - **Runtime:** Open WebUI REST API (`/api/v1/...`) + native features: Skills,
-  Model presets (Scout / Learning Tutor / Clerk), Prompts (`/swe`, `/review`,
-  `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`), a Function-type Filter (Gate
+  Model presets (Scout / Learning Tutor / Clerk), Prompts (legacy frozen 7: `/swe`, `/review`,
+  `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause` — canonical pi has 9 with `/solo /audit /show`, no `/swe`), a Function-type Filter (Gate
   Pipe), and global `subagents.system_prompt`.
-- **No build, no test runner, no linter** are wired in this repo. The only
-  executable scripts are `scripts/setup_openwebui.py`, `scripts/ops.py`
-  (runtime sidecar), `scripts/learner_history.py` (regenerates
-  `Core/Learner History.md`), and `scripts/audit_openwebui.py` (drift audit);
-  tests via `python3 -m unittest scripts.ops_test`.
+- **Checks:** CI (`.github/workflows/ci.yml`) runs `py_compile scripts/*.py`,
+  `python -m unittest scripts.ops_test -v`, `python scripts/learner_history.py`,
+  `docker compose config`, plus a secrets grep. Executable scripts are
+  `scripts/setup_openwebui.py`, `scripts/ops.py` (runtime sidecar),
+  `scripts/learner_history.py` (regenerates `Core/Learner History.md`),
+  `scripts/audit_openwebui.py` (drift audit), and `scripts/wiki_provenance.py`
+  (trust-mix report); tests via `python3 -m unittest scripts.ops_test` and
+  `scripts/wiki_provenance_test.py`.
 
 ## Commands
 
@@ -54,8 +57,7 @@ changes are to **skill markdown**, not Python.
 # and the global subagent system prompt). Idempotent; preserves UI-chosen models.
 OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 
-# Sidecar "dense tool call" helper used by the skills at runtime. NOTE the path
-# mismatch below — it is a real gotcha, do not "fix" it blindly.
+# Sidecar "dense tool call" helper used by the skills at runtime.
 python3 scripts/ops.py state <aiefs|aie|swe>
 python3 scripts/ops.py state <track> --review    # compact profile + deterministic due queue
 python3 scripts/ops.py queue <track> [--date YYYY-MM-DD] [--slots N] [--json] [--digest PATH]
@@ -68,7 +70,7 @@ mistakes + due reviews from `Attempts.json`, date-seeded shuffle, same-Source
 adjacency guard, per-concept question-type alternation, plus drift `warnings`) —
 the LLM must not re-derive or re-sort it. `ops_test.py` covers it.
 
-There is **no `npm`/package/build/test step**. Do not add one unless asked.
+There is **no `npm`/package/build step**. Do not add one unless asked. Tests run via CI / unittest (see Tech stack).
 
 ## Project map (where things live)
 
@@ -86,11 +88,14 @@ scripts/
   learner_history.py            regenerates Core/Learner History.md (tutor context).
   audit_openwebui.py            read-only drift audit: repo vs live Open WebUI.
   ops_test.py                   unittest suite (python3 -m unittest scripts.ops_test).
+  wiki_provenance.py            trust-mix report + provenance lint/stamp (see Knowledge Wiki/AGENTS.md).
+  wiki_provenance_test.py       tests for wiki_provenance.py.
 infra/
   docker-compose.yml            portable stack (open-webui + searxng + open-terminal).
   backup.sh / restore.sh        volume backup/restore (open-webui, open-terminal).
+  .env.example                  placeholder for `infra/.env` (gitignored secret).
   ACCESS.md                     how to reach every surface (UI, API, containers).
-  VERSIONS.md                   pinned image digests + versions manifest.
+  VERSIONS.md                   pinned image digests + versions manifest (snapshot 2026-09-08 — see file header).
 Skills/
   learning-system/SKILL.md      review + ingest flows (the "manager" skill)
   learning-teach/SKILL.md       probe → plan → teach loop + fact_check/quiz_audit
@@ -105,14 +110,15 @@ Learning System/
                                  🧯 Mistakes.md, Learner History.md (generated),
                                  📦 Concept Archive, templates
   CURRICULUM.md MISSION.md GLOSSARY.md RESOURCES.md
-  Sessions/ Reviews/ Lessons/ Learning Records/ Archive/   (Concept Notes +
-                                 Plans/ archived 2026-09-08 into Archive/)
+  Sessions/ (75+ notes)  Reviews/ (incl. Quality Gates/, Session Audits/)  Lessons/ (5 live)
+  Learning Records/  Concept Notes/ (archived stub — do not add)  build-artifacts/
+  Archive/ (Concept Notes + Plans/ archived 2026-09-08 into Archive/)
   Archive/                      ALL legacy material lives here, era-folded
                                  (AIE-2026-07-28/, SWE-2026-09-01/, C-project/,
                                  legacy-tools-2026-08-25/, plans/, frozen/) —
                                  models must NOT grep this tree; use
                                  Core/Learner History.md instead.
-  .tmp/                         ephemeral Scout digests (gitignored, 7-day TTL)
+  .tmp/                         ephemeral Scout digests (gitignored, 7-day TTL) — plus repo-root `.tmp/` (also ignored)
 Knowledge Wiki/
   raw/sources/  raw/assets/  wiki/  index.md  log.md  AGENTS.md
 ```
@@ -127,8 +133,9 @@ Knowledge Wiki/
 - After a session of edits:
   `git add "Learning System" "Knowledge Wiki" "Skills" AGENTS.md README.md OPENWEBUI.md scripts/ infra/`
   → commit → push. Verify clean + `git log --oneline -1`.
-- This is **public** origin `delightaheebwa/learning-system`, branch `main`. Auth is
-  via `~/.git-credentials` + `credential.helper store` in the sandbox.
+- This is **public** origin `delightaheebwa/learning-system`, branch `main`. Auth:
+  Open Terminal container uses `~/.git-credentials` + `credential.helper store`;
+  WSL checkout uses Windows Git Credential Manager (see `Learning System/AGENTS.md`).
 
 ### Skills do not auto-sync
 Edits to `Skills/*/SKILL.md` only take effect after re-importing the skill in
@@ -139,8 +146,10 @@ a skill — the change is invisible until re-imported.
 `setup_openwebui.py` seeds model IDs **only on first install / when empty**;
 re-runs preserve whatever base model the user set in the UI. Changing a model is
 a one-field UI edit (see the table in `OPENWEBUI.md`). Do not hardcode model IDs
-in skills. The gate requires the verifier to run on a model **different** from the
-Tutor so it never grades its own output.
+in skills. Verifiers run on the **calling preset's own base model** (Open WebUI has no
+separate verifier-model setting — verified 2026-09-08 against backend
+`utils/subagents.py::delegate`); enforcement rests on the deterministic Pipe checks,
+not model independence. Do not hardcode model IDs in skills.
 
 ### The gate Pipe is load-bearing
 `gate_pipe.py` (Filter, bound to **Tutor + Clerk only**, Scout exempt) blocks
@@ -185,13 +194,12 @@ ingest. The repo copy is authoritative over any Open WebUI mirror.
 
 ## Known gotchas (learned the hard way)
 
-1. **`ops.py` path mismatch (FIXED 2026-08).** Skills previously instructed the
+1. **`ops.py` path mismatch (HISTORICAL, fixed 2026-08 — no action needed).** Skills previously instructed the
    LLM to call a container-absolute `.ops/ops.py` path, but the file lives at `scripts/ops.py`,
    and `ops.py` hardcoded a container-absolute `ROOT=.../learning-system` (wrong for the local
    checkout on the host). Both fixed: skill invocations now
    call `python3 scripts/ops.py` and `ops.py` auto-detects its root via
-   `Learning System/Core` (honors `LEARNING_SYSTEM_ROOT`). If reverting, restore
-   the auto-detect + `scripts/ops.py` invocation.
+   `Learning System/Core` (honors `LEARNING_SYSTEM_ROOT`).
  2. **Tools → subagents migration (2026-08-25).** The legacy
     `fact_check`/`review_gate`/`quiz_gate` Tools were retired after repeated HTTP
     500s. All verification now runs as foreground `delegate_task` subagent tasks
@@ -268,9 +276,9 @@ Do not confuse these with this repo's `Skills/` (Open WebUI runtime skills
   `code-simplification`; decisions/docs → `documentation-and-adrs`.
 - Agent-skills never override the invariants above (gate contracts, SRS
   semantics, wiki rules, git tracked-dirs, skill re-import requirement).
-  Adapt verification to this repo: there is no test runner/linter — verify by
+  Adapt verification to this repo: there is no linter — verify by
   re-reading the edited `SKILL.md`, running `python3 scripts/ops.py` /
-  `python3 -m py_compile` where applicable, and stating the re-import /
+  `python3 -m py_compile` / `python3 -m unittest scripts.ops_test` where applicable, and stating the re-import /
   installer step needed.
 
 ## Before you modify anything

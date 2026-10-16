@@ -14,7 +14,7 @@ The repo is the source of truth for state; [`learning-pi`](https://github.com/de
 is the canonical control/runtime layer over it (self-hosted Open WebUI support is frozen, see `OPENWEBUI.md`).
 
 - **Repo:** https://github.com/delightaheebwa/learning-system
-- **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done, P1 L07 done — resume P1 L08 Optimization, paused 2/5). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
+- **Track:** AIEFS (AI Engineering from Scratch — Rohit 20 phases; Mission 0 Catch-Up done 2026-09-05, P1 L07 done 2026-09-05, P1 L08 Optimization done 2026-09-10, P1 L09 Information Theory done 2026-09-24, P1 L10 Dimensionality Reduction in-progress — paused 5/6, CP5 mini 4 taught 2026-10-16, exit ticket unrun). SWE archived 2026-09-01 (43 concepts paused, strictly out of scope). Prior `aie` archived 2026-07-28.
 - **Scheduling:** manual — say `/review` to run a review session (AIEFS; SWE `swe` is legacy); `/ingest` to add content; `/teach` / `/lesson` / `/continue` to learn. `Scout` now fetches live `phases/.../docs/en.md` + Further Reading per lesson and packs per-source excerpts/takeaways/`adds_vs_rohit` + synthesis into the digest (Rohit sets the agenda; externals enrich every checkpoint); language per lesson header (Python/TS/Rust).
 
 ## Layout
@@ -28,12 +28,15 @@ scripts/
   learner_history.py        regenerates Core/Learner History.md (tutor context)
   audit_openwebui.py        read-only repo↔live drift audit
   ops_test.py               unittest suite
-infra/                     portability: docker-compose.yml, backup/restore, VERSIONS.md, ACCESS.md
+  wiki_provenance.py        wiki trust-mix report + provenance lint/stamp
+  wiki_provenance_test.py   tests for wiki_provenance.py
+infra/                     portability: docker-compose.yml, backup/restore, .env.example, VERSIONS.md, ACCESS.md
 Learning System/          live state + history
   Core/                     💡 Learning Profile, 📚 Active Concepts (the review schedule),
                             Attempts.json, 🧯 Mistakes.md, Learner History.md (generated),
                             📦 Concept Archive, templates
-  Sessions/  Reviews/  Lessons/  Learning Records/   session notes, review notes, lessons, records
+  Sessions/  Reviews/ (incl. Quality Gates/, Session Audits/)  Lessons/  Learning Records/
+  Concept Notes/ (archived stub — do not add)  build-artifacts/  .tmp/ (ephemeral digests)
   Archive/                  ALL legacy material, era-folded (AIE, SWE, C-project, legacy tools, plans, frozen) — do not grep
   AGENTS.md                 behavioral conventions (consistency checks, git sync)
 Knowledge Wiki/           curated wiki (raw/sources, raw/assets, wiki/, index.md, log.md, AGENTS.md)
@@ -45,6 +48,24 @@ Skills/                   FROZEN Open WebUI snapshot (canonical behavior lives i
   learning-review/openwebui/      gate_pipe.py + gate_schema.py (the deterministic enforcement)
 ```
 
+## Set up (one-shot per platform)
+
+Full prerequisites + verification live in
+[`learning-pi/README.md#setup-one-shot-per-platform`](https://github.com/delightaheebwa/learning-pi#set-up-one-shot-per-platform).
+Minimal path once `git`, `python3`, and `mise` (pinned `pi`) are present:
+
+```bash
+[ -d ~/learning-pi ] || git clone https://github.com/delightaheebwa/learning-pi.git ~/learning-pi
+[ -d ~/learning-system ] || git clone https://github.com/delightaheebwa/learning-system.git ~/learning-system
+~/learning-pi/install.sh ~/learning-system
+cd ~/learning-system && pi  # approve/trust once
+```
+
+- Omarchy/Arch: `sudo pacman -S --needed git python base-devel curl unzip mise deno`
+- Ubuntu/Debian/WSL: `sudo apt-get update && sudo apt-get install -y git python3 curl unzip` + `curl https://mise.run | sh`
+- macOS: `brew install git python mise deno`
+- Windows: not natively supported — use WSL2 (see `learning-pi` setup section), keep repos on the Linux filesystem.
+
 ## Run it (canonical: pi)
 
 ```bash
@@ -54,10 +75,10 @@ git clone https://github.com/delightaheebwa/learning-system.git ~/learning-syste
 cd ~/learning-system && pi
 ```
 
-Then `/review`, `/solo`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`, `/audit`.
+Then `/review`, `/solo`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`, `/audit` (`/solo`, `/audit`, `/show` are pi-only; `/swe` below is legacy Open WebUI-only).
 See [`learning-pi/README.md`](https://github.com/delightaheebwa/learning-pi#usage) for the full
 usage and [`AUDIT-ROADMAP.md`](https://github.com/delightaheebwa/learning-pi/blob/main/AUDIT-ROADMAP.md)
-for what is done (P0–P2) and deferred (P3).
+for what is done (P0–P2, P4 foundation-beats, scout-audit gate, teach rewrite, bridge + deploy) and deferred (P3).
 
 ## Setup in Open WebUI (one time — frozen legacy)
 
@@ -67,15 +88,16 @@ Run the installer, then start chatting:
 OPENWEBUI_API_KEY=sk-... python3 scripts/setup_openwebui.py
 ```
 
-That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 7 Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause`).
-Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; verifiers run on the **calling preset's own base model** (Open WebUI has no separate verifier-model setting) — enforcement rests on the deterministic Pipe checks, not model independence. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools were retired; do not bind them.)
+That creates/updates: the 4 Skills, the **Scout** / **Learning Tutor** / **Clerk** Model presets, the **Gate Pipe** Filter, the global subagent system prompt (keyed `GATE:`), and the 7 legacy Prompts (`/swe`, `/review`, `/ingest`, `/teach`, `/lesson`, `/continue`, `/pause` — frozen; canonical pi has 9: `/review /solo /ingest /teach /lesson /continue /pause /audit /show`, no `/swe`).
+Verification gates run as **foreground** subagent tasks (`delegate_task`, `background:false`) with Pydantic envelope validation via the **Gate Pipe**; verifiers run on the **calling preset's own base model** (Open WebUI has no separate verifier-model setting — verified 2026-09-08 against `utils/subagents.py::delegate`) — enforcement rests on the deterministic Pipe checks, not model independence. (The legacy `review_gate` + `fact_check` + `quiz_gate` Tools were retired; do not bind them.)
 After install, models are changed in **one place each in the Open WebUI UI** —
 see `OPENWEBUI.md`. The installer only applies model values on a **first
 install** (or when empty); re-running it preserves your UI-chosen models.
 See `OPENWEBUI.md` for the full walkthrough, the system prompt, and the prompt texts.
 
 The repo must also be present in the Open Terminal workspace (the model's file workspace) with git push wired —
-see `OPENWEBUI.md` and `Learning System/AGENTS.md`.
+see `OPENWEBUI.md` and `Learning System/AGENTS.md`. (Legacy Open WebUI path only — the canonical pi path uses the
+current checkout + `dispatch` and needs no Open Terminal workspace.)
 
 ## Principles
 

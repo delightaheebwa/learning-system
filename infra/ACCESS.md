@@ -12,9 +12,9 @@
 | open-webui container | `docker exec -it open-webui bash` | shell | `/app/backend/data` = named volume `open-webui` (webui.db, vector_db, uploads) |
 | Open Terminal container | `docker exec -it open-terminal bash` | shell | `/home/user/learning-system` (runtime repo checkout, volume `open-terminal`) |
 | Open Terminal tool-server | http://172.17.0.1:8000 (from open-webui container) | key in webui.db `tool_server.connections` | what powers the models' terminal capability |
-| SearXNG | http://localhost:8080 | HTTP | web search backend (config `~/searxng-docker/searxng/settings.yml` host dir) |
+| SearXNG | http://localhost:8080 | HTTP | web search backend (portable file uses named volume `searxng-config`; legacy live setup used host dir `~/searxng-docker/searxng/settings.yml`) |
 | GitHub | https://github.com/delightaheebwa/learning-system | git (GCM in WSL / store in container) | the durable source of truth |
-| WSL maintenance checkout | `/home/delinux/learning-system` | this shell | refactor work; push/pull to sync |
+| WSL maintenance checkout | `/home/delightaheebwa/learning-system` | this shell | refactor work; push/pull to sync |
 | webui.db direct | `docker exec open-webui python3 -c "import sqlite3; …"` (no sqlite3 binary in image) | python | chats, models, config, prompts, functions, tools tables |
 
 ## Networking facts (learned the hard way)
@@ -24,7 +24,7 @@
   `host.docker.internal` (open-webui reaches SearXNG at `host.docker.internal:8080`,
   Ollama at `host.docker.internal:11434`, and Open Terminal at `172.17.0.1:8000`).
 - The two repo checkouts (container `/home/user/learning-system` vs WSL
-  `/home/delinux/learning-system`) are SEPARATE working copies of the same GitHub
+  `/home/delightaheebwa/learning-system`) are SEPARATE working copies of the same GitHub
   remote. Sync only via git push/pull — never edit both in one session.
 - `webui.db` is SQLite. There is no `sqlite3` CLI in the image — use
   `docker exec open-webui python3 -c …` with the sqlite3 module.

@@ -1,10 +1,10 @@
 # Learning System — Agent Conventions
 
-This folder + `Knowledge Wiki/` are the active learning system. The operating procedure lives in `file Skills/learning-system/SKILL.md` — that skill is the authority for review/ingest flows and file layout. This file holds only behavioral conventions.
+This folder + `Knowledge Wiki/` are the active learning system. The operating procedure lives in `Skills/learning-system/SKILL.md` (frozen legacy snapshot — canonical behavior in `learning-pi/.pi/skills/`) — that skill is the authority for review/ingest flows and file layout. This file holds only behavioral conventions.
 
 ## Repo location
 
-The runtime working copy lives at **`/home/user/learning-system`** inside the Open WebUI **Open Terminal** workspace (a persistent container volume). A second checkout lives at **`/home/delinux/learning-system`** (WSL) for maintenance refactors — both track the same GitHub remote; GitHub (https://github.com/delightaheebwa/learning-system) is the durable source of truth. The runtime model reads and writes the Open Terminal copy; keep the two in sync only via git push/pull, never by editing both directly in one session.
+The runtime working copy lives at **`/home/user/learning-system`** inside the Open WebUI **Open Terminal** workspace (a persistent container volume, legacy path). A second checkout lives at **`/home/delightaheebwa/learning-system`** (WSL, this host) for maintenance refactors — both track the same GitHub remote; GitHub (https://github.com/delightaheebwa/learning-system) is the durable source of truth. The runtime model reads and writes the Open Terminal copy; keep the two in sync only via git push/pull, never by editing both directly in one session. The canonical pi runtime uses the local checkout directly (no Open Terminal needed).
 
 ## Multi-File Consistency Check
 
@@ -29,7 +29,7 @@ Report ✅/❌ per item. Fix failures immediately.
 
 ## Git Sync
 
-The working copy is the Git repo at `/home/user/learning-system`, tracked against GitHub remote `origin` (https://github.com/delightaheebwa/learning-system, public, branch `main`). Repo covers `Learning System/`, `Knowledge Wiki/`, and `Skills/` (the Open WebUI-tuned operating rules, with all verification gates running as subagent tasks via `delegate_task` — fact-check, quiz-audit, review-gate), plus `OPENWEBUI.md` and `scripts/`.
+The working copy is the Git repo at `/home/user/learning-system` (container) or `/home/delightaheebwa/learning-system` (this WSL host), tracked against GitHub remote `origin` (public, branch `main`). Repo covers `Learning System/`, `Knowledge Wiki/`, and `Skills/` (the Open WebUI-tuned operating rules, with all verification gates running as subagent tasks via `delegate_task` — fact-check, quiz-audit, review-gate), plus root docs (`AGENTS.md`, `README.md`, `OPENWEBUI.md`), `scripts/`, and `infra/`.
 
 After final edits in a session (consistency checks pass, writes complete), ALWAYS commit and push:
 
@@ -42,4 +42,4 @@ Verify with `git status` (clean) and `git log --oneline -1`. Never commit `Learn
 ### Git auth (automated)
 
 - **Open Terminal container:** credentials at `~/.git-credentials` (0600) with `credential.helper store` — `git push` works without interactive auth.
-- **WSL checkout (`/home/delinux/learning-system`):** auth via Windows **Git Credential Manager** (`credential.helper=.../git-credential-manager.exe` through WSL interop) — no `~/.git-credentials` here. If push fails, refresh the credential in Windows (Credential Manager → GitHub).
+- **WSL checkout (`/home/delightaheebwa/learning-system`):** auth via Windows **Git Credential Manager** (`credential.helper=.../git-credential-manager.exe` through WSL interop) — no `~/.git-credentials` here. If push fails, refresh the credential in Windows (Credential Manager → GitHub).

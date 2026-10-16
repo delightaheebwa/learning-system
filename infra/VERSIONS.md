@@ -1,7 +1,10 @@
 # VERSIONS — environment manifest (pin everything a fresh restore needs)
 
-Generated 2026-09-08 from the live containers. Update this file whenever any
-component changes (run `scripts/audit_openwebui.py` to detect drift).
+> **Snapshot 2026-09-08, re-checked 2026-10-16:** image digests below still match
+> `infra/docker-compose.yml` but liveness against the Hub was not re-verified;
+> Open WebUI preset model IDs below are the 2026-09-08 values — canonical pi models
+> now live in `learning-pi/.pi/settings.json` (different runtime). Update this file
+> whenever any component changes (run `scripts/audit_openwebui.py` to detect drift).
 
 ## Images (pinned by digest — the live stack runs these exact bytes)
 
@@ -41,16 +44,16 @@ Base model IDs float upstream — record current values here after any model cha
 
 ## Installer-seeded control layer (see scripts/setup_openwebui.py)
 
-4 Skills · 3 presets · 7 prompts (`/swe /review /ingest /teach /lesson /continue /pause`) ·
+4 Skills · 3 presets · 7 legacy prompts (`/swe /review /ingest /teach /lesson /continue /pause`) ·
 gate_pipe Filter (valves: priority 10, max_retries 2, digest_ttl_days 7) ·
-`subagents.system_prompt` (4 `GATE:` keys) · subagent config (enable, max_concurrent 10,
+`subagents.system_prompt` (5 `GATE:` keys: `fact_check` / `quiz_audit` / `review` / `review_session` / `grade_audit`) · subagent config (enable, max_concurrent 10,
 max_async 10, max_iterations 30, max_output 30000).
 
 ## Repo state
 
-- GitHub origin: `https://github.com/delightaheebwa/learning-system` (public, branch `main`).
+- GitHub origin: `git@github.com:delightaheebwa/learning-system` (SSH; public, branch `main`).
 - Runtime checkout: named volume `open-terminal` → `/home/user/learning-system`.
-- Maintenance checkout (this one): WSL `/home/delinux/learning-system`.
+- Maintenance checkout (this one): WSL `/home/delightaheebwa/learning-system`.
 
 ## Upgrade procedure
 

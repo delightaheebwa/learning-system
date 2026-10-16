@@ -74,7 +74,8 @@ If your change touches `learning-pi`:
 
 ## Verifying
 
-There is **no build, test runner, or linter** wired into this repo. Verify the
+CI (`.github/workflows/ci.yml`) runs `py_compile`, `unittest scripts.ops_test`,
+`learner_history.py`, `compose config`, and a secrets grep. Verify the
 way `../AGENTS.md` describes: re-read the edited `SKILL.md`, run
 `python3 -m py_compile` where Python changed, run `python3 -m unittest
 scripts.ops_test` for `ops.py` changes, and state any re-import or installer step

@@ -27,6 +27,8 @@
 - [[2026-06-09 - lexer-tokens]] — user-provided notes about lexical analyzers, token structure, and lexeme-vs-literal distinction
 - [[2026-08-15 - gemini-meminfo-smoke-test]] — Gemini Socratic session: building a robust /proc/meminfo smoke test (bounds invariants, divide-by-zero guard, ULONG_MAX sentinel, smoke vs fixture tests, feature probing vs version checks)s
 - [[2026-08-18 - gemini-c-memory-integer-mechanics]] — Gemini C tutoring: unsigned underflow + integer-division truncation traps, flaky exact-live asserts, swap invariants, MemFree/MemAvailable/SwapFree semantics, stack vs heap vs swap memory regions, dangling pointers
+- [[2026-09-25 - dimensionality-reduction - rohit]] + 3b1b-eigen / distill / shlens / umap / umap-faq / umap-params — P1 L10 DR first scout (2026-09-25)
+- [[2026-10-13 - dimensionality-reduction - rohit]] + 3b1b-eigen / cs229-prob / distill / gundersen / shlens / sklearn-kpca / umap / umap-faq / umap-paper / umap-params — P1 L10 DR re-scout (2026-10-13, PASS; TTL to ~2026-10-20)
 
 ## Concepts
 
