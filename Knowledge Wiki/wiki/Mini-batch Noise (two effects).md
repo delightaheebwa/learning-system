@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=unverified | source=legacy (P1 L08 lesson) + Keskar 2017 / Wilson 2017 / Li 2018 | verified-by=— | date=2026-10-17 | note=attribution corrected 2026-10-17 (in-session fact-check): SGD-vs-Adam gap = Wilson et al. 2017; sharp minima = Keskar et al. 2017; Li et al. 2018 = visualization only -->
 
 # Mini-batch Noise (Two Effects)
 
@@ -21,7 +21,7 @@ Saying "noise helps generalization" and "noise escapes saddles" in the same brea
 
 ## Why it matters: SGD vs Adam on test accuracy
 
-Sharp minima are narrow pits overfit to training quirks — they generalize poorly. Flat minima are wide basins, whole neighborhoods of good solutions robust to the train→test shift — they generalize well. This is one reason SGD with momentum often beats Adam on final test accuracy even where Adam's adaptivity makes faster early progress: SGD's noise keeps it out of the sharp pits. (Visualization: Li et al. 2018, filter normalization.)
+Sharp minima are narrow pits overfit to training quirks — they generalize poorly. Flat minima are wide basins, whole neighborhoods of good solutions robust to the train→test shift — they generalize well. This is one reason SGD with momentum often beats Adam on final test accuracy even where Adam's adaptivity makes faster early progress: SGD's noise keeps it out of the sharp pits. (Attribution: the flat-vs-sharp generalization link is **Keskar et al. 2017**; the SGD-vs-Adam final-test-accuracy gap is **Wilson et al. 2017**. **Li et al. 2018** — filter normalization — is the loss-landscape *visualization* of sharp vs flat basins: it renders these objects, it is not the source of either generalization claim.)
 
 ## Related pages
 
@@ -32,4 +32,8 @@ Sharp minima are narrow pits overfit to training quirks — they generalize poor
 ## Sources
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-10
-- **Source:** `phases/01-math-foundations/08-optimization/docs/en.md` + [Li et al. 2018](https://arxiv.org/abs/1712.09913)
+- **Source:** `phases/01-math-foundations/08-optimization/docs/en.md` (Rohit Phase 1 L08)
+- **Primary source — sharp minima:** [Keskar et al. 2017 — *On Large-Batch Training for Deep Learning: Generalization Gap and Sharp Minima*](https://arxiv.org/abs/1609.04836) — the sharp-minima / generalization-gap claim.
+- **Primary source — SGD vs Adam:** [Wilson et al. 2017 — *The Marginal Value of Adaptive Gradient Methods in Machine Learning*](https://arxiv.org/abs/1705.08292) — adaptive methods (Adam) can generalize *worse* than SGD on final test accuracy.
+- **Primary source — visualization only:** [Li et al. 2018 — *Visualizing the Loss Landscape of Neural Nets*](https://arxiv.org/abs/1712.09913) — filter normalization; renders sharp vs flat basins. It is **not** the evidence for either generalization claim above.
+- **Correction (2026-10-17):** this page previously closed the SGD-vs-Adam paragraph with “(Visualization: Li et al. 2018, filter normalization.)”, which credited the generalization gap to the visualization paper. The in-session fact-check re-attributed it: the SGD-vs-Adam test-accuracy gap is Wilson et al. 2017, the sharp-minima side is Keskar et al. 2017, and Li et al. 2018 is strictly the loss-landscape visualization. Page substance is unchanged — attribution only.
