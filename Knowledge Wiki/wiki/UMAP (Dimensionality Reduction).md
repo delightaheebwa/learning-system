@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10) | verified-by=— | date=2026-10-14 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; five statements as of 2026-10-14 — two from 2026-10-13, three appended 2026-10-14, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-16 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eight statements as of 2026-10-16 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, nothing overwritten) -->
 
 # UMAP (Dimensionality Reduction)
 
@@ -80,23 +80,47 @@ The docs: `min_dist` "controls how tightly UMAP is allowed to pack points togeth
 
 **The knob-crossing failure mode (2026-10-14 exit ticket).** The two dials are easy to swap under pressure: item X3 placed `min_dist` on the *input* side of the pipeline, and item X1 gave only the gain half of the `n_neighbors` trade. The separator is one sentence — *`min_dist` never touches the graph*: if the question is about charts, neighbours, connectivity or components, the dial is `n_neighbors`; if it is about packing, spacing or the look of the picture, it is `min_dist`.
 
-## Contrast with t-SNE (the global-structure disagreement is still open)
+## Global structure: goal, not guarantee
 
-t-SNE states **no** data assumptions: it matches pairwise neighbour probabilities non-parametrically (see [[t-SNE (Dimensionality Reduction)]]). UMAP's three assumptions are what let it claim more — Rohit's L10 headline is "UMAP: faster, better global structure", and his comparison table files UMAP under "Local + some global structure", while the FAQ frames global structure as a goal the failure mode above can break rather than a guarantee. **The ⚠️ Rohit-vs-FAQ disagreement is queued for CP5 mini 4;** this page does not resolve it yet.
+Rohit's L10 headline states the advantage flatly, the paper hedges it, and the FAQ frames it as a goal with a documented way to break it. The two mechanisms below are why relative cluster positions carry signal at all; the ⚠️ block is why the claim stops at "arguably". (Taught and landed 2026-10-16, CP5 mini 4 — the graded exit ticket was not run.)
+
+**Mechanism 1 — negative sampling puts push-back everywhere, not just along edges.** The fuzzy graph only ever encodes *local* neighbourhoods. Global information enters through the objective: the cross-entropy splits into the `µ(a) log ν(a)` term (handled by "sampl[ing] 1-simplices with probability `µ(a)`") and the term "(1 − µ(a)) log(1 − ν(a)) [which] requires negative sampling – rather than computing this over all potential simplices we randomly sample potential 1-simplices and assume them to be a negative example (i.e. with membership strength 0)". Those negatives are drawn from the vertex distribution `P(x_i) = Σ_{a : d₀(a)=xᵢ}(1 − µ(a)) / Σ_{b : d₀(b)≠xᵢ}(1 − µ(b))`, "which can be reasonably approximated by a uniform distribution for sufficiently large data sets". In force language: "whenever an attractive force is applied to an edge, one of that edge's vertices is repulsed by a sampling of other vertices" (through the same fitted `Φ`). So the repulsion is sampled **across the whole embedding** and decays with distance rather than switching off at the edge boundary — drifting clusters meet push-back from everything else. A global constraint carried by a purely local graph.
+
+**Mechanism 2 — the symmetric union lets connectedness leak global information.** Each point's local graph is directed; the combined graph is built with the probabilistic t-conorm union. With `A` the weighted adjacency matrix of the merged directed graph, the undirected UMAP graph's adjacency is
+
+`B = A + Aᵀ − A∘Aᵀ`  (∘ = the Hadamard / pointwise product)
+
+Read as probabilities: "If one interprets the value of `A_ij` as the probability that the directed edge from `x_i` to `x_j` exists, then `B_ij` is the probability that at least one of the two directed edges (from `x_i` to `x_j` and from `x_j` to `x_i`) exists." An edge therefore survives if **either** direction voted for it, so overlapping charts pull on one another transitively — a chain of charts transmits pull **indirectly**. Connectedness itself is a global signal; this is the half of the mechanism the learner's own glue prior already had.
+
+**Why t-SNE's gaps are weaker.** In t-SNE, cross-cluster pairs carry `P_ij ≈ 0`, so rearranging the gaps barely moves the objective — inter-cluster distances end up largely decided by starting position and drift. (Taught honestly in-session: ≈ 0, **not** exactly 0 — the probability bookkeeping still couples positions weakly.) The paper makes the same contrast structurally: "the objective function derived for UMAP (cross-entropy) is significantly different from that of t-SNE (KL-divergence), in how it penalizes failures to preserve non-local and global structure".
+
+**⚠️ Sources disagree on the strength of the claim — three sources, three strengths.**
+
+- **Rohit (L10, the headline):** a flat advantage — "Better global structure. The relative positions of clusters in the output tend to be more meaningful than in t-SNE"; his comparison table files UMAP under "Local + some global structure".
+- **The paper (abstract + weaknesses):** hedged — UMAP "is competitive with t-SNE for visualization quality, and arguably preserves more of the global structure with superior run time performance"; and "while we believe that UMAP can capture more global structure than these other techniques, it remains true that if global structure is of primary interest then UMAP may not be the best choice for dimension reduction" (MDS for full distance-matrix preservation, PHATE for a local+long-scale hybrid).
+- **The FAQ (a goal, plus a way to break it):** "One of UMAPs goals is to have distance between clusters of points be meaningful … This means that clusters can end up spread out with a fair amount of space between them", and the clustering pitch — "by preserving more global structure and creating meaningful separation between connected components of the manifold on which the data lies, UMAP offers more meaningful clusters" — sits in the same FAQ as the failure mode that destroys it (see `## ⚠️ The random-k-NN pull-together failure mode` above): "Add a sufficiently large number of these points and our entire space gets pulled together destroying any of the structure we had hoped to identify."
+
+**Resolution taught 2026-10-16 — a graduated claim, not a flat advantage.** Global structure is a *design goal*: normally visible, and breakable by the documented outlier collapse that `disconnection_distance` mitigates (it cuts those edges, disconnecting the manifold so the orphans are pushed away). Practical rule: **trust relative arrangement more than t-SNE's, never as a certificate** — "arguably", never "guaranteed". The exit ticket that would grade this idea was not run.
+
+**The wrinkle that keeps it "arguably" — the initialization.** UMAP does not start from noise: "since the symmetric Laplacian of the graph G is a discrete approximation of the Laplace-Beltrami operator of the manifold, we can use a spectral layout to initialize the embedding. This provides both faster convergence and greater stability within the algorithm" (Algorithm 4 runs standard spectral methods on the symmetric normalized Laplacian). The paper's weaknesses section then concedes the consequence: "a significant contributor to UMAP's relative global structure preservation is derived from the Laplacian Eigenmaps initialization (which, in turn, followed from the theoretical foundations). This was noted in, for example, [29]. The authors of that paper demonstrate that t-SNE, with similar initialization, can perform equivalently to UMAP in a particular measure of global structure preservation." Reference [29] is **Kobak & Linderman 2019**, *UMAP does not preserve global structure any better than t-SNE when using the same initialization*. The paper's own counterweight sits in the same paragraph: "the objective function derived for UMAP (cross-entropy) is significantly different from that of t-SNE (KL-divergence), in how it penalizes failures to preserve non-local and global structure, and is also a significant contributor." So the honest reading is *initialization + objective together* — and the paper's future-work section adds that the field is "hampered by the lack clear objective measures, or even definitions, of global structure preservation".
+
+## Contrast with t-SNE
+
+t-SNE states **no** data assumptions: it matches pairwise neighbour probabilities non-parametrically (see [[t-SNE (Dimensionality Reduction)]]). UMAP's three assumptions are what let it claim more — Rohit's L10 headline is "UMAP: faster, better global structure", and his comparison table files UMAP under "Local + some global structure", while the FAQ frames global structure as a goal the failure mode above can break rather than a guarantee. **The ⚠️ Rohit-vs-paper-vs-FAQ disagreement was resolved on 2026-10-16 as a graduated claim** — see `## Global structure: goal, not guarantee` above.
 
 ## Queued for this concept
 
 Still to come in L10's CP5/CP6:
 
-- **CP5 mini 4 — the global-structure claim.** Rohit's L10 headline is "UMAP: faster, better global structure" and his comparison table files UMAP under "Local + some global structure"; the paper hedges it — UMAP "is competitive with t-SNE for visualization quality, and arguably preserves more of the global structure with superior run time performance" — and the FAQ frames it as a *goal* the failure mode above can break ("by preserving more global structure and creating meaningful separation between connected components of the manifold on which the data lies, UMAP offers more meaningful clusters"), not a guarantee. **The ⚠️ Rohit-vs-FAQ disagreement is queued for CP5 mini 4**; this page does not resolve it.
+- **CP5 mini 4 — the global-structure claim** *(idea turn delivered 2026-10-16; the **graded exit ticket is still unrun** — the learner paused at the check-back).* Rohit's L10 headline is "UMAP: faster, better global structure" and his comparison table files UMAP under "Local + some global structure"; the paper hedges it — UMAP "is competitive with t-SNE for visualization quality, and arguably preserves more of the global structure with superior run time performance" — and the FAQ frames it as a *goal* the failure mode above can break ("by preserving more global structure and creating meaningful separation between connected components of the manifold on which the data lies, UMAP offers more meaningful clusters"), not a guarantee. **The ⚠️ Rohit-vs-FAQ disagreement was resolved on 2026-10-16 as a graduated claim** (see `## Global structure: goal, not guarantee`); what remains is the mini's still-unrun graded exit ticket.
 - **CP5 mini 5** — the pipeline (PCA → UMAP → HDBSCAN) and the centering-only vs standardize decision.
 - **CP6** — kernel PCA (RBF) and the "high variance = important" contradiction (Rohit's definition vs Shlens's assumption that can fail).
 
-The two dials above were taught and sealed on 2026-10-14 (CP5 minis 2–3), so they are **no longer queued** — their page sections are live.
+Mini 1 (2026-10-13), minis 2–3 (2026-10-14) and mini 4 (2026-10-16) are all taught, so their page sections are live; the only work left inside this checkpoint is the **mini-4 exit ticket**.
 
 ## Open questions
 
-- How much of the "global structure" claim survives the failure mode above, and under what tuning? (CP5 mini 4 — the ⚠️ Rohit-vs-FAQ contradiction, and the paper's own "arguably" hedge.)
+- How much of the "global structure" claim survives the failure mode above, and under what tuning? — **answered as far as the sources go (2026-10-16):** it is a graduated claim — normally visible, breakable by the outlier collapse that `disconnection_distance` mitigates; the paper's "arguably" is partly attributable to the Laplacian/spectral initialization (Kobak & Linderman 2019), with the cross-entropy-vs-KL objective as the paper's own counterweight. Still unmeasured: the relative weight of those two contributors — the paper itself says the field lacks agreed measures, even definitions, of global-structure preservation.
 - How the local connectivity of each patch is chosen in code, and what it changes — **partly answered 2026-10-14:** `ρ_i` is the distance to the nearest neighbour (so each point connects to at least one other with weight 1, i.e. local connectivity at that point) and `σ_i` is binary-searched until the patch's memberships sum to `log₂(k)` (paper Algorithms 2–3). Still unread: the `local_connectivity` / spectral-initialisation corner cases in code.
 
 ## My understanding
@@ -137,8 +161,33 @@ The two dials above were taught and sealed on 2026-10-14 (CP5 minis 2–3), so t
 
 **Source framing:** complete and correct, and checkable against the paper: what fires on sub-floor pairs is repulsion through the fitted `Φ`, not a hard wall (the ⚠️ disagreement above).
 
+### 2026-10-16 — CP5 mini 4 (the global-structure claim)
+
+> **status=learner-note** — three more of the learner's statements, verbatim from the 2026-10-16 session, **appended** (nothing from 2026-10-13 or 2026-10-14 was altered). The annotations around them are the tutor's and the source's.
+
+**The elicitation prior (before the mini was taught):**
+
+> "the global structure comes from the gluing together of the charts. i think what stops it is the 'glue'(the overlap between neighborhoods/charts)."
+
+**Source framing (annotation, not a rewrite):** the first sentence is the right half of the mechanism, and it is now **mechanism 2** on this page — the glue *is* the channel (a symmetric union keeps an edge if either direction voted, so overlapping charts pull on one another transitively). The second sentence is not a defect in gluing but the honest limit of the claim: what breaks global structure is a **break** — a point with no real neighbours (the random-k-NN pull-together failure) and, as the paper concedes, a layout whose relative positions were largely set by the spectral initialization.
+
+**The guiding-question answer (which pool does the repulsion sample from):**
+
+> "i didnt quite understand the question but i think it should sample from edges which are disconnected."
+
+**Source framing (annotation, not a rewrite):** right *place* — sampling is what makes the repulsion affordable — but the pool is wider than disconnected edges: negatives are sampled across the whole embedding ("we randomly sample potential 1-simplices"), approximated by a uniform vertex distribution at scale. Edges are scarce, so most sampled pairs are non-edges — which is exactly why the push-apart pressure reaches far past the graph.
+
+**The isomorphic micro-check (fixing fragmentation — also the second clean pass on the knob-crossing repair):**
+
+> "they should reach for n_neighbors. raising it will change the number of points deemed as neigbors for each point. raising it increases the neighbors hence there is more overlap between neighborhoods and less seperate clumps."
+
+**Source framing:** complete and correct — fragmentation is a chart-coverage story, so the input-side dial is the one to reach for, and widening each patch's overlap merges the components. Paired with the self-location from the same session (*"it acts on stage 2 ... it can only move them around by making them further or nearer"*), this is the second firing of the knob-crossing slip repaired **by the learner** rather than by a told answer.
+
 ## Field notes
 
+- **The 2026-10-16 session:** warm-up W1 ✓ (`n_neighbors` 2→50: coherence gained, fine local detail lost) · **W2 ✗** (`min_dist` presented as "forcing points farther apart breaks the connections" — the knob-crossing slip firing a second time, tagged `sure`; a calibration flag) → diagnose-first repair **self-located** → isomorphic micro-check ✓; then the **CP5 mini 4 idea turn landed** (global structure as a graduated claim; the ⚠️ Rohit-vs-paper-vs-FAQ contradiction resolved) with the **graded exit ticket not run** (the learner paused at the check-back).
+- **The "elaborate more and simply" request was a pacing call, not an opt-out** — honored with a corrected re-delivery (the first draft failed fact-check on four overstatements: t-SNE "exactly 0", absolute drift-free phrasing, a "usually succeeds" success rate, and a single far point collapsing the whole map; the corrected draft passed and the learner's response was "makes sense"). Guiding budget: 1 of 2 spent.
+- Learner rule still standing (2026-10-05): practices are paper walks or graded MCQ batches; no code writes as a learning-system task.
 - "Learn the surface patch by patch, then glue" is the working one-liner for manifold learning as taught here.
 - The 2026-10-13 exit ticket (3/3, all `sure`) landed the three load-bearing pieces: local flatness as the definition, patch → glue → match as the mechanism, and the random-k-NN pull-together failure with `disconnection_distance` as the guard.
 - Two guiding questions were spent on the mini (UMAP had no independence evidence on record); both State-rung attempts were generations the learner made himself.
@@ -151,5 +200,5 @@ The two dials above were taught and sealed on 2026-10-14 (CP5 minis 2–3), so t
 
 ## Open questions (carried by the lesson)
 
-- CP5 mini 4 (the global-structure claim + the ⚠️ Rohit-vs-FAQ contradiction), CP5 mini 5 (the pipeline and the scaling decision) and CP6 (kernel PCA + the "high variance = important" contradiction); then the final cumulative quiz + Feynman explain-back.
-- The banked X1/X3 repair — the knob-separation warm-up the learner asked to defer.
+- CP5 mini 4's **graded exit ticket** (the claim itself landed 2026-10-16 — nothing is graded yet), CP5 mini 5 (the pipeline and the scaling decision) and CP6 (kernel PCA + the "high variance = important" contradiction); then the final cumulative quiz + Feynman explain-back.
+- The banked X1/X3 repair — the knob-separation warm-up: **W1 ✓ / W2 ✗ on 2026-10-16** (a second firing, self-located in-ladder and followed by a passing isomorphic micro-check). One clean pass under pressure is still owed before the ledger row can graduate.
