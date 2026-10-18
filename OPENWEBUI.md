@@ -96,6 +96,18 @@ The setup script (`scripts/setup_openwebui.py`) creates everything:
 - Scout digests are ephemeral (`.tmp/`, gitignored). `Clerk` deletes the consumed digest and clears `Pending Ingest.json` on success. Orphans older than 7 days are swept on the next Tutor/Clerk inlet (the Filter runs only on those presets; Scout is exempt).
 - Routine consistency (prerequisites, self-contradiction, coverage) is the tutor's own responsibility.
 
+## Intelligent-UI widget assets
+
+The canonical **(frozen) legacy** Open WebUI path predates the pi-layer widgets, but the
+installer still hosts their static assets so the canonical pi deployment (learning-pi) can
+serve them: `scripts/setup_openwebui.py` writes the pinned, MIT `@openuidev/browser-bundle@0.2.1`
+plus the shell `widget.html`/`widget.js` into `~/learning-pi/deploy/openui/0.2.1/` (override with
+`--openui-static-dir` / `OPENWEBUI_OPENUI_STATIC_DIR`). `learning-pi/deploy/docker-compose.yml`
+mounts that directory read-only at `/app/backend/open_webui/static/openui` and sets `IFRAME_CSP`
+with `connect-src 'none'`. `scripts/audit_openwebui.py` verifies the served bundle sha256 and the
+shell. The gate Pipe's `_normalize_for_binding` ignores ` ```openui `/` ```mermaid `/` ```html `
+fences so a visual payload never satisfies a prose claim.
+
 ## Maintenance
 
 - **Model changes:** UI only (see table). No repo edits, no installer flags.

@@ -21,6 +21,11 @@ jobs:
       - name: Unit tests (ops sidecar)
         run: python -m unittest scripts.ops_test -v
 
+      - name: Unit tests (OpenUI assets + gate carve-out; needs pydantic)
+        run: |
+          pip install pydantic
+          python -m unittest scripts.openui_test -v
+
       - name: Learner history regenerates cleanly
         run: python scripts/learner_history.py
 

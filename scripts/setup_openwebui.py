@@ -9,6 +9,9 @@ Creates (or updates) everything the system needs, using the Open WebUI REST API:
   - 1 Gate Filter   (Function) gate_pipe — deterministic delegation gate
   - 7 Prompts       /swe /review /ingest /teach /lesson /continue /pause
   - Subagent system prompt (keyed GATE: templates)
+  - OpenUI widget assets (pinned @openuidev/browser-bundle + widget.html/js) into
+    --openui-static-dir (default ~/learning-pi/deploy/openui), which the canonical
+    compose mounts read-only at Open WebUI's /static/openui (intelligent-ui Phase 3)
 
 All verification gates run as foreground subagent tasks (delegate_task) with
 Pydantic envelope validation; fixed prompts live in the global subagent system
@@ -21,6 +24,7 @@ Re-running never resets your models.
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -50,6 +54,165 @@ GATE_FILTER_FILES = [
     "Skills/learning-review/openwebui/gate_pipe.py",
     "Skills/learning-review/openwebui/gate_schema.py",
 ]
+
+# ---------------------------------------------------------------------------
+# OpenUI widget assets (intelligent-ui Phase 3)
+#
+# The pi learning layer emits verified ```openui OpenUI Lang payloads; the bridge
+# delivers each one as a same-origin embed URL of the form
+#   http://<webui>/static/openui/<version>/widget.html#<base64url payload>
+# (Open WebUI's embeds are iframe URLs and its FullHeightIframe renders a `data:`
+# URL as literal text, so the shell must be a real served document.)
+#
+# This installer is the ONLY writer: it drops the pinned, MIT-licensed
+# @openuidev/browser-bundle plus the shell (widget.html + widget.js) into
+# OPENWEBUI_OPENUI_STATIC_DIR, which the canonical compose mounts read-only into
+# Open WebUI's static dir at /app/backend/open_webui/static/openui. The payload
+# is declarative (no script/network); the shell CSP keeps `connect-src 'none'`.
+# ---------------------------------------------------------------------------
+OPENUI_BUNDLE_VERSION = "0.2.1"
+OPENUI_BUNDLE_TARBALL_URL = (
+    "https://registry.npmjs.org/@openuidev/browser-bundle/-/browser-bundle-0.2.1.tgz"
+)
+# sha256 of the two pinned dist files (verified against the 0.2.1 tarball).
+OPENUI_BUNDLE_SHA256 = {
+    "dist/openui-bundle.min.js": "bba936ff93f31a2955460f40d80bcd329b6a5848d6a05df54427e5dd137181df",
+    "dist/openui-styles.css": "93b69b218203bd054a88b7c8821d6c0dc6944af38119ada37e8082e59c0a18f3",
+}
+# Default host-side directory; learning-pi/deploy/docker-compose.yml bind-mounts
+# ./openui (this dir) to /app/backend/open_webui/static/openui (read-only).
+OPENUI_DEFAULT_STATIC_DIR = "~/learning-pi/deploy/openui"
+
+OPENUI_WIDGET_JS = r"""(function () {
+  "use strict";
+  function readPayload() {
+    var frag = window.location.hash.replace(/^#/, "");
+    if (!frag) return "";
+    var b64 = frag.replace(/-/g, "+").replace(/_/g, "/");
+    var pad = b64.length % 4 ? new Array(5 - (b64.length % 4)).join("=") : "";
+    try {
+      var bin = atob(b64 + pad);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder("utf-8").decode(bytes);
+    } catch (e) {
+      return "";
+    }
+  }
+  var payload = readPayload();
+  function postToParent(message) {
+    var origin = "*";
+    try { if (document.referrer) origin = new URL(document.referrer).origin; } catch (e) {}
+    try { parent.postMessage(message, origin); } catch (e) {}
+  }
+  function reportHeight() {
+    var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    postToParent({ type: "iframe:height", height: h });
+  }
+  var raf = 0;
+  function schedule() {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(reportHeight);
+  }
+  function sendPrompt(text) {
+    if (!text) return;
+    postToParent({ type: "input:prompt:submit", text: String(text) });
+  }
+  function openLink(url) {
+    try {
+      var u = new URL(String(url || ""), window.location.href);
+      if (!/^(https?|mailto|tel):$/.test(u.protocol)) return;
+      var w = window.open(u.href, "_blank", "noopener,noreferrer");
+      if (w) w.opener = null;
+    } catch (e) {}
+  }
+  function renderError(message) {
+    var el = document.getElementById("openui-root");
+    el.textContent = "";
+    var box = document.createElement("div");
+    box.className = "openui-error";
+    box.textContent = "Widget failed to render: " + (message || "unknown error");
+    el.appendChild(box);
+    reportHeight();
+  }
+  function handleAction(event) {
+    event = event || {};
+    if (event.type === "open_url") {
+      openLink(event.params && event.params.url);
+      return;
+    }
+    var prompt = event.humanFriendlyMessage || (event.params && event.params.message) || "";
+    if (event.formState && Object.keys(event.formState).length > 0) {
+      var rows = Object.keys(event.formState).map(function (k) {
+        return k + ": " + JSON.stringify(event.formState[k]);
+      });
+      prompt = (prompt ? prompt + "\n\n" : "") + "Form data:\n" + rows.join("\n");
+    }
+    if (prompt) sendPrompt(prompt);
+  }
+  function render() {
+    try {
+      var O = window.__OpenUI;
+      if (!O || !O.Renderer || !O.openuiChatLibrary || !O.createRoot) {
+        throw new Error("bundle loaded but its exports are missing");
+      }
+      var container = document.getElementById("openui-root");
+      container.textContent = "";
+      O.createRoot(container).render(
+        O.React.createElement(O.Renderer, {
+          response: payload,
+          library: O.openuiChatLibrary,
+          isStreaming: false,
+          onAction: handleAction
+        })
+      );
+      setTimeout(reportHeight, 400);
+      setTimeout(reportHeight, 1500);
+    } catch (err) {
+      renderError(err && err.message ? err.message : String(err));
+    }
+  }
+  function load() {
+    var script = document.createElement("script");
+    script.src = "dist/openui-bundle.min.js";
+    script.onload = render;
+    script.onerror = function () { renderError("could not load " + script.src); };
+    document.body.appendChild(script);
+  }
+  window.addEventListener("load", reportHeight);
+  window.addEventListener("resize", schedule);
+  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+  reportHeight();
+  load();
+})();
+"""
+
+# __CSP_ORIGINS__ is replaced with the space-separated origins that may load the
+# shell's own scripts/style (its sandbox is opaque origin, so `'self'` cannot be
+# used — the exact host(s) must be listed).
+OPENUI_WIDGET_HTML = """<!doctype html>
+<html lang="en" data-theme="light" data-openui-theme="light" style="color-scheme:light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src __CSP_ORIGINS__; style-src __CSP_ORIGINS__ 'unsafe-inline'; img-src data:; font-src __CSP_ORIGINS__ data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Visual</title>
+<link rel="stylesheet" href="dist/openui-styles.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: transparent; color-scheme: light; }
+  body { padding: 4px; }
+  #openui-root { width: 100%; }
+  .openui-status { padding: 16px; font: 13px system-ui, -apple-system, sans-serif; color: #888; }
+  .openui-error { padding: 14px; border: 1px solid #fecaca; border-radius: 8px; background: #fef2f2; color: #b91c1c; font: 13px/1.5 system-ui, sans-serif; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div id="openui-root"><div class="openui-status">Loading…</div></div>
+<script src="widget.js"></script>
+</body>
+</html>
+"""
 
 SUBAGENT_SYSTEM_PROMPT = """You are an independent verifier for the learning system's delegation gates.
 
@@ -278,10 +441,111 @@ def build_function_source(schema_src: str, pipe_src: str) -> str:
     return built
 
 
+def openui_script_origins(base_url: str) -> list:
+    """Origins the widget shell may load its own script/style from.
+
+    The embed iframe is sandboxed without `allow-same-origin` (opaque origin), so
+    a `'self'` CSP source matches nothing — the shell must name the exact host.
+    Both loopback spellings are included so the asset works whether the browser
+    uses `localhost` or `127.0.0.1`.
+    """
+    from urllib.parse import urlparse
+
+    parsed = urlparse(base_url or "")
+    scheme = parsed.scheme or "http"
+    port = parsed.port or (443 if scheme == "https" else 80)
+    host = parsed.hostname or "127.0.0.1"
+    hosts = ["127.0.0.1", "localhost"] if host in ("localhost", "127.0.0.1", "::1") else [host]
+    origins, seen = [], set()
+    for h in hosts:
+        origin = f"{scheme}://{h}:{port}"
+        if origin not in seen:
+            seen.add(origin)
+            origins.append(origin)
+    return origins
+
+
+def build_widget_html(origins: list) -> str:
+    """The self-hosted shell document, with the allowed origins baked into its CSP."""
+    return OPENUI_WIDGET_HTML.replace("__CSP_ORIGINS__", " ".join(origins))
+
+
+def _sha256_file(path: str) -> str:
+    try:
+        with open(path, "rb") as fh:
+            return hashlib.sha256(fh.read()).hexdigest()
+    except OSError:
+        return ""
+
+
+def _download_openui_bundle(ver_dir: str) -> None:
+    """Fetch the pinned tarball and extract only the two dist files into ver_dir."""
+    import io
+    import tarfile
+    import urllib.request
+
+    with urllib.request.urlopen(OPENUI_BUNDLE_TARBALL_URL, timeout=120) as resp:
+        data = resp.read()
+    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tf:
+        for rel, want in OPENUI_BUNDLE_SHA256.items():
+            member = next((m for m in tf.getmembers() if m.name.endswith("/" + rel)), None)
+            source = tf.extractfile(member) if member is not None else None
+            if source is None:
+                raise FileNotFoundError(f"{rel} not in {OPENUI_BUNDLE_TARBALL_URL}")
+            body = source.read()
+            got = hashlib.sha256(body).hexdigest()
+            if got != want:
+                # Never write an unverified bundle: the pinned hash is the trust anchor.
+                raise ValueError(f"{rel}: sha256 {got} != pinned {want} (refusing to write)")
+            dest = os.path.join(ver_dir, rel)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            tmp = dest + ".tmp"
+            with open(tmp, "wb") as out:
+                out.write(body)
+            os.replace(tmp, dest)
+
+
+def install_openui_static(static_dir: str, base_url: str) -> bool:
+    """Write the pinned bundle + shell into `static_dir/<version>/`. Idempotent.
+
+    Downloads only when a file is missing or its sha256 differs; verifies both
+    hashes afterwards. Returns True when every asset matches.
+    """
+    ver_dir = os.path.join(static_dir, OPENUI_BUNDLE_VERSION)
+    os.makedirs(ver_dir, exist_ok=True)
+    if any(_sha256_file(os.path.join(ver_dir, rel)) != want for rel, want in OPENUI_BUNDLE_SHA256.items()):
+        try:
+            _download_openui_bundle(ver_dir)
+        except Exception as e:  # offline / registry unavailable — objects still install
+            print(f"  ! OpenUI bundle download failed: {e}")
+            print(f"    download @openuidev/browser-bundle@{OPENUI_BUNDLE_VERSION} and place")
+            print(f"    {', '.join(OPENUI_BUNDLE_SHA256)} under {ver_dir}")
+    ok = True
+    for rel, want in OPENUI_BUNDLE_SHA256.items():
+        got = _sha256_file(os.path.join(ver_dir, rel))
+        if got != want:
+            ok = False
+            print(f"  ! {rel}: sha256 {got or 'MISSING'} != pinned {want}")
+    origins = openui_script_origins(base_url)
+    with open(os.path.join(ver_dir, "widget.js"), "w", encoding="utf-8") as f:
+        f.write(OPENUI_WIDGET_JS)
+    with open(os.path.join(ver_dir, "widget.html"), "w", encoding="utf-8") as f:
+        f.write(build_widget_html(origins))
+    print(f"  {'~' if ok else '!'} OpenUI assets: {ver_dir} (CSP origins: {' '.join(origins)})")
+    return ok
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Install the Learning System into Open WebUI.")
     ap.add_argument("--base-url", default=os.environ.get("OPENWEBUI_BASE_URL", "http://localhost:3000"))
     ap.add_argument("--api-key", default=os.environ.get("OPENWEBUI_API_KEY", ""))
+    ap.add_argument(
+        "--openui-static-dir",
+        default=os.environ.get("OPENWEBUI_OPENUI_STATIC_DIR", OPENUI_DEFAULT_STATIC_DIR),
+        help="host dir mounted read-only at Open WebUI's /static/openui "
+        "(default: ~/learning-pi/deploy/openui)",
+    )
+    ap.add_argument("--no-openui", action="store_true", help="skip the OpenUI widget assets")
     args = ap.parse_args()
 
     if not args.api_key:
@@ -293,6 +557,10 @@ def main() -> int:
         return 2
 
     c = Client(args.base_url, args.api_key)
+
+    if not args.no_openui:
+        print("== OpenUI widget assets ==")
+        install_openui_static(os.path.expanduser(args.openui_static_dir), args.base_url)
 
     def upsert(path_create: str, path_update: str, payload: dict, conflict_marker: str, label: str) -> None:
         status, resp = c.post(path_create, payload, conflict_marker=conflict_marker)

@@ -41,13 +41,26 @@ Base model IDs float upstream — record current values here after any model cha
 | gate_pipe | Function (Filter) | repo `Skills/learning-review/openwebui/` | installed by `scripts/setup_openwebui.py` |
 | sub_agent ("Sub Agent") | Tool | v0.5.8 (skyzi000) | community tool — NOT used by the learning system (no background mode, no receipts); recorded for portability only |
 | fact_check / quiz_gate / review_gate | Tools (legacy) | — | RETIRED 2026-08-25; files archived to `Learning System/Archive/legacy-tools-2026-08-25/` |
+| OpenUI widget assets | static assets | `@openuidev/browser-bundle@0.2.1` (MIT, © Thesys Inc.) | written by `scripts/setup_openwebui.py` into `~/learning-pi/deploy/openui/0.2.1/` (bundle sha256-pinned) + shell `widget.html`/`widget.js` |
+
+## Intelligent-UI widget hosting (learning-pi Phase 3)
+
+The pi learning layer emits verified ` ```openui ` payloads; pi-bridge embeds each as
+`http://<webui>/static/openui/0.2.1/widget.html#<base64url payload>`. Open WebUI's
+`FullHeightIframe` renders a `data:` embed as literal text, so the shell must be a
+served document. `learning-pi/deploy/docker-compose.yml` bind-mounts `./openui`
+read-only at `/app/backend/open_webui/static/openui` and sets `IFRAME_CSP`
+(`connect-src 'none'`, no CDN). The shell's sandbox is opaque-origin, so its CSP
+names the loopback host(s) rather than `'self'`. Keep Personal → Interface →
+"iframe Sandbox Allow Same Origin" **OFF**.
 
 ## Installer-seeded control layer (see scripts/setup_openwebui.py)
 
 4 Skills · 3 presets · 7 legacy prompts (`/swe /review /ingest /teach /lesson /continue /pause`) ·
 gate_pipe Filter (valves: priority 10, max_retries 2, digest_ttl_days 7) ·
 `subagents.system_prompt` (5 `GATE:` keys: `fact_check` / `quiz_audit` / `review` / `review_session` / `grade_audit`) · subagent config (enable, max_concurrent 10,
-max_async 10, max_iterations 30, max_output 30000).
+max_async 10, max_iterations 30, max_output 30000) · OpenUI widget assets
+(`@openuidev/browser-bundle@0.2.1` + shell, default `~/learning-pi/deploy/openui`).
 
 ## Repo state
 

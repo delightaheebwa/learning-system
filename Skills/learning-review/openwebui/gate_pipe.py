@@ -180,9 +180,18 @@ def _gate_needs(content: str, is_tutor: bool, is_clerk: bool):
     return False, False, False, False, False
 
 
+# Visual fences are not prose. The bridge lifts ```openui out before emission,
+# and ```mermaid / ```html render natively in the Open WebUI client; a payload
+# must never satisfy a claim or a rendered-vs-output comparison. The language tag
+# may carry a trailing info string (` ```openui ... `), so match to end of line.
+_VISUAL_FENCE_RE = re.compile(r"```(?:openui|mermaid|html)[^\n]*\n.*?```", re.DOTALL | re.IGNORECASE)
+
+
 def _normalize_for_binding(text: str) -> str:
-    """Normalize for plan-vs-output binding: lower, collapse ws, strip KaTeX markers."""
-    s = (text or "").lower()
+    """Normalize for plan-vs-output binding: drop visual fences, lower, collapse
+    ws, strip KaTeX markers."""
+    s = _VISUAL_FENCE_RE.sub(" ", text or "")
+    s = s.lower()
     s = s.replace("\\(", " ").replace("\\)", " ").replace("\\[", " ").replace("\\]", " ")
     s = re.sub(r"\s+", " ", s).strip()
     return s

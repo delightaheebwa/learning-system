@@ -9,6 +9,7 @@ Verifies that every installer-managed object in the live instance matches what
   - 7 Prompts (content sha)
   - gate_pipe Function (content sha vs repo recomputation) + valves
   - subagents.system_prompt (sha)
+  - OpenUI widget assets (served from Open WebUI's /static/openui; bundle sha)
   - orphan report (live objects the installer does not manage)
 
 Exit code 0 = in sync, 1 = drift detected. Never mutates anything.
@@ -31,6 +32,8 @@ sys.path.insert(0, REPO_ROOT)
 from scripts.setup_openwebui import (  # noqa: E402
     Client,
     GATE_FILTER_ID,
+    OPENUI_BUNDLE_SHA256,
+    OPENUI_BUNDLE_VERSION,
     PRESETS,
     PROMPTS,
     SKILLS,
@@ -138,6 +141,30 @@ def main() -> int:
     for p in PROMPTS:
         live = by_cmd.get(p["command"])
         check(f"prompt /{p['command']}", sha(p["content"]), sha(live.get("content") or "") if live else "MISSING")
+
+    # OpenUI widget assets (served same-origin from Open WebUI's /static mount)
+    print("== OpenUI widget assets ==")
+    base = args.base_url.rstrip("/")
+    for rel, want in OPENUI_BUNDLE_SHA256.items():
+        url = f"{base}/static/openui/{OPENUI_BUNDLE_VERSION}/{rel}"
+        try:
+            with urllib.request.urlopen(url, timeout=20) as resp:
+                got = hashlib.sha256(resp.read()).hexdigest()
+        except Exception as e:  # noqa: BLE001 - any failure is drift for the audit
+            got = f"UNREACHABLE-{e.__class__.__name__}"
+        check(f"openui {rel}", want[:12], got[:12])
+    shell_url = f"{base}/static/openui/{OPENUI_BUNDLE_VERSION}/widget.html"
+    try:
+        with urllib.request.urlopen(shell_url, timeout=20) as resp:
+            shell = resp.read().decode("utf-8", "replace")
+        if "widget.js" in shell and "connect-src 'none'" in shell:
+            print("  ok    openui widget.html")
+        else:
+            drift.append("openui widget.html")
+            print("  DRIFT openui widget.html: shell missing widget.js / connect-src 'none'")
+    except Exception as e:  # noqa: BLE001
+        drift.append("openui widget.html")
+        print(f"  DRIFT openui widget.html: UNREACHABLE-{e.__class__.__name__}")
 
     # Orphans
     print("== Orphans (live but unmanaged) ==")
