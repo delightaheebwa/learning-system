@@ -81,8 +81,10 @@ def main() -> int:
     by_id = {s.get("id"): s for s in (live_skills.get("items") if isinstance(live_skills, dict) else live_skills) or []}
     for rel in SKILLS:
         sid, _, _, content = parse_skill_md(os.path.join(REPO_ROOT, rel))
-        live = by_id.get(sid)
-        check(f"skill {sid}", sha(content), sha(live.get("content") or "") if live else "MISSING")
+        # The list endpoint omits `content` (v0.12.2); read the skill itself.
+        sstatus, live = c.get(f"/api/v1/skills/id/{sid}")
+        live_content = live.get("content") if sstatus == 200 and isinstance(live, dict) else None
+        check(f"skill {sid}", sha(content), sha(live_content) if live_content else "MISSING")
 
     # Gate function
     print("== Gate Function ==")
