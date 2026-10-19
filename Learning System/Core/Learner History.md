@@ -14,7 +14,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 299 · fuzzy 11
+Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 298 · fuzzy 12
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -24,6 +24,7 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Conditional Independence | concept | fuzzy |  | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
 | Optimizer Selection (Rohit heuristic) | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Optimizer Selection (Rohit heuristic) — 2026-10-10.md |
+| UMAP (Dimensionality Reduction) | concept | fuzzy | t-SNE (Dimensionality Reduction): neutral | 2026-10-19 | last reviewed 2026-10-19 |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
 | Base Rate Fallacy | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-10-05.md |
 | Bayes' Theorem | concept | solid |  | 2026-09-12 | last reviewed 2026-09-12 |
@@ -58,7 +59,6 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
 | Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
 | t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-12 | last reviewed 2026-10-12 |
-| UMAP (Dimensionality Reduction) | concept | neutral | t-SNE (Dimensionality Reduction): neutral | 2026-10-17 | last reviewed 2026-10-17 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 

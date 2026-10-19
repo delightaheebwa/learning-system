@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-17 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eleven statements as of 2026-10-17 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, three appended 2026-10-17, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-19 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; fourteen statements as of 2026-10-19 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, three appended 2026-10-17, three appended 2026-10-19, nothing overwritten) -->
 
 # UMAP (Dimensionality Reduction)
 
@@ -142,16 +142,28 @@ Clustering directly on a 2-D UMAP visualization using K-Means is a dual error:
 - **Building the graph:** k-NN (k-nearest neighbours — UMAP's stage 1).
 - **Assigning cluster labels:** K-Means / HDBSCAN (downstream clustering).
 
+## Feature scaling: center-only vs standardize (CP5 mini 5b)
+
+The umap-learn FAQ addresses feature scaling directly ("Should I standardize my data?"):
+
+1. **The mechanical distinction:**
+   - **Centering** shifts the mean of each feature to 0 by subtracting $\mu_j$, leaving relative distances, spreads, and variances unchanged.
+   - **Standardizing** (z-scoring) centers each feature and additionally divides by its standard deviation $\sigma_j$, scaling every feature to unit variance ($\sigma = 1$).
+
+2. **The decision rule:**
+   - **Standardize** when features are **independent measurements on incomparable scales or units** (e.g. clinical blood pressure in mmHg vs age in years vs weight in kg). Without standardization, the feature with the largest numerical variance dominates Euclidean distance in ambient space, distorting nearest-neighbor selection and destroying true k-NN graph connectivity.
+   - **Center-only (do not standardize)** when features **share a meaningful geometric relationship or common coordinate system** (e.g. latitude and longitude, physical 2-D/3-D spatial measurements). Rescaling axes with unequal variances in geometric coordinates distorts genuine aspect ratios (e.g. squishing an elongated geographic island into an artificial sphere).
+
 ## Queued for this concept
 
-Still to come in L10's CP5/CP6:
+Still to come in L10's CP6:
 
 - **CP5 mini 4 — the global-structure claim**: **SEALED 2026-10-17** (exit ticket 3/3: E1 graduated claim, E2 whole-embedding negative sampling, E3 own-words + `disconnection_distance` check).
 - **CP5 mini 5a — the pipeline (PCA → UMAP → HDBSCAN)**: **SEALED 2026-10-17** (PCA denoises k-NN graph distances; UMAP density distortion; HDBSCAN leaves noise unlabeled vs K-Means forced assignment).
-- **CP5 mini 5b — center-only vs standardize**: opened 2026-10-17 (P2 probe delivered, awaiting answer on resume).
-- **CP6** — kernel PCA (RBF) and the "high variance = important" contradiction (Rohit's definition vs Shlens's assumption that can fail).
-
-Mini 1 (2026-10-13), minis 2–3 (2026-10-14), mini 4 (2026-10-16, sealed 2026-10-17) and mini 5a (2026-10-17) are all taught and sealed, so their page sections are live; the immediate resume point is the **mini 5b probe**.
+- **CP5 mini 5b — center-only vs standardize**: **SEALED 2026-10-19** (mechanics: mean shift vs unit variance; decision rule: standardize for independent features on incomparable scales, center-only for shared coordinate geometries).
+- **CP5 Practice (4-item batch)**: **SEALED 2026-10-19 (4/4)** (P1 `n_neighbors` vs `min_dist` clean under retrieval; P2 global structure & outlier collapse; P3 PCA→UMAP→HDBSCAN pipeline rationale with KNN/K-Means detector verified; P4 scaling application across domains).
+- **Checkpoint 5 (UMAP) is FULLY SEALED.**
+- **CP6** — kernel PCA (RBF) and the "high variance = important" contradiction (Rohit's definition vs Shlens's assumption that can fail), the method-choice map, then the final cumulative quiz + Feynman explain-back.
 
 ## Open questions
 
@@ -242,8 +254,31 @@ Mini 1 (2026-10-13), minis 2–3 (2026-10-14), mini 4 (2026-10-16, sealed 2026-1
 1. **Stage-role naming slip (KNN vs K-Means):** wrote "KNN" (the graph-building stage) where "K-Means" (the clustering algorithm) belongs. The detector: *assigning cluster labels = K-Means / HDBSCAN; building the graph = KNN*.
 2. **Double mistake completed:** (a) Geometry — the 2-D plot's density is distorted and contracts connected components, so boundaries read off the plot are artifacts; (b) Forced assignment — K-Means must assign *every* point to a cluster and assumes round, equal clusters, obliging it to label noise as clusters; HDBSCAN re-estimates density on the intermediate ~10–20-D embedding and leaves noise unlabeled.
 
+### 2026-10-19 — CP5 mini 5b (feature scaling) + CP5 practice + pause exit ticket X1
+
+> **status=learner-note** — three more of the learner's statements, verbatim from the 2026-10-19 session, **appended** (nothing from earlier sessions was altered). The annotations around them are the tutor's and the source's.
+
+**Mini 5b P2 elicitation prior (the why of standardization and when it hurts):**
+
+> "1. if no standardization, i think the knn distances will be too big since features have wildly different values since they arent on the same scale but if there is then the knn distances be less since they are on the same sclae / 2. i think it would be a bad idea if their values dont vary wildy from each other. another time it would be a bad idea i think is when you actually want to see the relationship between two features in their own units e.g see relationship between people's weight(kg) and thier height(meters)."
+
+**Source framing (annotation, not a rewrite):** direction correct on both parts. Socratic follow-up sharpened: (1) it is relative dominance across features, not the absolute size of distance, that matters — when features are on wildly different scales (e.g. kg vs mm), the large-unit feature dominates the distance calculation, drowning out the other features and destroying genuine nearest neighbors; (2) when features share a coordinate system (e.g. latitude and longitude of an island), standardizing destroys the aspect ratio and distorts an elongated shape into a sphere.
+
+**Mini 5b Socratic guiding responses (confirming the physical intuition):**
+
+> "1. i see so that means kilogram's contribution is deemed more weighty than that of mm. it also means we lose some \"true neighbors\" since some neighobors are just too far away due to different scales. / 2. it would make it the island spherical in shape which doesnt really reflect the true geometry of the island."
+
+**Source framing (annotation, not a rewrite):** accepted as-is — accurately articulates both the feature dominance problem and the geometric distortion of true shape.
+
+**Pause exit ticket X1 (core difference & when to choose which):**
+
+> "the core difference is that centering centers the data around the mean while standaradizing does that and also puts features on the same scale. i would choose centering only when dealing with features that are essentially independent while for standardizaing i would choose for when dealing with features that have meaningful relationship"
+
+**Source framing (annotation, not a rewrite):** the mechanical distinction is correct (centering shifts mean to 0 without changing scale; standardizing rescales to unit variance). The application rule was inverted under retrieval pressure: the UMAP FAQ rule prescribes standardizing for independent features on incomparable scales, and centering-only when features share a meaningful geometric relationship. Logged as an active structural mistake for retrieval drill on next warm-up.
+
 ## Field notes
 
+- **The 2026-10-19 session:** CP5 mini 5b taught and sealed (elicitation prior right-shaped, Socratic reflections confirmed feature dominance and spherical distortion of shared coordinates; FAQ decision rule established). CP5 practice batch run and sealed 4/4, all `sure`, 0 hints (P1 n_neighbors vs min_dist clean pass ✓, P2 global structure / negative sampling repulsion vs outlier collapse ✓, P3 PCA→UMAP→HDBSCAN pipeline rationale with KNN/K-Means detector verified ✓, P4 scaling decision application across domains ✓). Checkpoint 5 (UMAP) fully SEALED. Pause exit ticket X1 completed (mechanical difference correct, application rule inverted: logged as active structural mistake row). Five attempts logged in Attempts.json: 4 passes (applied ×3, discriminative ×1) · 1 fail (free-recall) → mastery 0.60 advisory, interval_index 2, consecutive_correct 0, consecutive_wrong 1, next_review 2026-11-02, Last Q Type free-recall. Next: Checkpoint 6/6 (Kernel PCA with RBF kernel, high-variance assumption vs Shlens ferris wheel, method-choice map).
 - **The 2026-10-17 session:** CP5 mini 4 exit ticket run and sealed 3/3, all `sure`, 0 hints (E1 graduated claim ✓, E2 whole-embedding repulsion sampling ✓, E3 own-words + `disconnection_distance` check ✓). CP5 mini 5a taught and sealed (elicitation right-shaped on both halves, 0 guiding questions; check-and-extend idea turn landed; sealing line caught the KNN/K-Means stage-role naming slip, repaired via the stage-role detector and logged as a structural Mistakes row; confirmed "makes sense" → mini 5a SEALED). Mini 5b opened (P2 probe delivered, learner paused before answering). Three passes logged in `Attempts.json` → mastery 0.90 advisory, `interval_index` 3, `next_review` 2026-11-16, `last_q_type` free-recall.
 - **The 2026-10-16 session:** warm-up W1 ✓ (`n_neighbors` 2→50: coherence gained, fine local detail lost) · **W2 ✗** (`min_dist` presented as "forcing points farther apart breaks the connections" — the knob-crossing slip firing a second time, tagged `sure`; a calibration flag) → diagnose-first repair **self-located** → isomorphic micro-check ✓; then the **CP5 mini 4 idea turn landed** (global structure as a graduated claim; the ⚠️ Rohit-vs-paper-vs-FAQ contradiction resolved) with the **graded exit ticket not run** (the learner paused at the check-back).
 - **The "elaborate more and simply" request was a pacing call, not an opt-out** — honored with a corrected re-delivery (the first draft failed fact-check on four overstatements: t-SNE "exactly 0", absolute drift-free phrasing, a "usually succeeds" success rate, and a single far point collapsing the whole map; the corrected draft passed and the learner's response was "makes sense"). Guiding budget: 1 of 2 spent.
@@ -260,6 +295,7 @@ Mini 1 (2026-10-13), minis 2–3 (2026-10-14), mini 4 (2026-10-16, sealed 2026-1
 
 ## Open questions (carried by the lesson)
 
-- CP5 mini 5b (center-only vs standardize — P2 probe delivered, awaiting answer on resume), CP6 (kernel PCA + the "high variance = important" contradiction), then the final cumulative quiz + Feynman explain-back.
-- The banked X1/X3 repair — the knob-separation warm-up: **W1 ✓ / W2 ✗ on 2026-10-16** (a second firing, self-located in-ladder and followed by a passing isomorphic micro-check). One clean pass under pressure is still owed before the ledger row can graduate.
-- The KNN/K-Means stage-role slip (2026-10-17, mini 5a sealing line): stage-role detector taught (labels = K-Means, graph = KNN), learner confirmed "makes sense"; active Mistakes row awaiting independent recall under retrieval pressure.
+- Checkpoint 5 (UMAP) is fully sealed; resume at Checkpoint 6/6 (Kernel PCA with an RBF kernel, the "high variance = important" contradiction, and the method-choice map), then the final cumulative quiz + Feynman explain-back.
+- The 2026-10-14 knob-crossing mistake row advanced (P1 passed clean under retrieval pressure).
+- The 2026-10-17 KNN/K-Means stage-role slip advanced (P3 passed clean under retrieval pressure).
+- The 2026-10-19 feature scaling application rule inversion (X1 pause exit ticket): active in Mistakes ledger, awaiting retrieval drill on next warm-up.

@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 5/6 — **CP5 mini 4 SEALED (exit ticket 3/3) + mini 5a (pipeline) SEALED 2026-10-17; minis 2–3 sealed 2026-10-14; mini 1 sealed 2026-10-13** (CP4 fully sealed 2026-10-12; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
-**Resume from:** **CP5 (UMAP) mini 5b — center-only vs standardize** — the P2 probe was delivered 2026-10-17 with a quiz-audit PASS receipt but the learner paused before answering; re-ask P2, teach the scaling decision, then CP6. Mini 5a (pipeline PCA→UMAP→HDBSCAN) sealed 2026-10-17. No re-scout needed while the 2026-10-13 digest stays inside its TTL (through 2026-10-20).
+**Status:** paused at Checkpoint 6/6 — **CP5 (UMAP) fully sealed 2026-10-19** (mini 5b scaling taught, CP5 practice 4/4 passed; exit ticket X1 completed; mini 5a pipeline + mini 4 sealed 2026-10-17; minis 2–3 sealed 2026-10-14; mini 1 sealed 2026-10-13; CP4 fully sealed 2026-10-12; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
+**Resume from:** **Checkpoint 6/6, mini 1: Kernel PCA with an RBF kernel (PCA on a nonlinear manifold)** — the high-variance=important assumption vs Shlens ferris wheel, and the method-choice map.
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
@@ -207,6 +207,31 @@
 - **Mini 5b opened, NOT answered:** P2 probe (center vs standardize vs nothing, wildly different units) delivered with a quiz-audit PASS receipt; learner paused before answering — resume by re-asking P2.
 - **Attempts (ops.py):** UMAP pass ×3 (discriminative ×2, free-recall ×1) → mastery 0.90, interval_index 3, next_review 2026-11-16.
 - **Dependency events:** none (no `just_tell_me`, no `told_repair`, no `declined_generation`).
+
+## Resume session 2026-10-19 — CP5 fully sealed (mini 5b scaling + CP5 practice 4/4; pause exit ticket X1)
+
+- **Mini 5b — feature scaling (center-only vs standardize) sealed:**
+  - **Elicitation (P2 probe resumed, quiz-audit PASS, ungraded):** learner answered both questions: (1) without standardization, k-NN distances are dominated by features with wildly larger scales, drowning out features on smaller scales; with standardization, features contribute on a comparable footing; (2) bad idea when features don't vary wildly or when preserving the intrinsic physical/geometric relationship in original units matters (e.g. height vs weight, or spatial coordinates).
+  - **Socratic ladder & guidance:** guided reflections confirmed that in mixed scales (e.g. kg vs mm), the numerically larger feature dominates the Euclidean distance computation, causing the loss of true neighbors. Furthermore, standardizing isotropic/geometric features (e.g. island latitude/longitude) distorts true shape into an artificial sphere.
+  - **Check-and-extend (UMAP FAQ rule):** standardize when features represent independent measurements on incomparable scales (clinical metrics, sensor readings); center-only without rescaling when coordinates share a meaningful geometry or common unit space.
+- **CP5 practice (4-item batch, quiz-audit PASS, grade-audit agreed 4/4, all `sure`, 0 hints):**
+  - **P1 ✓ pass (`applied`):** `n_neighbors` (graph-construction stage, local vs global connectivity) vs `min_dist` (low-dimensional layout optimizer stage, output packing floor) stage separation and tradeoff. Passed clean under retrieval pressure; advances the 2026-10-14 mistake row toward review.
+  - **P2 ✓ pass (`discriminative`):** global structure and outlier collapse mechanism under default settings. Evaluated whole-embedding repulsion sampling vs outlier attraction collapse, mitigated by `disconnection_distance`.
+  - **P3 ✓ pass (`applied`):** PCA→UMAP→HDBSCAN pipeline rationale. Reaffirmed that UMAP distorts density, requiring HDBSCAN to re-estimate density on the low-dim representation; cleanly rejected the KNN-as-clusterer distractor, validating the 2026-10-17 stage-role detector.
+  - **P4 ✓ pass (`applied`):** feature scaling decision across concrete domains. Correctly applied standardizing to independent clinical metrics and center-only to geographic/spatial coordinates.
+  - **Checkpoint 5 SEALED.**
+- **Pause exit ticket X1 (quiz-audit PASS, grade-audit agreed 0/1, `sure`, 0 hints):**
+  - **X1 ✗ fail (`free-recall`):** core mechanical difference between centering and standardizing stated correctly (centering shifts mean to 0 without altering scale; standardizing rescales features to unit variance), but inverted the application rule by assigning centering-only to independent features and standardizing to features with meaningful relationships. Logged as a new structural mistake row in `🧯 Mistakes.md`.
+- **Attempts this session (ops.py):** UMAP pass (`applied`, `sure`, 0 hints) · UMAP pass (`discriminative`, `sure`, 0 hints) · UMAP pass (`applied`, `sure`, 0 hints) · UMAP pass (`applied`, `sure`, 0 hints) · UMAP fail (`free-recall`, `sure`, 0 hints) → mastery **0.60** advisory, `interval_index` 2, `consecutive_correct` 0, `consecutive_wrong` 1, `next_review` **2026-11-02**, `Last Q Type` **free-recall**.
+- **Mistakes ledger:**
+  - 1 new active row: centering vs standardizing application rule inversion (`structural`, active, retries 0, next retry 2026-11-02).
+  - Resolved progress: 2026-10-14 knob-crossing row advanced (P1 clean pass); 2026-10-17 KNN/K-Means slip advanced (P3 clean pass).
+- **Dependency events:** none (no `just_tell_me`, no `told_repair`, no `declined_generation`).
+- **Learner words for the wiki (`## My understanding`, verbatim):**
+  - Mini 5b elicitation: *"1. if no standardization, i think the knn distances will be too big since features have wildly different values since they arent on the same scale but if there is then the knn distances be less since they are on the same sclae / 2. i think it would be a bad idea if their values dont vary wildy from each other. another time it would be a bad idea i think is when you actually want to see the relationship between two features in their own units e.g see relationship between people's weight(kg) and thier height(meters)."*
+  - Mini 5b guiding reflections: *"1. i see so that means kilogram's contribution is deemed more weighty than that of mm. it also means we lose some 'true neighbors' since some neighobors are just too far away due to different scales. / 2. it would make it the island spherical in shape which doesnt really reflect the true geometry of the island."*
+  - Pause exit ticket X1: *"the core difference is that centering centers the data around the mean while standaradizing does that and also puts features on the same scale. i would choose centering only when dealing with features that are essentially independent while for standardizaing i would choose for when dealing with features that have meaningful relationship"*
+- **Learner pacing:** completed CP5 mini 5b, passed CP5 practice 4/4, completed pause exit ticket X1, paused before Checkpoint 6.
 
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
