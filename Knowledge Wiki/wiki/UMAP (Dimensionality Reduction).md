@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-16 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eight statements as of 2026-10-16 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-17 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eleven statements as of 2026-10-17 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, three appended 2026-10-17, nothing overwritten) -->
 
 # UMAP (Dimensionality Reduction)
 
@@ -100,7 +100,7 @@ Read as probabilities: "If one interprets the value of `A_ij` as the probability
 - **The paper (abstract + weaknesses):** hedged — UMAP "is competitive with t-SNE for visualization quality, and arguably preserves more of the global structure with superior run time performance"; and "while we believe that UMAP can capture more global structure than these other techniques, it remains true that if global structure is of primary interest then UMAP may not be the best choice for dimension reduction" (MDS for full distance-matrix preservation, PHATE for a local+long-scale hybrid).
 - **The FAQ (a goal, plus a way to break it):** "One of UMAPs goals is to have distance between clusters of points be meaningful … This means that clusters can end up spread out with a fair amount of space between them", and the clustering pitch — "by preserving more global structure and creating meaningful separation between connected components of the manifold on which the data lies, UMAP offers more meaningful clusters" — sits in the same FAQ as the failure mode that destroys it (see `## ⚠️ The random-k-NN pull-together failure mode` above): "Add a sufficiently large number of these points and our entire space gets pulled together destroying any of the structure we had hoped to identify."
 
-**Resolution taught 2026-10-16 — a graduated claim, not a flat advantage.** Global structure is a *design goal*: normally visible, and breakable by the documented outlier collapse that `disconnection_distance` mitigates (it cuts those edges, disconnecting the manifold so the orphans are pushed away). Practical rule: **trust relative arrangement more than t-SNE's, never as a certificate** — "arguably", never "guaranteed". The exit ticket that would grade this idea was not run.
+**Resolution taught 2026-10-16 — a graduated claim, not a flat advantage.** Global structure is a *design goal*: normally visible, and breakable by the documented outlier collapse that `disconnection_distance` mitigates (it cuts those edges, disconnecting the manifold so the orphans are pushed away). Practical rule: **trust relative arrangement more than t-SNE's, never as a certificate** — "arguably", never "guaranteed". (Graded exit ticket sealed 3/3 on 2026-10-17: E1 graduated claim, E2 whole-embedding repulsion vs t-SNE $P_{ij} \approx 0$, E3 own-words + `disconnection_distance` check.)
 
 **The wrinkle that keeps it "arguably" — the initialization.** By default UMAP does not start from noise (the paper allows random initialization, but spectral layout is what is used in practice): "since the symmetric Laplacian of the graph G is a discrete approximation of the Laplace-Beltrami operator of the manifold, we can use a spectral layout to initialize the embedding. This provides both faster convergence and greater stability within the algorithm" (Algorithm 4 runs standard spectral methods on the symmetric normalized Laplacian). The paper's weaknesses section then concedes the consequence: "a significant contributor to UMAP's relative global structure preservation is derived from the Laplacian Eigenmaps initialization (which, in turn, followed from the theoretical foundations). This was noted in, for example, [29]. The authors of that paper demonstrate that t-SNE, with similar initialization, can perform equivalently to UMAP in a particular measure of global structure preservation." Reference [29] is **Kobak & Linderman 2019**, *UMAP does not preserve global structure any better than t-SNE when using the same initialization*. The paper's own counterweight sits in the same paragraph: "the objective function derived for UMAP (cross-entropy) is significantly different from that of t-SNE (KL-divergence), in how it penalizes failures to preserve non-local and global structure, and is also a significant contributor." So the honest reading is *initialization + objective together* — and the paper's future-work section adds that the field is "hampered by the lack clear objective measures, or even definitions, of global structure preservation".
 
@@ -108,15 +108,50 @@ Read as probabilities: "If one interprets the value of `A_ij` as the probability
 
 t-SNE states **no** data assumptions: it matches pairwise neighbour probabilities non-parametrically (see [[t-SNE (Dimensionality Reduction)]]). UMAP's three assumptions are what let it claim more — Rohit's L10 headline is "UMAP: faster, better global structure", and his comparison table files UMAP under "Local + some global structure", while the FAQ frames global structure as a goal the failure mode above can break rather than a guarantee. **The ⚠️ Rohit-vs-paper-vs-FAQ disagreement was resolved on 2026-10-16 as a graduated claim** — see `## Global structure: goal, not guarantee` above.
 
+## The pipeline: PCA → UMAP → HDBSCAN
+
+For high-dimensional real-world data (e.g. 300+ features or gene expression / embeddings), standard practice is the three-stage ladder: **PCA (~50 dims) → UMAP (~10–20 dims) → HDBSCAN**. These numbers are practical defaults rather than mathematical laws; for smaller datasets UMAP can run directly on raw features.
+
+Each stage does what the other cannot:
+
+### 1. Why PCA first (~50 dims): denoise neighbor distances
+
+UMAP's first stage is constructing a k-nearest-neighbour graph in ambient space. At high dimensions (300+), the [[Curse of Dimensionality]] kicks in: pairwise distances **concentrate** (the max/min ratio collapses from ~1.8 at $d=10$ to ~1.02 at $d=1000$). When all points appear nearly equidistant:
+- "Nearest" carries little contrast over "farthest", making graph edges noisy and arbitrary.
+- Computing exact or approximate k-NN in 300+ dimensions is computationally expensive.
+
+PCA preserves the orthogonal directions of maximal variance, stripping out low-variance noise directions. This **denoises the neighbor distances** before the k-NN graph is built and makes graph construction vastly cheaper.
+
+**The contrast:** PCA is linear and **cannot unfold curved manifolds** (it produces flattened, overlapping shadows). UMAP is non-linear and unfolds manifolds, but **cannot repair noisy input distances**. PCA fixes the metric noise so UMAP can unfold the geometry.
+
+### 2. Why UMAP to intermediate dimensions (~10–20 dims)
+
+When the downstream task is clustering rather than human visualization, squashing directly to 2D is counterproductive. Embedding into ~10–20 dimensions preserves more manifold topology and geometric degrees of freedom while eliminating ambient redundancy, giving the clusterer cleaner separation without the extreme crowding penalties of 2D projection.
+
+### 3. Why HDBSCAN last (and why K-Means is a poor choice)
+
+Clustering directly on a 2-D UMAP visualization using K-Means is a dual error:
+
+1. **Geometry — UMAP does not preserve density:**
+   The umap-learn FAQ notes that UMAP "does not preserve density well" and "will contract connected components of the manifold together". The distances between clusters and the apparent densities of clumps in a UMAP plot are distorted by the non-linear optimization. Cluster boundaries drawn directly off a 2-D plot are artifacts of projection rather than features of the underlying distribution.
+2. **Clusterer assumptions — forced assignment vs density estimation:**
+   - **K-Means** assumes spherical, equal-variance clusters and **must assign every point** to a cluster center. In noisy real-world data, it is forced to label background noise and bridge outliers as legitimate cluster members.
+   - **HDBSCAN** (Hierarchical Density-Based Spatial Clustering of Applications with Noise) re-estimates density directly on the ~10–20-D representation, handles arbitrary non-spherical cluster shapes of varying densities, and explicitly leaves background noise points **unlabeled** (`label = -1`).
+
+**The stage-role detector:**
+- **Building the graph:** k-NN (k-nearest neighbours — UMAP's stage 1).
+- **Assigning cluster labels:** K-Means / HDBSCAN (downstream clustering).
+
 ## Queued for this concept
 
 Still to come in L10's CP5/CP6:
 
-- **CP5 mini 4 — the global-structure claim** *(idea turn delivered 2026-10-16; the **graded exit ticket is still unrun** — the learner paused at the check-back).* Rohit's L10 headline is "UMAP: faster, better global structure" and his comparison table files UMAP under "Local + some global structure"; the paper hedges it — UMAP "is competitive with t-SNE for visualization quality, and arguably preserves more of the global structure with superior run time performance" — and the FAQ frames it as a *goal* the failure mode above can break ("by preserving more global structure and creating meaningful separation between connected components of the manifold on which the data lies, UMAP offers more meaningful clusters"), not a guarantee. **The ⚠️ Rohit-vs-FAQ disagreement was resolved on 2026-10-16 as a graduated claim** (see `## Global structure: goal, not guarantee`); what remains is the mini's still-unrun graded exit ticket.
-- **CP5 mini 5** — the pipeline (PCA → UMAP → HDBSCAN) and the centering-only vs standardize decision.
+- **CP5 mini 4 — the global-structure claim**: **SEALED 2026-10-17** (exit ticket 3/3: E1 graduated claim, E2 whole-embedding negative sampling, E3 own-words + `disconnection_distance` check).
+- **CP5 mini 5a — the pipeline (PCA → UMAP → HDBSCAN)**: **SEALED 2026-10-17** (PCA denoises k-NN graph distances; UMAP density distortion; HDBSCAN leaves noise unlabeled vs K-Means forced assignment).
+- **CP5 mini 5b — center-only vs standardize**: opened 2026-10-17 (P2 probe delivered, awaiting answer on resume).
 - **CP6** — kernel PCA (RBF) and the "high variance = important" contradiction (Rohit's definition vs Shlens's assumption that can fail).
 
-Mini 1 (2026-10-13), minis 2–3 (2026-10-14) and mini 4 (2026-10-16) are all taught, so their page sections are live; the only work left inside this checkpoint is the **mini-4 exit ticket**.
+Mini 1 (2026-10-13), minis 2–3 (2026-10-14), mini 4 (2026-10-16, sealed 2026-10-17) and mini 5a (2026-10-17) are all taught and sealed, so their page sections are live; the immediate resume point is the **mini 5b probe**.
 
 ## Open questions
 
@@ -183,8 +218,33 @@ Mini 1 (2026-10-13), minis 2–3 (2026-10-14) and mini 4 (2026-10-16) are all ta
 
 **Source framing:** complete and correct — fragmentation is a chart-coverage story, so the input-side dial is the one to reach for, and widening each patch's overlap merges the components. Paired with the self-location from the same session (*"it acts on stage 2 ... it can only move them around by making them further or nearer"*), this is the second firing of the knob-crossing slip repaired **by the learner** rather than by a told answer.
 
+### 2026-10-17 — CP5 mini 4 exit ticket + mini 5a (the pipeline: PCA → UMAP → HDBSCAN)
+
+> **status=learner-note** — three more of the learner's statements, verbatim from the 2026-10-17 session, **appended** (nothing from earlier sessions was altered). The annotations around them are the tutor's and the source's.
+
+**CP5 mini 4 exit ticket E3 (own-words push-pull + outlier blob collapse):**
+
+> "it means that UMAP tries to make the global structure as honest as possible by pushing apart random sampled points that are not neighbors and pull together those that are but this breaks if points are maximally apart from each other which makes the otpimizer then consider them all neighbors and hence pull them togehter causing a collapse into a blob. what i would check is the disconnection_distance before trusting the cluster-to-cluster arrangement on a UMAP plot."
+
+**Source framing (annotation, not a rewrite):** accepted as-is — both halves of the push/pull balance and the failure mode captured faithfully. Tutor sharpening: `disconnection_distance` *cuts* the dangerous edges; the practical check is *setting it* and screening for disconnected vertices (`umap.utils.disconnected_vertices()`), not merely checking its presence.
+
+**Mini 5a elicitation prior (the why of PCA first and clustering after):**
+
+> "I think it first reduces the number of dimensions to the ones that actually matter(explain most of the data). I think feeding UMAP 300 dimensions would make it harder to make neighbors plot." / "i think because some clusters may have overlap hence we may not have distinct clusters which is needed for final clustering."
+
+**Source framing (annotation, not a rewrite):** right-shaped on both halves. Source framing adds the causal depth: UMAP's first stage is constructing the k-NN graph in the ambient space where 300+ dimensions causes distance concentration (max/min distance ratio ~1.8 at $d=10$ collapses to ~1.02 at $d=1000$), so distances are noisy and graph-building is expensive. On the clustering side: UMAP does not preserve density well and contracts components, so boundaries found on a 2-D plot are artifacts.
+
+**Mini 5a sealing line (why clustering directly on 2-D with K-Means fails):**
+
+> "it would be a mistake because the plot itself doesnt preserve density well hence noise will be within each cluster and KNN simply groups those clusters with their noise"
+
+**Source framing (annotation, not a rewrite):** right density instinct ("doesn't preserve density well"), with two sharpenings taught in-session:
+1. **Stage-role naming slip (KNN vs K-Means):** wrote "KNN" (the graph-building stage) where "K-Means" (the clustering algorithm) belongs. The detector: *assigning cluster labels = K-Means / HDBSCAN; building the graph = KNN*.
+2. **Double mistake completed:** (a) Geometry — the 2-D plot's density is distorted and contracts connected components, so boundaries read off the plot are artifacts; (b) Forced assignment — K-Means must assign *every* point to a cluster and assumes round, equal clusters, obliging it to label noise as clusters; HDBSCAN re-estimates density on the intermediate ~10–20-D embedding and leaves noise unlabeled.
+
 ## Field notes
 
+- **The 2026-10-17 session:** CP5 mini 4 exit ticket run and sealed 3/3, all `sure`, 0 hints (E1 graduated claim ✓, E2 whole-embedding repulsion sampling ✓, E3 own-words + `disconnection_distance` check ✓). CP5 mini 5a taught and sealed (elicitation right-shaped on both halves, 0 guiding questions; check-and-extend idea turn landed; sealing line caught the KNN/K-Means stage-role naming slip, repaired via the stage-role detector and logged as a structural Mistakes row; confirmed "makes sense" → mini 5a SEALED). Mini 5b opened (P2 probe delivered, learner paused before answering). Three passes logged in `Attempts.json` → mastery 0.90 advisory, `interval_index` 3, `next_review` 2026-11-16, `last_q_type` free-recall.
 - **The 2026-10-16 session:** warm-up W1 ✓ (`n_neighbors` 2→50: coherence gained, fine local detail lost) · **W2 ✗** (`min_dist` presented as "forcing points farther apart breaks the connections" — the knob-crossing slip firing a second time, tagged `sure`; a calibration flag) → diagnose-first repair **self-located** → isomorphic micro-check ✓; then the **CP5 mini 4 idea turn landed** (global structure as a graduated claim; the ⚠️ Rohit-vs-paper-vs-FAQ contradiction resolved) with the **graded exit ticket not run** (the learner paused at the check-back).
 - **The "elaborate more and simply" request was a pacing call, not an opt-out** — honored with a corrected re-delivery (the first draft failed fact-check on four overstatements: t-SNE "exactly 0", absolute drift-free phrasing, a "usually succeeds" success rate, and a single far point collapsing the whole map; the corrected draft passed and the learner's response was "makes sense"). Guiding budget: 1 of 2 spent.
 - Learner rule still standing (2026-10-05): practices are paper walks or graded MCQ batches; no code writes as a learning-system task.
@@ -200,5 +260,6 @@ Mini 1 (2026-10-13), minis 2–3 (2026-10-14) and mini 4 (2026-10-16) are all ta
 
 ## Open questions (carried by the lesson)
 
-- CP5 mini 4's **graded exit ticket** (the claim itself landed 2026-10-16 — nothing is graded yet), CP5 mini 5 (the pipeline and the scaling decision) and CP6 (kernel PCA + the "high variance = important" contradiction); then the final cumulative quiz + Feynman explain-back.
+- CP5 mini 5b (center-only vs standardize — P2 probe delivered, awaiting answer on resume), CP6 (kernel PCA + the "high variance = important" contradiction), then the final cumulative quiz + Feynman explain-back.
 - The banked X1/X3 repair — the knob-separation warm-up: **W1 ✓ / W2 ✗ on 2026-10-16** (a second firing, self-located in-ladder and followed by a passing isomorphic micro-check). One clean pass under pressure is still owed before the ledger row can graduate.
+- The KNN/K-Means stage-role slip (2026-10-17, mini 5a sealing line): stage-role detector taught (labels = K-Means, graph = KNN), learner confirmed "makes sense"; active Mistakes row awaiting independent recall under retrieval pressure.

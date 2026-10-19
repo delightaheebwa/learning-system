@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 5/6 — **CP5 mini 4 taught (no exit ticket) 2026-10-16; minis 2–3 sealed 2026-10-14; mini 1 sealed 2026-10-13** (CP4 fully sealed 2026-10-12; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
-**Resume from:** **CP5 (UMAP) mini 4 exit ticket** — the 'better global structure' idea turn + the ⚠️ Rohit-vs-umap-faq contradiction were delivered and landed 2026-10-16, but the graded exit ticket never ran (learner paused at the check-back). Then mini 5 (pipeline PCA→UMAP→HDBSCAN + center-only-vs-standardize), then CP6. The re-scout is DONE and audited (see Sources below) — no re-scout needed while the 2026-10-13 digest is inside its TTL.
+**Status:** paused at Checkpoint 5/6 — **CP5 mini 4 SEALED (exit ticket 3/3) + mini 5a (pipeline) SEALED 2026-10-17; minis 2–3 sealed 2026-10-14; mini 1 sealed 2026-10-13** (CP4 fully sealed 2026-10-12; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
+**Resume from:** **CP5 (UMAP) mini 5b — center-only vs standardize** — the P2 probe was delivered 2026-10-17 with a quiz-audit PASS receipt but the learner paused before answering; re-ask P2, teach the scaling decision, then CP6. Mini 5a (pipeline PCA→UMAP→HDBSCAN) sealed 2026-10-17. No re-scout needed while the 2026-10-13 digest stays inside its TTL (through 2026-10-20).
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
@@ -195,6 +195,18 @@
 - **Dependency events:** none — no `just_tell_me`, no `told_repair`, no `declined_generation`; the elaborate request was a pacing call, not an opt-out.
 - **Learner words for the wiki (`## My understanding`, verbatim):** the glue prior ("the global structure comes from the gluing together of the charts. i think what stops it is the 'glue'(the overlap between neighborhoods/charts).") and the sharpening ("i think it should sample from edges which are disconnected.").
 - **Learner pacing:** chose to pause at the check-back, before the mini 4 exit ticket ran.
+
+## Resume session 2026-10-17 — CP5 mini 4 exit ticket sealed + mini 5a sealed (pipeline); 5b opened, learner paused
+
+- **CP5 mini 4 exit ticket (quiz-audit PASS cycle 2 after e1/e2 length-parity + strawman fixes; grade-audit agreed 3/3, all `sure`, 0 hints):** E1 B ✓ (graduated claim: goal reached often, guaranteed never; enough maximally far outliers can pull the whole space together) · E2 A ✓ (whole-embedding repulsion sampling; t-SNE's cross-cluster P_ij ≈ 0 leaves the cost almost unmoved) · E3 own-words ✓ (push-pull mechanism + maximally-far collapse into a blob + the disconnection_distance check). Tutor sharpening: `disconnection_distance` *cuts* the dangerous edges — the practical check is setting it and screening for disconnected vertices, not just naming it. **Mini 4 SEALED** (idea taught 2026-10-16, exit ticket 2026-10-17).
+- **Mini 5a — the pipeline (sealed):**
+  - **Elicitation (quiz-audit PASS, ungraded):** P1 prior — PCA stage "reduces the number of dimensions to the ones that actually matter (explain most of the data)"; 300 dims "would make it harder to make neighbors plot"; clustering: "some clusters may have overlap hence we may not have distinct clusters which is needed for final clustering."
+  - **Check-and-extend idea turn (fact-check PASS after one attribution fix — a synthesized FAQ quote was re-cut into its three separate sentences):** PCA first because UMAP's first stage is the k-NN graph and 300+ dims pollutes it (distance concentration, CP3 anchor ~1.8 at d=10 → ~1.02 at d=1000); PCA denoises the neighbor distances and makes graph-building cheap; PCA for very large/high-dimensional data, UMAP for smaller datasets; ~50/10–20 = practical defaults, not laws; contrast: PCA linear (can't unfold), UMAP nonlinear (can't fix polluted distances) — each stage does what the other can't. Last stage: UMAP "does not preserve density well" → boundary artifacts → the clusterer must re-estimate density itself → HDBSCAN leaves noise unlabeled; K-Means must assign every point.
+  - **Sealing line + repair:** learner's generation — "it would be a mistake because the plot itself doesnt preserve density well hence noise will be within each cluster and KNN simply groups those clusters with their noise" — **KNN/K-Means slip (first occurrence):** wrote the graph-stage term (KNN) where the clusterer (K-Means) belongs. Repair named the stage-role detector (assigning labels = K-Means; building the graph = KNN) and completed the double mistake: (1) geometry — the 2-D plot's density is distorted, so boundaries found there are artifacts; (2) forced assignment — K-Means is obliged to label noise a cluster; HDBSCAN can say "no".
+  - Learner: "makes sense" → **mini 5a SEALED**.
+- **Mini 5b opened, NOT answered:** P2 probe (center vs standardize vs nothing, wildly different units) delivered with a quiz-audit PASS receipt; learner paused before answering — resume by re-asking P2.
+- **Attempts (ops.py):** UMAP pass ×3 (discriminative ×2, free-recall ×1) → mastery 0.90, interval_index 3, next_review 2026-11-16.
+- **Dependency events:** none (no `just_tell_me`, no `told_repair`, no `declined_generation`).
 
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
