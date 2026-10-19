@@ -100,38 +100,176 @@ OPENUI_WIDGET_JS = r"""(function () {
     }
   }
   var payload = readPayload();
+
+  // --- theme -------------------------------------------------------------
+  // The shell is an opaque-origin sandbox (Allow Same Origin stays OFF), so it
+  // cannot read the Open WebUI page theme. Follow the OS/browser preference;
+  // the pinned stylesheet maps data-openui-theme to matching light/dark tokens.
+  function applyTheme() {
+    var dark = false;
+    try {
+      dark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    } catch (e) {}
+    var theme = dark ? "dark" : "light";
+    var root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    root.setAttribute("data-openui-theme", theme);
+    try { root.style.colorScheme = theme; } catch (e) {}
+  }
+
   function postToParent(message) {
     var origin = "*";
     try { if (document.referrer) origin = new URL(document.referrer).origin; } catch (e) {}
     try { parent.postMessage(message, origin); } catch (e) {}
   }
+
+  // --- height ------------------------------------------------------------
+  // Content can change without a DOM mutation (fonts, chart resize, expanding
+  // disclosure), so observe size and the common interactions as well.
+  var raf = 0;
+  var lastHeight = -1;
+  function measureHeight() {
+    var body = document.body;
+    var doc = document.documentElement;
+    var h = Math.max(
+      body ? body.scrollHeight : 0,
+      body ? body.offsetHeight : 0,
+      doc ? doc.scrollHeight : 0,
+      doc ? doc.offsetHeight : 0
+    );
+    return h > 0 ? h : 0;
+  }
   function reportHeight() {
-    var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    var h = measureHeight();
+    if (h <= 0 || h === lastHeight) return;
+    lastHeight = h;
     postToParent({ type: "iframe:height", height: h });
   }
-  var raf = 0;
   function schedule() {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(reportHeight);
   }
+
+  // --- copy + status feedback -------------------------------------------
+  function toast(message, kind) {
+    try {
+      var box = document.getElementById("openui-toast");
+      if (!box) {
+        box = document.createElement("div");
+        box.id = "openui-toast";
+        box.setAttribute("role", "status");
+        box.setAttribute("aria-live", "polite");
+        document.body.appendChild(box);
+      }
+      box.textContent = String(message == null ? "" : message);
+      box.className = "openui-toast openui-toast-" + (kind || "success");
+      box.style.display = "block";
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(function () { box.style.display = "none"; }, 2200);
+      schedule();
+    } catch (e) {}
+  }
+  function legacyCopy(text) {
+    var ok = false;
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = String(text == null ? "" : text);
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0;";
+      document.body.appendChild(ta);
+      ta.select();
+      try { ta.setSelectionRange(0, ta.value.length); } catch (e) {}
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove();
+    } catch (e) {}
+    return ok;
+  }
+  function copyText(text) {
+    var value = String(text == null ? "" : text);
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        return navigator.clipboard.writeText(value).then(
+          function () { toast("Copied", "success"); },
+          function () {
+            if (legacyCopy(value)) toast("Copied", "success");
+            else toast("Copy failed — select the text manually", "error");
+          }
+        );
+      }
+    } catch (e) {}
+    if (legacyCopy(value)) toast("Copied", "success");
+    else toast("Copy failed — select the text manually", "error");
+  }
+  // The bundle's code-block button calls navigator.clipboard.writeText directly.
+  // The sandbox may deny the async Clipboard API; fall back to execCommand so
+  // copy buttons still work.
+  try {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      var nativeWrite = navigator.clipboard.writeText.bind(navigator.clipboard);
+      navigator.clipboard.writeText = function (text) {
+        return nativeWrite(text).catch(function () {
+          if (legacyCopy(text)) toast("Copied", "success");
+          else toast("Copy failed — select the text manually", "error");
+        });
+      };
+    }
+  } catch (e) {}
+
   function sendPrompt(text) {
-    if (!text) return;
-    postToParent({ type: "input:prompt:submit", text: String(text) });
+    var value = String(text == null ? "" : text).trim();
+    if (!value) return;
+    postToParent({ type: "input:prompt:submit", text: value });
   }
   function openLink(url) {
     try {
       var u = new URL(String(url || ""), window.location.href);
-      if (!/^(https?|mailto|tel):$/.test(u.protocol)) return;
+      if (!/^(https?|mailto|tel):$/.test(u.protocol)) {
+        toast("Blocked an unsafe link", "error");
+        return;
+      }
       var w = window.open(u.href, "_blank", "noopener,noreferrer");
       if (w) w.opener = null;
-    } catch (e) {}
+    } catch (e) {
+      toast("Could not open that link", "error");
+    }
   }
   function renderError(message) {
     var el = document.getElementById("openui-root");
     el.textContent = "";
     var box = document.createElement("div");
     box.className = "openui-error";
-    box.textContent = "Widget failed to render: " + (message || "unknown error");
+    box.setAttribute("role", "alert");
+
+    var title = document.createElement("div");
+    title.className = "openui-error-title";
+    title.textContent = "This widget could not be displayed.";
+
+    var detail = document.createElement("div");
+    detail.className = "openui-error-detail";
+    detail.textContent = String(message || "unknown error");
+
+    var actions = document.createElement("div");
+    actions.className = "openui-error-actions";
+
+    var copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "openui-error-button";
+    copy.textContent = "Copy details";
+    copy.addEventListener("click", function () {
+      copyText("OpenUI widget error: " + (message || "unknown") + "\nPayload: " + payload);
+    });
+
+    var retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "openui-error-button";
+    retry.textContent = "Reload";
+    retry.addEventListener("click", function () { window.location.reload(); });
+
+    actions.appendChild(copy);
+    actions.appendChild(retry);
+    box.appendChild(title);
+    box.appendChild(detail);
+    box.appendChild(actions);
     el.appendChild(box);
     reportHeight();
   }
@@ -146,12 +284,14 @@ OPENUI_WIDGET_JS = r"""(function () {
       var rows = Object.keys(event.formState).map(function (k) {
         return k + ": " + JSON.stringify(event.formState[k]);
       });
-      prompt = (prompt ? prompt + "\n\n" : "") + "Form data:\n" + rows.join("\n");
+      var label = event.formName ? "Form data (" + event.formName + "):" : "Form data:";
+      prompt = (prompt ? prompt + "\n\n" : "") + label + "\n" + rows.join("\n");
     }
     if (prompt) sendPrompt(prompt);
   }
   function render() {
     try {
+      if (!payload) throw new Error("the widget payload is empty");
       var O = window.__OpenUI;
       if (!O || !O.Renderer || !O.openuiChatLibrary || !O.createRoot) {
         throw new Error("bundle loaded but its exports are missing");
@@ -179,9 +319,41 @@ OPENUI_WIDGET_JS = r"""(function () {
     script.onerror = function () { renderError("could not load " + script.src); };
     document.body.appendChild(script);
   }
+
+  applyTheme();
+  try {
+    if (window.matchMedia) {
+      var themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      var onThemeChange = function () { applyTheme(); schedule(); };
+      if (themeQuery.addEventListener) themeQuery.addEventListener("change", onThemeChange);
+      else if (themeQuery.addListener) themeQuery.addListener(onThemeChange);
+    }
+  } catch (e) {}
+
+  try {
+    if (window.ResizeObserver && document.body) {
+      var ro = new ResizeObserver(schedule);
+      ro.observe(document.documentElement);
+      ro.observe(document.body);
+    }
+  } catch (e) {}
+  try {
+    new MutationObserver(schedule).observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden", "open", "aria-expanded"]
+    });
+  } catch (e) {}
+  document.addEventListener("toggle", function () { setTimeout(reportHeight, 50); }, true);
+  document.addEventListener("click", schedule, true);
+  document.addEventListener("transitionend", schedule, true);
   window.addEventListener("load", reportHeight);
   window.addEventListener("resize", schedule);
-  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
+  try {
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
+  } catch (e) {}
+
   reportHeight();
   load();
 })();
@@ -191,7 +363,7 @@ OPENUI_WIDGET_JS = r"""(function () {
 # shell's own scripts/style (its sandbox is opaque origin, so `'self'` cannot be
 # used — the exact host(s) must be listed).
 OPENUI_WIDGET_HTML = """<!doctype html>
-<html lang="en" data-theme="light" data-openui-theme="light" style="color-scheme:light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -200,11 +372,72 @@ OPENUI_WIDGET_HTML = """<!doctype html>
 <link rel="stylesheet" href="dist/openui-styles.css">
 <style>
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: transparent; color-scheme: light; }
+  html, body { margin: 0; padding: 0; background: transparent; color-scheme: light dark; }
   body { padding: 4px; }
   #openui-root { width: 100%; }
   .openui-status { padding: 16px; font: 13px system-ui, -apple-system, sans-serif; color: #888; }
-  .openui-error { padding: 14px; border: 1px solid #fecaca; border-radius: 8px; background: #fef2f2; color: #b91c1c; font: 13px/1.5 system-ui, sans-serif; white-space: pre-wrap; }
+
+  /* Accessibility: visible keyboard focus and an obvious invalid state. */
+  :where(button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--openui-text-accent-primary, currentColor);
+    outline-offset: 2px;
+  }
+  :where(input, textarea, select):user-invalid {
+    border-color: var(--openui-interactive-destructive-accent-default, #dc2626);
+  }
+  :where(input, textarea, select)[aria-invalid="true"] {
+    border-color: var(--openui-interactive-destructive-accent-default, #dc2626);
+  }
+
+  /* Error state — theme-aware, with a copy-details escape hatch. */
+  .openui-error {
+    padding: 14px;
+    border: 1px solid var(--openui-border-interactive, #e5e7eb);
+    border-radius: 8px;
+    background: var(--openui-danger-background, #fef2f2);
+    color: var(--openui-text-danger-primary, #b91c1c);
+    font: 13px/1.5 system-ui, -apple-system, sans-serif;
+  }
+  .openui-error-title { font-weight: 600; margin-bottom: 4px; }
+  .openui-error-detail { white-space: pre-wrap; opacity: 0.85; word-break: break-word; }
+  .openui-error-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .openui-error-button {
+    font: inherit;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: inherit;
+    background: var(--openui-elevated, rgba(0, 0, 0, 0.04));
+    border: 1px solid var(--openui-border-interactive, currentColor);
+  }
+  .openui-error-button:hover { background: var(--openui-elevated-strong, rgba(0, 0, 0, 0.08)); }
+
+  /* Status toast (copy / blocked link feedback). */
+  #openui-toast {
+    display: none;
+    position: fixed;
+    top: 4px;
+    right: 4px;
+    z-index: 9999;
+    max-width: 280px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font: 12px/1.4 system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    border: 1px solid var(--openui-border-interactive, #e5e7eb);
+    background: var(--openui-popover-background, #fff);
+    color: var(--openui-text-body-default, #111);
+    box-shadow: var(--openui-shadow-l, 0 2px 8px rgba(0, 0, 0, 0.12));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #openui-toast.openui-toast-success { color: var(--openui-text-success-primary, #15803d); }
+  #openui-toast.openui-toast-error { color: var(--openui-text-danger-primary, #b91c1c); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
 </style>
 </head>
 <body>

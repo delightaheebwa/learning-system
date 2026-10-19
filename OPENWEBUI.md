@@ -105,8 +105,11 @@ plus the shell `widget.html`/`widget.js` into `~/learning-pi/deploy/openui/0.2.1
 `--openui-static-dir` / `OPENWEBUI_OPENUI_STATIC_DIR`). `learning-pi/deploy/docker-compose.yml`
 mounts that directory read-only at `/app/backend/open_webui/static/openui` and sets `IFRAME_CSP`
 with `connect-src 'none'`. `scripts/audit_openwebui.py` verifies the served bundle sha256 and the
-shell. The gate Pipe's `_normalize_for_binding` ignores ` ```openui `/` ```mermaid `/` ```html `
-fences so a visual payload never satisfies a prose claim.
+shell. The shell is opaque-origin (Same Origin stays OFF), so it follows the OS
+`prefers-color-scheme` rather than Open WebUI's in-app theme; it also re-measures height on
+resize/fonts/disclosure, falls back to `execCommand` when the Clipboard API is denied, and ships
+keyboard-focus and invalid-input styles. The gate Pipe's `_normalize_for_binding` ignores
+` ```openui `/` ```mermaid `/` ```html ` fences so a visual payload never satisfies a prose claim.
 
 ## Maintenance
 

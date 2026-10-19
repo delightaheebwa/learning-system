@@ -80,6 +80,34 @@ class TestOpenUiStaticAssets(unittest.TestCase):
         self.assertIn('src="widget.js"', html)
         self.assertIn("dist/openui-styles.css", html)
 
+    def test_shell_follows_os_theme(self):
+        # No hardcoded light theme: the bundle's own prefers-color-scheme media
+        # query applies until widget.js pins data-openui-theme to the OS value.
+        html = s.build_widget_html(s.openui_script_origins("http://localhost:3000"))
+        self.assertIn("color-scheme: light dark", html)
+        self.assertNotIn('data-openui-theme="light"', html)
+        self.assertIn("prefers-color-scheme", s.OPENUI_WIDGET_JS)
+        self.assertIn("applyTheme", s.OPENUI_WIDGET_JS)
+
+    def test_shell_has_accessible_focus_and_invalid_state(self):
+        html = s.build_widget_html(s.openui_script_origins("http://localhost:3000"))
+        self.assertIn(":focus-visible", html)
+        self.assertIn(":user-invalid", html)
+        self.assertIn('aria-invalid="true"', html)
+
+    def test_shell_copy_falls_back_when_clipboard_is_denied(self):
+        js = s.OPENUI_WIDGET_JS
+        self.assertIn("legacyCopy", js)
+        self.assertIn("execCommand", js)
+        self.assertIn("Copy details", js)
+        self.assertIn("openui-toast", s.OPENUI_WIDGET_HTML)
+
+    def test_height_tracks_resize_fonts_and_disclosure(self):
+        js = s.OPENUI_WIDGET_JS
+        self.assertIn("ResizeObserver", js)
+        self.assertIn('"toggle"', js)
+        self.assertIn("document.fonts.ready", js)
+
     def test_install_writes_shell_and_verifies_pinned_hashes(self):
         blobs = {"dist/openui-bundle.min.js": b"JS", "dist/openui-styles.css": b"CSS"}
         with tempfile.TemporaryDirectory() as tmp:
