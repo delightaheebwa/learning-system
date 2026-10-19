@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-19)
+# Learner History — compact tutor context (generated 2026-10-20)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -14,23 +14,24 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 298 · fuzzy 12
+Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 10 · neutral 297 · fuzzy 12
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Prereqs | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| Adam (adaptive moments) | procedure | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-10.md |
 | Conditional Independence | concept | fuzzy |  | 2026-10-06 | Learning System/Reviews/Review — Conditional Independence — 2026-10-06.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
 | Optimizer Selection (Rohit heuristic) | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Optimizer Selection (Rohit heuristic) — 2026-10-10.md |
+| Sequential Bayesian Updating | concept | fuzzy |  | 2026-10-20 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-10-20.md |
 | UMAP (Dimensionality Reduction) | concept | fuzzy | t-SNE (Dimensionality Reduction): neutral | 2026-10-19 | last reviewed 2026-10-19 |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |
+| Adam (adaptive moments) | procedure | neutral |  | 2026-10-20 | Learning System/Reviews/Review — Adam (adaptive moments) — 2026-10-20.md |
 | Base Rate Fallacy | concept | neutral |  | 2026-10-05 | Learning System/Reviews/Review — Base Rate Fallacy — 2026-10-05.md |
-| Bayes' Theorem | concept | solid |  | 2026-09-12 | last reviewed 2026-09-12 |
+| Bayes' Theorem | concept | solid |  | 2026-10-20 | Learning System/Reviews/Review — Bayes' Theorem — 2026-10-20.md |
 | Bayesian A/B Testing | concept | neutral |  | 2026-10-05 | last reviewed 2026-10-05 |
 | Bits vs Nats | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
-| Chain Rule for Neural Networks | procedure | neutral |  | 2026-10-03 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-03.md |
+| Chain Rule for Neural Networks | procedure | neutral |  | 2026-10-20 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-20.md |
 | Conjugate Priors | concept | neutral |  | 2026-10-17 | Learning System/Reviews/Review — Conjugate Priors — 2026-10-17.md |
 | Cosine Similarity | concept | neutral |  | 2026-09-15 | Learning System/Reviews/Review — Cosine Similarity — 2026-09-15.md |
 | Cross-Entropy from NLL | concept | neutral |  | 2026-09-23 | Learning System/Reviews/Review — Cross-Entropy from NLL — 2026-09-23.md |
@@ -56,8 +57,7 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Posterior Probability | concept | solid |  | 2026-10-08 | Learning System/Reviews/Review — Posterior Probability — 2026-10-08.md |
 | Prior Probability | concept | solid |  | 2026-10-17 | Learning System/Reviews/Review — Prior Probability — 2026-10-17.md |
 | Saddle Points (critical point triage) | concept | neutral |  | 2026-09-18 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-09-17.md |
-| Sequential Bayesian Updating | concept | neutral |  | 2026-09-16 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-09-16.md |
-| Softmax Subtract-Max Trick | procedure | neutral |  | 2026-10-08 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-08.md |
+| Softmax Subtract-Max Trick | procedure | solid |  | 2026-10-20 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-20.md |
 | t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-12 | last reviewed 2026-10-12 |
 | Variance & Covariance | concept | neutral |  | 2026-10-06 | last reviewed 2026-10-06 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
