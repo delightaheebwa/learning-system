@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) | verified-by=— | date=2026-10-20 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; four statements as of 2026-10-20, nothing overwritten) -->
 
 # PCA (Dimensionality Reduction)
 
@@ -102,11 +102,34 @@ The code runs; only the numbers are wrong. That is why the layout detectors carr
 
 Ranking by λ treats variance as importance. That choice is **optimal for reconstruction** — k dimensions chosen this way minimize mean squared error — but it is an assumption about usefulness, and the assumption can fail: a low-variance direction may be the one that matters (the standard counterexample flagged in this track's lesson plan for CP6, where the assumption is contrasted with its limits).
 
+## Kernel PCA — nonlinear manifolds and the lifting trick (2026-10-20)
+
+Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data lies on a **nonlinear manifold** (such as two concentric rings or a Swiss roll), any linear projection collapses distinct structures onto each other into overlapping intervals.
+
+1. **Problem:** Concentric circles in $\mathbb{R}^2$ cannot be separated by any line or linear projection. In 2D, the radial geometry prevents linear separation; standard PCA projects along straight axes, crushing the inner and outer circles into overlapping segments.
+2. **Where from / Mechanism (The Kernel Trick):** Lift data points $x \in \mathbb{R}^d$ into a higher-dimensional feature space $\mathcal{H}$ via a nonlinear mapping $\phi(x)$. For 2D concentric rings, mapping $(x_1, x_2) \mapsto (x_1, x_2, z = x_1^2 + x_2^2)$ places the inner ring at low height and the outer ring at high height on a paraboloid, allowing a horizontal linear hyperplane to cleanly separate them along the vertical axis. The **kernel trick** enables computing inner products in $\mathcal{H}$ without explicitly evaluating $\phi(x)$:
+   $$K_{ij} = k(x_i, x_j) = \langle \phi(x_i), \phi(x_j) \rangle$$
+   For an RBF (Radial Basis Function) kernel:
+   $$k(x, x') = \exp(-\gamma \|x - x'\|^2)$$
+   which corresponds to an infinite-dimensional feature space.
+3. **Matrix Dimension Contrast ($d \times d$ vs $n \times n$):**
+   - **Standard PCA** diagonalizes the $d \times d$ covariance matrix $C = \frac{1}{n-1} X_c^\top X_c$. For $n = 5000, d = 2$, $C$ is $2 \times 2$.
+   - **Kernel PCA** diagonalizes the $n \times n$ pairwise similarity Gram matrix $K$. For $n = 5000, d = 2$, $K$ is $5000 \times 5000$. Computational cost shifts from feature dimension $d$ to sample size $n$ ($O(n^2)$ memory, $O(n^3)$ eigendecomposition).
+4. **Boundary Conditions & the Pre-image Problem:**
+   - The kernel function $k$ must satisfy **Mercer's condition** (positive semi-definiteness).
+   - In feature space, centering must be performed on the Gram matrix $K$ implicitly ($\tilde{K} = K - 1_n K - K 1_n + 1_n K 1_n$, where $1_n$ is the $n \times n$ matrix with entries $1/n$).
+   - The **pre-image problem**: while projecting a point into low-dimensional kernel coordinates is straightforward via training similarities, reconstructing an input-space vector $\hat{x} \in \mathbb{R}^d$ from a feature-space point $\phi(x)$ is generally ill-posed because an arbitrary vector in $\mathcal{H}$ may have no exact pre-image in input space.
+5. **Contrast with t-SNE / UMAP:**
+   - t-SNE and UMAP optimize low-dimensional coordinates directly via gradient descent on pairwise probabilities/fuzzy simplicial sets, which makes projecting out-of-sample test points ill-defined or expensive without re-optimizing.
+   - Kernel PCA provides an analytical out-of-sample projection operator: a new test point $x^*$ is projected onto the $k$-th eigenvector by evaluating kernel similarities against all training points:
+     $$y_k(x^*) = \frac{1}{\sqrt{\lambda_k}} \sum_{i=1}^n \alpha_{k, i} k(x_i, x^*)$$
+
 ## Open questions
 
 - **Round cloud (equal eigenvalues) — sealed 2026-10-07:** `λI` ⇒ every direction is an eigenvector, the λ ranking is a total tie, the axes are arbitrary, the scree is flat, and a 95% target cannot drop a single bar. The verdict: PCA's compression power needs unequal spread (shape, not size).
 - **Curse of dimensionality — sealed 2026-10-07:** distance concentration (distances become *more alike*, not smaller) and the fixed trace pie (`Σλ = trace(C)` invariant under rotation). See [[Curse of Dimensionality]].
 - **`n == d` — sealed 2026-10-05:** both `vecs` and `Xc` then read `d×d`, so the shape detector alone cannot separate them — the resolution is to inspect what the array *holds* (`Xp`'s rows are data points, `V`'s columns are directions; the learner's own repair: "rows hold data points, hence nxk").
+- **Kernel PCA hidden steps (paused at CP6 mini 1/3, 2026-10-20):** Centering the $n \times n$ similarity table $K$ in feature space, why eigenvectors of $K$ act as coordinates, the $1/\sqrt{\lambda}$ scaling factor, and the pre-image problem (to unpack via a 3-point toy walkthrough on resume).
 
 ## Field notes
 
@@ -136,3 +159,32 @@ The learner's own words (2026-10-08, the anomaly-detector tangent):
 - "a big residual tells me the point is an outlier as compared to the normal data" — accepted, sharpened: outlier-ness here is about *shape* (a mismatch with the learned subspace), not distance from the crowd.
 - "whether big or small, it's still in the dropped subspace" — the puzzle the **unit-vs-signal** split dissolved: being in the residual subspace is the unit, the *length* is the signal.
 - The two guiding rounds of the tangent, kept as the pair of detector phrases: **shape fit lives across, depth lives along**; **directions get dropped, points never do**.
+
+## My understanding
+
+> **status=learner-note** — the learner's words, verbatim from the 2026-10-20 session (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
+
+**Kernel PCA lifting intuition for 2D concentric circles (Rung 3 own-words statement):**
+
+> "it couldnt because you cant seperate concentric circles in 2D since there is no line you could draw that would seperate them. mapping to a non linear coordinate helps use to \"pull one out of the other\" by adding a new coordinate which wil put them at different heights thereby truly seperating them."
+
+*Source framing (annotation, not a rewrite):* "Pull one out of the other" captures the dimension-lifting geometry cleanly — lifting $(x_1, x_2)$ onto a paraboloid $z = x_1^2 + x_2^2$ maps the radial coordinate into height, transforming non-linear concentricity into linear vertical separability.
+
+**Paraboloid height coordinate (Rung 2 hint response):**
+
+> "1. for the inner ring is sits at (1,1,z) and the outer sits at (3,3,z). 2. i think they end up as seperate points along the vertical axis"
+
+*Source framing:* Confirms that lifting to 3D via height $z$ aligns the two concentric rings at different levels along the vertical axis.
+
+**Pacing & comprehension reflection before /pause:**
+
+> "that kinda works. it is better than before but i think we will need to slow down a bit on it for the next time. i feel like there is a lot of \"hidden stuff\" i should know when reading some of what you just said but i dont really know. plus some parts still are fuzzy for me. /pause"
+
+*Tutor note:* Paused at Checkpoint 6/6, mini 1/3 per learner request. Next session will slow down and unpack the hidden mechanics step-by-step with a 3-point toy walkthrough.
+
+**Pause exit ticket X1 response & hidden-steps note:**
+
+> "1. it fails beause there is no line in 2d that can seperate them. lifting them into a non linear coordinate puts them at different heights thereby truly seperating them. sure 2. standard pca decomposes into 2x2 while kernel pca decomposes into 5000 x 5000. sure\nfor hidden stuff, i think basically all of it."
+
+*Source framing:* The geometric intuition and matrix dimensions ($d \times d = 2 \times 2$ vs $n \times n = 5000 \times 5000$) are exact. The "hidden stuff" (centering $K$ in feature space, why eigenvectors of $K$ act as coordinates, $1/\sqrt{\lambda}$ scaling factor, and the pre-image problem) will be unpacked in detail.
+

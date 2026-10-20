@@ -938,3 +938,22 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - **Position reconciliation:** `MISSION.md`, `CURRICULUM.md`, `Core/💡 Learning Profile.md`, and `Core/📚 Active Concepts.md` all aligned to **paused at Checkpoint 6/6 — CP5 (UMAP) fully sealed 2026-10-19; resume: Checkpoint 6/6, mini 1: Kernel PCA with an RBF kernel (PCA on a nonlinear manifold)**.
 - `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
 - **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-01a134d5-…` (2026-10-13, inside TTL through 2026-10-20) is **kept**. Lesson file and curriculum row stay **in-progress**.
+
+## 2026-10-20 — P1 L10 CP6 mini 1 (partial ingest): Kernel PCA lifting trick & intuition; 2D concentric circles; $d \times d$ vs $n \times n$ matrix sizes; pause handoff
+
+- **Source:** `Learning System/Core/Pending Ingest.json` (partial `/pause` handoff, 2026-10-20) → lesson `Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md`; teach session `Learning System/Sessions/Session — Dimensionality Reduction (P1 L10 resume, CP6 mini 1 pause) — 2026-10-20.md`; learning record `Learning System/Learning Records/Record — Dimensionality Reduction — 2026-10-20.md`. Raw bodies under `Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - *` — `sklearn-kpca`, `rohit`, `shlens`. Kept digest `context-01a134d5-…` (2026-10-13, audited PASS, inside its 7-day TTL through 2026-10-20).
+- `PCA (Dimensionality Reduction)` — **page deepened** (`status=synthesis`):
+  - **`## Kernel PCA — nonlinear manifolds and the lifting trick (2026-10-20)` section added (CP6 mini 1):**
+    - Problem: Concentric circles or nonlinear manifolds cannot be separated by linear PCA; any straight projection collapses them into overlapping intervals.
+    - Mechanism: The **kernel trick** lifts $x \in \mathbb{R}^d \mapsto \phi(x) \in \mathcal{H}$ (e.g. paraboloid $z = x_1^2 + x_2^2$ separating concentric rings along height) evaluating inner products via kernel function $K_{ij} = k(x_i, x_j)$ without calculating $\phi(x)$ explicitly.
+    - Matrix size contrast: Standard PCA decomposes $d \times d$ covariance matrix ($2 \times 2$ for $n = 5000, d = 2$), while Kernel PCA decomposes $n \times n$ pairwise similarity Gram matrix $K$ ($5000 \times 5000$).
+    - Contrast with t-SNE/UMAP: Kernel PCA provides an analytical out-of-sample projection operator, though reconstructing input points suffers from the pre-image problem.
+  - **`## My understanding` added** with **four verbatim learner statements** (`status=learner-note`): concentric circles lifting intuition ("pull one out of the other"), paraboloid height coordinate, pacing & comprehension reflection ("hidden stuff" fuzzy), and pause exit ticket X1 (geometry and $2 \times 2$ vs $5000 \times 5000$ matrix size distinction correct).
+  - Open questions updated with the Kernel PCA hidden mechanics (centering $K$ in feature space, eigenvectors of $K$ as coordinates with $1/\sqrt{\lambda}$ scaling, pre-image problem).
+- `Knowledge Wiki/index.md` refreshed (PCA entry updated with Kernel PCA section); this log appended.
+- **Concept(s):** `PCA (Dimensionality Reduction)` row enriched and synced to `Attempts.json`: `last_reviewed` 2026-10-08 → **2026-10-20**, `next_review` 2026-11-07 → **2026-11-19**, `Last Q Type` `discriminative` → **`explain-back`**, mastery 0.75 → **0.85** advisory, `interval_index` 3, `consecutive_correct` 2; attempt 2026-10-20: pass explain-back (`sure`, 1 hint) on Pause exit ticket X1. **41 live concepts**.
+- **Mistakes: none** (`mistakes: []`). **Dependency events: none** (`dependency_events: []`).
+- **Position reconciliation:** `MISSION.md`, `CURRICULUM.md`, `Core/💡 Learning Profile.md`, and `Core/📚 Active Concepts.md` all aligned to **paused at Checkpoint 6/6, mini 1/3 (staying on mini 1/3 to slow down and unpack hidden steps: centering n x n similarity table, eigenvectors of K as coordinates, 1/sqrt(lambda) scaling, pre-image problem with a small 3-point toy walkthrough)**.
+- `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
+- **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-01a134d5-…` (2026-10-13, inside TTL through 2026-10-20) is **kept**. Lesson file and curriculum row stay **in-progress**.
+

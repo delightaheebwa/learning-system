@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 6/6 — **CP5 (UMAP) fully sealed 2026-10-19** (mini 5b scaling taught, CP5 practice 4/4 passed; exit ticket X1 completed; mini 5a pipeline + mini 4 sealed 2026-10-17; minis 2–3 sealed 2026-10-14; mini 1 sealed 2026-10-13; CP4 fully sealed 2026-10-12; CP3 fully sealed 2026-10-07; CP2 sealed 2026-10-05; CP1 sealed 2026-09-30)
-**Resume from:** **Checkpoint 6/6, mini 1: Kernel PCA with an RBF kernel (PCA on a nonlinear manifold)** — the high-variance=important assumption vs Shlens ferris wheel, and the method-choice map.
+**Status:** paused at Checkpoint 6/6 (mini 1/3 in-progress) — **CP5 (UMAP) fully sealed 2026-10-19**; Checkpoint 6 mini 1/3 in-progress (2026-10-20: 2D-to-3D nonlinear lifting intuition and $d \times d$ vs $n \times n$ matrix size anchor established; pause exit ticket X1 passed; slow down and unpack hidden mechanics next)
+**Resume from:** **Checkpoint 6/6, mini 1/3: Kernel PCA with an RBF kernel (PCA on a nonlinear manifold — slow down and unpack the hidden steps: centering the n x n similarity table, why eigenvectors of K act as coordinates, 1/sqrt(lambda) scaling, and the pre-image problem with a small 3-point toy walkthrough)**
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
@@ -233,6 +233,40 @@
   - Pause exit ticket X1: *"the core difference is that centering centers the data around the mean while standaradizing does that and also puts features on the same scale. i would choose centering only when dealing with features that are essentially independent while for standardizaing i would choose for when dealing with features that have meaningful relationship"*
 - **Learner pacing:** completed CP5 mini 5b, passed CP5 practice 4/4, completed pause exit ticket X1, paused before Checkpoint 6.
 
+## Resume session 2026-10-20 — CP6 mini 1 in-progress (Kernel PCA lifting intuition & matrix sizes; paused at CP6 mini 1/3)
+
+- **CP6 mini 1 — Kernel PCA with an RBF kernel (in-progress):**
+  - **Context & Motivation:** Moving from linear PCA and non-parametric manifold learning (t-SNE, UMAP) to Kernel PCA (PCA on a nonlinear manifold).
+  - **4-Beat Foundation (Turn Kind: Idea):**
+    - **Problem:** Standard linear PCA only identifies linear orthogonal subspaces (flat hyperplanes). When data lies on curved, concentric, or non-convex manifolds (e.g. concentric circles in 2D or a 3D swiss roll), any linear projection collapses distinct structures onto each other (e.g. projecting concentric rings onto a line merges the inner and outer rings into overlapping intervals).
+    - **Where from / Mechanism:** The kernel trick lifts low-dimensional points $x \in \mathbb{R}^d$ into a high- (or infinite-) dimensional feature space $\mathcal{H}$ via a nonlinear mapping $\phi(x)$ (e.g. mapping 2D points $(x_1, x_2)$ onto a 3D paraboloid $z = x_1^2 + x_2^2$, or into infinite-dimensional Hilbert space via the Radial Basis Function / Gaussian kernel $k(x, x') = \exp(-\gamma \|x - x'\|^2)$). Rather than computing high-dimensional coordinates explicitly, inner products are computed directly via a kernel function $K_{ij} = k(x_i, x_j)$, forming an $n \times n$ Gram matrix $K$. After centering $K$ in feature space, eigendecomposition of $K$ yields the principal components without ever materializing $\phi(x)$.
+    - **Conditions / Assumptions:** Relies on Mercer's theorem (kernel $K$ must be symmetric positive semi-definite). Computational scaling shifts from feature-space dimension $d$ to sample size $n$: storing and decomposing $K$ requires $O(n^2)$ memory and $O(n^3)$ operations, contrasting with standard PCA's $d \times d$ covariance matrix. In addition, Kernel PCA suffers from the pre-image problem: reconstructing an input-space point $x \in \mathbb{R}^d$ from a feature-space projection is ill-posed and lacks a general closed-form inverse.
+    - **Contrast:** Standard PCA diagonalizes a $d \times d$ covariance matrix $C = \frac{1}{n-1} X_c^T X_c$ and projects linearly; Kernel PCA diagonalizes an $n \times n$ similarity table $K$ and captures nonlinear manifolds. Unlike t-SNE or UMAP, which optimize low-dimensional coordinates directly via gradient descent and lack a simple projection formula for novel data, Kernel PCA defines an exact out-of-sample projection operator via kernel evaluations against training points.
+  - **Socratic Ladder & Dialogue Beats:**
+    - **Rung 1 (Elicitation):** Elicited why linear PCA cannot separate concentric circles in 2D and how lifting into higher dimensions helps.
+    - **Rung 2 (Hint & Guided Scaffold):** Socratic hint for 2D points $(x_1, x_2)$ lifted to a 3D paraboloid with vertical height $z = x_1^2 + x_2^2$.
+      - Learner response (verbatim): *"1. for the inner ring is sits at (1,1,z) and the outer sits at (3,3,z). 2. i think they end up as seperate points along the vertical axis"*
+      - Guided repair confirmed that the inner ring sits at low height $z$ while the outer ring sits at high height $z$, cleanly separating along the vertical axis.
+    - **Rung 3 (Own-Words Statement, `status=learner-note`):**
+      - Learner statement (verbatim): *"it couldnt because you cant seperate concentric circles in 2D since there is no line you could draw that would seperate them. mapping to a non linear coordinate helps use to \"pull one out of the other\" by adding a new coordinate which wil put them at different heights thereby truly seperating them."*
+      - Check-and-extend confirmed the "pull one out of the other" intuition and connected it to the lifting map $\phi(x)$ and kernel inner product.
+  - **Pacing & Comprehension Reflection (Learner-initiated pause):**
+    - Learner reflection (verbatim): *"that kinda works. it is better than before but i think we will need to slow down a bit on it for the next time. i feel like there is a lot of \"hidden stuff\" i should know when reading some of what you just said but i dont really know. plus some parts still are fuzzy for me. /pause"*
+    - Tutor honored the pause immediately. Next session will slow down and unpack all the hidden mechanics step-by-step.
+- **Pause Exit Ticket X1 (quiz-audit PASS, grade-audit agreed 1/1, `sure`, 1 hint):**
+  - **Question:** "Suppose we have n = 5,000 data points lying on two flat concentric rings in d = 2 dimensions (x_1, x_2). (1) Why does standard linear PCA fail to separate the two rings in 2D, and how does lifting them into a nonlinear coordinate fix that geometry? (2) For this dataset (n = 5,000, d = 2), what is the matrix size (rows x columns) that Standard PCA decomposes versus the pairwise similarity table K that Kernel PCA decomposes?"
+  - **Learner Answer (verbatim):** *"1. it fails beause there is no line in 2d that can seperate them. lifting them into a non linear coordinate puts them at different heights thereby truly seperating them. sure 2. standard pca decomposes into 2x2 while kernel pca decomposes into 5000 x 5000. sure\nfor hidden stuff, i think basically all of it."*
+  - **Grade Verdict:** `PASS` (verifier `grade_audit` agreed; Part 1 correctly captured the non-separability by lines and the vertical height separation; Part 2 correctly identified standard PCA's $2 \times 2$ covariance matrix vs Kernel PCA's $5000 \times 5000$ Gram matrix).
+- **Attempts this session (ops.py):**
+  - `PCA (Dimensionality Reduction)` — pass (`explain-back`, `sure`, 1 hint) → mastery **0.85**, interval_index **3**, consecutive_correct 2, consecutive_wrong 0, last_reviewed **2026-10-20**, next_review **2026-11-19**, Last Q Type `explain-back`.
+- **Mistakes ledger:** none (`mistakes: []`).
+- **Dependency events:** none (`just_tell_me`: 0, `told_repair`: 0, `declined_generation`: 0).
+- **Learner words for the wiki (`## My understanding`, verbatim):**
+  - Lifting intuition: *"it couldnt because you cant seperate concentric circles in 2D since there is no line you could draw that would seperate them. mapping to a non linear coordinate helps use to \"pull one out of the other\" by adding a new coordinate which wil put them at different heights thereby truly seperating them."*
+  - Pacing & comprehension reflection: *"that kinda works. it is better than before but i think we will need to slow down a bit on it for the next time. i feel like there is a lot of \"hidden stuff\" i should know when reading some of what you just said but i dont really know. plus some parts still are fuzzy for me. /pause"*
+  - Exit ticket X1 & hidden steps: *"1. it fails beause there is no line in 2d that can seperate them. lifting them into a non linear coordinate puts them at different heights thereby truly seperating them. sure 2. standard pca decomposes into 2x2 while kernel pca decomposes into 5000 x 5000. sure\nfor hidden stuff, i think basically all of it."*
+- **Learner pacing & next session focus:** Paused mid-Checkpoint 6 at mini 1/3. 2D-to-3D lifting intuition and matrix size anchoring ($d \times d = 2 \times 2$ vs $n \times n = 5000 \times 5000$) established. Next session will resume at Checkpoint 6/6, mini 1/3 to slow down and unpack the "hidden mechanics" one micro-step at a time: (1) centering the $n \times n$ similarity table $K$ in feature space, (2) why eigenvectors of $K$ act as coordinates, (3) the $1/\sqrt{\lambda}$ scaling factor, and (4) the pre-image problem with a small 3-point toy walkthrough.
+
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
 - **Pre-practice elicitation (quiz-audit PASS; ungraded):** learner's three-part walk of the fine P_ij·log(P_ij/Q_ij): "P_ij is the probability provided by the data and Q_ij is the probability provided by the model" · "it weighs the punishment by the data" · at an arbitrary perplexity cross-cluster pairs get a negligible fine, so the optimizer's 2-D arrangement alone explains why size/distance readings are untrustworthy. Check-and-extend (fact-check PASS 5/5, incl. the Rohit-vs-Distill re-anchor): Q is computed from the 2-D coordinates through the heavy-tailed kernel (the only number that moves); "the fine only speaks for pairs with P weight; anything read off the plot across weightless territory is the optimizer's arrangement."
@@ -273,3 +307,4 @@
 - PCA (Dimensionality Reduction) — mastery 1.00, interval_index 3, next 2026-11-05 (2026-10-06 sync); no new attempt rows logged in the 2026-10-07 session.
 - Perplexity pass · KL Divergence pass · PMF vs PDF fail (2026-09-26 probe; regression tracked).
 - PCA (Dimensionality Reduction) — 2026-10-08: fail (warm-up W2 frame-inversion, self-located after repair) then pass (pause exit ticket 3/3) → mastery 0.75, interval_index 3, next_review 2026-11-07.
+- PCA (Dimensionality Reduction) — 2026-10-20: pass (pause exit ticket X1, explain-back, sure, 1 hint) → mastery 0.85, interval_index 3, consecutive_correct 2, next_review 2026-11-19.
