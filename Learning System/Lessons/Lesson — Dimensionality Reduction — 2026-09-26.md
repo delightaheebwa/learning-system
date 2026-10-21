@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 6/6 (mini 1/3 in-progress) — **CP5 (UMAP) fully sealed 2026-10-19**; Checkpoint 6 mini 1/3 in-progress (2026-10-20: 2D-to-3D nonlinear lifting intuition and $d \times d$ vs $n \times n$ matrix size anchor established; pause exit ticket X1 passed; slow down and unpack hidden mechanics next)
-**Resume from:** **Checkpoint 6/6, mini 1/3: Kernel PCA with an RBF kernel (PCA on a nonlinear manifold — slow down and unpack the hidden steps: centering the n x n similarity table, why eigenvectors of K act as coordinates, 1/sqrt(lambda) scaling, and the pre-image problem with a small 3-point toy walkthrough)**
+**Status:** paused at Checkpoint 6/6 (mini 1/3 in-progress) — **CP5 (UMAP) fully sealed 2026-10-19**; Checkpoint 6 mini 1/3 in-progress (2026-10-20: 2D-to-3D nonlinear lifting intuition and $d \times d$ vs $n \times n$ matrix size anchor established; 2026-10-21: Hidden Piece 1 sealed: Kernel PCA centering in feature space via double-centering and RBF shift-cancellation; pause exit ticket X1 passed; resume at Hidden Piece 2: eigenvectors of centered K and 1/sqrt(lambda) scaling)
+**Resume from:** **Checkpoint 6/6, mini 1/3: Kernel PCA with an RBF kernel (Hidden Piece 1 sealed; resume at Hidden Piece 2: eigenvectors of centered K as coordinates and 1/sqrt(lambda) scaling, followed by Hidden Piece 3: pre-image problem with a small 3-point toy walkthrough)**
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
@@ -267,6 +267,28 @@
   - Exit ticket X1 & hidden steps: *"1. it fails beause there is no line in 2d that can seperate them. lifting them into a non linear coordinate puts them at different heights thereby truly seperating them. sure 2. standard pca decomposes into 2x2 while kernel pca decomposes into 5000 x 5000. sure\nfor hidden stuff, i think basically all of it."*
 - **Learner pacing & next session focus:** Paused mid-Checkpoint 6 at mini 1/3. 2D-to-3D lifting intuition and matrix size anchoring ($d \times d = 2 \times 2$ vs $n \times n = 5000 \times 5000$) established. Next session will resume at Checkpoint 6/6, mini 1/3 to slow down and unpack the "hidden mechanics" one micro-step at a time: (1) centering the $n \times n$ similarity table $K$ in feature space, (2) why eigenvectors of $K$ act as coordinates, (3) the $1/\sqrt{\lambda}$ scaling factor, and (4) the pre-image problem with a small 3-point toy walkthrough.
 
+## Resume session 2026-10-21 — CP6 mini 1 in-progress (Hidden Piece 1: Kernel PCA centering in feature space sealed; paused at CP6 mini 1/3)
+
+- **CP6 mini 1 — Kernel PCA with an RBF kernel (Hidden Piece 1 sealed):**
+  - **Context & Progression:** Continuing the deliberate slow-down on Checkpoint 6 mini 1 to unpack the four "hidden steps" behind Kernel PCA. Today focused specifically on Hidden Piece 1: centering the $n \times n$ Gram matrix $K$ in feature space $\mathcal{H}$.
+  - **Core Mechanics & Socratic Trajectory:**
+    - **Problem (Why input-space centering fails):** In standard PCA, centering is trivial: subtract the empirical mean vector $\mu = \frac{1}{n}\sum_{i=1}^n x_i$ from each point $x_i$ so the data is zero-mean. However, for distance-based shift-invariant kernels like the Gaussian RBF kernel $k(x, x') = \exp(-\gamma \|x - x'\|^2)$, shifting the input data by any constant $c$ leaves pairwise squared Euclidean distances completely unchanged: $\|(x_i - c) - (x_j - c)\|^2 = \|x_i - x_j\|^2$. Thus, centering the raw features in input space $\mathbb{R}^d$ leaves the kernel matrix $K$ completely identical and fails to center the lifted points $\phi(x)$ around their feature-space mean $\mu_\phi = \frac{1}{n}\sum_{i=1}^n \phi(x_i)$.
+    - **Where from / Double-Centering Formula:** Because $\phi(x)$ may be infinite-dimensional (as with RBF) and is never explicitly computed, centering must be performed entirely on the Gram matrix $K$. Defining the centered feature mapping $\tilde{\phi}(x) = \phi(x) - \mu_\phi$, the centered kernel entry is $\tilde{K}_{ij} = \langle \tilde{\phi}(x_i), \tilde{\phi}(x_j) \rangle = \langle \phi(x_i) - \frac{1}{n}\sum_{k=1}^n \phi(x_k), \phi(x_j) - \frac{1}{n}\sum_{l=1}^n \phi(x_l) \rangle$. Expanding this inner product yields the matrix formulation:
+      $$\tilde{K} = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n = (I - \mathbf{1}_n) K (I - \mathbf{1}_n)$$
+      where $\mathbf{1}_n$ is the $n \times n$ matrix with all elements equal to $1/n$ ($\mathbf{1}_n = \frac{1}{n}\mathbf{1}\mathbf{1}^T$). This algebraic identity allows centering in $\mathcal{H}$ using only the $n \times n$ matrix $K$ without ever materializing $\phi(x)$ or $\mu_\phi$.
+    - **Conditions / Boundaries:** Requires the full $n \times n$ Gram matrix to be computed or batch-approximated; requires $O(n^2)$ matrix multiplications (or $O(n^2)$ row/column mean centering operations). For test/out-of-sample points $x^*$, projection requires a corresponding asymmetric centering against training column/row means.
+    - **Contrast:** Standard PCA centers columns of data matrix $X$ ($O(nd)$ operations); Kernel PCA double-centers the Gram matrix $K$ ($O(n^2)$ operations).
+- **Pause Exit Ticket X1 (quiz-audit PASS, grade-audit agreed 1/1, `sure`, 1 hint):**
+  - **Question / Focus:** Kernel PCA centering in feature space: (1) why input-space centering does not center data in feature space for an RBF kernel (distance cancellation: $\|(x_i - \mu) - (x_j - \mu)\| = \|x_i - x_j\|$), and (2) the explicit double-centering matrix formula $\tilde{K} = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$ (or $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$).
+  - **Verdict:** `PASS` (`applied`, `sure`, 1 hint). Learner correctly reasoned that pairwise distances are invariant under uniform shifts, rendering input-space centering useless for RBF, and articulated the double-centering formula subtracting row/column means and adding the grand mean.
+- **Attempts this session (ops.py):**
+  - `PCA (Dimensionality Reduction)` — pass (`applied`, `sure`, 1 hint) → mastery **0.90**, interval_index **3**, consecutive_correct 3, consecutive_wrong 0, last_reviewed **2026-10-21**, next_review **2026-11-20**, Last Q Type `applied`.
+- **Mistakes ledger:** none (`mistakes: []`).
+- **Dependency events:** none (`just_tell_me`: 0, `told_repair`: 0, `declined_generation`: 0).
+- **Learner words for the wiki (`## My understanding`, verbatim):**
+  - Centering cancellation and double-centering: understanding that RBF differences cancel input shifts and centering requires double-centering the kernel matrix via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$.
+- **Learner pacing & next session focus:** Hidden Piece 1 (centering $K$ in feature space) sealed. Next session resumes at Checkpoint 6/6, mini 1/3 with Hidden Piece 2: why eigenvectors of centered $\tilde{K}$ act as coordinates and the $1/\sqrt{\lambda}$ scaling factor, followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
+
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
 - **Pre-practice elicitation (quiz-audit PASS; ungraded):** learner's three-part walk of the fine P_ij·log(P_ij/Q_ij): "P_ij is the probability provided by the data and Q_ij is the probability provided by the model" · "it weighs the punishment by the data" · at an arbitrary perplexity cross-cluster pairs get a negligible fine, so the optimizer's 2-D arrangement alone explains why size/distance readings are untrustworthy. Check-and-extend (fact-check PASS 5/5, incl. the Rohit-vs-Distill re-anchor): Q is computed from the 2-D coordinates through the heavy-tailed kernel (the only number that moves); "the fine only speaks for pairs with P weight; anything read off the plot across weightless territory is the optimizer's arrangement."
@@ -308,3 +330,4 @@
 - Perplexity pass · KL Divergence pass · PMF vs PDF fail (2026-09-26 probe; regression tracked).
 - PCA (Dimensionality Reduction) — 2026-10-08: fail (warm-up W2 frame-inversion, self-located after repair) then pass (pause exit ticket 3/3) → mastery 0.75, interval_index 3, next_review 2026-11-07.
 - PCA (Dimensionality Reduction) — 2026-10-20: pass (pause exit ticket X1, explain-back, sure, 1 hint) → mastery 0.85, interval_index 3, consecutive_correct 2, next_review 2026-11-19.
+- PCA (Dimensionality Reduction) — 2026-10-21: pass (pause exit ticket X1, applied, sure, 1 hint) → mastery 0.90, interval_index 3, consecutive_correct 3, next_review 2026-11-20.

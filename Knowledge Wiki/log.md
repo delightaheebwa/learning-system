@@ -957,3 +957,19 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
 - **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-01a134d5-…` (2026-10-13, inside TTL through 2026-10-20) is **kept**. Lesson file and curriculum row stay **in-progress**.
 
+## 2026-10-21 — P1 L10 CP6 mini 1 (partial ingest): Hidden Piece 1 sealed: Kernel PCA centering in feature space, RBF shift cancellation, double-centering formula; pause handoff
+
+- **Source:** `Learning System/Core/Pending Ingest.json` (partial `/pause` handoff, 2026-10-21) → lesson `Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md`; teach session `Learning System/Sessions/Session — Dimensionality Reduction (P1 L10 resume, CP6 mini 1 pause) — 2026-10-21.md`. Kept digest `context-36761f9b-8309-4534-96a9-60a8a8db4d66-dimensionality-reduction.json` (2026-10-20, audited PASS, inside its 7-day TTL through 2026-10-27).
+- `PCA (Dimensionality Reduction)` — **page deepened** (`status=synthesis`):
+  - **`### Feature-space centering and RBF shift-cancellation (Hidden Piece 1 sealed 2026-10-21)` subsection added:**
+    - Problem: In standard PCA, centering subtracts input mean $\mu$. For distance-based RBF kernels $k(x,x') = \exp(-\gamma\|x-x'\|^2)$, uniform input shifts cancel completely in pairwise differences ($\|(x_i - c) - (x_j - c)\| = \|x_i - x_j\|$), leaving $K$ unchanged and failing to center $\phi(x)$ around feature-space mean $\mu_\phi$.
+    - Double-Centering Formula: Feature-space centering performed directly on the $n \times n$ Gram matrix via $\tilde{K} = (I - \mathbf{1}_n) K (I - \mathbf{1}_n) = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$, subtracting row/column means and adding back the grand mean in $O(n^2)$ time without materializing $\phi(x)$.
+  - **`## My understanding` appended** with **fifth verbatim learner statement** (`status=learner-note`): understanding that RBF differences cancel input shifts and centering requires double-centering the kernel matrix via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$.
+  - Open questions updated: Hidden Piece 1 sealed 2026-10-21; resume at Hidden Piece 2 (eigenvectors as coordinates, $1/\sqrt{\lambda}$ scaling) and Hidden Piece 3 (pre-image problem).
+- `Knowledge Wiki/index.md` refreshed (PCA entry updated with Hidden Piece 1 centering details); this log appended.
+- **Concept(s):** `PCA (Dimensionality Reduction)` row enriched and synced to `Attempts.json`: `last_reviewed` 2026-10-20 → **2026-10-21**, `next_review` 2026-11-19 → **2026-11-20**, `Last Q Type` `explain-back` → **`applied`**, mastery 0.85 → **0.90** advisory, `interval_index` 3, `consecutive_correct` 3; attempt 2026-10-21: pass applied (`sure`, 1 hint) on Pause exit ticket X1. **41 live concepts**.
+- **Mistakes: none** (`mistakes: []`). **Dependency events: none** (`dependency_events: []`).
+- **Position reconciliation:** `MISSION.md`, `CURRICULUM.md`, `Core/💡 Learning Profile.md`, and `Core/📚 Active Concepts.md` all aligned to **paused at Checkpoint 6/6, mini 1/3 (Hidden Piece 1 sealed; resume at Hidden Piece 2: eigenvectors of centered K as coordinates and 1/sqrt(lambda) scaling, followed by Hidden Piece 3: pre-image problem with a small 3-point toy walkthrough)**.
+- `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
+- **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-36761f9b-…` (2026-10-20, inside TTL through 2026-10-27) is **kept**. Lesson file and curriculum row stay **in-progress**.
+

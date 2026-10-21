@@ -1,4 +1,5 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) | verified-by=— | date=2026-10-20 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; four statements as of 2026-10-20, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-21 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; five statements as of 2026-10-21, nothing overwritten) -->
+
 
 # PCA (Dimensionality Reduction)
 
@@ -117,19 +118,29 @@ Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data li
    - **Kernel PCA** diagonalizes the $n \times n$ pairwise similarity Gram matrix $K$. For $n = 5000, d = 2$, $K$ is $5000 \times 5000$. Computational cost shifts from feature dimension $d$ to sample size $n$ ($O(n^2)$ memory, $O(n^3)$ eigendecomposition).
 4. **Boundary Conditions & the Pre-image Problem:**
    - The kernel function $k$ must satisfy **Mercer's condition** (positive semi-definiteness).
-   - In feature space, centering must be performed on the Gram matrix $K$ implicitly ($\tilde{K} = K - 1_n K - K 1_n + 1_n K 1_n$, where $1_n$ is the $n \times n$ matrix with entries $1/n$).
+   - In feature space, centering must be performed on the Gram matrix $K$ implicitly ($\tilde{K} = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n = (I - \mathbf{1}_n) K (I - \mathbf{1}_n)$, where $\mathbf{1}_n$ is the $n \times n$ matrix with entries $1/n$).
    - The **pre-image problem**: while projecting a point into low-dimensional kernel coordinates is straightforward via training similarities, reconstructing an input-space vector $\hat{x} \in \mathbb{R}^d$ from a feature-space point $\phi(x)$ is generally ill-posed because an arbitrary vector in $\mathcal{H}$ may have no exact pre-image in input space.
 5. **Contrast with t-SNE / UMAP:**
    - t-SNE and UMAP optimize low-dimensional coordinates directly via gradient descent on pairwise probabilities/fuzzy simplicial sets, which makes projecting out-of-sample test points ill-defined or expensive without re-optimizing.
    - Kernel PCA provides an analytical out-of-sample projection operator: a new test point $x^*$ is projected onto the $k$-th eigenvector by evaluating kernel similarities against all training points:
      $$y_k(x^*) = \frac{1}{\sqrt{\lambda_k}} \sum_{i=1}^n \alpha_{k, i} k(x_i, x^*)$$
 
+### Feature-space centering and RBF shift-cancellation (Hidden Piece 1 sealed 2026-10-21)
+
+1. **Problem (Why input-space centering fails):** In standard PCA, centering simply subtracts the input mean $\mu = \frac{1}{n}\sum_{i=1}^n x_i$. However, for distance-based shift-invariant kernels like the Gaussian RBF kernel $k(x, x') = \exp(-\gamma \|x - x'\|^2)$, uniform translation by any shift vector $c$ cancels identically in pairwise differences:
+   $$\|(x_i - c) - (x_j - c)\|^2 = \|x_i - x_j\|^2$$
+   Hence, centering raw features in $\mathbb{R}^d$ leaves the kernel matrix $K$ completely unchanged and completely fails to center the lifted points $\phi(x)$ in feature space $\mathcal{H}$ around $\mu_\phi = \frac{1}{n}\sum_{i=1}^n \phi(x_i)$.
+2. **Where from / Double-Centering Formula:** Because $\phi(x)$ can be infinite-dimensional and is never explicitly computed, centering must be carried out directly on the $n \times n$ Gram matrix $K$. Centered features $\tilde{\phi}(x_i) = \phi(x_i) - \mu_\phi$ define centered kernel entries $\tilde{K}_{ij} = \langle \tilde{\phi}(x_i), \tilde{\phi}(x_j) \rangle = \langle \phi(x_i) - \frac{1}{n}\sum_{k=1}^n \phi(x_k), \phi(x_j) - \frac{1}{n}\sum_{l=1}^n \phi(x_l) \rangle$. Expanding the inner product yields the matrix identity:
+   $$\tilde{K} = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n = (I - \mathbf{1}_n) K (I - \mathbf{1}_n)$$
+   where $\mathbf{1}_n$ is the $n \times n$ matrix with all entries equal to $1/n$ ($\mathbf{1}_n = \frac{1}{n}\mathbf{1}\mathbf{1}^\top$). Double-centering subtracts row means, subtracts column means, and adds back the grand mean.
+3. **Conditions & Cost:** Requires the full $n \times n$ Gram matrix ($O(n^2)$ space, $O(n^2)$ operations for centering). Out-of-sample test projection requires asymmetric centering against training column/row means.
+
 ## Open questions
 
 - **Round cloud (equal eigenvalues) — sealed 2026-10-07:** `λI` ⇒ every direction is an eigenvector, the λ ranking is a total tie, the axes are arbitrary, the scree is flat, and a 95% target cannot drop a single bar. The verdict: PCA's compression power needs unequal spread (shape, not size).
 - **Curse of dimensionality — sealed 2026-10-07:** distance concentration (distances become *more alike*, not smaller) and the fixed trace pie (`Σλ = trace(C)` invariant under rotation). See [[Curse of Dimensionality]].
 - **`n == d` — sealed 2026-10-05:** both `vecs` and `Xc` then read `d×d`, so the shape detector alone cannot separate them — the resolution is to inspect what the array *holds* (`Xp`'s rows are data points, `V`'s columns are directions; the learner's own repair: "rows hold data points, hence nxk").
-- **Kernel PCA hidden steps (paused at CP6 mini 1/3, 2026-10-20):** Centering the $n \times n$ similarity table $K$ in feature space, why eigenvectors of $K$ act as coordinates, the $1/\sqrt{\lambda}$ scaling factor, and the pre-image problem (to unpack via a 3-point toy walkthrough on resume).
+- **Kernel PCA hidden steps (CP6 mini 1/3 in-progress):** Hidden Piece 1 (centering the $n \times n$ Gram matrix $K$ in feature space via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$ and RBF shift-cancellation) **sealed 2026-10-21**. Still open to unpack on resume: Hidden Piece 2 (why eigenvectors of centered $\tilde{K}$ act as coordinates, and the $1/\sqrt{\lambda}$ scaling factor) followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
 
 ## Field notes
 
@@ -160,31 +171,43 @@ The learner's own words (2026-10-08, the anomaly-detector tangent):
 - "whether big or small, it's still in the dropped subspace" — the puzzle the **unit-vs-signal** split dissolved: being in the residual subspace is the unit, the *length* is the signal.
 - The two guiding rounds of the tangent, kept as the pair of detector phrases: **shape fit lives across, depth lives along**; **directions get dropped, points never do**.
 
+The learner's own understanding (2026-10-21, CP6 mini 1 pause exit ticket X1):
+
+- Pairwise differences cancel uniform shifts ($\|(x_i - \mu) - (x_j - \mu)\| = \|x_i - x_j\|$), rendering input-space centering ineffective for RBF kernels.
+- Feature-space centering must be performed directly on $K$ via double-centering: $\tilde{K} = (I - \mathbf{1}_n) K (I - \mathbf{1}_n) = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$.
+
 ## My understanding
 
-> **status=learner-note** — the learner's words, verbatim from the 2026-10-20 session (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
+> **status=learner-note** — the learner's words, verbatim from the 2026-10-20 and 2026-10-21 sessions (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
 
-**Kernel PCA lifting intuition for 2D concentric circles (Rung 3 own-words statement):**
+**Kernel PCA lifting intuition for 2D concentric circles (Rung 3 own-words statement, 2026-10-20):**
 
 > "it couldnt because you cant seperate concentric circles in 2D since there is no line you could draw that would seperate them. mapping to a non linear coordinate helps use to \"pull one out of the other\" by adding a new coordinate which wil put them at different heights thereby truly seperating them."
 
 *Source framing (annotation, not a rewrite):* "Pull one out of the other" captures the dimension-lifting geometry cleanly — lifting $(x_1, x_2)$ onto a paraboloid $z = x_1^2 + x_2^2$ maps the radial coordinate into height, transforming non-linear concentricity into linear vertical separability.
 
-**Paraboloid height coordinate (Rung 2 hint response):**
+**Paraboloid height coordinate (Rung 2 hint response, 2026-10-20):**
 
 > "1. for the inner ring is sits at (1,1,z) and the outer sits at (3,3,z). 2. i think they end up as seperate points along the vertical axis"
 
 *Source framing:* Confirms that lifting to 3D via height $z$ aligns the two concentric rings at different levels along the vertical axis.
 
-**Pacing & comprehension reflection before /pause:**
+**Pacing & comprehension reflection before /pause (2026-10-20):**
 
 > "that kinda works. it is better than before but i think we will need to slow down a bit on it for the next time. i feel like there is a lot of \"hidden stuff\" i should know when reading some of what you just said but i dont really know. plus some parts still are fuzzy for me. /pause"
 
 *Tutor note:* Paused at Checkpoint 6/6, mini 1/3 per learner request. Next session will slow down and unpack the hidden mechanics step-by-step with a 3-point toy walkthrough.
 
-**Pause exit ticket X1 response & hidden-steps note:**
+**Pause exit ticket X1 response & hidden-steps note (2026-10-20):**
 
 > "1. it fails beause there is no line in 2d that can seperate them. lifting them into a non linear coordinate puts them at different heights thereby truly seperating them. sure 2. standard pca decomposes into 2x2 while kernel pca decomposes into 5000 x 5000. sure\nfor hidden stuff, i think basically all of it."
 
 *Source framing:* The geometric intuition and matrix dimensions ($d \times d = 2 \times 2$ vs $n \times n = 5000 \times 5000$) are exact. The "hidden stuff" (centering $K$ in feature space, why eigenvectors of $K$ act as coordinates, $1/\sqrt{\lambda}$ scaling factor, and the pre-image problem) will be unpacked in detail.
+
+**Kernel PCA centering in feature space & double-centering (Pause exit ticket X1, 2026-10-21):**
+
+> "understanding that RBF differences cancel input shifts and centering requires double-centering the kernel matrix via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$."
+
+*Source framing (annotation, not a rewrite):* For an RBF kernel $k(x, x') = \exp(-\gamma \|x - x'\|^2)$, uniform translation in input space cancels in the Euclidean norm $\|(x_i - c) - (x_j - c)\| = \|x_i - x_j\|$, leaving the Gram matrix $K$ identical. Centering must be performed directly on $K$ in feature space using the projection operator $(I - \mathbf{1}_n) K (I - \mathbf{1}_n) = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$, subtracting row/column means and adding back the grand mean.
+
 

@@ -2988,13 +2988,21 @@
           "q_type": "explain-back",
           "confidence": "sure",
           "hints": 1
+        },
+        {
+          "date": "2026-10-21",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "applied",
+          "confidence": "sure",
+          "hints": 1
         }
       ],
       "interval_index": 3,
-      "consecutive_correct": 2,
+      "consecutive_correct": 3,
       "consecutive_wrong": 0,
-      "last_reviewed": "2026-10-20",
-      "next_review": "2026-11-19",
+      "last_reviewed": "2026-10-21",
+      "next_review": "2026-11-20",
       "feynman": null
     },
     "UMAP (Dimensionality Reduction)": {
