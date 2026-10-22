@@ -973,3 +973,21 @@ A personal synthesis of professionalism, engineering mindset, delivering value, 
 - `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
 - **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-36761f9b-…` (2026-10-20, inside TTL through 2026-10-27) is **kept**. Lesson file and curriculum row stay **in-progress**.
 
+## 2026-10-22 — P1 L10 CP6 mini 1 (partial ingest): Hidden Piece 2 Part 1 sealed: dual representation, projection paradox / shape mismatch, eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$; pause handoff
+
+- **Source:** `Learning System/Core/Pending Ingest.json` (partial `/pause` handoff, 2026-10-22) → lesson `Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md`; teach session `Learning System/Sessions/Session — Dimensionality Reduction (P1 L10 resume, CP6 mini 1 pause) — 2026-10-22.md`. Kept digest `context-36761f9b-8309-4534-96a9-60a8a8db4d66-dimensionality-reduction.json` (2026-10-20, audited PASS, inside its 7-day TTL through 2026-10-27).
+- `PCA (Dimensionality Reduction)` — **page deepened** (`status=synthesis`):
+  - **`### Dual representation and eigenvectors as coordinates (Hidden Piece 2 Part 1 sealed 2026-10-22)` subsection added:**
+    - Collision (The Projection Paradox): Standard PCA covariance is $d \times d$ with eigenvectors $u_k \in \mathbb{R}^d$ weighting features; Kernel PCA centered Gram matrix $\tilde{K} \in \mathbb{R}^{n \times n}$ yields eigenvectors $\alpha_k \in \mathbb{R}^n$ indexing $n = 5000$ data points/samples.
+    - Dual Representation Mechanism: Principal axis $v_k = \sum_{j=1}^n \alpha_{k,j} \tilde{\phi}(x_j) \in \mathcal{H}$; projection of centered training point $i$ is $\langle v_k, \tilde{\phi}(x_i) \rangle = (\tilde{K}\alpha_k)_i = \lambda_k \alpha_{k,i}$. Proves sample-indexed eigenvector components directly supply data point coordinates along the nonlinear principal component.
+    - Out-of-Sample projection evaluates kernel against training data: $\langle v_k, \tilde{\phi}(x^*) \rangle = \sum_{j=1}^n \alpha_{k,j} \tilde{k}(x_j, x^*)$.
+    - Normalization in $\mathcal{H}$ ($\|v_k\|_\mathcal{H} = 1$) requires scaling by $1/\sqrt{\lambda_k}$ (Part 2 pending).
+  - **`## My understanding` appended** with **three more verbatim learner statements** (`status=learner-note`, now eight total): diagnosing $n$-dimensional eigenvector slots, deriving coordinate connection via eigenvalue substitution, and pause/waived exit ticket request.
+  - Open questions updated: Hidden Piece 1 sealed 2026-10-21; Hidden Piece 2 Part 1 sealed 2026-10-22; resume at Hidden Piece 2 Part 2 ($1/\sqrt{\lambda_k}$ scaling) and Hidden Piece 3 (pre-image problem).
+- `Knowledge Wiki/index.md` refreshed (PCA entry updated with Hidden Piece 2 Part 1 dual representation details); this log appended.
+- **Concept(s):** `PCA (Dimensionality Reduction)` row enriched (no attempts logged today; exit ticket waived per learner request); `last_reviewed` 2026-10-21, `next_review` 2026-11-20, `Last Q Type` `applied`, advisory mastery 0.90, `interval_index` 3, `consecutive_correct` 3. **41 live concepts**.
+- **Mistakes: none** (`mistakes: []`). **Dependency events: none** (`dependency_events: []`).
+- **Position reconciliation:** `MISSION.md`, `CURRICULUM.md`, `Core/💡 Learning Profile.md`, and `Core/📚 Active Concepts.md` all aligned to **paused at Checkpoint 6/6, mini 1/3 (Hidden Piece 1 sealed; Hidden Piece 2 in-progress — sealed Part 1: eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$; resume at Part 2: $\|v_k\|_\mathcal{H}^2 = \alpha_k^T \tilde{K} \alpha_k = \lambda_k$ and $1/\sqrt{\lambda_k}$ scaling, followed by Hidden Piece 3: pre-image problem)**.
+- `Core/Learner History.md` regenerated via `python3 scripts/learner_history.py`.
+- **Marker / digest:** `Core/Pending Ingest.json` **cleared** (partial handoff — the marker only). The fresh digest `context-36761f9b-…` (2026-10-20, inside TTL through 2026-10-27) is **kept**. Lesson file and curriculum row stay **in-progress**.
+

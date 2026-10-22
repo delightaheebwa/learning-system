@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-21 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; five statements as of 2026-10-21, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-22 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eight statements as of 2026-10-22, nothing overwritten) -->
 
 
 # PCA (Dimensionality Reduction)
@@ -135,12 +135,30 @@ Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data li
    where $\mathbf{1}_n$ is the $n \times n$ matrix with all entries equal to $1/n$ ($\mathbf{1}_n = \frac{1}{n}\mathbf{1}\mathbf{1}^\top$). Double-centering subtracts row means, subtracts column means, and adds back the grand mean.
 3. **Conditions & Cost:** Requires the full $n \times n$ Gram matrix ($O(n^2)$ space, $O(n^2)$ operations for centering). Out-of-sample test projection requires asymmetric centering against training column/row means.
 
+### Dual representation and eigenvectors as coordinates (Hidden Piece 2 Part 1 sealed 2026-10-22)
+
+1. **Collision (The Projection Paradox / Shape Mismatch):**
+   - In standard PCA, the covariance matrix $C$ is $d \times d$, yielding eigenvectors $u_k \in \mathbb{R}^d$ with $d$ feature weights. Projecting a data point $x \in \mathbb{R}^d$ is the standard dot product $x^\top u_k$.
+   - In Kernel PCA, diagonalizing the centered Gram matrix $\tilde{K} \in \mathbb{R}^{n \times n}$ yields eigenvectors $\alpha_k \in \mathbb{R}^n$ with $n$ slots (e.g., $n = 5000$ for concentric rings). Each entry in $\alpha_k$ indexes a data point / observation / sample, not an input feature. How can an eigenvector indexing training samples serve as a projection direction?
+2. **Where from / Dual Representation (Mechanism Part 1):**
+   In the lifted Hilbert feature space $\mathcal{H}$ (which may be infinite-dimensional), the principal axis $v_k \in \mathcal{H}$ lies in the linear span of the centered lifted data (by the representer theorem / dual representation):
+   $$v_k = \sum_{j=1}^n \alpha_{k,j} \tilde{\phi}(x_j)$$
+   Projecting the $i$-th centered data point $\tilde{\phi}(x_i)$ onto $v_k$ in $\mathcal{H}$ gives:
+   $$\langle v_k, \tilde{\phi}(x_i) \rangle_\mathcal{H} = \left\langle \sum_{j=1}^n \alpha_{k,j} \tilde{\phi}(x_j), \tilde{\phi}(x_i) \right\rangle = \sum_{j=1}^n \alpha_{k,j} \langle \tilde{\phi}(x_j), \tilde{\phi}(x_i) \rangle = \sum_{j=1}^n \tilde{K}_{ij} \alpha_{k,j} = (\tilde{K} \alpha_k)_i$$
+   Because $\alpha_k$ is an eigenvector of $\tilde{K}$ with eigenvalue $\lambda_k$, $\tilde{K} \alpha_k = \lambda_k \alpha_k$, which means:
+   $$(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$$
+   The projection of sample $i$ onto principal direction $v_k$ is directly given by $\lambda_k \alpha_{k,i}$. Thus, the coordinates of the eigenvector $\alpha_k$ literally define the coordinates of the training points along the new nonlinear component!
+3. **Conditions & Out-of-Sample Extension:**
+   This direct identity applies to centered training points. For an out-of-sample test point $x^*$, projection evaluates the kernel against all training points: $\langle v_k, \tilde{\phi}(x^*) \rangle = \sum_{j=1}^n \alpha_{k,j} \tilde{k}(x_j, x^*)$.
+4. **Pending Part 2:**
+   Normalization of $v_k$ in Hilbert space ($\|v_k\|_\mathcal{H} = 1$). Because $\|v_k\|_\mathcal{H}^2 = \alpha_k^\top \tilde{K} \alpha_k = \lambda_k \|\alpha_k\|^2$, standardizing $\|\alpha_k\| = 1$ requires scaling $\alpha_k$ by $1/\sqrt{\lambda_k}$, so the normalized projection is $\sqrt{\lambda_k} \alpha_{k,i}$.
+
 ## Open questions
 
 - **Round cloud (equal eigenvalues) — sealed 2026-10-07:** `λI` ⇒ every direction is an eigenvector, the λ ranking is a total tie, the axes are arbitrary, the scree is flat, and a 95% target cannot drop a single bar. The verdict: PCA's compression power needs unequal spread (shape, not size).
 - **Curse of dimensionality — sealed 2026-10-07:** distance concentration (distances become *more alike*, not smaller) and the fixed trace pie (`Σλ = trace(C)` invariant under rotation). See [[Curse of Dimensionality]].
 - **`n == d` — sealed 2026-10-05:** both `vecs` and `Xc` then read `d×d`, so the shape detector alone cannot separate them — the resolution is to inspect what the array *holds* (`Xp`'s rows are data points, `V`'s columns are directions; the learner's own repair: "rows hold data points, hence nxk").
-- **Kernel PCA hidden steps (CP6 mini 1/3 in-progress):** Hidden Piece 1 (centering the $n \times n$ Gram matrix $K$ in feature space via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$ and RBF shift-cancellation) **sealed 2026-10-21**. Still open to unpack on resume: Hidden Piece 2 (why eigenvectors of centered $\tilde{K}$ act as coordinates, and the $1/\sqrt{\lambda}$ scaling factor) followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
+- **Kernel PCA hidden steps (CP6 mini 1/3 in-progress):** Hidden Piece 1 (centering the $n \times n$ Gram matrix $K$ in feature space via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$ and RBF shift-cancellation) **sealed 2026-10-21**. Hidden Piece 2 Part 1 (eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$) **sealed 2026-10-22**. Still open to unpack on resume: Hidden Piece 2 Part 2 (Hilbert space normalization $\|v_k\|_\mathcal{H}^2 = \alpha_k^\top \tilde{K} \alpha_k = \lambda_k$ and the $1/\sqrt{\lambda_k}$ scaling factor) followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
 
 ## Field notes
 
@@ -176,9 +194,14 @@ The learner's own understanding (2026-10-21, CP6 mini 1 pause exit ticket X1):
 - Pairwise differences cancel uniform shifts ($\|(x_i - \mu) - (x_j - \mu)\| = \|x_i - x_j\|$), rendering input-space centering ineffective for RBF kernels.
 - Feature-space centering must be performed directly on $K$ via double-centering: $\tilde{K} = (I - \mathbf{1}_n) K (I - \mathbf{1}_n) = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$.
 
+The learner's own understanding (2026-10-22, CP6 mini 1 Hidden Piece 2 Part 1):
+
+- Diagnosing the $n$-dimensional eigenvector slots: $\alpha_k$ has 5000 slots because each slot corresponds to a point/sample/observation, not a feature.
+- Deriving the coordinate connection: $\langle v_k, \tilde{\phi}(x_i) \rangle = (\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$, connecting the eigenvector slots directly to the projection coordinates.
+
 ## My understanding
 
-> **status=learner-note** — the learner's words, verbatim from the 2026-10-20 and 2026-10-21 sessions (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
+> **status=learner-note** — the learner's words, verbatim from the 2026-10-20, 2026-10-21, and 2026-10-22 sessions (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
 
 **Kernel PCA lifting intuition for 2D concentric circles (Rung 3 own-words statement, 2026-10-20):**
 
@@ -209,5 +232,23 @@ The learner's own understanding (2026-10-21, CP6 mini 1 pause exit ticket X1):
 > "understanding that RBF differences cancel input shifts and centering requires double-centering the kernel matrix via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$."
 
 *Source framing (annotation, not a rewrite):* For an RBF kernel $k(x, x') = \exp(-\gamma \|x - x'\|^2)$, uniform translation in input space cancels in the Euclidean norm $\|(x_i - c) - (x_j - c)\| = \|x_i - x_j\|$, leaving the Gram matrix $K$ identical. Centering must be performed directly on $K$ in feature space using the projection operator $(I - \mathbf{1}_n) K (I - \mathbf{1}_n) = K - \mathbf{1}_n K - K \mathbf{1}_n + \mathbf{1}_n K \mathbf{1}_n$, subtracting row/column means and adding back the grand mean.
+
+**Diagnosing the $n$-dimensional eigenvector slots (Collision / Shape Mismatch, 2026-10-22):**
+
+> "1. points/samples/observations / 2. i think because here we have many slots per feature(5000 slots)"
+
+*Source framing (annotation, not a rewrite):* Diagnoses the collision between standard PCA (eigenvectors $u_k \in \mathbb{R}^d$ weight features) and Kernel PCA (eigenvectors $\alpha_k \in \mathbb{R}^n$ index the $n = 5000$ data points/samples).
+
+**Deriving eigenvectors as coordinates via the eigenvalue substitution (2026-10-22):**
+
+> "1. i guess lambda_k * alpha_k,i / 2. i guess it must equal K tilda. i guess divide by K tilda"
+
+*Source framing (annotation, not a rewrite):* Connects the dual expansion projection $\langle v_k, \tilde{\phi}(x_i) \rangle = (\tilde{K}\alpha_k)_i$ with the eigenvalue equation $\tilde{K}\alpha_k = \lambda_k \alpha_k$, deriving that the $i$-th coordinate is directly proportional to $\lambda_k \alpha_{k,i}$.
+
+**Pacing & pause request (waived exit ticket, 2026-10-22):**
+
+> "no exit ticket for today please. lets pause here. /pause"
+
+*Tutor note:* Paused at Checkpoint 6/6, mini 1/3 per learner request. Hidden Piece 2 Part 1 sealed; Part 2 ($1/\sqrt{\lambda_k}$ scaling) and Hidden Piece 3 (pre-image problem) will resume next session.
 
 

@@ -39,6 +39,7 @@ Base model IDs float upstream — record current values here after any model cha
 | Item | Kind | Version | Source |
 | --- | --- | --- | --- |
 | gate_pipe | Function (Filter) | repo `Skills/learning-review/openwebui/` | installed by `scripts/setup_openwebui.py` |
+| markdown_normalizer | Function (Filter, global) | v1.2.9 (community, Fu-Jie, MIT) | installed manually from Open WebUI Community; bound globally to every model with `enable_latex_fix=false`, `show_status=false`, `priority=5` (runs before `gate_pipe` when the gate is enabled); NOT managed by `setup_openwebui.py` — re-install after a fresh `webui.db` |
 | sub_agent ("Sub Agent") | Tool | v0.5.8 (skyzi000) | community tool — NOT used by the learning system (no background mode, no receipts); recorded for portability only |
 | fact_check / quiz_gate / review_gate | Tools (legacy) | — | RETIRED 2026-08-25; files archived to `Learning System/Archive/legacy-tools-2026-08-25/` |
 | OpenUI widget assets | static assets | `@openuidev/browser-bundle@0.2.1` (MIT, © Thesys Inc.) | written by `scripts/setup_openwebui.py` into `~/learning-pi/deploy/openui/0.2.1/` (bundle sha256-pinned) + shell `widget.html`/`widget.js` |

@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-21)
+# Learner History — compact tutor context (generated 2026-10-22)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +

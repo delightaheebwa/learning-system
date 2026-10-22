@@ -1,7 +1,7 @@
 # Lesson — Dimensionality Reduction (PCA, t-SNE, UMAP) — Phase 1 L10 — 2026-09-26
 
-**Status:** paused at Checkpoint 6/6 (mini 1/3 in-progress) — **CP5 (UMAP) fully sealed 2026-10-19**; Checkpoint 6 mini 1/3 in-progress (2026-10-20: 2D-to-3D nonlinear lifting intuition and $d \times d$ vs $n \times n$ matrix size anchor established; 2026-10-21: Hidden Piece 1 sealed: Kernel PCA centering in feature space via double-centering and RBF shift-cancellation; pause exit ticket X1 passed; resume at Hidden Piece 2: eigenvectors of centered K and 1/sqrt(lambda) scaling)
-**Resume from:** **Checkpoint 6/6, mini 1/3: Kernel PCA with an RBF kernel (Hidden Piece 1 sealed; resume at Hidden Piece 2: eigenvectors of centered K as coordinates and 1/sqrt(lambda) scaling, followed by Hidden Piece 3: pre-image problem with a small 3-point toy walkthrough)**
+**Status:** paused at Checkpoint 6/6 (mini 1/3 in-progress) — **CP5 (UMAP) fully sealed 2026-10-19**; Checkpoint 6 mini 1/3 in-progress (2026-10-20: 2D-to-3D nonlinear lifting intuition and $d \times d$ vs $n \times n$ matrix size anchor established; 2026-10-21: Hidden Piece 1 sealed: Kernel PCA centering in feature space via double-centering and RBF shift-cancellation; 2026-10-22: Hidden Piece 2 opened: collision solved (eigenvectors $\alpha_k$ of $\tilde{K}$ index $n = 5000$ points, not features) and Part 1 sealed: $(\tilde{K}\alpha_k)_i = \lambda_k \alpha_{k,i}$ coordinates derivation; pause exit ticket waived per learner request; resume at Part 2: $1/\sqrt{\lambda_k}$ scaling and Hidden Piece 3: pre-image problem)
+**Resume from:** **Checkpoint 6/6, mini 1/3: Kernel PCA with an RBF kernel (Hidden Piece 1 sealed; Hidden Piece 2 in-progress — sealed Part 1: eigenvectors as coordinates via $(\tilde{K}\alpha_k)_i = \lambda_k \alpha_{k,i}$; resume at Part 2: $\|v_k\|_\mathcal{H}^2 = \alpha_k^T \tilde{K} \alpha_k = \lambda_k$ and $1/\sqrt{\lambda_k}$ scaling, followed by Hidden Piece 3: pre-image problem)**
 **Lang:** Python (lesson header: Python; NumPy + scikit-learn, optional umap-learn)
 
 **Sources (live-fetched 2026-09-25; SUPERSEDED by the fresh 2026-10-13 resume batch below):**
@@ -289,6 +289,34 @@
   - Centering cancellation and double-centering: understanding that RBF differences cancel input shifts and centering requires double-centering the kernel matrix via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$.
 - **Learner pacing & next session focus:** Hidden Piece 1 (centering $K$ in feature space) sealed. Next session resumes at Checkpoint 6/6, mini 1/3 with Hidden Piece 2: why eigenvectors of centered $\tilde{K}$ act as coordinates and the $1/\sqrt{\lambda}$ scaling factor, followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
 
+## Resume session 2026-10-22 — CP6 mini 1 in-progress (Hidden Piece 2: The Projection Paradox & Dual Representation, Part 1 sealed; paused at CP6 mini 1/3)
+
+- **CP6 mini 1 — Kernel PCA with an RBF kernel (Hidden Piece 2 opened, Part 1 sealed):**
+  - **Context & Progression:** Continuing the unpack of the "hidden mechanics" behind Kernel PCA on Checkpoint 6 mini 1. Hidden Piece 1 (centering $\tilde{K} = (I - \mathbf{1}_n) K (I - \mathbf{1}_n)$) was sealed 2026-10-21. Today tackled Hidden Piece 2: The Projection Paradox and Dual Representation (Part 1).
+  - **Core Mechanics & Socratic Trajectory:**
+    - **Collision (The Projection Paradox):** In standard PCA, the covariance matrix $C$ is $d \times d$, yielding eigenvectors $u_k \in \mathbb{R}^d$ with $d$ components (one per feature). Projecting a data point $x \in \mathbb{R}^d$ is simple: take the dot product $x^T u_k$. In Kernel PCA, eigendecomposition of the centered Gram matrix $\tilde{K} \in \mathbb{R}^{n \times n}$ yields eigenvectors $\alpha_k \in \mathbb{R}^n$ with $n$ slots (e.g., $n = 5000$ for concentric circles). Learner diagnosed: each entry in $\alpha_k$ indexes a data point / observation / sample, not a feature coordinate. How can a vector indexing sample points serve as a projection direction?
+    - **Dual Representation / Mechanism (Part 1):** In Hilbert space $\mathcal{H}$, the principal direction $v_k$ lives in $\mathcal{H}$ (which may be infinite-dimensional). By the representer theorem / dual representation, every principal axis $v_k$ lies in the linear span of the centered lifted data:
+      $$v_k = \sum_{j=1}^n \alpha_{k,j} \tilde{\phi}(x_j)$$
+      Projecting the $i$-th centered data point $\tilde{\phi}(x_i)$ onto $v_k$ in $\mathcal{H}$ gives:
+      $$\langle v_k, \tilde{\phi}(x_i) \rangle_\mathcal{H} = \left\langle \sum_{j=1}^n \alpha_{k,j} \tilde{\phi}(x_j), \tilde{\phi}(x_i) \right\rangle = \sum_{j=1}^n \alpha_{k,j} \langle \tilde{\phi}(x_j), \tilde{\phi}(x_i) \rangle = \sum_{j=1}^n \tilde{K}_{ij} \alpha_{k,j} = (\tilde{K} \alpha_k)_i$$
+      Since $\alpha_k$ is an eigenvector of $\tilde{K}$ with eigenvalue $\lambda_k$, $\tilde{K} \alpha_k = \lambda_k \alpha_k$, which means:
+      $$(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$$
+      Learner derived both the inner product expansion and the eigenvalue substitution: the projection of sample $i$ onto principal direction $v_k$ is directly given by $\lambda_k \alpha_{k,i}$. Thus, the coordinates of the eigenvector $\alpha_k$ literally define the coordinates of the data points along the new nonlinear component!
+    - **Conditions / Boundaries:** This identity applies to centered training points. For an out-of-sample test point $x^*$, projection evaluates the kernel against all training points: $\langle v_k, \tilde{\phi}(x^*) \rangle = \sum_{j=1}^n \alpha_{k,j} \tilde{k}(x_j, x^*)$.
+    - **Part 2 Pending:** Normalization of $v_k$ in Hilbert space ($\|v_k\|_\mathcal{H} = 1$). Since $\|v_k\|_\mathcal{H}^2 = \alpha_k^T \tilde{K} \alpha_k = \lambda_k \|\alpha_k\|^2$, standardizing $\|\alpha_k\| = 1$ requires scaling $\alpha_k$ by $1/\sqrt{\lambda_k}$, so the normalized projection is $\sqrt{\lambda_k} \alpha_{k,i}$.
+  - **Pacing & Exit Ticket:**
+    - Learner requested an immediate pause ("no exit ticket for today please. lets pause here. /pause"). Tutor honored request immediately and waived the exit ticket.
+- **Attempts this session (ops.py):** none (`attempts: []`). Exit ticket waived per learner request.
+- **Mistakes ledger:** none (`mistakes: []`).
+- **Dependency events:** none (`just_tell_me`: 0, `told_repair`: 0, `declined_generation`: 0).
+- **Learner words for the wiki (`## My understanding`, verbatim):**
+  - Diagnosing the $n$-dimensional eigenvector slots: *"1. points/samples/observations / 2. i think because here we have many slots per feature(5000 slots)"*
+  - Deriving the coordinate connection: *"1. i guess lambda_k * alpha_k,i / 2. i guess it must equal K tilda. i guess divide by K tilda"*
+  - Pacing / pause request: *"no exit ticket for today please. lets pause here. /pause"*
+- **Learner pacing & next session focus:** Paused mid-Checkpoint 6 at mini 1/3. Hidden Piece 2 Part 1 (eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$) sealed. Next session resumes at Checkpoint 6/6, mini 1/3 to complete:
+  1. **Hidden Piece 2 Part 2:** Hilbert-space normalization $\|v_k\|_\mathcal{H}^2 = \alpha_k^T \tilde{K} \alpha_k = \lambda_k$ and the $1/\sqrt{\lambda_k}$ scaling factor.
+  2. **Hidden Piece 3:** The pre-image problem with a small 3-point toy walkthrough.
+
 ## Resume session 2026-10-12 — CP4 fully sealed (practice + kernel deep-dive tangent)
 
 - **Pre-practice elicitation (quiz-audit PASS; ungraded):** learner's three-part walk of the fine P_ij·log(P_ij/Q_ij): "P_ij is the probability provided by the data and Q_ij is the probability provided by the model" · "it weighs the punishment by the data" · at an arbitrary perplexity cross-cluster pairs get a negligible fine, so the optimizer's 2-D arrangement alone explains why size/distance readings are untrustworthy. Check-and-extend (fact-check PASS 5/5, incl. the Rohit-vs-Distill re-anchor): Q is computed from the 2-D coordinates through the heavy-tailed kernel (the only number that moves); "the fine only speaks for pairs with P weight; anything read off the plot across weightless territory is the optimizer's arrangement."
@@ -331,3 +359,4 @@
 - PCA (Dimensionality Reduction) — 2026-10-08: fail (warm-up W2 frame-inversion, self-located after repair) then pass (pause exit ticket 3/3) → mastery 0.75, interval_index 3, next_review 2026-11-07.
 - PCA (Dimensionality Reduction) — 2026-10-20: pass (pause exit ticket X1, explain-back, sure, 1 hint) → mastery 0.85, interval_index 3, consecutive_correct 2, next_review 2026-11-19.
 - PCA (Dimensionality Reduction) — 2026-10-21: pass (pause exit ticket X1, applied, sure, 1 hint) → mastery 0.90, interval_index 3, consecutive_correct 3, next_review 2026-11-20.
+- PCA (Dimensionality Reduction) — 2026-10-22: in-progress (Hidden Piece 2 Part 1 sealed; exit ticket waived per learner request; no attempts logged).
