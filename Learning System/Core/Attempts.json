@@ -1490,13 +1490,21 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-22",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "discriminative",
+          "confidence": "hunch",
+          "hints": 0
         }
       ],
-      "interval_index": 3,
-      "consecutive_correct": 2,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-21",
-      "next_review": "2026-10-21",
+      "interval_index": 2,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-10-22",
+      "next_review": "2026-11-05",
       "feynman": "pass"
     },
     "Conditional Independence": {
@@ -2041,13 +2049,21 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-22",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "definitional",
+          "confidence": "hunch",
+          "hints": 0
         }
       ],
-      "interval_index": 3,
-      "consecutive_correct": 2,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-21",
-      "next_review": "2026-10-21",
+      "interval_index": 2,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-10-22",
+      "next_review": "2026-11-05",
       "feynman": null
     },
     "Optimizer Selection (Rohit heuristic)": {
@@ -2314,14 +2330,22 @@
           "is_correct": true,
           "result": "pass",
           "q_type": null
+        },
+        {
+          "date": "2026-10-22",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "definitional",
+          "confidence": "hunch",
+          "hints": 0
         }
       ],
-      "interval_index": 3,
-      "consecutive_correct": 11,
-      "consecutive_wrong": 0,
-      "last_reviewed": "2026-09-26",
-      "next_review": "2026-10-26",
-      "feynman": null
+      "interval_index": 2,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 1,
+      "last_reviewed": "2026-10-22",
+      "next_review": "2026-11-05",
+      "feynman": "fail"
     },
     "Learning Rate": {
       "type": "concept",

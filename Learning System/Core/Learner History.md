@@ -14,12 +14,15 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 10 · neutral 298 · fuzzy 11
+Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 296 · fuzzy 14
 
 ## AIEFS — living (updated by Clerk each session)
 
 | Concept | Type | Tag | Prereqs | Last evidenced | Evidence |
 | --- | --- | --- | --- | --- | --- |
+| KL Divergence | concept | fuzzy |  | 2026-10-22 | Learning System/Reviews/Review — KL Divergence — 2026-10-22.md |
+| Laplace Smoothing | concept | fuzzy |  | 2026-10-22 | Learning System/Reviews/Review — Laplace Smoothing — 2026-10-22.md |
+| Learning-rate Schedules (four types) | concept | fuzzy |  | 2026-10-22 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-10-22.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
 | Optimizer Selection (Rohit heuristic) | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Optimizer Selection (Rohit heuristic) — 2026-10-10.md |
 | Sequential Bayesian Updating | concept | fuzzy |  | 2026-10-20 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-10-20.md |
@@ -41,11 +44,8 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Gradient Descent (vanilla) | procedure | solid |  | 2026-10-10 | Learning System/Reviews/Review — Gradient Descent (vanilla) — 2026-10-10.md |
 | Gradient Descent Failure Modes (zigzag vs overshoot) | concept | solid |  | 2026-10-02 | Learning System/Reviews/Review — Gradient Descent Failure Modes (zigzag vs overshoot) — 2026-10-02.md |
 | Information Content (Surprise) | concept | solid |  | 2026-10-11 | Learning System/Reviews/Review — Information Content (Surprise) — 2026-10-11.md |
-| KL Divergence | concept | neutral |  | 2026-09-26 | Learning System/Reviews/Review — KL Divergence — 2026-09-21.md |
 | Label Smoothing | concept | neutral |  | 2026-10-02 | Learning System/Reviews/Review — Label Smoothing — 2026-10-02.md |
-| Laplace Smoothing | concept | solid |  | 2026-09-21 | Learning System/Reviews/Review — Laplace Smoothing — 2026-09-21.md |
 | Learning Rate | concept | neutral |  | 2026-09-23 | Learning System/Reviews/Review — Learning Rate — 2026-09-23.md |
-| Learning-rate Schedules (four types) | concept | neutral |  | 2026-09-21 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-09-21 (II).md |
 | Likelihood | concept | neutral |  | 2026-10-09 | Learning System/Reviews/Review — Likelihood — 2026-10-09.md |
 | Mini-batch Noise (two effects) | concept | neutral |  | 2026-10-17 | Learning System/Reviews/Review — Mini-batch Noise (two effects) — 2026-10-17.md |
 | MLE vs MAP Estimation | concept | neutral |  | 2026-09-30 | Learning System/Reviews/Review — MLE vs MAP Estimation — 2026-09-30.md |
@@ -58,7 +58,7 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Prior Probability | concept | solid |  | 2026-10-17 | Learning System/Reviews/Review — Prior Probability — 2026-10-17.md |
 | Saddle Points (critical point triage) | concept | neutral |  | 2026-10-20 | Learning System/Reviews/Review — Saddle Points (critical point triage) — 2026-10-20 (II).md |
 | Softmax Subtract-Max Trick | procedure | solid |  | 2026-10-20 | Learning System/Reviews/Review — Softmax Subtract-Max Trick — 2026-10-20.md |
-| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: neutral | 2026-10-12 | last reviewed 2026-10-12 |
+| t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: fuzzy | 2026-10-12 | last reviewed 2026-10-12 |
 | Variance & Covariance | concept | neutral |  | 2026-10-20 | Learning System/Reviews/Review — Variance & Covariance — 2026-10-20 (II).md |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 
