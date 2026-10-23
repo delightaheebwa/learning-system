@@ -1,4 +1,5 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-22 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; eight statements as of 2026-10-22, nothing overwritten) -->
+<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-23 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-23, nothing overwritten) -->
+
 
 
 # PCA (Dimensionality Reduction)
@@ -135,7 +136,7 @@ Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data li
    where $\mathbf{1}_n$ is the $n \times n$ matrix with all entries equal to $1/n$ ($\mathbf{1}_n = \frac{1}{n}\mathbf{1}\mathbf{1}^\top$). Double-centering subtracts row means, subtracts column means, and adds back the grand mean.
 3. **Conditions & Cost:** Requires the full $n \times n$ Gram matrix ($O(n^2)$ space, $O(n^2)$ operations for centering). Out-of-sample test projection requires asymmetric centering against training column/row means.
 
-### Dual representation and eigenvectors as coordinates (Hidden Piece 2 Part 1 sealed 2026-10-22)
+### Dual representation and eigenvectors as coordinates (Hidden Piece 2 Part 1 sealed 2026-10-22, re-anchored on 3-point toy cloud 2026-10-23)
 
 1. **Collision (The Projection Paradox / Shape Mismatch):**
    - In standard PCA, the covariance matrix $C$ is $d \times d$, yielding eigenvectors $u_k \in \mathbb{R}^d$ with $d$ feature weights. Projecting a data point $x \in \mathbb{R}^d$ is the standard dot product $x^\top u_k$.
@@ -148,9 +149,18 @@ Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data li
    Because $\alpha_k$ is an eigenvector of $\tilde{K}$ with eigenvalue $\lambda_k$, $\tilde{K} \alpha_k = \lambda_k \alpha_k$, which means:
    $$(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$$
    The projection of sample $i$ onto principal direction $v_k$ is directly given by $\lambda_k \alpha_{k,i}$. Thus, the coordinates of the eigenvector $\alpha_k$ literally define the coordinates of the training points along the new nonlinear component!
-3. **Conditions & Out-of-Sample Extension:**
+3. **Concrete 3-Point Toy Cloud Walkthrough (2026-10-23):**
+   To ground the summation progression without algebraic abstraction:
+   - **Step A (Axis composition):** With 3 lifted points $(\tilde{\phi}(x_1), \tilde{\phi}(x_2), \tilde{\phi}(x_3))$ in $\mathcal{H}$, the principal axis is a weighted blend of points: $v = \alpha_1 \tilde{\phi}(x_1) + \alpha_2 \tilde{\phi}(x_2) + \alpha_3 \tilde{\phi}(x_3)$.
+   - **Step B (Dot-product expansion to Row 1):** Projecting Point 1 onto $v$:
+     $$\langle v, \tilde{\phi}(x_1) \rangle = \alpha_1 \langle \tilde{\phi}(x_1), \tilde{\phi}(x_1) \rangle + \alpha_2 \langle \tilde{\phi}(x_2), \tilde{\phi}(x_1) \rangle + \alpha_3 \langle \tilde{\phi}(x_3), \tilde{\phi}(x_1) \rangle$$
+     The inner products are Column 1 of $\tilde{K}$ (and Row 1, because $\tilde{K}$ is symmetric). Multiplying by $\alpha$ gives the first entry of the matrix-vector product: $(\tilde{K}\alpha)_1$.
+   - **Step C (Eigenvector coordinate collapse):** Because $\tilde{K}\alpha = \lambda\alpha$, $(\tilde{K}\alpha)_1 = \lambda \alpha_1$, and for all 3 points simultaneously:
+     $$\begin{bmatrix} \langle v, \tilde{\phi}(x_1) \rangle \\ \langle v, \tilde{\phi}(x_2) \rangle \\ \langle v, \tilde{\phi}(x_3) \rangle \end{bmatrix} = \tilde{K}\alpha = \lambda \begin{bmatrix} \alpha_1 \\ \alpha_2 \\ \alpha_3 \end{bmatrix}$$
+     Eigenvector entries $\alpha$ directly supply the projected coordinates along the nonlinear principal axis.
+4. **Conditions & Out-of-Sample Extension:**
    This direct identity applies to centered training points. For an out-of-sample test point $x^*$, projection evaluates the kernel against all training points: $\langle v_k, \tilde{\phi}(x^*) \rangle = \sum_{j=1}^n \alpha_{k,j} \tilde{k}(x_j, x^*)$.
-4. **Pending Part 2:**
+5. **Pending Part 2:**
    Normalization of $v_k$ in Hilbert space ($\|v_k\|_\mathcal{H} = 1$). Because $\|v_k\|_\mathcal{H}^2 = \alpha_k^\top \tilde{K} \alpha_k = \lambda_k \|\alpha_k\|^2$, standardizing $\|\alpha_k\| = 1$ requires scaling $\alpha_k$ by $1/\sqrt{\lambda_k}$, so the normalized projection is $\sqrt{\lambda_k} \alpha_{k,i}$.
 
 ## Open questions
@@ -158,7 +168,7 @@ Linear PCA finds orthogonal linear hyperplanes of maximum variance. When data li
 - **Round cloud (equal eigenvalues) — sealed 2026-10-07:** `λI` ⇒ every direction is an eigenvector, the λ ranking is a total tie, the axes are arbitrary, the scree is flat, and a 95% target cannot drop a single bar. The verdict: PCA's compression power needs unequal spread (shape, not size).
 - **Curse of dimensionality — sealed 2026-10-07:** distance concentration (distances become *more alike*, not smaller) and the fixed trace pie (`Σλ = trace(C)` invariant under rotation). See [[Curse of Dimensionality]].
 - **`n == d` — sealed 2026-10-05:** both `vecs` and `Xc` then read `d×d`, so the shape detector alone cannot separate them — the resolution is to inspect what the array *holds* (`Xp`'s rows are data points, `V`'s columns are directions; the learner's own repair: "rows hold data points, hence nxk").
-- **Kernel PCA hidden steps (CP6 mini 1/3 in-progress):** Hidden Piece 1 (centering the $n \times n$ Gram matrix $K$ in feature space via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$ and RBF shift-cancellation) **sealed 2026-10-21**. Hidden Piece 2 Part 1 (eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$) **sealed 2026-10-22**. Still open to unpack on resume: Hidden Piece 2 Part 2 (Hilbert space normalization $\|v_k\|_\mathcal{H}^2 = \alpha_k^\top \tilde{K} \alpha_k = \lambda_k$ and the $1/\sqrt{\lambda_k}$ scaling factor) followed by Hidden Piece 3 (pre-image problem with a small 3-point toy walkthrough).
+- **Kernel PCA hidden steps (CP6 mini 1/3 in-progress):** Hidden Piece 1 (centering the $n \times n$ Gram matrix $K$ in feature space via $(I - \mathbf{1}_n) K (I - \mathbf{1}_n)$ and RBF shift-cancellation) **sealed 2026-10-21**. Hidden Piece 2 Part 1 (eigenvectors as coordinates via $(\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$ re-anchored on 3-point toy cloud) **sealed 2026-10-22 and 2026-10-23**. Still open to unpack on resume: Hidden Piece 2 Part 2 (Hilbert space normalization $\|v_k\|_\mathcal{H}^2 = \alpha_k^\top \tilde{K} \alpha_k = \lambda_k$ and the $1/\sqrt{\lambda_k}$ scaling factor) followed by Hidden Piece 3 (pre-image problem as a story and inverse transform `fit_inverse_transform=True`).
 
 ## Field notes
 
@@ -199,9 +209,14 @@ The learner's own understanding (2026-10-22, CP6 mini 1 Hidden Piece 2 Part 1):
 - Diagnosing the $n$-dimensional eigenvector slots: $\alpha_k$ has 5000 slots because each slot corresponds to a point/sample/observation, not a feature.
 - Deriving the coordinate connection: $\langle v_k, \tilde{\phi}(x_i) \rangle = (\tilde{K} \alpha_k)_i = \lambda_k \alpha_{k,i}$, connecting the eigenvector slots directly to the projection coordinates.
 
+The learner's own understanding (2026-10-23, CP6 mini 1 Hidden Piece 2 Part 1 re-anchoring on 3-point toy cloud):
+
+- 3-point toy walk: distributing dot products along $v$ yields Column 1 / Row 1 of $\tilde{K}$ by symmetry, so dotting with Point 1 is equivalent to $(\tilde{K}\alpha)_1 = \lambda \alpha_1$.
+- Synthesizing dual coordinate extraction: multiplying eigenvector $\alpha$ by centered similarity table $\tilde{K}$ gives $\lambda \alpha$, directly providing projected coordinates.
+
 ## My understanding
 
-> **status=learner-note** — the learner's words, verbatim from the 2026-10-20, 2026-10-21, and 2026-10-22 sessions (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
+> **status=learner-note** — the learner's words, verbatim from the 2026-10-20, 2026-10-21, 2026-10-22, and 2026-10-23 sessions (CP6 mini 1), never rewritten. The annotations around them are the tutor's and the source's.
 
 **Kernel PCA lifting intuition for 2D concentric circles (Rung 3 own-words statement, 2026-10-20):**
 
@@ -250,5 +265,36 @@ The learner's own understanding (2026-10-22, CP6 mini 1 Hidden Piece 2 Part 1):
 > "no exit ticket for today please. lets pause here. /pause"
 
 *Tutor note:* Paused at Checkpoint 6/6, mini 1/3 per learner request. Hidden Piece 2 Part 1 sealed; Part 2 ($1/\sqrt{\lambda_k}$ scaling) and Hidden Piece 3 (pre-image problem) will resume next session.
+
+**Identifying comprehension gap on summation progression (2026-10-23):**
+
+> "tbh, i havent quite understood yet this progression."
+
+*Tutor note:* Flagged that the abstract $n$-point summation progression needed unpacking into a concrete 3-point toy cloud before proceeding to Part 2 scaling.
+
+**3-point toy walk: locating dot products in $\tilde{K}$ and eigenvalue collapse (2026-10-23):**
+
+> "1. the whole of the first column of the centered similarity table / 2. i think because we are dealing with a whole column here hence eigenvector * eigenvalue for that whole column in K tilda"
+
+*Source framing (annotation, not a rewrite):* Correctly located that the three distributed dot products form Column 1 (and Row 1 by symmetry) of the centered similarity matrix $\tilde{K}$, multiplying by $\alpha$ to produce $\lambda \alpha_1$.
+
+**Synthesis of eigenvector coordinate projection (2026-10-23):**
+
+> "it clicks. if an eigenvector is multiplied with K tilda it gives lambda * alpha hence giving us the projected corrdiantes. /pause"
+
+*Source framing (annotation, not a rewrite):* Clear synthesis of why $\tilde{K}\alpha = \lambda\alpha$ extracts projected coordinates along the nonlinear principal component directly from the eigenvector entries.
+
+**Pause Exit Ticket X1 — 3-point dual projection trace (Initial Attempt — Version 1, 2026-10-23):**
+
+> "1. Projection. the axis must be built as a blend of the 3 lifted points because in the lifted feature space there are infinite dimensions hence we can't weight using infinite number of features. / 2. for each point, K tilda * alpha = lambda * alpha, resulting in the projected coordinates / 3. the coordinate collapses to zero."
+
+*Source framing: falsified by generic technique label ("Projection" rather than Kernel PCA) and missing causal bridge connecting the distributed dot products $\langle v, \tilde{\phi}(x_1) \rangle$ to Row 1 of $\tilde{K}$ before applying $\tilde{K}\alpha = \lambda\alpha$.*
+
+**Pause Exit Ticket X1 — 3-point dual projection trace (Repair — Version 2, 2026-10-23):**
+
+> "1. kernel PCA / 2. when we multiply v and sigma(x1) on all components, it is equivalent to the row 1 in K tilda(K tilda is symmetric)"
+
+*Source framing (annotation, not a rewrite):* Hardened version supplying the missing causal mechanism — dotting axis $v$ with lifted Point 1 across all 3 components equals Row 1 of $\tilde{K}$ due to symmetry, cleanly proving $(\tilde{K}\alpha)_1 = \lambda\alpha_1$.
+
 
 
