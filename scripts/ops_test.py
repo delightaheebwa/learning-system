@@ -209,6 +209,24 @@ class TestAttemptCommand(unittest.TestCase):
         data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
         self.assertEqual(data["concepts"]["Test Concept"]["prereqs"], ["A", "B"])
 
+    def test_attempt_records_graph_targets(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()):
+            ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                           targets=["n_ab12cd34ef", "arg_ab12cd34ef", "n_ab12cd34ef"])
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        rec = data["concepts"]["Test Concept"]["attempts"][-1]
+        self.assertEqual(rec["targets"], ["arg_ab12cd34ef", "n_ab12cd34ef"])
+
+    def test_attempt_rejects_bad_target(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                               targets=["n_ab12cd34ef", "Bayes theorem"])
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("--targets", buf.getvalue())
+
 
 class TestQueueCommand(unittest.TestCase):
     """The deterministic review queue (ops.py queue): due-mistake priority,
@@ -758,6 +776,21 @@ class TestAmend(unittest.TestCase):
             ops.do_amend("Test Concept", "2026-10-09", field="q_type", value="transfer", reason="wrong tag")
         data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
         self.assertEqual(data["concepts"]["Test Concept"]["attempts"][0]["q_type"], "transfer-near")
+
+    def test_amend_targets_and_rejects_bad_id(self):
+        root = self._make_root()
+        with redirect_stdout(io.StringIO()):
+            ops.do_amend("Test Concept", "2026-10-09", field="targets",
+                         value="n_ab12cd34ef,arg_ab12cd34ef", reason="targets omitted")
+        data = json.loads((root / "Learning System" / "Core" / "Attempts.json").read_text())
+        self.assertEqual(data["concepts"]["Test Concept"]["attempts"][0]["targets"],
+                         ["arg_ab12cd34ef", "n_ab12cd34ef"])
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", field="targets",
+                             value="Bayes theorem", reason="typo")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("--targets", buf.getvalue())
 
     def test_amend_requires_reason(self):
         self._make_root()

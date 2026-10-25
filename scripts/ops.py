@@ -32,19 +32,22 @@ Usage:
                                       "replaces": [{"path": "...", "find": "...",
                                                     "replace_with": "..."}]}
                                    Prints a per-op summary. Use with a quoted heredoc.
-  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design] [--confidence sure|hunch|no-idea] [--hints N] [--mode normal|solo] [--prereq NAME ...]
+  ops.py attempt "Concept" pass|fail [feynman_pass|feynman_fail] [--date YYYY-MM-DD] [--qtype TYPE] [--type memory|concept|procedure|design] [--confidence sure|hunch|no-idea] [--hints N] [--mode normal|solo] [--targets n_…,arg_…] [--prereq NAME ...]
                                    Record one answer in Attempts.json (interval_index
                                    +1 pass / +2 on 2 consecutive passes / -1 fail,
                                    next_review from type schedule). --qtype is
                                    validated against the enum (legacy aliases are
-                                   normalized; unknown values are rejected). --prereq
+                                   normalized; unknown values are rejected). --targets
+                                   records the knowledge-graph ids (n_… propositions /
+                                   arg_… chains) the item retrieved; ids are format-
+                                   validated and stored on the attempt. --prereq
                                    (repeatable) records the concept's direct prerequisite
                                    edges. Prints mastery + next_review for the skill to
                                    copy via apply.
   ops.py amend "Concept" --date OLD [--new-date NEW] [--field FIELD --value VALUE] --reason "..." [--occurrence N] [--json]
                                    Audited in-place correction of ONE recorded attempt:
                                    re-date it and/or fix a metadata field (date|q_type|
-                                   confidence|hints|mode), appending a `meta.amendments`
+                                   confidence|hints|mode|targets), appending a `meta.amendments`
                                    record with the reason. Recomputes last_reviewed /
                                    next_review. This replaces the ad-hoc, gitignored
                                    `.tmp/gen_review_*.py` surgery scripts (RETIRED — do
@@ -135,7 +138,7 @@ ERROR_TYPES = ("structural", "deviation", "application", "metacognitive")
 # NOT here: fixing a wrong pass/fail is a re-grade, not a typo fix — record a new
 # attempt instead. Re-dating and metadata fixes are the audited amend path that
 # replaces ad-hoc `.tmp/gen_review_*.py` state surgery.
-AMENDABLE_ATTEMPT_FIELDS = ("date", "q_type", "confidence", "hints", "mode")
+AMENDABLE_ATTEMPT_FIELDS = ("date", "q_type", "confidence", "hints", "mode", "targets")
 PREREQ_MARKER_RE = re.compile(r"^\s*\[prereq:\s*([^\]]+?)\s*\]\s*", re.I)
 
 # Question types that evidence each mastery dimension (P0.4). Untagged or
@@ -201,6 +204,33 @@ def normalize_confidence(confidence):
     if c == "noidea":
         c = "no-idea"
     return c
+
+
+# Knowledge-graph record ids: content-derived propositions (`n_…`) and reasoning
+# chains (`arg_…`). Attempts may carry the ids an item retrieved; this is the
+# bridge from practice items to per-node mastery. Malformed ids are rejected so a
+# typo cannot silently create a phantom target.
+GRAPH_TARGET_RE = re.compile(r"^(?:n|arg)_[a-z0-9]{6,}$")
+
+
+def normalize_targets(targets):
+    """Canonical graph-target id list, or None when empty.
+
+    Accepts a list or a comma/space-separated string. Deduplicates and sorts.
+    Raises ValueError naming the first malformed id (the caller rejects it)."""
+    if targets is None:
+        return None
+    if isinstance(targets, str):
+        targets = re.split(r"[,\s]+", targets)
+    clean = []
+    for target in targets:
+        tid = str(target).strip()
+        if not tid:
+            continue
+        if not GRAPH_TARGET_RE.match(tid):
+            raise ValueError(tid)
+        clean.append(tid)
+    return sorted(set(clean)) or None
 
 
 def _resolve(p: str) -> Path:
@@ -758,7 +788,8 @@ def _print_queue_table(payload: dict) -> None:
 
 def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
                qtype: str = None, ctype: str = None, confidence: str = None,
-               hints: int = None, mode: str = None, prereqs: list = None) -> None:
+               hints: int = None, mode: str = None, prereqs: list = None,
+               targets: list = None) -> None:
     result = (result or "").lower().strip()
     if result not in ("pass", "fail"):
         print(f"ATTEMPT FAILED: result must be pass|fail, got {result!r}")
@@ -778,6 +809,12 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
         if mode not in ("normal", "solo"):
             print(f"ATTEMPT FAILED: --mode must be normal|solo, got {mode!r}")
             sys.exit(2)
+    try:
+        targets = normalize_targets(targets)
+    except ValueError as exc:
+        print(f"ATTEMPT FAILED: bad --targets id {exc.args[0]!r}; "
+              "expected graph ids like n_ab12cd34ef or arg_ab12cd34ef")
+        sys.exit(2)
     is_correct = result == "pass"
     day = date or datetime.now().strftime("%Y-%m-%d")
     try:
@@ -826,6 +863,8 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
         rec["hints"] = int(hints)
     if mode:
         rec["mode"] = mode
+    if targets:
+        rec["targets"] = targets
     entry["attempts"].append(rec)
     entry["last_reviewed"] = day
     entry["next_review"] = (datetime.strptime(day, "%Y-%m-%d").date()
@@ -933,6 +972,14 @@ def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
                 print(f"AMEND FAILED: --mode must be normal|solo, got {value!r}")
                 sys.exit(2)
             set_field("mode", value)
+        elif field == "targets":
+            try:
+                normalized_targets = normalize_targets(value)
+            except ValueError as exc:
+                print(f"AMEND FAILED: bad --targets id {exc.args[0]!r}; "
+                      "expected graph ids like n_ab12cd34ef or arg_ab12cd34ef")
+                sys.exit(2)
+            set_field("targets", normalized_targets)
         elif field == "date":
             set_field("date", new_date or value)
     if new_date is not None:
@@ -1295,6 +1342,7 @@ def main() -> None:
         concept, result = rest[0], rest[1]
         feynman = qtype = ctype = day = confidence = mode = None
         hints = None
+        targets = None
         prereqs = []
         positional = []
         i = 2
@@ -1319,12 +1367,14 @@ def main() -> None:
                 i += 2
             elif tok == "--mode" and i + 1 < len(rest):
                 mode = rest[i + 1]; i += 2
+            elif tok == "--targets" and i + 1 < len(rest):
+                targets = rest[i + 1]; i += 2
             else:
                 positional.append(tok); i += 1
         if positional:
             feynman = positional[0]
         do_attempt(concept, result, feynman=feynman, date=day, qtype=qtype, ctype=ctype,
-                   confidence=confidence, hints=hints, mode=mode,
+                   confidence=confidence, hints=hints, mode=mode, targets=targets,
                    prereqs=prereqs if prereqs else None)
     elif cmd == "grade-mcq":
         key = answers = ""
