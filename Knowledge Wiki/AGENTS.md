@@ -8,6 +8,7 @@ This file documents how the wiki layer of this repo is structured and maintained
 raw/sources/   immutable raw layer — source notes and clipped text, never edited after ingest
 raw/assets/    screenshots and attachments, linked from the source notes
 wiki/          curated wiki pages — short, single-idea pages, aggressively cross-linked
+graph/         knowledge graph — propositions + reasoning chains (machine-written ledger)
 index.md       catalog of all wiki pages (updated on every ingest)
 log.md         chronological record of ingests (one entry per ingest)
 ```
@@ -21,6 +22,23 @@ log.md         chronological record of ingests (one entry per ingest)
 - **Contradictions are stated directly.** If new material conflicts with an old claim, say so on the page.
 - **Keep unresolved questions visible.** Never drop an open question during maintenance.
 - **index.md and log.md are updated on every ingest** (per `Skills/learning-system/SKILL.md`).
+
+## Knowledge graph (`graph/`)
+
+`graph/nodes.jsonl` and `graph/chains.jsonl` are the durable propositions +
+reasoning-chains ledger. Rules:
+
+- **World knowledge only.** Never mastery, verdicts, confidence, attempts, or
+  "the learner understands X" — a misconception enters as its true correction.
+  Learner evidence belongs in `Learning System/Core/Attempts.json` + `🧯 Mistakes.md`.
+- **Machine-written.** Only `pi/graph.py` in the learning-pi control layer
+  (`merge` / `retract`, run by the Clerk during ingest) writes these files.
+  Never hand-edit, append to, or rewrite the JSONL.
+- **Append-only + provenanced.** Every record names the source file it came
+  from; re-encounters append a `link` line (verbatim alias + provenance union),
+  and corrections are `retract` tombstones. Format + commands: `graph/README.md`.
+- **Edges are derived, not stored.** The rendered graph (implication nodes per
+  reasoning chain) is produced by `graph.py export`.
 
 ## Provenance & trust order
 
