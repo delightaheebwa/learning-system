@@ -9,6 +9,10 @@ misconception enters as its true correction. Evidence about the learner lives in
 Written **only** by `pi/graph.py` in the learning-pi control layer, run by the
 Clerk during ingest (`merge` / `retract`). Agents never hand-edit these files.
 
+**Backfill:** on 2026-10-26 the ledger was seeded once from the existing wiki
+pages (one-time extraction, independently audited). Those records cite the wiki
+page they came from as their provenance `file`, alongside session-ingest records.
+
 ## Files
 
 | file | holds |
