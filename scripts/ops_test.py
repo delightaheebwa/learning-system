@@ -226,7 +226,12 @@ class TestAttemptCommand(unittest.TestCase):
         _seed_graph(
             root,
             nodes=[{"id": "n_ab12cd34ef", "op": "define"}],
-            chains=[{"id": "arg_ab12cd34ef", "op": "assert"}],
+            chains=[{
+                "id": "arg_ab12cd34ef",
+                "op": "assert",
+                "premises": ["n_ab12cd34ef"],
+                "conclusion": "n_ffffffffff",
+            }],
         )
         with redirect_stdout(io.StringIO()):
             ops.do_attempt("Test Concept", "pass", date="2026-09-04",
@@ -270,6 +275,39 @@ class TestAttemptCommand(unittest.TestCase):
         data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
         rec = data["concepts"]["Test Concept"]["attempts"][-1]
         self.assertEqual(rec["targets"], ["n_ab12cd34ef"])
+
+    def test_attempt_reports_all_stale_targets(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                               targets=["n_aaaaaaaaaa", "n_bbbbbbbbbb"])
+        self.assertEqual(cm.exception.code, 2)
+        out = buf.getvalue()
+        self.assertIn("n_aaaaaaaaaa", out)
+        self.assertIn("n_bbbbbbbbbb", out)
+
+    def test_live_graph_ids_does_not_revive_never_asserted_chain(self):
+        # graph.py tombstones a retracted id even if no assert exists, and the
+        # create path does not pop that tombstone. Mirror it exactly.
+        root = self._make_root()
+        _seed_graph(root, chains=[
+            {"id": "arg_zzzzzzzzzz", "op": "retract", "reason": "never existed"},
+            {"id": "arg_zzzzzzzzzz", "op": "assert",
+             "premises": ["n_aaaaaaaaaa"], "conclusion": "n_bbbbbbbbbb"},
+        ])
+        self.assertNotIn("arg_zzzzzzzzzz", ops.live_graph_ids())
+
+    def test_live_graph_ids_revives_reasserted_chain(self):
+        root = self._make_root()
+        _seed_graph(root, chains=[
+            {"id": "arg_zzzzzzzzzz", "op": "assert",
+             "premises": ["n_aaaaaaaaaa"], "conclusion": "n_bbbbbbbbbb"},
+            {"id": "arg_zzzzzzzzzz", "op": "retract", "reason": "fix"},
+            {"id": "arg_zzzzzzzzzz", "op": "assert",
+             "premises": ["n_aaaaaaaaaa"], "conclusion": "n_bbbbbbbbbb"},
+        ])
+        self.assertIn("arg_zzzzzzzzzz", ops.live_graph_ids())
 
     def test_attempt_rejects_bad_target(self):
         self._make_root()
@@ -835,7 +873,12 @@ class TestAmend(unittest.TestCase):
         _seed_graph(
             root,
             nodes=[{"id": "n_ab12cd34ef", "op": "define"}],
-            chains=[{"id": "arg_ab12cd34ef", "op": "assert"}],
+            chains=[{
+                "id": "arg_ab12cd34ef",
+                "op": "assert",
+                "premises": ["n_ab12cd34ef"],
+                "conclusion": "n_ffffffffff",
+            }],
         )
         with redirect_stdout(io.StringIO()):
             ops.do_amend("Test Concept", "2026-10-09", field="targets",

@@ -260,67 +260,94 @@ def _read_graph_jsonl(path):
     return records
 
 
+def _chain_fingerprint(premises, conclusion):
+    """Fingerprint `pi/graph.py` uses to decide re-assert vs new chain."""
+    body = "\n".join(sorted(set(premises))) + "\n=>\n" + conclusion
+    return hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
 def _chain_id(premises, conclusion):
     """Content-derived chain id, mirroring `pi/graph.py` (records without an id)."""
-    body = "\n".join(sorted(set(premises))) + "\n=>\n" + conclusion
-    return "arg_" + hashlib.sha256(body.encode("utf-8")).hexdigest()[:10]
+    return "arg_" + _chain_fingerprint(premises, conclusion)[:10]
 
 
 def live_graph_ids(root=None):
     """Ids currently live in the knowledge-graph ledgers.
 
-    Mirrors `pi/graph.py`'s append-only fold: `retract` tombstones an id, a
-    later `define`/`assert` revives it, `link` never creates an id. Chains
-    without a stored id are content-addressed the same way graph.py does it.
-    Returns an empty set when the ledgers do not exist (no graph, no live ids).
+    Mirrors `pi/graph.py`'s append-only fold exactly: node `retract` tombstones
+    and a later `define` revives, `link` never creates; a chain re-assert of the
+    same premises/conclusion revives its existing id, while a *new* chain that
+    happens to reuse a tombstoned id does not (graph.py does not pop the
+    tombstone on the create path). Chains without a stored id are
+    content-addressed the same way graph.py does it. Returns an empty set when
+    the ledgers do not exist (no graph, no live ids).
     """
     base = Path(root) if root is not None else ROOT
     gdir = base / GRAPH_DIR
-    live = set()
+
+    live_nodes = set()
+    retracted_nodes = set()
     for record in _read_graph_jsonl(gdir / GRAPH_NODES_FILE):
         ident = record.get("id")
         if not isinstance(ident, str) or not GRAPH_TARGET_RE.match(ident):
             continue
         op = record.get("op", "define")
         if op == "retract":
-            live.discard(ident)
+            retracted_nodes.add(ident)
         elif op == "define":
-            live.add(ident)
+            retracted_nodes.discard(ident)
+            live_nodes.add(ident)
         # `link` only annotates an existing proposition; it never creates one.
+
+    live_chains = set()
+    retracted_chains = set()
+    chain_by_fingerprint = {}
     for record in _read_graph_jsonl(gdir / GRAPH_CHAINS_FILE):
+        op = record.get("op", "assert")
+        ident = record.get("id")
+        if op == "retract":
+            if isinstance(ident, str):
+                retracted_chains.add(ident)
+            continue
+        if op != "assert":
+            continue
         premises = record.get("premises")
         conclusion = record.get("conclusion")
-        ident = record.get("id")
-        if not isinstance(ident, str) or not GRAPH_TARGET_RE.match(ident):
-            if (
-                isinstance(premises, list)
-                and premises
-                and all(isinstance(p, str) and p for p in premises)
-                and isinstance(conclusion, str)
-                and conclusion
-            ):
-                ident = _chain_id(premises, conclusion)
-            else:
-                continue
-        op = record.get("op", "assert")
-        if op == "retract":
-            live.discard(ident)
-        elif op == "assert":
-            live.add(ident)
-    return live
+        if (
+            not isinstance(premises, list)
+            or not premises
+            or not all(isinstance(p, str) and p for p in premises)
+            or not isinstance(conclusion, str)
+            or not conclusion
+        ):
+            continue
+        fingerprint = _chain_fingerprint(premises, conclusion)
+        if fingerprint in chain_by_fingerprint:
+            existing = chain_by_fingerprint[fingerprint]
+            retracted_chains.discard(existing)
+            live_chains.add(existing)
+            continue
+        resolved = ident if isinstance(ident, str) and GRAPH_TARGET_RE.match(ident) else _chain_id(
+            premises, conclusion
+        )
+        live_chains.add(resolved)
+        chain_by_fingerprint[fingerprint] = resolved
+
+    return (live_nodes - retracted_nodes) | (live_chains - retracted_chains)
 
 
 def check_targets_live(targets):
-    """Raise ValueError naming the first target id that is not live.
+    """Raise ValueError naming every target id that is not live.
 
     This is the liveness half of target validation: a syntactically valid but
-    stale id (missing from the ledger, or retracted) must never be recorded."""
+    stale id (missing from the ledger, or retracted) must never be recorded.
+    Naming the whole stale set lets the caller drop them in one retry."""
     if not targets:
         return
     live = live_graph_ids()
-    for tid in targets:
-        if tid not in live:
-            raise ValueError(tid)
+    stale = [tid for tid in targets if tid not in live]
+    if stale:
+        raise ValueError(", ".join(stale))
 
 
 def _resolve(p: str) -> Path:
@@ -908,8 +935,8 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
     try:
         check_targets_live(targets)
     except ValueError as exc:
-        print(f"ATTEMPT FAILED: --targets id {exc.args[0]!r} is not live in the knowledge graph "
-              "(missing or retracted); use an id from `graph.py list`")
+        print(f"ATTEMPT FAILED: --targets id(s) {exc.args[0]!r} are not live in the knowledge graph "
+              "(missing or retracted); use ids from `graph.py list`")
         sys.exit(2)
     is_correct = result == "pass"
     day = date or datetime.now().strftime("%Y-%m-%d")
@@ -1078,8 +1105,8 @@ def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
             try:
                 check_targets_live(normalized_targets)
             except ValueError as exc:
-                print(f"AMEND FAILED: --targets id {exc.args[0]!r} is not live in the knowledge graph "
-                      "(missing or retracted); use an id from `graph.py list`")
+                print(f"AMEND FAILED: --targets id(s) {exc.args[0]!r} are not live in the knowledge graph "
+                      "(missing or retracted); use ids from `graph.py list`")
                 sys.exit(2)
             set_field("targets", normalized_targets)
         elif field == "date":
