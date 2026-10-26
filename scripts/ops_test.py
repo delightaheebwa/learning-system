@@ -21,6 +21,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ops  # noqa: E402
 
 
+def _seed_graph(root, nodes=(), chains=()):
+    """Write minimal knowledge-graph ledgers under root (target-liveness fixtures)."""
+    gdir = Path(root) / "Knowledge Wiki" / "graph"
+    gdir.mkdir(parents=True, exist_ok=True)
+    (gdir / "nodes.jsonl").write_text(
+        "".join(json.dumps(n) + "\n" for n in nodes), encoding="utf-8"
+    )
+    (gdir / "chains.jsonl").write_text(
+        "".join(json.dumps(c) + "\n" for c in chains), encoding="utf-8"
+    )
+
+
 class TestRootDetection(unittest.TestCase):
     def test_root_resolves_to_a_checkout_with_core(self):
         # The directory containing this test must have "Learning System/Core".
@@ -210,13 +222,54 @@ class TestAttemptCommand(unittest.TestCase):
         self.assertEqual(data["concepts"]["Test Concept"]["prereqs"], ["A", "B"])
 
     def test_attempt_records_graph_targets(self):
-        self._make_root()
+        root = self._make_root()
+        _seed_graph(
+            root,
+            nodes=[{"id": "n_ab12cd34ef", "op": "define"}],
+            chains=[{"id": "arg_ab12cd34ef", "op": "assert"}],
+        )
         with redirect_stdout(io.StringIO()):
             ops.do_attempt("Test Concept", "pass", date="2026-09-04",
                            targets=["n_ab12cd34ef", "arg_ab12cd34ef", "n_ab12cd34ef"])
         data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
         rec = data["concepts"]["Test Concept"]["attempts"][-1]
         self.assertEqual(rec["targets"], ["arg_ab12cd34ef", "n_ab12cd34ef"])
+
+    def test_attempt_rejects_missing_graph_target(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                               targets=["n_ab12cd34ef"])
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("not live in the knowledge graph", buf.getvalue())
+
+    def test_attempt_rejects_retracted_graph_target(self):
+        root = self._make_root()
+        _seed_graph(root, nodes=[
+            {"id": "n_ab12cd34ef", "op": "define"},
+            {"id": "n_ab12cd34ef", "op": "retract", "reason": "wrong claim"},
+        ])
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                               targets=["n_ab12cd34ef"])
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("not live in the knowledge graph", buf.getvalue())
+
+    def test_attempt_accepts_revived_graph_target(self):
+        root = self._make_root()
+        _seed_graph(root, nodes=[
+            {"id": "n_ab12cd34ef", "op": "define"},
+            {"id": "n_ab12cd34ef", "op": "retract", "reason": "wrong claim"},
+            {"id": "n_ab12cd34ef", "op": "define"},
+        ])
+        with redirect_stdout(io.StringIO()):
+            ops.do_attempt("Test Concept", "pass", date="2026-09-04",
+                           targets=["n_ab12cd34ef"])
+        data = json.loads((ops.ROOT / "Learning System" / "Core" / "Attempts.json").read_text())
+        rec = data["concepts"]["Test Concept"]["attempts"][-1]
+        self.assertEqual(rec["targets"], ["n_ab12cd34ef"])
 
     def test_attempt_rejects_bad_target(self):
         self._make_root()
@@ -779,6 +832,11 @@ class TestAmend(unittest.TestCase):
 
     def test_amend_targets_and_rejects_bad_id(self):
         root = self._make_root()
+        _seed_graph(
+            root,
+            nodes=[{"id": "n_ab12cd34ef", "op": "define"}],
+            chains=[{"id": "arg_ab12cd34ef", "op": "assert"}],
+        )
         with redirect_stdout(io.StringIO()):
             ops.do_amend("Test Concept", "2026-10-09", field="targets",
                          value="n_ab12cd34ef,arg_ab12cd34ef", reason="targets omitted")
@@ -791,6 +849,15 @@ class TestAmend(unittest.TestCase):
                              value="Bayes theorem", reason="typo")
         self.assertEqual(cm.exception.code, 2)
         self.assertIn("--targets", buf.getvalue())
+
+    def test_amend_rejects_stale_graph_target(self):
+        self._make_root()
+        with redirect_stdout(io.StringIO()) as buf:
+            with self.assertRaises(SystemExit) as cm:
+                ops.do_amend("Test Concept", "2026-10-09", field="targets",
+                             value="n_ab12cd34ef", reason="stale id")
+        self.assertEqual(cm.exception.code, 2)
+        self.assertIn("not live in the knowledge graph", buf.getvalue())
 
     def test_amend_requires_reason(self):
         self._make_root()

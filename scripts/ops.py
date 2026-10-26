@@ -39,8 +39,9 @@ Usage:
                                    validated against the enum (legacy aliases are
                                    normalized; unknown values are rejected). --targets
                                    records the knowledge-graph ids (n_… propositions /
-                                   arg_… chains) the item retrieved; ids are format-
-                                   validated and stored on the attempt. --prereq
+                                   arg_… chains) the item retrieved; ids must be
+                                   well-formed AND live in the graph ledger (a
+                                   missing or retracted id is rejected). --prereq
                                    (repeatable) records the concept's direct prerequisite
                                    edges. Prints mastery + next_review for the skill to
                                    copy via apply.
@@ -79,6 +80,7 @@ Usage:
 All paths resolve under the workspace root (/home/user/learning-system). Escapes are rejected.
 """
 
+import hashlib
 import json
 import os
 import random
@@ -209,8 +211,12 @@ def normalize_confidence(confidence):
 # Knowledge-graph record ids: content-derived propositions (`n_…`) and reasoning
 # chains (`arg_…`). Attempts may carry the ids an item retrieved; this is the
 # bridge from practice items to per-node mastery. Malformed ids are rejected so a
-# typo cannot silently create a phantom target.
+# typo cannot silently create a phantom target, and ids are checked against the
+# live ledger so a stale (missing or retracted) record cannot be recorded either.
 GRAPH_TARGET_RE = re.compile(r"^(?:n|arg)_[a-z0-9]{6,}$")
+GRAPH_DIR = Path("Knowledge Wiki") / "graph"
+GRAPH_NODES_FILE = "nodes.jsonl"
+GRAPH_CHAINS_FILE = "chains.jsonl"
 
 
 def normalize_targets(targets):
@@ -231,6 +237,90 @@ def normalize_targets(targets):
             raise ValueError(tid)
         clean.append(tid)
     return sorted(set(clean)) or None
+
+
+def _read_graph_jsonl(path):
+    """Parsed JSON objects from a graph ledger; malformed lines are ignored.
+
+    Liveness is a safety check, not the ledger's integrity audit (`graph.py
+    status` owns that). A malformed line cannot make an id live."""
+    records = []
+    if not path.is_file():
+        return records
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(record, dict):
+            records.append(record)
+    return records
+
+
+def _chain_id(premises, conclusion):
+    """Content-derived chain id, mirroring `pi/graph.py` (records without an id)."""
+    body = "\n".join(sorted(set(premises))) + "\n=>\n" + conclusion
+    return "arg_" + hashlib.sha256(body.encode("utf-8")).hexdigest()[:10]
+
+
+def live_graph_ids(root=None):
+    """Ids currently live in the knowledge-graph ledgers.
+
+    Mirrors `pi/graph.py`'s append-only fold: `retract` tombstones an id, a
+    later `define`/`assert` revives it, `link` never creates an id. Chains
+    without a stored id are content-addressed the same way graph.py does it.
+    Returns an empty set when the ledgers do not exist (no graph, no live ids).
+    """
+    base = Path(root) if root is not None else ROOT
+    gdir = base / GRAPH_DIR
+    live = set()
+    for record in _read_graph_jsonl(gdir / GRAPH_NODES_FILE):
+        ident = record.get("id")
+        if not isinstance(ident, str) or not GRAPH_TARGET_RE.match(ident):
+            continue
+        op = record.get("op", "define")
+        if op == "retract":
+            live.discard(ident)
+        elif op == "define":
+            live.add(ident)
+        # `link` only annotates an existing proposition; it never creates one.
+    for record in _read_graph_jsonl(gdir / GRAPH_CHAINS_FILE):
+        premises = record.get("premises")
+        conclusion = record.get("conclusion")
+        ident = record.get("id")
+        if not isinstance(ident, str) or not GRAPH_TARGET_RE.match(ident):
+            if (
+                isinstance(premises, list)
+                and premises
+                and all(isinstance(p, str) and p for p in premises)
+                and isinstance(conclusion, str)
+                and conclusion
+            ):
+                ident = _chain_id(premises, conclusion)
+            else:
+                continue
+        op = record.get("op", "assert")
+        if op == "retract":
+            live.discard(ident)
+        elif op == "assert":
+            live.add(ident)
+    return live
+
+
+def check_targets_live(targets):
+    """Raise ValueError naming the first target id that is not live.
+
+    This is the liveness half of target validation: a syntactically valid but
+    stale id (missing from the ledger, or retracted) must never be recorded."""
+    if not targets:
+        return
+    live = live_graph_ids()
+    for tid in targets:
+        if tid not in live:
+            raise ValueError(tid)
 
 
 def _resolve(p: str) -> Path:
@@ -815,6 +905,12 @@ def do_attempt(concept: str, result: str, feynman: str = None, date: str = None,
         print(f"ATTEMPT FAILED: bad --targets id {exc.args[0]!r}; "
               "expected graph ids like n_ab12cd34ef or arg_ab12cd34ef")
         sys.exit(2)
+    try:
+        check_targets_live(targets)
+    except ValueError as exc:
+        print(f"ATTEMPT FAILED: --targets id {exc.args[0]!r} is not live in the knowledge graph "
+              "(missing or retracted); use an id from `graph.py list`")
+        sys.exit(2)
     is_correct = result == "pass"
     day = date or datetime.now().strftime("%Y-%m-%d")
     try:
@@ -978,6 +1074,12 @@ def do_amend(concept: str, date: str, new_date: str = None, field: str = None,
             except ValueError as exc:
                 print(f"AMEND FAILED: bad --targets id {exc.args[0]!r}; "
                       "expected graph ids like n_ab12cd34ef or arg_ab12cd34ef")
+                sys.exit(2)
+            try:
+                check_targets_live(normalized_targets)
+            except ValueError as exc:
+                print(f"AMEND FAILED: --targets id {exc.args[0]!r} is not live in the knowledge graph "
+                      "(missing or retracted); use an id from `graph.py list`")
                 sys.exit(2)
             set_field("targets", normalized_targets)
         elif field == "date":
