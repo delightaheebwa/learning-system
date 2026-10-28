@@ -376,7 +376,7 @@ Goal: LLM Engineering — see upstream `phases/11-*/docs/en.md` per lesson. Goal
 
 | # | Lesson | Est. time | Prereqs | Lang | Status | Notes |
 |---|--------|-----------|---------|------|--------|-------|
-| 01 | Prompt Engineering — Techniques & Patterns | ~45 min | none | Python | not-started | Source: Phase 11 L01 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
+| 01 | Prompt Engineering — Techniques & Patterns | ~45 min | none | Python | in-progress | **In-progress, paused mid-triage 2026-10-28** — row 3 mechanism repaired + closed, row 4 eval layer open, row 5 failure regime unattacked; graduation not reached. Resume in `Learning System/Lessons/Lesson — prompt-engineering — 2026-10-28.md` § Resume. Source: Phase 11 L01 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 02 | Few-Shot, Chain-of-Thought, Tree-of-Thought | ~45 min | 1 | Python | not-started | Source: Phase 11 L02 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 03 | Structured Outputs | ~75 min | 2 | Python | not-started | Source: Phase 11 L03 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 04 | Embeddings & Vector Representations | ~75 min | 3 | Python | not-started | Source: Phase 11 L04 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |

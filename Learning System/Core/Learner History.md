@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-10-23)
+# Learner History — compact tutor context (generated 2026-10-29)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -14,7 +14,7 @@ Tag rules (strict): `solid` = 2+ consecutive passes, interval_index ≥ 2,
 Tutor use: build directly on `solid`; probe-then-teach `neutral`;
 reteach-from-scratch `fuzzy` (check its mistake row / review note first).
 
-Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 66 · aie 212 · solid 9 · neutral 296 · fuzzy 14
+Totals: 320 concepts (91 with attempt history + 229 paused) — aiefs 42 · swe 66 · aie 212 · solid 9 · neutral 296 · fuzzy 15
 
 ## AIEFS — living (updated by Clerk each session)
 
@@ -25,6 +25,7 @@ Totals: 319 concepts (90 with attempt history + 229 paused) — aiefs 41 · swe 
 | Learning-rate Schedules (four types) | concept | fuzzy |  | 2026-10-22 | Learning System/Reviews/Review — Learning-rate Schedules (four types) — 2026-10-22.md |
 | Naive Bayes | concept | fuzzy |  | 2026-10-09 | Learning System/Reviews/Review — Naive Bayes — 2026-10-09.md |
 | Optimizer Selection (Rohit heuristic) | concept | fuzzy |  | 2026-10-10 | Learning System/Reviews/Review — Optimizer Selection (Rohit heuristic) — 2026-10-10.md |
+| Prompt Engineering | concept | fuzzy |  | 2026-10-28 | last reviewed 2026-10-28 |
 | Sequential Bayesian Updating | concept | fuzzy |  | 2026-10-20 | Learning System/Reviews/Review — Sequential Bayesian Updating — 2026-10-20.md |
 | UMAP (Dimensionality Reduction) | concept | fuzzy | t-SNE (Dimensionality Reduction): neutral | 2026-10-19 | last reviewed 2026-10-19 |
 | 4-Layer AI Environment Stack | concept | neutral |  | 2026-10-03 | Learning System/Reviews/Review — 4-Layer AI Environment Stack — 2026-10-03.md |

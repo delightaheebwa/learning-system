@@ -3194,6 +3194,113 @@
       "prereqs": [
         "t-SNE (Dimensionality Reduction)"
       ]
+    },
+    "Prompt Engineering": {
+      "type": "concept",
+      "attempts": [
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "free-recall",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "discriminative",
+          "confidence": "sure",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "discriminative",
+          "confidence": "hunch",
+          "hints": 1
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 2
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 2
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 2
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "discriminative",
+          "confidence": "hunch",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": true,
+          "result": "pass",
+          "q_type": "micro-check",
+          "confidence": "hunch",
+          "hints": 1
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "micro-check",
+          "confidence": "no-idea",
+          "hints": 0
+        },
+        {
+          "date": "2026-10-28",
+          "is_correct": false,
+          "result": "fail",
+          "q_type": "micro-check",
+          "confidence": "no-idea",
+          "hints": 0
+        }
+      ],
+      "interval_index": 0,
+      "consecutive_correct": 0,
+      "consecutive_wrong": 2,
+      "last_reviewed": "2026-10-28",
+      "next_review": "2026-10-31",
+      "feynman": null
     }
   },
   "meta": {

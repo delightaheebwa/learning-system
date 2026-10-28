@@ -29,6 +29,7 @@
 - [[2026-08-18 - gemini-c-memory-integer-mechanics]] — Gemini C tutoring: unsigned underflow + integer-division truncation traps, flaky exact-live asserts, swap invariants, MemFree/MemAvailable/SwapFree semantics, stack vs heap vs swap memory regions, dangling pointers
 - [[2026-09-25 - dimensionality-reduction - rohit]] + 3b1b-eigen / distill / shlens / umap / umap-faq / umap-params — P1 L10 DR first scout (2026-09-25)
 - [[2026-10-13 - dimensionality-reduction - rohit]] + 3b1b-eigen / cs229-prob / distill / gundersen / shlens / sklearn-kpca / umap / umap-faq / umap-paper / umap-params — P1 L10 DR re-scout (2026-10-13, PASS; TTL to ~2026-10-20)
+- [[2026-10-28 - prompt-engineering - rohit]] + anthropic / claude-best-practices / cot-wei / dair / dair-cot / dair-settings / openai / prompt-engineer — Phase 11 L01 prompt-engineering first scout (2026-10-28, scout-audit PASS)
 
 ## Concepts
 
@@ -253,6 +254,8 @@
 - [[Bits vs Nats]] — the log base is a unit, not a change of quantity: 1 nat = 1.4427 bits; PyTorch/TF cross-entropy is in nats by default; detector — bits → base 2, nats → base e
 - [[Label Smoothing]] — soft target = (1−ε)·one-hot + ε/K (0.84 / 0.04 at ε=0.2, K=5); L = (1−ε)·CE(hard) + ε·H_uniform with ε/K in the second term; removes the one-hot demand for probability 1 (infinite logits); ε=1 erases the label; PyTorch label_smoothing ∈ [0,1], default 0.0
 - [[Logits & Log-odds]] — logits are unnormalized scores (softmax = exp/normalize, shift-invariant); 'logit = log-odds' exact only in two-class; multi-class log-odds = logit differences (z_c − z_j = log p_c/p_j); probability 1 ⇔ log-odds +∞
+
+- [[Prompt Engineering]] — prompt text conditions each next-token distribution: every ambiguity is a fork arm the loop samples from, and a precise instruction deletes arms so the same mass piles onto fewer survivors ("Fewer valid outputs means higher probability"); anatomy = system message / user message / assistant prefill; role specificity narrows the distribution until few matching training examples leave ⇒ hallucination; the missing ruler is the eval layer (Anthropic's eval-first preconditions + Rohit's prompt testing harness); failure regime = CoT hurts below ~100B (Wei et al.), over-specific roles hallucinate; ⚠️ the 10–40% CoT payoff is scale-conditional, not a flat bonus; learner v1 + partial v2 verbatim under `## My understanding`
 
 ## Entities
 
