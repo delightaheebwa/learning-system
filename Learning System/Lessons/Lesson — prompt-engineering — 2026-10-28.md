@@ -1,7 +1,7 @@
 # Lesson — Prompt Engineering (Phase 11 L01, LLM Engineering)
 
 **Date:** 2026-10-28
-**Status:** Paused mid-triage — row 4 open (eval layer), row 5 unattacked
+**Status:** Completed 2026-10-29 — all five triage rows closed; graduation complete (v2 captured, entailment check banked, naive-student clone pass, sabotage battery closed). Continuation record: § Resume session — 2026-10-29.
 **Source:** https://aiengineeringfromscratch.com/lesson?path=phases/11-llm-engineering/01-prompt-engineering (fetched live 2026-10-28; Scout digest `Learning System/.tmp/context-01a1823e-0f24-70c3-b793-e78c1d3019a9-prompt-engineering.json`, scout-audit PASS; 9 raw files under `Knowledge Wiki/raw/sources/2026-10-28 - prompt-engineering - *.md`)
 **Flow:** [[FLOW:teach]] — learner-supplied material + handwritten notes
 **Material read by learner:** the lesson up to the "build it" part (learner-reported)
@@ -31,8 +31,8 @@
 | 1 | "Prompt engineering is very much alive… table stakes for all AI engineers." | solid | matches source ("not dead… became table stakes") |
 | 2 | "The usual structure is role, context, constraints, output." | solid | source names exactly these four as the core pattern |
 | 3 | "Models take your prompts literally — here we need to be precise." | suspect → **REPAIRED (closed)** | vague — no mechanism; repaired via fork-arm/mass picture (see Repair mode) |
-| 4 | "the process of tweaking the prompt in order to get the desired quality results" | missing → **OPEN** | no measurement layer: nothing says how "desired quality" is known; Anthropic puts success criteria + tests + first draft *before* tweaking |
-| 5 | (absent) failure regime | missing → not yet attacked | model names no case where better-structured prompting hurts; sources contain two (CoT below ~100B hurts — Wei et al.; over-specific role hallucinates — Rohit) |
+| 4 | "the process of tweaking the prompt in order to get the desired quality results" | missing → **REPAIRED + CLOSED (2026-10-29)** | no measurement layer: nothing says how "desired quality" is known; Anthropic puts success criteria + tests + first draft *before* tweaking |
+| 5 | (absent) failure regime | missing → **REPAIRED + CLOSED (2026-10-29)** | model names no case where better-structured prompting hurts; sources contain two (CoT below ~100B hurts — Wei et al.; over-specific role hallucinates — Rohit) |
 
 Attack order: 3 → 4 → 5. Dependency: 4 and 5 both required row 3's mechanism.
 
@@ -93,3 +93,59 @@ Prompt: vague vs precise instruction — what changes at the next-token distribu
 2. **Row 5 (not attacked):** failure regime — attack (likely counterexample/perturbation) using Wei et al. CoT-below-~100B and Rohit's role-over-specificity hallucination passages.
 3. **Graduation:** v2 capture → entailment check → naive-student clone (qualitative target: tool/technique choice, e.g., CoT-on-small-model or prefill decision) → battery remainder (perturbation/sabotage not yet exercised) → consolidation diagram → handoff.
 4. Note: temperature/top-p mechanics, prefill contradiction, and the CoT 10–40% conditional-vs-unconditional contradiction have **not** been taught; they are available as later attack material, not owed to the learner.
+
+## Resume session — 2026-10-29 (completed)
+
+**Resume pointer honored:** row 4 first (harness unpacking), then row 5, then graduation. Scout re-ran (purpose: resume) — all 10 sources re-fetched live 2026-10-29, Rohit body byte-identical (no upstream drift); contradictions re-surfaced: prefill (real), CoT payoff (real → actually resolved into a scope stitching below), Rohit's Johnny citation (real source error), prompt scope (apparent), role mechanism (apparent).
+
+### Row 4 — eval/measurement layer (repaired, closed)
+
+- Re-posed the harness unpacking question. First attempt: a wrong ruler — "measuring how the probability mass is distributed among the arms … if it is more piled towards a few, then I think that is better" (FAIL, structural). Killed by the learner's own two-sided clash with their banked temp-0 verdict ("flipping it i think wont change whether the output is good or not") — concession pass: piling measures how hard the model was squeezed, not whether the output is right.
+- Re-posed + one R0 rung (objectives pointer). **Harness assembled, learner words:** "The prompt harness holds the set of expected outputs and the outputs we actually received, allowing us to compare the two sets for any regression. When we make a change, the prompt runs." (pass)
+- Fresh-surface close (v5 = "never include any numbers" on three held articles): first answer "side outputs from the original and tweaked prompts. That is how we can see whether there was a regression" — FAIL (discrimination): what-runs-and-on-what omitted, old-vs-new diff substituted for the expected-output verdict. One careless re-paste (FAIL). R0 redirect into their own sentence → **ruler deployed (pass, learner words):** "You compare what you got against what you expected" + "it degraded the quality of the response" (instruction carries the blame). Row 4 closed.
+
+### Row 5 — failure regime (repaired, closed)
+
+- **Predict-before-attack** (quiz, context predict): stance = narrowing is NOT always safe; super-specific role → few matching examples → mass piles on few likely-wrong arms → hallucination. Matches the source's role limit ("If the role is so specific that few training examples match, the model will hallucinate … very little high-quality text at that intersection") — regime 1 banked in the learner's words.
+- **Synthesis clash (real contradiction surfaced, learner resolved):** "no genuine disagreement … the chain of thought paper simply flags the edge case. Otherwise, Rohit is right" + mechanism half just re-describes sampling (FAIL, structural). Pollution trace produced at first press (pass): "the next step is built on that shaky foundation … pollutes the rest of the response" → "it would be better for it to answer in one shot." **Scope stitched (pass):** 10-40% "for models greater than approximately 100 billion parameters", below that mass piles on fluent unfounded arms and pollutes. Regime 2 banked. Row 5 closed.
+
+### Graduation
+
+- **Entailment check:** why-half produced ("We need to first fix the ruler so we can measure if we are making a step forward or a step backward"); breaking half misfired once ("when we underspecify what the output should look like" — ruler-goes-bad, not ruler-unneeded; FAIL careless) and once label-only ("one-off responses"; FAIL execution); link completed (pass): one-off = a single judgment event, no versions stacking, no held set needed; repeated versions need the fixed anchor to make drift visible. Banked.
+- **Consistency check:** "reproducibility" wording inspected against the banked determinism-is-repeatability-not-quality distinction — learner picked the comparison kind ("it is the comparison kind"), distinction intact.
+- **Model v2 captured verbatim** (learner's closed-book restatement, 2026-10-29, typos as written):
+
+> "So, what's the problem with prompt engineering? The problem is that to get good, non-generic outputs out of these models, we need to do some prompt work. That prompt work is prompt engineering—the process of tweaking prompts to get the desired quality of response. That is measured based on the drift between the output we get and the output we expected or wanted. The mechanism of prompt engineering is that when you send a prompt, it conditions the models for generation. For each token it makes, and for each focus point, it distributes the probability mass across various forking paths. If the prompt is vague, it will distribute the probability mass more evenly over those paths; otherwise, the mass is concentrated over just a few choices. Now, why do we need a measurement layer like a ruler and a harness? When we are creating more than one prompt version, we need a way to track the drift and track progress. If version one gives a bad output, we need a way to measure whether version two will make an even worse output or make it better. That's why we need the measurement layer when we want to make multiple prompt versions. For just a one-off prompt, we don't need it. However, there are two failure regimes when comparing versions like V1, V2, and V3. Failure regime number one: For chain-of-thought, when you tell the model to think step-by-step, it is ideal not to do that for models with less than approximately 100 billion parameters. That actually hurts their performance. The generated paths for certain tokens can be fluent but unfounded, and the next generation of paths will just be polluted by this previous context, which ruins the rest of the response. So it's better for smaller models to generate in one shot. The second failure regime is when we make our prompt too specific—like telling the model it is an expert in a very, very specific niche with 20 years of experience. Because the model has little data on that, it will hallucinate because it doesn't know what to tell you and will just make things up. So when we get too specific, problems arise as well. What neighboring technique would I reach for besides the ruler to measure drift? i'd reach for the harness."
+- **Naive-student clone: PASS** using v2 verbatim only (task_succeeded true, misconception_resolved true, no failure causes). Target task: 7B ticket-classifier proposal (expert persona + step-by-step). The clone rejected it on both regimes (CoT far below the ~100B line via pollution; persona matches the too-specific shape via fabrication), gave "sharper is better" only conditional license, and routed the version comparison through the ruler. Seeded "more constraints always help" refuted twice. Honest gaps reported (logged as Mistakes row 2026-10-29, clone blind spots): no threshold/advance test for too-specific, no regime-coexistence statement, no third option between too vague and too specific.
+- **Battery remainder — sabotage:** teammate replaces held expected outputs with the same model grading at temp 0. First answer attacked judge noise/false-positives (FAIL, discrimination — planted break was ruler independence). Seam press: "the model writes what it sees as a good, expected output … poisons the rest of the chain of versions" (pass). Fresh-surface variant (bigger temp-0 judge, no human expected outputs): "still not whole … the part that is still missing is what the human actually wants" (pass). Battery closed: mechanism press (r3), counterexample (r4/r5), source-clash/synthesis (r5), perturbation (r3/r5), sabotage (ruler-independence) all exercised.
+
+### Verdicts ledger (2026-10-29, in order)
+
+| # | Item | Qtype | Verdict | Confidence | Hints |
+|---|---|---|---|---|---|
+| 13 | concentration-ruler answer | discriminative | fail | hunch | 0 |
+| 14 | piled-vs-temp-0 reconciliation | micro-check | pass | hunch | 1 |
+| 15 | harness assembled | micro-check | pass | hunch | 1 |
+| 16 | v5 fresh-surface walk-through | micro-check | fail | hunch | 0 |
+| 17 | ruler-question re-paste | micro-check | fail | hunch | 0 |
+| 18 | article-2 ruler deploy | micro-check | pass | hunch | 1 |
+| 19 | row-5 prediction | micro-check | pass | hunch | 0 |
+| 20 | CoT synthesis + mechanism | discriminative | fail | hunch | 0 |
+| 21 | pollution chain trace | micro-check | pass | hunch | 0 |
+| 22 | scope stitch (~100B+) | micro-check | pass | hunch | 0 |
+| 23 | entailment check v1 | explain-back | fail | hunch | 0 |
+| 24 | one-off label only | explain-back | fail | hunch | 0 |
+| 25 | one-off link completion | micro-check | pass | hunch | 0 |
+| 26 | reproducibility-kind check | micro-check | pass | hunch | 0 |
+| 27 | sabotage (judge-noise path) | error-detect | fail | hunch | 0 |
+| 28 | sabotage seam press | micro-check | pass | hunch | 1 |
+| 29 | sabotage fresh-surface (big judge) | micro-check | pass | hunch | 0 |
+| 30 | naive-student clone | explain-back | pass (feynman_pass) | hunch | 0 |
+
+`Attempts.json` — `interval_index` 3, `consecutive_correct` 3, `next_review` **2026-11-28**, `feynman` pass (30 attempts total: 17 pass / 13 fail).
+
+### Open items for `/review`
+
+1. Mistake rows due: the two 2026-10-28 `active` rows (mechanism `[miss: cue]`; pause exit ticket) + new 2026-10-29 `active` row (clone blind spots — priority: the too-specific separator question).
+2. Blind spots (from clone): too-specific threshold/advance test; regime coexistence; vague↔specific middle. (b) is an open question in the sources, not owed.
+3. Unsurfaced material available for later lessons: temperature/top-p mechanics, prefill contradiction (real, version-bounded), Rohit's Johnny citation error (real), prompt-scope + role-mechanism (apparent), PE2 meta-prompting limits.

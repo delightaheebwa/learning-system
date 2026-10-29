@@ -367,7 +367,7 @@ Goal: LLMs from Scratch — see upstream `phases/10-*/docs/en.md` per lesson. Go
 
 **Exit:** see ROADMAP.md phase header for LLMs from Scratch exit criteria.
 
-## Mission 12 — Phase 11: LLM Engineering *(~17 hours · Python / TypeScript · not-started)*
+## Mission 12 — Phase 11: LLM Engineering *(~17 hours · Python / TypeScript · branched — L01 completed 2026-10-29 via a side interrogation; the sequential curriculum position is still Phase 1 L10 to finish)*
 
 Goal: LLM Engineering — see upstream `phases/11-*/docs/en.md` per lesson. Goal phrasing follows Rohit ROADMAP.md phase header.
 
@@ -376,7 +376,7 @@ Goal: LLM Engineering — see upstream `phases/11-*/docs/en.md` per lesson. Goal
 
 | # | Lesson | Est. time | Prereqs | Lang | Status | Notes |
 |---|--------|-----------|---------|------|--------|-------|
-| 01 | Prompt Engineering — Techniques & Patterns | ~45 min | none | Python | in-progress | **In-progress, paused mid-triage 2026-10-28** — row 3 mechanism repaired + closed, row 4 eval layer open, row 5 failure regime unattacked; graduation not reached. Resume in `Learning System/Lessons/Lesson — prompt-engineering — 2026-10-28.md` § Resume. Source: Phase 11 L01 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
+| 01 | Prompt Engineering — Techniques & Patterns | ~45 min | none | Python | done | **Done 2026-10-29** — the interrogation opened on 2026-10-28 was finished: all five triage rows closed (row 4 eval/measurement layer — the harness holds expected + actual outputs and re-runs on every change, and the scorer is not the ruler; row 5 failure regime — over-specific role → fabrication on the data-support condition, CoT below ~100B → pollution-by-conditioning so one-shot wins); **v2 captured verbatim**, entailment check banked, `naive-student` clone PASS, sabotage battery closed. Unread remainder banked as later attack material: the harness code section past "build it", temperature/top-p mechanics, the prefill contradiction (real, version-bounded), PE2 meta-prompting limits, and Rohit's Johnny citation error (real). Branch lesson — the sequential curriculum position did not move; Phase 1 L10 is still where the sequence stands. Source: Phase 11 L01 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 02 | Few-Shot, Chain-of-Thought, Tree-of-Thought | ~45 min | 1 | Python | not-started | Source: Phase 11 L02 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 03 | Structured Outputs | ~75 min | 2 | Python | not-started | Source: Phase 11 L03 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
 | 04 | Embeddings & Vector Representations | ~75 min | 3 | Python | not-started | Source: Phase 11 L04 `docs/en.md` + Further Reading. Lang per lesson header (Python / TypeScript). |
