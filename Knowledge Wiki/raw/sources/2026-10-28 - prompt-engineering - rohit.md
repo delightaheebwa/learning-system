@@ -1,5 +1,4 @@
-<!-- source: https://aiengineeringfromscratch.com/lesson?path=phases/11-llm-engineering/01-prompt-engineering | type: md | hash: 342126cd4dfb12e02a910da193fd3609388f6f0e6f79314e18bba6eda292c179 | fetched: 2026-10-28T00:00:00Z -->
-
+<!-- source: https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/phases/11-llm-engineering/01-prompt-engineering/docs/en.md | type: md | hash: 342126cd4dfb12e02a910da193fd3609388f6f0e6f79314e18bba6eda292c179 | fetched: 2026-10-29T08:35:42Z -->
 # Prompt Engineering: Techniques & Patterns
 
 > Most people write prompts like they are texting a friend. Then they wonder why a 200-billion parameter model gives mediocre answers. Prompt engineering is not about tricks. It is about understanding that every token you send is an instruction, and the model follows instructions literally. Write better instructions, get better outputs. It is that simple and that hard.
