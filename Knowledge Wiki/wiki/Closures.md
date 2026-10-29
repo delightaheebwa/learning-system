@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Closures
 
@@ -57,3 +57,8 @@ Closures are the foundation of many patterns:
 ---
 
 *Source: `raw/sources/2026-06-04 - programming-paradigms-expressions-closures-arguments.md`*
+
+## Sources
+
+- Closures (MDN): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
+- First-class functions: https://en.wikipedia.org/wiki/First-class_function

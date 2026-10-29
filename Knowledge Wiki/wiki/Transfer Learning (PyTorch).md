@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Transfer Learning (PyTorch)
 
@@ -47,6 +47,11 @@ The training loop from Day 1 stays the same — only the model and data change.
 - **Lesson:** Marconi Lab DL — Day 2: CNNs for Medical & Agricultural Images
 - **Date learned:** 2026-07-15
 - **Further reading:** [PyTorch Transfer Learning Tutorial](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html)
+
+## Sources
+
+- PyTorch — Transfer Learning tutorial: https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+- torchvision — Models: https://pytorch.org/vision/stable/models.html
 
 ## Connections
 - Prerequisites: CNN Architecture Pattern, Data Augmentation (torchvision), Training Loop Pattern

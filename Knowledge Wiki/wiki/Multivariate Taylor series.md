@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Multivariate Taylor series
 
@@ -22,8 +22,8 @@ Here:
 
 - \(k=0\): \(f(x_0)\)
 - \(k=1\): \(\nabla f(x_0)\,\delta\)
-- \(k=2\): \(\delta^\top H(x_0)\delta\)
-- \(k=3\): \(D_x^3 f(x_0)\,\delta^3\)
+- \(k=2\): \(\frac{1}{2}\,\delta^\top H(x_0)\delta\)
+- \(k=3\): \(\frac{1}{6}\,D_x^3 f(x_0)\,\delta^3\)
 
 In index notation, the general contraction is
 
@@ -64,3 +64,8 @@ This is why gradient descent behaves like it is following a local plane, while N
 - [[Gradient descent]]
 - [[Hessian matrix]]
 - [[Local linearity]]
+
+## Sources
+
+- Wikipedia — Taylor series (multivariate case): https://en.wikipedia.org/wiki/Taylor_series
+- Math Insight — Taylor's theorem for multivariable functions: https://mathinsight.org/taylors_theorem_multivariable_introduction

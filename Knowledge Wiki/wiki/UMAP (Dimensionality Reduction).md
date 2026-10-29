@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=— | date=2026-10-19 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; fourteen statements as of 2026-10-19 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, three appended 2026-10-17, three appended 2026-10-19, nothing overwritten) -->
+<!-- provenance: status=verified | source=Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - umap.md (umap-learn docs) + 2026-10-13 - dimensionality-reduction - umap-params.md (Basic UMAP Parameters) + 2026-10-13 - dimensionality-reduction - umap-paper.md (McInnes & Healy 2018, ArXiv 1802.03426, Definition 11 / Algorithm 5) + 2026-10-13 - dimensionality-reduction - umap-faq.md + 2026-10-13 - dimensionality-reduction - rohit.md (Rohit P1 L10; §3.2 graph layout + negative sampling, §4.3 hyper-parameters, and the Weaknesses section for the Laplacian/spectral-init concession) + Kobak & Linderman 2019, "UMAP does not preserve global structure any better than t-SNE when using the same initialization" (bioRxiv; cited as [29] in umap-paper) | verified-by=fact-check-agent | date=2026-10-26 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; fourteen statements as of 2026-10-19 — two from 2026-10-13, three appended 2026-10-14, three appended 2026-10-16, three appended 2026-10-17, three appended 2026-10-19, nothing overwritten) -->
 
 # UMAP (Dimensionality Reduction)
 
@@ -169,6 +169,14 @@ Still to come in L10's CP6:
 
 - How much of the "global structure" claim survives the failure mode above, and under what tuning? — **answered as far as the sources go (2026-10-16):** it is a graduated claim — normally visible, breakable by the outlier collapse that `disconnection_distance` mitigates; the paper's "arguably" is partly attributable to the Laplacian/spectral initialization (Kobak & Linderman 2019), with the cross-entropy-vs-KL objective as the paper's own counterweight. Still unmeasured: the relative weight of those two contributors — the paper itself says the field lacks agreed measures, even definitions, of global-structure preservation.
 - How the local connectivity of each patch is chosen in code, and what it changes — **partly answered 2026-10-14:** `ρ_i` is the distance to the nearest neighbour (so each point connects to at least one other with weight 1, i.e. local connectivity at that point) and `σ_i` is binary-searched until the patch's memberships sum to `log₂(k)` (paper Algorithms 2–3). Still unread: the `local_connectivity` / spectral-initialisation corner cases in code.
+
+## Sources
+
+- umap-learn documentation: https://umap-learn.readthedocs.io/
+- McInnes, Healy & Melville, *UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction*, ArXiv 1802.03426: https://arxiv.org/abs/1802.03426
+- UMAP FAQ: https://umap-learn.readthedocs.io/en/latest/faq.html
+- Basic UMAP Parameters: https://umap-learn.readthedocs.io/en/latest/parameters.html
+- Kobak & Linderman 2019, *UMAP does not preserve global structure any better than t-SNE when using the same initialization*: https://www.biorxiv.org/content/10.1101/2019.12.19.877522v1
 
 ## My understanding
 

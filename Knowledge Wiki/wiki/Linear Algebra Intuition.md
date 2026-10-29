@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Linear Algebra Intuition
 
@@ -32,7 +32,7 @@ $$a \\cdot b = a_1 \\times b_1 + a_2 \\times b_2 + \\dots + a_n \\times b_n$$
 - Perpendicular: $a \\cdot b = 0$ (unrelated)
 - Opposite direction: $a \\cdot b &lt; 0$ (dissimilar)
 
-This is how search engines, recommendation systems, and RAG work — find vectors with high dot products.
+This is how search engines, recommendation systems, and RAG work — find vectors with high dot products (or cosine similarity, the normalized dot product).
 
 ### Linear Independence
 
@@ -89,3 +89,7 @@ QR decomposition factors a matrix into $Q$ (orthonormal basis from Gram-Schmidt)
 | Orthonormal basis | Whitening transforms, stable computation |
 
 **LoRA:** Fine-tunes LLMs by decomposing weight updates into low-rank matrices. Instead of updating a 4096×4096 matrix (16M params), LoRA updates two matrices of size 4096×16 and 16×4096 (131K params). The rank-16 constraint assumes the weight update lives in a 16-dimensional subspace.
+## Sources
+
+- https://en.wikipedia.org/wiki/Linear_algebra
+- https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/01-linear-algebra-intuition/docs/en.md

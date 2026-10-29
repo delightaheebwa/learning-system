@@ -1,8 +1,8 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Waterbed Theory
 
-The **Waterbed Theory** (also called the Law of Conservation of Complexity) states that in complex systems — programming languages, tools, software designs — you cannot eliminate complexity. If you "push it down" in one place, it will "bulge" somewhere else, much like pressing on a waterbed.
+The **Waterbed Theory** (ascribed to Larry Wall; related to, but distinct from, Tesler's Law, the "Law of Conservation of Complexity") states that in complex systems — programming languages, tools, software designs — you cannot eliminate complexity. If you "push it down" in one place, it will "bulge" somewhere else, much like pressing on a waterbed.
 
 Popularized by Larry Wall (creator of Perl) and others in the programming language design community.
 
@@ -35,3 +35,6 @@ The goal is not to eliminate complexity, but to **place it where it is most mana
 ---
 
 *Source: [[2026-06-06 - waterbed-theory-runtime-components]]*
+
+## Sources
+- https://en.wikipedia.org/wiki/Waterbed_theory

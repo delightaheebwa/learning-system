@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/karpathy/micrograd ; https://timvieira.github.io/blog/how-to-test-gradient-implementations/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Gradient Checking
 
@@ -11,6 +11,8 @@ Comparing autodiff gradients against numerical finite-difference approximations 
 ## Source
 - Lesson: [Teach/lessons/0005-gradient-checking-and-micrograd.html](teach/lessons/0005-gradient-checking-and-micrograd.html)
 - Date learned: 2026-07-10
+- Karpathy micrograd: https://github.com/karpathy/micrograd
+- Numerical gradient checks: https://timvieira.github.io/blog/how-to-test-gradient-implementations/
 
 ## Connections
 - Prerequisites: [[Local Autograd Derivative Rules]], [[Numerical vs Analytical Derivatives]]

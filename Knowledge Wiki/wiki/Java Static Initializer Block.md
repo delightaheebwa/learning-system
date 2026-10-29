@@ -1,10 +1,10 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Java Static Initializer Block
 
 ## Key Insight
 
-A `static {}` block is a **setup box** for static variables — it runs automatically when the JVM loads the class, before any main code executes, and provides a place for multi-step initialization actions.
+A `static {}` block is a **setup box** for static variables — it runs automatically during class initialization, before the class is first used (before instances are created or static members are accessed), and provides a place for multi-step initialization actions.
 
 ## The Problem It Solves
 
@@ -37,10 +37,10 @@ class Scanner {
 
 ## Runtime Timeline
 
-1. **Class Loading**: JVM loads the class into memory
-2. **Static Block Execution**: The `static {}` block runs automatically — the map is created and filled
-3. **`main()` Starts**: The program's main method begins executing
-4. **Object Creation**: Instances are created — the static map is already ready
+1. **Class Loading/Initialization**: the JVM initializes the class when it is first used
+2. **Static Field Initializers & Static Blocks**: run in textual order — the map is created and filled
+3. **`main()` / First Use**: the program's main method or first use of the class begins; the static map is already ready
+4. **Object Creation**: instances are created — the static map is already ready
 
 Think of it like a restaurant kitchen: the `static {}` block is the prep work done before opening (chopping vegetables, heating ovens). The main code is the cooking done after a customer orders.
 
@@ -60,3 +60,8 @@ Think of it like a restaurant kitchen: the `static {}` block is the prep work do
 
 - [[Java Class Body Rules]]
 - [[Modern Java Collection Factory Methods]]
+
+## Sources
+
+- https://docs.oracle.com/javase/tutorial/java/javaOO/initial.html
+- https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html#jls-8.7

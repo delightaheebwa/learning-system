@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://developer.mozilla.org/en-US/docs/Glossary/Parameter (MDN) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Arguments and Parameters
 
@@ -46,3 +46,7 @@ Confusing "passing parameters" with "passing arguments" — you pass **arguments
 ---
 
 *Source: `raw/sources/2026-06-04 - programming-paradigms-expressions-closures-arguments.md`*
+
+## Sources
+- MDN Glossary — Parameter: https://developer.mozilla.org/en-US/docs/Glossary/Parameter
+- MDN Glossary — Argument: https://developer.mozilla.org/en-US/docs/Glossary/Argument

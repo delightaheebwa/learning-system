@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Probability Mass Function (PMF)
 
@@ -26,3 +26,4 @@ A PMF is just a lookup table. For a fair die: P(X=1) = 1/6, P(X=2) = 1/6, ..., P
 ## Source
 
 - Lesson: `Teach/ai-engineering/lessons/0002-probability-foundations.html`
+- https://en.wikipedia.org/wiki/Probability_mass_function

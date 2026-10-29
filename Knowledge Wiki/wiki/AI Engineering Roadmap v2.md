@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=multiple | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineering — Primary Colors Roadmap
 
@@ -61,7 +61,7 @@ All projects run on free/cheap hardware (laptop, Colab, Kaggle T4, <$25 API cred
 ## C2 — Post-Training: Alignment from Scratch (Primary Color: How models get aligned)
 
 **Repo:** [huggingface/trl](https://github.com/huggingface/trl)
-**Verification:** 18.9k★ · Apache-2.0 · v1.8.0 (Jul 2026) · very active
+**Verification:** ~19.6k★ · Apache-2.0 · v1.16.0 (Oct 2026) · very active
 **Hardware:** Free Colab/Kaggle T4 with Qwen2.5-0.5B
 **Hours:** 10–14
 
@@ -351,3 +351,14 @@ Rather than tracking hours, pass these gates.
 | ✓ | C4 | Write an inference loop that beats HF's `model.generate()` on a latency benchmark; serve an OpenAI-compatible endpoint |
 | ✓ | C5 | Design, build, eval, ship, and monitor a RAG application that an end user can actually use |
 | ✓ | Resource layer | Explain when to use cross-encoder vs bi-encoder; argue why PPO exists if DPO is simpler; identify the safety-vs-capability tradeoff in a frontier model |
+
+## Sources
+
+- karpathy/nn-zero-to-hero: https://github.com/karpathy/nn-zero-to-hero
+- rasbt/LLMs-from-scratch: https://github.com/rasbt/LLMs-from-scratch
+- huggingface/trl: https://github.com/huggingface/trl
+- Mihawii/mini-vllm: https://github.com/Mihawii/mini-vllm
+- ggml-org/llama.cpp: https://github.com/ggml-org/llama.cpp
+- DataTalksClub/llm-zoomcamp: https://github.com/DataTalksClub/llm-zoomcamp
+- jamwithai/production-agentic-rag-course: https://github.com/jamwithai/production-agentic-rag-course
+- huggingface/agents-course: https://github.com/huggingface/agents-course

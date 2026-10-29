@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Parameter Expansion
 
@@ -11,7 +11,7 @@ Bash parameter expansion (`${var...}`) lets you transform variable values inline
 | Pattern | What it does | Example |
 |---|---|---|
 | `${var%pattern}` | Remove shortest **suffix** matching `pattern` | `${FILE%.txt}` → strips `.txt` from end |
-| `${var%%pattern}` | Remove **longest** suffix matching `pattern` | `${file.tar.gz}` → `%%.*` → strips `.tar.gz` |
+| `${var%%pattern}` | Remove **longest** suffix matching `pattern` | `${file}` (where `file=file.tar.gz`) → `%%.*` → strips `.tar.gz` |
 | `${var#pattern}` | Remove shortest **prefix** matching `pattern` | `${path#/}` → strips leading `/` |
 | `${var##pattern}` | Remove **longest** prefix matching `pattern` | `${file##*/}` → strips everything before last `/` (basename) |
 | `${var:-default}` | Use `default` if `var` is unset or empty | `${NAME:-anonymous}` → falls back to "anonymous" |
@@ -66,3 +66,4 @@ ${1:?Usage: script.sh <filename>} # exits with error if no argument
 
 - Source: Gemini conversation — shell scripting safety flags and file operations (2026-08-04)
 - Reference: https://missing.csail.mit.edu/2026/course-shell/
+- Reference: https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html

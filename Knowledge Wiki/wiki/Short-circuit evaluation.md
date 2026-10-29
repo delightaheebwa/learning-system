@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Short-Circuit Evaluation
 
@@ -70,3 +70,8 @@ Chaining too many short-circuit operators makes code unreadable. When logic is c
 ---
 
 *Source: `raw/sources/2026-06-04 - short-circuit-evaluation-memory-management.md`*
+
+## Sources
+
+- Short-circuit evaluation (Wikipedia): https://en.wikipedia.org/wiki/Short-circuit_evaluation
+- Python boolean operations: https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://www.youtube.com/@aiDotEngineer (AI Engineer World's Fair 2026) + https://www.faros.ai/research/ai-acceleration-whiplash | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineer Weekly — July 21, 2026
 
@@ -120,3 +120,7 @@ Action: Audit your agent pipeline. What steps are doing pure computation or patt
 ---
 
 *Sent by Zo — AI Engineer Weekly Synthesis*
+
+## Sources
+- AI Engineer YouTube channel: https://www.youtube.com/@aiDotEngineer
+- Faros AI "Acceleration Whiplash" (Q2 2026): https://www.faros.ai/research/ai-acceleration-whiplash

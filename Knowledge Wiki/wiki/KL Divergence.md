@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # KL Divergence
 
@@ -133,3 +133,7 @@ log₂ → bits, ln → nats (1 nat ≈ 1.4427 bits, so 0.189 bits ≈ 0.131 nat
 - [[Mutual Information]]
 - [[Add-1 Smoothing]]
 - [[Laplace Smoothing]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence

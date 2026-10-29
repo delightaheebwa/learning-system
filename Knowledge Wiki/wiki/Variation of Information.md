@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Variation of Information
 
@@ -107,3 +107,6 @@ Open of the lesson's final session — warm-up 2/2 (pass, sure, grade-audit agre
 ## Source
 
 Rohit P1 L09 `docs/en.md` (https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/09-information-theory/docs/en.md) + Olah, *Visual Information Theory* (https://colah.github.io/posts/2015-09-Visual-Information/) — the wings and the union/overlap picture; Meilă, *Comparing Clusterings by the Variation of Information* (COLT 2003) and *Comparing clusterings — an information based distance* (J. Multivariate Analysis 98 (2007) 873–895) — the metric theorem and the clustering application. Introduced in this track 2026-09-16 as a wonder-out; consolidated 2026-09-21 (idea + practice 2/2 + exit ticket 3/3, all under `sure`).
+
+## Sources
+- https://en.wikipedia.org/wiki/Variation_of_information

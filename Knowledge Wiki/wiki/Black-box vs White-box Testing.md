@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Black-box vs White-box Testing
 
@@ -45,3 +45,4 @@ Black-box/white-box = visibility; unit/integration/E2E = scope; the CLI tests ar
 
 - cstack — Let's Build a Simple Database, Part 4: https://cstack.github.io/db_tutorial/parts/part4.html
 - Gemini tutoring on testing categories (notebook: https://gemini.google.com/app/f3ceade4034d6bf0)
+- Software testing (black-box/white-box): https://en.wikipedia.org/wiki/Software_testing

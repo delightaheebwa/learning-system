@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Imperative_programming ; https://en.wikipedia.org/wiki/Declarative_programming | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Imperative and Declarative Programming
 
@@ -63,3 +63,7 @@ Decades of libraries, tools, frameworks, and education have been built around im
 ---
 
 *Source: `raw/sources/2026-06-04 - programming-paradigms-expressions-closures-arguments.md`*
+
+## Sources
+- Wikipedia, "Imperative programming": https://en.wikipedia.org/wiki/Imperative_programming
+- Wikipedia, "Declarative programming": https://en.wikipedia.org/wiki/Declarative_programming

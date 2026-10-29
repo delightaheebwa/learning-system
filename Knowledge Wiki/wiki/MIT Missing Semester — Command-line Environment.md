@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # MIT Missing Semester — Command-line Environment
 
@@ -44,7 +44,7 @@ Rule of thumb: try Ctrl-C → `kill` (SIGTERM) → only if it still won't die, `
 ## Return Codes & Boolean Operators
 
 - Exit code `0` = success; nonzero = failure. `$?` holds the last command's code.
-- A successful command exits `0`; to **force a non-zero exit** yourself, use the `exit N` built-in (`N` defaults to `1` if omitted). This is how scripts abort on failure:
+- A successful command exits `0`; to **force a specific exit** yourself, use the `exit N` built-in (`N` is the status code to return; if omitted, the shell exits with the status of the last command executed). This is how scripts abort on failure:
   ```bash
   mkdir /root/secret || exit 1   # if mkdir fails, the script exits with code 1 and the lines after it never run
   ```

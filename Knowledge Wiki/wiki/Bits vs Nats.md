@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bits vs Nats
 
@@ -44,3 +44,8 @@ Not the same as changing the *distribution*: entropy's weights p(x) are untouche
 - Rohit ai-engineering-from-scratch — `phases/01-math-foundations/09-information-theory/docs/en.md`
 - PyTorch `torch.nn.CrossEntropyLoss` — https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html (nats by default)
 - Lesson `Learning System/Lessons/Lesson — Information Theory — 2026-09-11.md` (CP6, 2026-09-24), teaching note `Learning System/Sessions/Session — Information Theory (P1 L09 resume, CP6 + Feynman + final quiz) — 2026-09-24.md`, Learning Record 0008.
+
+## Sources
+
+- PyTorch `CrossEntropyLoss` (nats by default): https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
+- Information theory (nat unit): https://en.wikipedia.org/wiki/Nat_(unit)

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/mity/acutest/blob/master/README.md | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Acutest Unit Testing
 
@@ -68,7 +68,7 @@ The README covers more than the C course uses:
 
 ## Sources
 
-- Acutest README and examples: https://github.com/mity/acutest
+- Acutest README and examples: https://github.com/mity/acutest (checked 2026-10-26: `TEST_CHECK`/`TEST_ASSERT`/`TEST_MSG`/`TEST_DUMP`/`TEST_CASE`/`TEST_EXCEPTION`, `TEST_LIST` zeroed sentinel, exit codes 0/1/other, `--list`/`-l`, `--exclude`, `--verbose`, `--tap`, `--xml-output=FILE`, child-process isolation, abort()/longjmp(), debugger suppression)
 - Teach C Course — Lesson 3: Acutest and the Parser Seam
 - Gemini Socratic tutoring on Acutest macros (notebook: https://gemini.google.com/app/8870dcd71e2919f5)
 

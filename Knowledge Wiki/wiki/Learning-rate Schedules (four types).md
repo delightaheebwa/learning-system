@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Learning-Rate Schedules (Four Types)
 
@@ -41,3 +41,5 @@ Pre-defined schedules are a blunt instrument (Ruder): (1) the curve is drawn in 
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-10
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md` + [Ruder's survey](https://ruder.io/optimizing-gradient-descent/)
+- https://pytorch.org/docs/stable/optim.html
+- https://ruder.io/optimizing-gradient-descent/

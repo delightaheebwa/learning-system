@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Gradient_descent ; https://en.wikipedia.org/wiki/Rosenbrock_function | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Gradient descent
 
@@ -56,6 +56,8 @@ So the key idea is:
 ## Sources (P1 L08 addition)
 
 - Rohit P1 L08 — Optimization, 2026-09-07
+- Wikipedia, "Gradient descent": https://en.wikipedia.org/wiki/Gradient_descent
+- Rosenbrock function: https://en.wikipedia.org/wiki/Rosenbrock_function
 
 
 ## Three-optimizer race on Rosenbrock (CP3, 2026-09-08)

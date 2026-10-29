@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://www.artima.com/articles/good-enough-software | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Good Enough Software
 
@@ -22,4 +22,6 @@ People find it easier to get on board with an ongoing success. Show them a glimp
 
 ## Source
 
-The Pragmatic Programmer (Hunt & Thomas)
+- The Pragmatic Programmer (Hunt & Thomas)
+- Hunt & Thomas, "Good Enough Software" interview, Artima: https://www.artima.com/articles/good-enough-software
+- Pragmatic Programmer DRY chapter: https://media.pragprog.com/titles/tpp20/dry.pdf

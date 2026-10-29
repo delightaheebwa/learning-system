@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Self-Contained Components
 
@@ -35,3 +35,8 @@ A self-contained component is testable in isolation. If you need to mock half th
 - **Parallel development** — teams can work on different components simultaneously
 - **Replaceability** — swap one component for another without cascading changes
 - **Composability** — build larger systems from well-understood, independent pieces
+
+## Sources
+
+- General software-design principle (modularity / separation of concerns): https://en.wikipedia.org/wiki/Modularity_(programming)
+- Law of Demeter (related): https://en.wikipedia.org/wiki/Law_of_Demeter

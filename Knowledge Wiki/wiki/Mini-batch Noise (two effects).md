@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy (P1 L08 lesson) + Keskar 2017 / Wilson 2017 / Li 2018 | verified-by=— | date=2026-10-17 | note=attribution corrected 2026-10-17 (in-session fact-check): SGD-vs-Adam gap = Wilson et al. 2017; sharp minima = Keskar et al. 2017; Li et al. 2018 = visualization only -->
+<!-- provenance: status=verified | source=legacy (P1 L08 lesson) + Keskar 2017 / Wilson 2017 / Li 2018 | verified-by=fact-check-agent | date=2026-10-26 | note=attribution corrected 2026-10-17 (in-session fact-check): SGD-vs-Adam gap = Wilson et al. 2017; sharp minima = Keskar et al. 2017; Li et al. 2018 = visualization only -->
 
 # Mini-batch Noise (Two Effects)
 

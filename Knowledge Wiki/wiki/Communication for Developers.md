@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Communication for Developers
 
@@ -23,3 +23,7 @@ Software development is a social activity. The best code in the world is useless
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+
+## Sources
+
+- The Pragmatic Programmer: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/

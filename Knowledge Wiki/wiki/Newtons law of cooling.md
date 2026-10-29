@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Newton's law of cooling
 
@@ -8,7 +8,7 @@ Newton's law of cooling says that the rate of temperature change is proportional
 
 Its solution is exponential decay:
 
-- \(\Delta T(t) = e^{-kt}\)
+- \(\Delta T(t) = \Delta T(0)\,e^{-kt}\)
 
 ## Why it connects here
 
@@ -20,3 +20,7 @@ That is why the special role of \(e\) is useful in differential equations. Writi
 
 - [[Exponential derivatives]]
 - [[Euler number e]]
+
+## Sources
+
+- Wikipedia — Newton's law of cooling: https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling

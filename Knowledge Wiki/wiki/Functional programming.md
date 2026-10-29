@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Functional_programming | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Functional Programming
 
@@ -39,3 +39,7 @@ Treat computation as the evaluation of mathematical functions. Data is **read-on
 - [[Imperative and declarative programming]]
 - [[Closures]]
 - [[Expressions and statements]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Functional_programming

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Softmax Function
 
@@ -19,6 +19,11 @@ probs = counts / counts.sum(1, keepdim=True)  # (N, 27) probabilities
 
 In practice, `F.softmax(logits, dim=1)` does both steps in one numerically stable call. Writing it out manually reveals the structure.
 
-Part of: Neural Networks: Zero to Hero — makemore Part 2 (Karpathy Lecture 2)
+Part of: Neural Networks: Zero to Hero — makemore Part 2 (Karpathy Lecture 3)
 
 [[One-Hot Encoding]] | [[Row-Select Property]] | [[Negative Log-Likelihood (NLL)]]
+
+## Sources
+
+- Karpathy, "Building makemore Part 2: MLP" (Neural Networks: Zero to Hero, Lecture 3): https://www.youtube.com/watch?v=TCH_1BHY58I
+- Softmax function (Wikipedia): https://en.wikipedia.org/wiki/Softmax_function

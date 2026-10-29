@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Independence_(probability_theory) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Independence of random variables
 
@@ -114,7 +114,11 @@ Independence dramatically simplifies probability calculations. If variables are 
 
 ## Related pages
 
-- \[\[Joint, marginal, and conditional probabilities\]\]
-- \[\[Probability mass and density functions\]\]
-- \[\[Probability foundations\]\]
-- \[\[Covariance and correlation\]\]
+- [[Joint, marginal, and conditional probabilities]]
+- [[Probability mass and density functions]]
+- [[Probability foundations]]
+- [[Covariance and correlation]]
+
+## Sources
+- Wikipedia, "Independence (probability theory)": https://en.wikipedia.org/wiki/Independence_(probability_theory)
+- Wikipedia, "Pearson's chi-squared test": https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://xp123.com/3a-arrange-act-assert/ (Bill Wake, 2001/2011) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Arrange-Act-Assert (AAA)
 

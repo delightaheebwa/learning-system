@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://developer.nvidia.com/cuda-zone ; https://pytorch.org/docs/stable/notes/cuda.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # GPU Computing
 
@@ -48,3 +48,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 ## Related
 - [[AI Engineering - Dev Environment Stack]]
 - [[Docker for AI Development]]
+
+## Sources
+- NVIDIA CUDA overview: https://developer.nvidia.com/cuda-zone
+- PyTorch CUDA semantics: https://pytorch.org/docs/stable/notes/cuda.html
+- NVIDIA Tensor Cores: https://developer.nvidia.com/blog/programming-tensor-cores-cuda-9/

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Sentinel Values vs Presence Flags
 
@@ -105,3 +105,5 @@ TEST_CHECK((read_meminfo("/proc/meminfo", &memory) == 0) &&
 
 - Gemini Socratic tutoring on parsing `/proc/meminfo` (notebooks: https://gemini.google.com/app/8870dcd71e2919f5, https://gemini.google.com/app/e338aa05afbec7a2)
 - Teach C Course — Lesson 3: Acutest and the Parser Seam (practice exercise)
+- C `_Bool` / `bool` (cppreference): https://en.cppreference.com/w/c/types/boolean
+- `/proc/meminfo` (kernel docs): https://www.kernel.org/doc/Documentation/filesystems/proc.rst

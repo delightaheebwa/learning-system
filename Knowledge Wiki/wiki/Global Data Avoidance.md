@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/ ; https://en.wikipedia.org/wiki/Global_variable | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Global Data Avoidance
 
@@ -43,3 +43,8 @@ The **Singleton pattern** (from the Gang of Four) ensures only one instance of a
 - **Thread safety** — no shared mutable state to protect
 - **Understandability** — a function's signature tells you everything it depends on
 - **Reuse** — modules can be dropped into different contexts without modification
+
+## Sources
+
+- https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/
+- https://en.wikipedia.org/wiki/Global_variable

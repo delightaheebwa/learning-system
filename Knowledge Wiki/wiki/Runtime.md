@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Runtime
 
@@ -37,3 +37,7 @@ Together they form a **musicians-and-concert-hall metaphor**: the musicians (eng
 ---
 
 *Sources: [[2026-05-29 - compilers-interpreters-virtual-machines]], [[2026-06-06 - waterbed-theory-runtime-components]]*
+
+## Sources (verified)
+
+- https://en.wikipedia.org/wiki/Runtime_system

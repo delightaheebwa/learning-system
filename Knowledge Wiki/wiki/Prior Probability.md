@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Prior Probability P(H)
 
@@ -17,3 +17,7 @@ Your belief before seeing any evidence — the base rate. In the Bayes' formula,
 ## Key Insight
 
 The prior dominates when a condition is rare. Even accurate tests produce mostly false positives when the base rate is low (see [[Base Rate Fallacy]]).
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Prior_probability

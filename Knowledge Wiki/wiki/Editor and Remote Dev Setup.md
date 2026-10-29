@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Editor & Remote Dev Setup
 
@@ -65,6 +65,12 @@ Host gpu-box
 | **Pylance** | Microsoft's Python LSP using Pyright for type checking and IntelliSense |
 | **Remote SSH** | VS Code extension that runs a server on a remote machine and streams UI to your local editor |
 | **Format on save** | Editor runs a formatter (Black, Ruff) every time you save |
+
+## Sources
+
+- VS Code docs — Remote SSH: https://code.visualstudio.com/docs/remote/ssh
+- Black formatter: https://black.readthedocs.io/
+- Ruff: https://docs.astral.sh/ruff/
 
 ## Related
 - [[AI Engineering - Dev Environment Stack]]

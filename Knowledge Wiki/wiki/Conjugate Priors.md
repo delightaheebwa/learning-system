@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Conjugate Priors (Beta-Binomial)
 
@@ -35,3 +35,7 @@ Beta(a,b) is the natural distribution for a probability parameter (a number betw
 | Multinomial | Dirichlet(α) | Dirichlet(α+counts) | Topic modeling, language models |
 
 Without conjugacy you need MCMC sampling or variational inference to approximate the posterior. With conjugacy you update two numbers.
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Conjugate_prior

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Text Tokenization
 
@@ -33,3 +33,8 @@ padded = pad_sequence([torch.tensor(ids)], batch_first=True, padding_value=0)
 ## Why It Matters for African Languages
 
 Luganda is **agglutinative** — "omulwadde" = "omu" (person) + "lwadde" (sick). Word-level tokenization explodes the vocabulary. Subword or character-level is usually better.
+
+## Sources
+
+- PyTorch docs — `pad_sequence`: https://pytorch.org/docs/stable/generated/torch.nn.utils.rnn.pad_sequence.html
+- Hugging Face — Tokenizers: https://huggingface.co/docs/tokenizers/en/index

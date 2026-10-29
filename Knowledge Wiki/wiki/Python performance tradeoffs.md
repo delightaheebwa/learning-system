@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Python Performance Tradeoffs
 
@@ -58,7 +58,7 @@ The very dynamism that makes Python productive defeats JIT optimization.
 
 ### Cython: The Static Typing Dilemma
 
-Cython can generate near-C-speed extensions, but only when you annotate every variable with static C types:
+Cython can generate near-C-speed extensions, but the biggest gains come when you annotate variables with static C types (partial annotations still help, just less):
 
 ```python
 cdef int i
@@ -90,3 +90,9 @@ Python's flexibility and its performance limitations are two sides of the same c
 ---
 
 *Source: `raw/sources/2026-05-30 - python-performance-optimization-tradeoffs.md`*
+
+## Sources (verified)
+
+- https://docs.python.org/3/faq/design.html
+- https://www.pypy.org/
+- https://cython.org/

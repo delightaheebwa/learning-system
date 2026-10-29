@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # C Memory Regions (Stack vs Heap vs Swap)
 
@@ -18,7 +18,7 @@ The **stack** is a fast, temporary scratchpad managed automatically by the CPU. 
 
 **The caller's stack:** when `main()` declares `struct memory memory = { 0 };` and passes `&memory` into `read_meminfo()`, that variable lives on `main()`'s stack frame. `read_meminfo()` writes results *into that address* — the caller's stack outlives the callee.
 
-Pros: extremely fast, zero manual cleanup. Cons: fixed size set at compile time, limited (usually only a few MB).
+Pros: extremely fast, zero manual cleanup. Cons: fixed, relatively small size (typically a few MB per thread), set by the OS/runtime rather than growable on demand.
 
 ## Heap Memory
 
@@ -93,3 +93,5 @@ Stack = fixed-size, auto-cleaned scratchpad (can't leak, but returning its addre
 ## Sources
 
 - Gemini C tutoring on the meminfo module (notebook: https://gemini.google.com/app/ed55c6cdf10c8c2a)
+- C memory management: https://en.cppreference.com/w/c/memory
+- Stack vs heap: https://en.wikipedia.org/wiki/Call_stack

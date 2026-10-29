@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Expression_(computer_science) ; https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Expressions and Statements
 
@@ -39,3 +39,8 @@ Many languages blur the line by allowing expressions where statements are expect
 ---
 
 *Source: `raw/sources/2026-06-04 - programming-paradigms-expressions-closures-arguments.md`*
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Expression_(computer_science)
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements

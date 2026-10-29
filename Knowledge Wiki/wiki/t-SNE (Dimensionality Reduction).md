@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=— | date=2026-10-12 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-12) -->
+<!-- provenance: status=verified | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively* (Distill 2016) + van der Maaten & Hinton 2008 (JMLR) | verified-by=fact-check-agent | date=2026-10-26 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-12) -->
 
 # t-SNE (Dimensionality Reduction)
 
@@ -156,6 +156,12 @@ So "the crowd sits in the tail region" is not an observation about real data —
 - ~~The CP4 practice~~ — **closed 2026-10-12 (CP4 fully sealed)**: the graded MCQ batch passed **4/4** and the pause exit ticket passed **3/3**, every item `sure`, 0 hints (details in the section above).
 - ~~Where the two kernels come from, how their tails compare, and where the crowding pushes the map's points~~ — **closed 2026-10-12 (kernel deep-dive)**: Gaussian bells with a per-point `σ_i` on the data side, `q_{ij} ∝ 1/(1+d²)` on the map side, the widening gap with no flip point, and the crowd-placement chain.
 - **Still to come in this lesson:** UMAP's `n_neighbors` / `min_dist` dials (CP5), kernel PCA (CP6), the final cumulative quiz + Feynman explain-back. **The Scout digest for this lesson is 17 days old (past its 7-day TTL) — re-scout before CP5** (the UMAP source bodies are still unconsumed).
+
+## Sources
+
+- van der Maaten & Hinton, *Visualizing Data using t-SNE*, JMLR 2008: https://www.jmlr.org/papers/v9/vandermaaten08a.html
+- Wattenberg, Viégas & Johnson, *How to Use t-SNE Effectively*, Distill 2016: https://distill.pub/2016/misread-tsne/
+- scikit-learn — `TSNE`: https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
 
 ## My understanding
 

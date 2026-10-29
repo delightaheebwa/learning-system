@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/E_(mathematical_constant) ; https://en.wikipedia.org/wiki/Exponential_function | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Euler's number e
 
@@ -29,3 +29,8 @@ This is why [[Natural logarithm]] appears whenever exponentials are differentiat
 - [[Exponential derivatives]]
 - [[Natural logarithm]]
 - [[Newtons law of cooling]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/E_(mathematical_constant)
+- https://en.wikipedia.org/wiki/Exponential_function

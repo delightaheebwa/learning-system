@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html ; https://missing.csail.mit.edu/2020/shell/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Exit Codes & Short-Circuit Control Flow
 
@@ -36,3 +36,8 @@ Both are **short-circuiting**: the right side runs only when the outcome demands
 Combine with strict mode: `set -e` stops the script on any unexpected failure; explicit guards like `critical_step || { echo "failed"; exit 1; }` document the intended response.
 
 Related: [[Environment Variables (Shell)]] · [[Shell Loops]]
+
+## Sources
+
+- https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
+- https://missing.csail.mit.edu/2020/shell/

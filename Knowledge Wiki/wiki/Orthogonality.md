@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Orthogonality
 
@@ -27,3 +27,8 @@ Unit (module-level) testing is easier to specify and perform than integration te
 - **Parallel development** — independent modules can be built simultaneously
 - **Reuse** — self-contained components are naturally more reusable
 - **Testability** — decoupled code is testable in isolation
+
+## Sources
+
+- Wikipedia — Orthogonality (programming): https://en.wikipedia.org/wiki/Orthogonality_(programming)
+- Pragmatic Programmer — Orthogonality: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/

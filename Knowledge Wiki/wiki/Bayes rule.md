@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Bayes%27_theorem | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bayes rule
 
@@ -30,3 +30,6 @@ Bayes' rule is the basic update rule for probabilistic inference. It turns obser
 - [[Probability foundations]]
 - [[Probability mass and density functions]]
 - [[Gaussian distribution]]
+
+## Sources
+- Wikipedia — Bayes' theorem: https://en.wikipedia.org/wiki/Bayes%27_theorem

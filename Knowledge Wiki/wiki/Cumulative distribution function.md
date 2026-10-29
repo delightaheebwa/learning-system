@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Cumulative distribution function
 
@@ -50,9 +50,14 @@ For a $D$-dimensional random vector $\\mathbf{x}$:
 F_X(\mathbf{x}) = \int_{-\infty}^{x_1} \cdots \int_{-\infty}^{x_D} f(z_1, \ldots, z_D) \, dz_1 \cdots dz_D
 ```
 
+## Sources
+
+- Wikipedia — Cumulative distribution function: https://en.wikipedia.org/wiki/Cumulative_distribution_function
+- Deisenroth, Faisal & Ong — *Mathematics for Machine Learning*: https://mml-book.github.io/
+
 ## Related pages
 
-- \[\[Probability mass and density functions\]\]
-- \[\[Probability foundations\]\]
-- \[\[Joint, marginal, and conditional probabilities\]\]
-- \[\[Distribution of a random variable\]\]
+- [[Probability mass and density functions]]
+- [[Probability foundations]]
+- [[Joint, marginal, and conditional probabilities]]
+- [[Distribution of a random variable]]

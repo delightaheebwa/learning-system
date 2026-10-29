@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Information_content | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Information Content (Surprise)
 
@@ -35,3 +35,7 @@ Surprise is per-event; [[Entropy (Average Surprise)]] averages it over a distrib
 - [[Entropy (Average Surprise)]]
 - [[Cross-Entropy from NLL]]
 - [[PMF vs PDF]]
+
+## Sources
+- Wikipedia, "Information content": https://en.wikipedia.org/wiki/Information_content
+- Shannon, "A Mathematical Theory of Communication" (1948): https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf

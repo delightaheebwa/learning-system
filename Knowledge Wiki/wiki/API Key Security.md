@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://docs.anthropic.com/en/api/getting-started (and provider API docs) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # API Key Security
 
@@ -54,3 +54,7 @@ Understanding raw HTTP calls helps when debugging.
 
 ## Related
 - [[AI Engineering - Dev Environment Stack]]
+
+## Sources
+- Anthropic API getting started: https://docs.anthropic.com/en/api/getting-started
+- General API key hygiene (OWASP): https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Likelihood P(E|H)
 
@@ -17,3 +17,6 @@ How probable the evidence is if the hypothesis is true — restricted to the hyp
 ## Key Distinction
 
 Likelihood is NOT P(H|E). It's P(E|H) — the probability of the data given the hypothesis, not the other way around.
+## Sources
+
+- https://en.wikipedia.org/wiki/Likelihood_function

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Convolution Parameters
 
@@ -20,3 +20,7 @@ With `padding=1` and `kernel_size=3`: output_size = (input_size + 2×1 − 3)/1 
 
 ## Connections
 - Prerequisites: Convolution Operation
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Convolutional_layer

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/ ; https://en.wikipedia.org/wiki/The_Pragmatic_Programmer | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # ETC (Easier To Change)
 
@@ -23,3 +23,8 @@ ETC is the fundamental metric of good design. It's not about making things perfe
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+
+## Sources
+
+- https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/
+- https://en.wikipedia.org/wiki/The_Pragmatic_Programmer

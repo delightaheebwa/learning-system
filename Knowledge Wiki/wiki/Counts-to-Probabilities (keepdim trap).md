@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Counts → Probabilities (Row Normalization)
 
@@ -23,3 +23,8 @@ Without correct row normalization, the model doesn't learn valid conditional pro
 
 ## Source
 Karpathy, "makemore Part 1" — Neural Networks: Zero to Hero, Lecture 2. PDF: Socratic tutoring session on broadcasting.
+
+## Sources
+
+- https://pytorch.org/docs/stable/generated/torch.Tensor.sum.html
+- https://pytorch.org/docs/stable/notes/broadcasting.html

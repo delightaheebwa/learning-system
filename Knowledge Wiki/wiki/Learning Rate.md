@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Learning Rate
 
@@ -33,7 +33,7 @@ A fixed lr is a compromise — large steps early for fast progress, small steps 
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-07
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md`
-
+- https://en.wikipedia.org/wiki/Learning_rate
 
 ## lr and optimizer choice (CP3, 2026-09-08)
 

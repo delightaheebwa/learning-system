@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Tracer Bullets
 
@@ -22,3 +22,7 @@ Tracer bullets are meant to be kept and built upon — they're the skeleton of t
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+
+## Sources
+
+- Wikipedia — The Pragmatic Programmer: https://en.wikipedia.org/wiki/The_Pragmatic_Programmer

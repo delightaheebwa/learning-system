@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Process Substitution (<(CMD))
 
@@ -33,3 +33,7 @@ The shell rewrites `<(ls dir1)` to a path like `/dev/fd/63` and `<(ls dir2)` to 
 - [[Command Substitution & Arithmetic Expansion]] — `$(cmd)` captures output as a value
 - [[Shell Redirections & Standard Streams]] — stdin/stdout/stderr and `<` / `>`
 - [[Shell Arguments & the Untyped-Variable Model]] — everything is a string
+
+## Sources
+
+- https://www.gnu.org/software/bash/manual/html_node/Process-Substitution.html

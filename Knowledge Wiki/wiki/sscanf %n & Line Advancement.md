@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Parsing Text with sscanf %n
 
@@ -40,7 +40,6 @@ while (line != NULL && sscanf(line, "%31[^:]: %lu", key, &value) == 2) {
 ```
 
 **Caveat:** this loop still returns success based on non-zero payloads (`total_kb != 0 && available_kb != 0`) — the sentinel-value flaw from [[Sentinel Values vs Presence Flags]]. The line advancement here is solid, but pair it with presence flags for a fully correct parser.
-```
 
 Advance past what `sscanf` consumed (or read line-by-line with `fgets` / `strtok_r`) rather than hunting for `\n` blindly.
 
@@ -55,3 +54,4 @@ Advance past what `sscanf` consumed (or read line-by-line with `fgets` / `strtok
 ## Sources
 
 - Gemini Socratic tutoring on parsing `/proc/meminfo` (notebook: https://gemini.google.com/app/8870dcd71e2919f5)
+- `fscanf`/`sscanf` (cppreference): https://en.cppreference.com/w/c/io/fscanf

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://www.youtube.com/@aiDotEngineer (AI Engineer Conf talks) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineer Weekly — July 25, 2026
 
@@ -88,3 +88,6 @@ Live-coded walkthrough of 5 techniques (semantic tool selection, graph RAG, mult
 5. **Stop asking agents "how many" questions against text.** Use a graph database or structured query instead. The agent will invent numbers.
 6. **Don't prescribe memory schemas.** Give the model a filesystem or database and let it learn to structure its own memory.
 7. **Run an ablation on your skills.** Test performance with and without each skill. Retire anything below the threshold.
+
+## Sources
+- AI Engineer YouTube channel: https://www.youtube.com/@aiDotEngineer

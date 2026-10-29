@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Interpreter_(computing) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Interpreter
 
@@ -63,3 +63,7 @@ Languages like Python and JavaScript are typically interpreted (or JIT-compiled)
 ---
 
 *Source: [[2026-05-29 - compilers-interpreters-virtual-machines]]*
+
+## Sources
+- Wikipedia, "Interpreter (computing)": https://en.wikipedia.org/wiki/Interpreter_(computing)
+- Crafting Interpreters: https://craftinginterpreters.com/

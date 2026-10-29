@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Local linearity
 
@@ -33,3 +33,8 @@ That matrix gives the local grid-like picture shown in the earlier screenshots.
 ## Related pages
 
 - [[Jacobian matrix]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Linearization
+- https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant

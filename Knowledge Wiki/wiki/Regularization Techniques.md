@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Regularization Techniques
 
@@ -37,6 +37,8 @@ for epoch in range(max_epochs):
 
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
+- https://pytorch.org/docs/stable/nn.html#dropout-layers
+- https://pytorch.org/docs/stable/optim.html
 
 ## Connections
 

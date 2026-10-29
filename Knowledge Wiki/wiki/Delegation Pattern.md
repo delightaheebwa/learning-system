@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Delegation Pattern
 
@@ -39,3 +39,12 @@ Method overloading is the *language feature* that enables this pattern. The Dele
 - [[Single Responsibility Principle (SRP)]] — delegation is how SRP is often implemented; each method keeps one job
 - [[Convenience Method]] — the short delegator is usually a convenience method
 - [[Strategy Pattern]] — a different kind of delegation (delegating to interchangeable algorithm objects rather than overloaded methods)
+
+## Terminology note
+
+The classic **Delegation Pattern** (GoF) is an object-level technique: one object (the receiver) forwards a request to a second object (the delegate), usually to reuse behavior like inheritance would, while keeping the original receiver's context. The example above is a looser, method-level form (telescoping/overloaded methods filling defaults and forwarding to a longer version) — closer to a convenience method than to the GoF pattern. See the Wikipedia article for the canonical definition.
+
+## Sources
+
+- Wikipedia — Delegation pattern: https://en.wikipedia.org/wiki/Delegation_pattern
+- Gamma et al., *Design Patterns* (GoF): https://en.wikipedia.org/wiki/Design_Patterns

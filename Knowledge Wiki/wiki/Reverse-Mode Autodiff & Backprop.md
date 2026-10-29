@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Reverse-Mode Autodiff & Backprop
 
@@ -21,3 +21,8 @@ Backpropagation **is** reverse-mode autodiff applied to a neural network's compu
 ## Connections
 - Prerequisites: Computational Graphs, Two-Pass Autodiff Algorithm, Forward-Mode Autodiff
 - Leads to: Value Class Architecture, Topological Sort for Backprop
+
+## Sources (verified)
+
+- https://en.wikipedia.org/wiki/Automatic_differentiation
+- https://ocw.mit.edu/courses/18-s096-matrix-calculus-for-machine-learning-and-beyond-january-iap-2023/

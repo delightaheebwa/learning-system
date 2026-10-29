@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # BiLSTM Text Classifier
 
@@ -17,6 +17,7 @@ Input text → Embedding → BiLSTM → Concatenate last hidden states → Dropo
 ```python
 class LugandaTextClassifier(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_classes):
+        super().__init__()
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
         self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers=2,
                            batch_first=True, bidirectional=True, dropout=0.3)
@@ -33,3 +34,8 @@ One reads left→right, another reads right→left. The concatenated output capt
 - Classify SMS health alerts (malaria outbreak vs vaccination reminder)
 - Categorize radio transcripts (agricultural advisory vs health education)
 - Sort social media posts (crop disease report vs market prices)
+
+## Sources
+
+- PyTorch `nn.LSTM` (bidirectional): https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html
+- PyTorch sequence models tutorial: https://pytorch.org/tutorials/beginner/nlp/sequence_models_tutorial.html

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Compiled vs Interpreted
 
@@ -45,3 +45,8 @@ This combination gives programmers ultimate flexibility while writing code and u
 ---
 
 *Source: [[2026-05-29 - compilers-interpreters-virtual-machines]]*
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Compiled_language
+- https://en.wikipedia.org/wiki/Interpreter_(computing)

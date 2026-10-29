@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Negative Log-Likelihood (NLL)
 
@@ -28,3 +28,8 @@ If any example gets P(x) = 0, its loss is +∞, which makes the entire average +
 
 ## Source
 Karpathy, "makemore Part 1" — Neural Networks: Zero to Hero, Lecture 2. PDF: Socratic tutoring session on log(0) explosion.
+
+## Sources
+
+- Wikipedia — Likelihood function: https://en.wikipedia.org/wiki/Likelihood_function
+- Karpathy, makemore Part 1 (YouTube): https://www.youtube.com/watch?v=PaCmpygFfXo

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Formal_grammar ; https://en.wikipedia.org/wiki/Chomsky_hierarchy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Formal Grammar
 
@@ -39,3 +39,8 @@ Given a pile of pieces (the alphabet), a formal grammar decides which combinatio
 - [[Context-Free Grammar (CFG)]]
 - [[Parser]]
 - [[Lexer]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Formal_grammar
+- https://en.wikipedia.org/wiki/Chomsky_hierarchy

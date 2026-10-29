@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # PMF vs PDF
 
@@ -30,3 +30,8 @@ PDF at a point ≠ probability. PDF = density. Integrate to get probability.
 - [[Probability Mass Function (PMF)]]
 - [[Gaussian distribution]]
 - [[Probability & Distributions for ML]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Probability_density_function
+- https://en.wikipedia.org/wiki/Probability_mass_function

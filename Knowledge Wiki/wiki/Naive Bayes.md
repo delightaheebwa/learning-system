@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Naive Bayes Classifier
 
@@ -42,3 +42,8 @@ Multiplying ~200 word probabilities (~0.01 each) underflows floating point (0.01
 ## From Scratch → Production
 
 The ~40-line from-scratch class (whitespace tokenize → Laplace-smoothed counts → log-space argmax) computes the same thing as sklearn: `CountVectorizer` handles tokenization and vocabulary building; `MultinomialNB` handles smoothing and log-probabilities internally.
+
+## Sources
+
+- Wikipedia — Naive Bayes classifier: https://en.wikipedia.org/wiki/Naive_Bayes_classifier
+- scikit-learn — Naive Bayes: https://scikit-learn.org/stable/modules/naive_bayes.html

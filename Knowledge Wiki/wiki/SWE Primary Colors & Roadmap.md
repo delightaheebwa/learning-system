@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # SWE Primary Colors & Roadmap — ARCHIVED 2026-09-01
 
@@ -47,3 +47,11 @@ Every technology is a blend: React = Abstraction + State + Interaction · Redis 
 - **Active roadmap:** [[AI Engineering from Scratch — Roadmap]] — Mission 0 Catch-Up (P0+P1.01–06, 80/20, in-progress) → Phase 1 L07 Bayes' Theorem.
 
 Related: [[AI Engineering from Scratch — Roadmap]] (active) · [[AI Engineering Roadmap v2]] (paused) · [[MIT Missing Semester — Shell]]
+
+## Sources
+
+- Build Your Own X: https://github.com/codecrafters-io/build-your-own-x
+- CodeCrafters: https://codecrafters.io
+- MIT Missing Semester: https://missing.csail.mit.edu/
+- nand2tetris: https://www.nand2tetris.org
+- Crafting Interpreters: https://craftinginterpreters.com

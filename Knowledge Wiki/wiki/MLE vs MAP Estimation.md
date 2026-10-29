@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # MLE vs MAP Estimation
 
@@ -33,3 +33,9 @@ A **Gaussian** prior on weights = L2 (ridge) regularization. A **Laplace** prior
 ## When the Prior Matters Most
 
 With scarce data (few-shot learning, cold start) the prior carries the signal. With massive data the likelihood overwhelms any prior and MLE ≈ MAP — which is why large-scale training is effectively frequentist.
+
+## Sources
+
+- Wikipedia — Maximum likelihood estimation: https://en.wikipedia.org/wiki/Maximum_likelihood_estimation
+- Wikipedia — Maximum a posteriori estimation: https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation
+- Stanford MS&E 226 — Beta-binomial MAP (mode): http://web.stanford.edu/~rjohari/teaching/notes/226_lecture16_inference.pdf

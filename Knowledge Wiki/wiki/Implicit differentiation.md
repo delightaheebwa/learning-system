@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Implicit_function | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Implicit differentiation
 
@@ -60,3 +60,7 @@ So the derivative of \(\ln(x)\) appears naturally from implicit differentiation.
 - [[Natural logarithm]]
 - [[Euler number e]]
 - [[Exponential derivatives]]
+
+## Sources
+- Wikipedia, "Implicit function": https://en.wikipedia.org/wiki/Implicit_function
+- Khan Academy, "Implicit differentiation": https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new/ab-3-4/a/implicit-differentiation-review

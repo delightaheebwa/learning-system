@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Sampling from a Language Model
 
@@ -27,5 +27,7 @@ while True:
 ## Key Insight
 The same sampling loop works at every scale — bigram, RNN, GPT — just with richer probability distributions. The interface is always: "given context, give me P(next token)."
 
-## Source
-Karpathy, "makemore Part 1" — Neural Networks: Zero to Hero, Lecture 2.
+## Sources
+
+- Karpathy, "The spelled-out intro to language modeling: building makemore" (Neural Networks: Zero to Hero, Lecture 2) — https://www.youtube.com/watch?v=PaCmpygFfXo
+- makemore repository: https://github.com/karpathy/makemore

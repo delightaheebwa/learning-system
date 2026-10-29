@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Recurrent Neural Networks (RNNs)
 
@@ -20,6 +20,8 @@ Basic RNNs suffer from vanishing gradients **through time** — information from
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
 - **Further reading:** [PyTorch RNN Tutorial](https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html)
+- https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial.html
+- https://colah.github.io/posts/2015-08-Understanding-LSTMs/
 
 ## Connections
 

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Entropy (Average Surprise)
 
@@ -30,6 +30,11 @@ A 1-in-1000 event has surprise ≈ 9.97 bits but contributes only 0.001 × 9.97 
 ## Nearest neighbor
 
 Entropy is a property of one distribution; [[Cross-Entropy from NLL]] measures a distribution *against* another. Entropy is also the average length of the optimal code (Olah).
+
+## Sources
+
+- Olah, *Visual Information Theory*: https://colah.github.io/posts/2015-09-Visual-Information/
+- Wikipedia — Entropy (information theory): https://en.wikipedia.org/wiki/Entropy_(information_theory)
 
 ## Related
 

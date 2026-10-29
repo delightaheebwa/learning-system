@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html ; https://gcc.gnu.org/onlinedocs/cpp/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # GCC Compilation Stages
 
@@ -41,3 +41,8 @@ GCC compiles C programs through up to four distinct stages. Only the stages spec
 - [[Intermediate Object Files (.o)]]
 - [[Make: Timestamp Evaluation]]
 - [[Makefile: Targets, Prerequisites & Recipes]]
+
+## Sources
+
+- https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html
+- https://gcc.gnu.org/onlinedocs/cpp/

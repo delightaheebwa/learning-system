@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Beta_distribution + https://varianceexplained.org/r/bayesian-ab-testing/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bayesian A-B Testing
 
@@ -32,10 +32,10 @@ Ship B if P(B>A) > 0.95; ship A if < 0.05; otherwise keep collecting.
 |--------|-------------|----------|
 | Output | p-value | P(B > A) |
 | Interpretation | 'How surprising is this data if A=B?' | 'How likely is B better than A?' |
-| Early stopping | Inflates false positives | Safe at any point |
+| Early stopping / peeking | Inflates false positives | Posterior is mathematically independent of the stopping rule, but a fixed P(B>A)>0.95 decision threshold with optional stopping can still inflate false positives in practice (see varianceexplained.org/r/bayesian-ab-testing/) |
 | Prior knowledge | Not used | Encoded as Beta prior |
 
-Three killer advantages: a **direct probability statement** ('97% chance B is better'); **no peeking problem** (check anytime — the posterior doesn't depend on when you looked); and **prior knowledge** (encode past tests as the Beta prior to decide faster on scarce early data).
+Three killer advantages: a **direct probability statement** ('97% chance B is better'); **no peeking problem** (check anytime — the posterior doesn't depend on when you looked); and **prior knowledge** (encode past tests as the Beta prior to decide faster on scarce early data). Caveat: this holds for the posterior itself; a fixed-threshold ship rule under optional stopping can still inflate false positives (see varianceexplained.org/r/bayesian-ab-testing/ and alexmolas.com/2025/10/30/bayesian-ab-test-peeking.html).
 
 ## Retrieval log (2026-09-26)
 

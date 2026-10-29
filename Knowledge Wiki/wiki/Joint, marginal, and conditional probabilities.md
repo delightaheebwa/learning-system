@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Joint, marginal, and conditional probabilities
 
@@ -55,7 +55,7 @@ The direction of conditioning determines what you divide by:
 
 **Memory aid**: you restrict the universe to the row or column you're conditioning on. If you're told "$X = x_i$", you look only at that column — so you divide by the column total. If you're told "$Y = y_j$", you look only at that row — so you divide by the row total.
 
-Note that these two conditional probabilities are generally **not** equal: $P(Y \\mid X) \\neq P(X \\mid Y)$. They coincide only in special cases, and when they both equal their respective marginals, the variables are \[\[Independence of random variables|independent\]\].
+Note that these two conditional probabilities are generally **not** equal: $P(Y \\mid X) \\neq P(X \\mid Y)$. They coincide only in special cases, and when they both equal their respective marginals, the variables are [[Independence of random variables|independent]].
 
 ## From discrete to continuous
 
@@ -74,8 +74,12 @@ P(X, Y) = P(Y \mid X) \, P(X) \quad \text{so} \quad P(Y \mid X) = \frac{P(X, Y)}
 
 ## Related pages
 
-- \[\[Probability mass and density functions\]\]
-- \[\[Independence of random variables\]\]
-- \[\[Bayes rule\]\]
-- \[\[Probability foundations\]\]
-- \[\[Cumulative distribution function\]\]
+- [[Probability mass and density functions]]
+- [[Independence of random variables]]
+- [[Bayes rule]]
+- [[Probability foundations]]
+- [[Cumulative distribution function]]
+## Sources
+
+- https://en.wikipedia.org/wiki/Marginal_distribution
+- https://en.wikipedia.org/wiki/Conditional_probability

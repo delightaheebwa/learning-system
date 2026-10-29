@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://media.pragprog.com/titles/tpp20/dry.pdf | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Interdeveloper Duplication
 
@@ -6,7 +6,7 @@ A form of DRY violation where different programmers on the same team unknowingly
 
 ## The problem
 
-Code doesn't clearly belong to one person or department, so multiple developers independently solve the same problem. A government audit once found 10,000 different programs that all contained unique versions of code to validate a Social Security Number.
+Code doesn't clearly belong to one person or department, so multiple developers independently solve the same problem. A government audit once found more than 10,000 programs, each containing a different version of code to validate a Social Security Number.
 
 ## Solutions
 
@@ -26,4 +26,6 @@ Interdeveloper duplication happens because of **communication gaps**, not techni
 
 ## Source
 
-The Pragmatic Programmer (Hunt & Thomas)
+- The Pragmatic Programmer (Hunt & Thomas)
+- Pragmatic Programmer DRY chapter: https://media.pragprog.com/titles/tpp20/dry.pdf
+- Coding Blocks, "The Evils of Duplication": https://www.codingblocks.net/podcast/the-pragmatic-programmer-the-evils-of-duplication/

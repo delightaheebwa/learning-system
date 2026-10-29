@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Sequential Bayesian Updating
 
@@ -22,3 +22,9 @@ Updating with all 12 heads and 8 tails at once gives Beta(13,9) — identical to
 ## Why It Matters
 
 The foundation of online learning in production: Thompson sampling for bandits, incremental recommenders, streaming anomaly detectors — all use this pattern.
+
+## Sources
+
+- Conjugate prior (Wikipedia): https://en.wikipedia.org/wiki/Conjugate_prior
+- Beta distribution (Wikipedia): https://en.wikipedia.org/wiki/Beta_distribution
+- Bayesian updating (Wikipedia): https://en.wikipedia.org/wiki/Bayesian_inference

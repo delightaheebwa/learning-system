@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Context-Free Grammar (CFG)
 
@@ -44,3 +44,7 @@ Both are formal grammars, differing only in the abstraction level of their alpha
 
 - Crafting Interpreters (Nystrom) — Chapter on parsing
 - Dragon Book (Compilers: Principles, Techniques, and Tools)
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Context-free_grammar

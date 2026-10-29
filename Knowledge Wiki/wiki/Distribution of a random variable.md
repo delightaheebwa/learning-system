@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Distribution of a random variable
 
@@ -47,6 +47,11 @@ In ML we rarely work with P on raw Ω (too complex). Instead:
 1. Define a random variable X that extracts the quantity we care about
 2. Work with the distribution P_X on a simple, numeric T
 3. Models estimate P(X = label | features) on T, not probabilities on the vast raw sample space
+
+## Sources
+
+- Deisenroth, Faisal & Ong — *Mathematics for Machine Learning* (Ch. 6): https://mml-book.github.io/
+- Wikipedia — Pushforward measure: https://en.wikipedia.org/wiki/Pushforward_measure
 
 ## Related pages
 

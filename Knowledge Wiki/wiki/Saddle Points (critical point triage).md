@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Saddle Points (Critical-Point Triage)
 
@@ -40,3 +40,5 @@ The update \(w \leftarrow w - \eta\,\nabla L(w)\) is proportional to the gradien
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-07/10
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md` + [Ruder's survey](https://ruder.io/optimizing-gradient-descent/) (Dauphin et al. 2014)
+- https://papers.nips.cc/paper/5486-identifying-and-attacking-the-saddle-point-problem-in-high-dimensional-non-convex-optimization
+- https://arxiv.org/abs/1412.0233

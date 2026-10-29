@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://www.youtube.com/watch?v=PaCmpygFfXo (Karpathy, makemore Part 1) | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bigram Language Model
 
@@ -38,3 +38,6 @@ A single linear layer (no bias, no activation) with one-hot input learns the exa
 
 ## Source
 Karpathy, "makemore Part 1: The Spelled-Out Intro to Language Modeling" — Lecture 2 of Neural Networks: Zero to Hero. Part 1 only (before "Part 2: The Neural Network Approach").
+
+## Sources
+- YouTube — The spelled-out intro to language modeling: building makemore: https://www.youtube.com/watch?v=PaCmpygFfXo

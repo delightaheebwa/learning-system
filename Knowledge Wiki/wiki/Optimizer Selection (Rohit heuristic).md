@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Optimizer Selection (Rohit Heuristic)
 
@@ -42,3 +42,5 @@ Together the four knobs balance speed and destination — navigate quickly while
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-10 (SHIP)
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md`
+- PyTorch docs — Optimizers: https://pytorch.org/docs/stable/optim.html
+- Ruder — An overview of gradient descent optimization algorithms: https://ruder.io/optimizing-gradient-descent/

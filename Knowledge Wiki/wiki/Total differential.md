@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Total differential
 
@@ -33,6 +33,10 @@ If you stay on the circle \(S=25\), then \(dS=0\), so the input changes must sat
 ## Connection to Jacobians
 
 For a scalar function, the total differential is the Jacobian row applied to the input displacement vector. Building on that, the Jacobian matrix generalizes the same idea to vector-valued functions.
+
+## Sources
+
+- Wikipedia — Differential of a function: https://en.wikipedia.org/wiki/Differential_of_a_function
 
 ## Related pages
 

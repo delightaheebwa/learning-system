@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Memory Management
 
@@ -89,3 +89,9 @@ The three strategies represent a spectrum of **who bears the burden**:
 ---
 
 *Source: `raw/sources/2026-06-04 - short-circuit-evaluation-memory-management.md`*
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)
+- https://en.wikipedia.org/wiki/Reference_counting
+- https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html

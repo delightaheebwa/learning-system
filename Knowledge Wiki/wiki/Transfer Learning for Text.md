@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Transfer Learning for Text
 
@@ -34,3 +34,9 @@ def load_pretrained_embeddings(embedding_layer, path, vocab):
 ## The African Language Gap
 
 Pre-trained embeddings exist for Swahili (FastText) but are limited for Luganda, Runyankole, Acholi. For these, either train embeddings from scratch on available corpora, or use multilingual models (mBERT, XLM-R, AfroLM) that cover related languages.
+
+## Sources
+
+- GloVe project: https://nlp.stanford.edu/projects/glove/
+- FastText: https://fasttext.cc/
+- Hugging Face — Transformers (mBERT/XLM-R): https://huggingface.co/docs/transformers

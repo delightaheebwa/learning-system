@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/10-terminal-and-shell/docs/en.md ; https://man7.org/linux/man-pages/man1/tmux.1.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineering — Terminal & Shell
 
@@ -130,13 +130,13 @@ Then just `ssh gpu`.
 - Verify environment: `env | grep -i cuda` / `env | grep -i torch`
 - Count project size: `find . -name "*.py" | xargs wc -l | tail -1`
 
-## Source
+## Sources
 
 - [ai-engineering-from-scratch Phase 0, Lesson 10](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/10-terminal-and-shell/docs/en.md)
 - Source saved at: `Knowledge Wiki/raw/sources/2026-06-25 - terminal-and-shell-ai-engineering.md`
 
 ## Related
 
-- \[\[AI Engineering - Dev Environment Stack\]\]
-- \[\[GPU Computing\]\]
-- \[\[Editor and Remote Dev Setup\]\]
+- [[AI Engineering - Dev Environment Stack]]
+- [[GPU Computing]]
+- [[Editor and Remote Dev Setup]]

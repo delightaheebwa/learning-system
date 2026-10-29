@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Softmax Subtract-Max Trick
 
@@ -32,3 +32,8 @@ Does NOT force sum to 1. Purely numerical stability.
 
 - [[Softmax Function]]
 - [[Negative Log-Likelihood (NLL)]]
+
+## Sources
+
+- Log-sum-exp trick (Gundersen): https://gregorygundersen.com/blog/2020/02/09/log-sum-exp/
+- Softmax function (Wikipedia): https://en.wikipedia.org/wiki/Softmax_function

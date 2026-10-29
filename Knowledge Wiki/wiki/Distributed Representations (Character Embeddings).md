@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Distributed Representations (Character Embeddings)
 
@@ -6,7 +6,7 @@ Instead of one-hot vectors (27-dim, sparse), each character is mapped to a small
 
 **Key property:** Similar characters end up with similar vectors. Vowels ('a', 'e', 'i') cluster together. Consonants that appear in similar contexts ('t', 's' before 'h') cluster together. This isn't hardcoded — it emerges from the data.
 
-A dense vector of 10 floats can encode rich information about a character's role (is it a vowel? does it commonly start words? does it pair with 'h'?). A one-hot vector of 27 entries carries exactly 1 bit of information.
+A dense vector of 10 floats can encode rich information about a character's role (is it a vowel? does it commonly start words? does it pair with 'h'?). A one-hot vector of 27 entries identifies one of 27 categories — up to log₂ 27 ≈ 4.75 bits of information in the uniform case — but as a hard, non-overlapping code it carries no notion of similarity between characters.
 
 **In PyTorch:** `nn.Embedding(27, 10)` gives a learnable lookup table mapping each integer index to its 10-dim vector — same as one-hot @ W but more efficient.
 
@@ -33,3 +33,9 @@ Related: [[One-Hot Encoding]] | [[Hidden Layers Generalize via Shared Weights]]
 Part of: Socratic tutoring session on neural network scalability (Gemini)
 
 Source: Discrete vs. Continuous Representations — Gemini tutoring session on why continuous embeddings enable gradient learning
+
+## Sources
+
+- Wikipedia — Word embedding: https://en.wikipedia.org/wiki/Word_embedding
+- PyTorch docs — `nn.Embedding`: https://pytorch.org/docs/stable/generated/torch.nn.Embedding.html
+- Bengio et al. (2003), "A Neural Probabilistic Language Model": https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Two-Pass Autodiff Algorithm
 
@@ -15,6 +15,9 @@ This is the universal algorithm behind backpropagation. For `y = sin(x²)`:
 ## Source
 - Lesson: [teach/lessons/0001-chain-rule-and-computational-graphs.html](/home/workspace/teach/lessons/0001-chain-rule-and-computational-graphs.html)
 - Date learned: 2026-07-08
+
+## Sources
+- https://en.wikipedia.org/wiki/Automatic_differentiation
 
 ## Connections
 - Prerequisites: Computational Graphs, Chain Rule & Backpropagation

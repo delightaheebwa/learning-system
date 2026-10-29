@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Neural Network Training Loop
 
@@ -15,3 +15,8 @@ In equation form: θ ← θ - η·∇θL(θ), repeated thousands of times over b
 ## Connections
 - Prerequisites: [[Gradient Descent from Scratch]], [[Topological Sort for Backprop]], [[Value Class Architecture]]
 - Related: [[Gradient Accumulation (+=)]], [[Two-Pass Autodiff Algorithm]], [[Parameter Update Rule]]
+
+## Sources
+
+- PyTorch docs — Autograd: https://pytorch.org/docs/stable/autograd.html
+- Karpathy micrograd: https://github.com/karpathy/micrograd

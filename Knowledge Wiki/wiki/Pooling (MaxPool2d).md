@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Pooling (MaxPool2d)
 
@@ -20,6 +20,7 @@ Only height and width change — channel count stays the same.
 ## Source
 - **Lesson:** Marconi Lab DL — Day 2: CNNs for Medical & Agricultural Images
 - **Date learned:** 2026-07-15
+- PyTorch `torch.nn.MaxPool2d` — https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html
 
 ## Connections
 - Prerequisites: Convolution Operation

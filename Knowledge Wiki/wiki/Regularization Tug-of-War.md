@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Regularization Tug-of-War
 
@@ -27,3 +27,7 @@ Total Loss = Data Loss (NLL) + Regularization Loss
 Related: [[L2 Regularization as Smoothing]] | [[Negative Log-Likelihood (NLL)]] | [[Add-1 Smoothing]]
 
 Part of: Socratic tutoring session on regularization and loss functions (Gemini)
+
+## Sources (verified)
+
+- https://github.com/karpathy/makemore

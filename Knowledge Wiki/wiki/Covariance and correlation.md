@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Covariance and correlation
 
@@ -41,3 +41,7 @@ See [[PCA (Dimensionality Reduction)]] for how this matrix is decomposed.
 - [[PCA (Dimensionality Reduction)]]
 - [[PCA Sign Ambiguity (svd_flip)]]
 - [[Variance is Non-Negative (PSD Covariance)]]
+
+## Sources
+
+- https://numpy.org/doc/stable/reference/generated/numpy.cov.html

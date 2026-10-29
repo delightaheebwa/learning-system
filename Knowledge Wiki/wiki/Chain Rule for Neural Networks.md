@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Chain Rule for Neural Networks
 
@@ -36,6 +36,12 @@ Using **addition** (+) instead of **multiplication** (×) when computing gradien
 - [[Backpropagation]]
 - [[Reverse-Mode Autodiff & Backprop]]
 - [[Chain Rule Decomposition]]
+
+## Sources
+
+- Backpropagation: https://en.wikipedia.org/wiki/Backpropagation
+- Chain rule: https://en.wikipedia.org/wiki/Chain_rule
+- CS231n optimization: https://cs231n.github.io/optimization-2/
 
 ## Retrieval log (2026-09-26)
 

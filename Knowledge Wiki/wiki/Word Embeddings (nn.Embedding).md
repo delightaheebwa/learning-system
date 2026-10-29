@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Word Embeddings (nn.Embedding)
 
@@ -28,3 +28,6 @@ Initialized randomly. During training, backpropagation updates them so words app
 - `embedding_dim` = vector size per word (typical: 100-300)
 - `padding_idx=0` zeroes out gradient for `<PAD>` tokens
 - Backprop updates these vectors like any other parameter
+
+## Sources
+- https://pytorch.org/docs/stable/generated/torch.nn.Embedding.html

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # JIT Compilation
 
@@ -45,3 +45,7 @@ While JIT combines interpreter-like startup with compiler-like speed, it has rea
 ---
 
 *Source: [[2026-05-29 - compilers-interpreters-virtual-machines]]*
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Just-in-time_compilation

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Python Virtual Environments
 
@@ -68,3 +68,9 @@ For the AI engineering course, create separate environments per phase (or group 
 - [[AI Engineering - Dev Environment Stack]]
 - [[GPU Computing]]
 - [[Docker for AI Development]]
+
+## Sources (verified)
+
+- https://docs.astral.sh/uv/
+- https://docs.python.org/3/library/venv.html
+- https://docs.conda.io/

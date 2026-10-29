@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://man7.org/linux/man-pages/man5/proc_meminfo.5.html ; https://kernel-internals.org/mm/understanding-proc-meminfo | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Feature Probing vs Kernel Version Checking
 
@@ -54,3 +54,5 @@ So `MemFree` undercounts headroom (ignores reclaimable cache) and `SwapFree` is 
 ## Sources
 
 - Gemini Socratic session — robust `/proc/meminfo` smoke test (notebook: https://gemini.google.com/app/e338aa05afbec7a2)
+- https://man7.org/linux/man-pages/man5/proc_meminfo.5.html
+- https://kernel-internals.org/mm/understanding-proc-meminfo

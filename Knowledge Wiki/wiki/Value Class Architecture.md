@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Value Class Architecture
 
@@ -20,6 +20,9 @@ The graph is built **implicitly** — every operation returns a new `Value` poin
 ## Source
 - Lesson: [teach/lessons/0003-value-class-and-operations.html](/home/workspace/teach/lessons/0003-value-class-and-operations.html)
 - Date learned: 2026-07-09
+
+## Sources
+- https://github.com/karpathy/micrograd (reference implementation of the `Value` class)
 
 ## Connections
 - Prerequisites: Computational Graphs, Chain Rule Decomposition

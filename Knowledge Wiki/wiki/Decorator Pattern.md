@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Decorator Pattern
 
@@ -37,3 +37,8 @@ sugar_milk_coffee = SugarDecorator(milk_coffee)
 - When you need to add behavior at runtime, not compile time
 - When subclassing would create an explosion of combinations (e.g., Coffee, CoffeeWithMilk, CoffeeWithSugar, CoffeeWithMilkAndSugar...)
 - When you can't or shouldn't modify the original class (third-party code, or to preserve the Single Responsibility Principle)
+
+## Sources
+
+- Wikipedia — Decorator pattern: https://en.wikipedia.org/wiki/Decorator_pattern
+- Gamma et al., *Design Patterns: Elements of Reusable Object-Oriented Software* (GoF): https://en.wikipedia.org/wiki/Design_Patterns

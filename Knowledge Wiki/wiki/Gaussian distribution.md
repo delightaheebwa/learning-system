@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Normal_distribution ; https://en.wikipedia.org/wiki/Conjugate_prior | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Gaussian distribution
 
@@ -27,3 +27,8 @@ The Gaussian is a good default model when many small effects combine to produce 
 - [[Probability mass and density functions]]
 - [[Bayes rule]]
 - [[Covariance and correlation]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Normal_distribution
+- https://en.wikipedia.org/wiki/Conjugate_prior

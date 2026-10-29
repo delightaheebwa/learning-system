@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Shy Code
 
@@ -38,3 +38,8 @@ customer.pay(amount)  # customer handles its own wallet
 - **Makes refactoring safe** — change a class's internals without breaking callers
 - **Self-documenting** — the public API tells you everything an object can do
 - **Encapsulation preserved** — internal state stays internal
+
+## Sources
+
+- Law of Demeter (Wikipedia): https://en.wikipedia.org/wiki/Law_of_Demeter
+- The Pragmatic Programmer (Hunt & Thomas): https://en.wikipedia.org/wiki/The_Pragmatic_Programmer

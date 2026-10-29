@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Programming Paradigms Comparison
 
@@ -53,3 +53,7 @@ Most modern languages (Python, JavaScript, Java) are **multi-paradigm**. Practic
 - [[Functional programming]]
 - [[Imperative and declarative programming]]
 - [[Method scoping and namespaces]]
+
+## Sources (verified)
+
+- https://en.wikipedia.org/wiki/Programming_paradigm

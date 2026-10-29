@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/karpathy/makemore ; https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Hidden Layers Generalize via Shared Weights
 
@@ -24,3 +24,7 @@ Hidden State = tanh(Inputs · W₁ + b₁)
 Related: [[Distributed Representations (Character Embeddings)]] | [[Bigram Language Model]]
 
 Part of: Socratic tutoring session on neural network scalability (Gemini)
+
+## Sources
+- Bengio et al., "A Neural Probabilistic Language Model" (2003): https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf
+- Karpathy, "makemore": https://github.com/karpathy/makemore

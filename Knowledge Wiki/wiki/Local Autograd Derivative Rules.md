@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Local Autograd Derivative Rules
 
@@ -10,7 +10,7 @@ Each operation in an autograd engine only needs to know its own local derivative
 | a · b | a × b | b | a |
 | x^n | x^n | n·x^(n-1) | — |
 | tanh(x) | tanh(x) | 1 − tanh²(x) | — |
-| ReLU(x) | max(0, x) | 1 if x>0 else 0 | — |
+| ReLU(x) | max(0, x) | 1 if x>0, 0 if x<0 (undefined at 0) | — |
 | e^x | e^x | e^x | — |
 | ln(x) | ln(x) | 1/x | — |
 
@@ -27,3 +27,8 @@ Each backward is **self-contained** — only needs its own input value(s) and th
 ## Connections
 - Prerequisites: Chain Rule Decomposition, Value Class Architecture
 - Used in: Every operation's _backward closure
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Automatic_differentiation
+- https://pytorch.org/docs/stable/autograd.html

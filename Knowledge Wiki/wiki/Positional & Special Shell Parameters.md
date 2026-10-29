@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Positional & Special Shell Parameters
 
@@ -35,3 +35,7 @@ echo "All:    $@"       # Alice Bob
 - [[Command Substitution & Arithmetic Expansion]] — turning command output / math into values
 - [[Process Substitution]] — feeding command output to a command that expects a *file path*
 - [[Parameter Expansion]] — `${var%suffix}` style string surgery on variables
+
+## Sources
+
+- https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html

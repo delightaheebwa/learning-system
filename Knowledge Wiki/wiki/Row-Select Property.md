@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Row-Select Property
 
@@ -26,3 +26,7 @@ This bridges the two approaches. The neural framework isn't doing anything funda
 Part of: Neural Networks: Zero to Hero — makemore Part 2 (Karpathy Lecture 2)
 
 [[One-Hot Encoding]] | [[Softmax Function]] | [[Bigram Language Model]]
+
+## Sources (verified)
+
+- https://github.com/karpathy/makemore

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # CNN Architecture Pattern
 
@@ -41,6 +41,11 @@ class CropDiseaseCNN(nn.Module):
 ## Source
 - **Lesson:** Marconi Lab DL — Day 2: CNNs for Medical & Agricultural Images
 - **Date learned:** 2026-07-15
+
+## Sources
+
+- PyTorch `Conv2d`: https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html
+- Convolutional neural network: https://en.wikipedia.org/wiki/Convolutional_neural_network
 
 ## Connections
 - Prerequisites: Convolution Operation, Pooling (MaxPool2d)

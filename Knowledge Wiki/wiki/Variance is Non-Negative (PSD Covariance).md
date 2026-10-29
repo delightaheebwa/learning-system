@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Variance is Non-Negative (PSD Covariance)
 
@@ -29,3 +29,7 @@ Variance is an **average of squared deviations** from the mean. The square destr
 ## Field note (2026-10-03)
 
 The learner's own consolidation: "all its doing is summing squared deviations and a mere sign flip doesnt matter because of the square."
+
+## Sources
+- https://en.wikipedia.org/wiki/Covariance_matrix
+- https://en.wikipedia.org/wiki/Positive-semidefinite_matrix

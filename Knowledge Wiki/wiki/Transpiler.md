@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Transpiler
 
@@ -17,6 +17,10 @@ A **transpiler** (source-to-source compiler) translates code from one high-level
 | **Input** | High-level language | High-level language |
 | **Output** | Machine code / bytecode | Another high-level language |
 | **Abstraction level** | Lowers | Stays roughly the same |
+
+## Sources
+
+- Wikipedia — Source-to-source compiler (transpiler): https://en.wikipedia.org/wiki/Source-to-source_compiler
 
 ## Related
 

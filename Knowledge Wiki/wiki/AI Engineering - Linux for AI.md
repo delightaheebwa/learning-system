@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/11-linux-for-ai/docs/en.md ; https://man7.org/linux/man-pages/man1/rsync.1.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Linux for AI
 
@@ -12,7 +12,7 @@ Linux organizes everything under a single root `/`. Key directories for AI work:
 | Directory | Purpose |
 | --- | --- |
 | `/home/your-username/` (`~`) | Your files — clone repos, run training |
-| `/tmp/` | Temporary files, cleared on reboot |
+| `/tmp/` | Temporary files — usually tmpfs or cleaned by `systemd-tmpfiles` on boot (not guaranteed; don't store anything you need) |
 | `/usr/` | System programs and libraries |
 | `/etc/` | Config files |
 | `/var/log/` | Logs — check when something breaks |
@@ -25,9 +25,11 @@ Every file has an owner and permission bits. Read with `ls -l`:
 
 ```markdown
 -rwxr-xr-- 1 user group 2048 Mar 19 10:00 train.py
- ^^^          owner: read, write, execute
-    ^^^       group: read, execute
-       ^^     everyone else: read only
+^ --- --- ---
+|  |   |   └── others: r-- = read only
+|  |   └────── group:  r-x = read + execute
+|  └────────── owner:  rwx = read + write + execute
+└───────────── file type: - = regular file (d = directory)
 ```
 
 Common fixes:
@@ -91,7 +93,7 @@ Common space savers:
 - `scp user@remote:/path/<file> .` — copy from remote
 - `rsync -avz --progress ./data/ user@remote:/data/` — sync directories (faster than scp, resumes on failure)
 
-Use `rsync` over `scp` for anything large — it only transfers changed bytes and handles interrupted connections.
+Use `rsync` over `scp` for anything large — it only transfers changed bytes and skips files that are already in sync. Plain `rsync -avz` restarts an interrupted *file*; add `--partial` (or `--append-verify`) to keep and resume a partial transfer.
 
 ## WSL2 (Windows Subsystem for Linux)
 
@@ -112,7 +114,16 @@ For Windows users: WSL2 gives a real Linux environment without dual-booting.
 | Case-insensitive FS | Case-sensitive FS | `file Model.py` ≠ `file model.py` |
 | `\n` line endings | `\n` line endings | Same. Windows uses `\r\n` (run `dos2unix`) |
 
+## Sources
+
+- Rohit, *AI Engineering from Scratch* — Phase 0, Lesson 11 "Linux for AI": https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/11-linux-for-ai/docs/en.md
+- `rsync(1)` man page (`--partial`, `--append-verify`): https://man7.org/linux/man-pages/man1/rsync.1.html
+- `chmod(1)` / file permissions: https://man7.org/linux/man-pages/man1/chmod.1.html
+- `systemd-tmpfiles` / `/tmp` cleanup: https://www.freedesktop.org/software/systemd/man/latest/tmpfiles.d.html
+- WSL2 GPU/CUDA support (Windows driver, no Linux driver inside WSL): https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
+- `wsl --install`: https://learn.microsoft.com/en-us/windows/wsl/install
+
 ## Related
 
-- \[\[AI Engineering - Terminal and Shell\]\]
-- \[\[SSH & Remote File Transfer\]\]
+- [[AI Engineering - Terminal and Shell]]
+- [[SSH & Remote File Transfer]]

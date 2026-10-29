@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # C Integer Mechanics (Underflow & Type Promotion)
 
@@ -67,3 +67,5 @@ Guard **before** subtracting unsigned values (they wrap, never go negative), and
 ## Sources
 
 - Gemini C tutoring on the meminfo module (notebook: https://gemini.google.com/app/ed55c6cdf10c8c2a)
+- C integer conversions (usual arithmetic conversions): https://en.cppreference.com/w/c/language/conversion
+- Unsigned integer overflow/wraparound: https://en.cppreference.com/w/c/language/operator_arithmetic

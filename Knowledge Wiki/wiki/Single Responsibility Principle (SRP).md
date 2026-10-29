@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Single Responsibility Principle (SRP)
 
@@ -24,6 +24,11 @@ By splitting them, the long version avoids `if (literal == null)` checks everywh
 - Changes to one responsibility don't risk breaking another
 - Each method is easier to test in isolation
 - Code becomes more readable — each piece's purpose is obvious
+
+## Sources
+
+- Single-responsibility principle (Wikipedia): https://en.wikipedia.org/wiki/Single-responsibility_principle
+- SOLID (Wikipedia): https://en.wikipedia.org/wiki/SOLID
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Micrograd Architecture
 
@@ -17,6 +17,7 @@ Each level is built entirely on the one below it. PyTorch's architecture follows
 ## Source
 - Lesson: [Teach/lessons/0005-gradient-checking-and-micrograd.html](teach/lessons/0005-gradient-checking-and-micrograd.html)
 - Date learned: 2026-07-10
+- https://github.com/karpathy/micrograd
 
 ## Connections
 - Prerequisites: [[Value Class Architecture]], [[Local Autograd Derivative Rules]], [[Topological Sort for Backprop]]

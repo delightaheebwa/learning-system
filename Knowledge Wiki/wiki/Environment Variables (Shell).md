@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Environment Variables (Shell)
 
@@ -32,3 +32,8 @@ They mutate the **shell's own memory** (its environment). A child program cannot
 - **Vim keys everywhere:** `set -o vi` (bash) or `set editing-mode vi` in `~/.inputrc` switches the readline line editor to vi mode, so the Normal-mode keystrokes you learn work at the bash prompt and in any readline REPL (Python, MySQL, …).
 
 Related: [[Positional & Special Shell Parameters]] · [[Exit Codes & Short-Circuit Control Flow]] · [[MIT Missing Semester — Editors (Vim)]]
+
+## Sources
+
+- MIT Missing Semester — Shell Tools and Scripting: https://missing.csail.mit.edu/2020/shell-tools/
+- GNU Bash manual — Environment: https://www.gnu.org/software/bash/manual/html_node/Environment.html

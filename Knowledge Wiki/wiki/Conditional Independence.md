@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Conditional Independence
 
@@ -16,3 +16,7 @@ The "naive" assumption: given the class label, every feature is independent of e
 ## Practical Note
 
 This assumption is usually false in real data, but Naive Bayes classifiers still perform well because they only need to **rank** classes correctly, not output calibrated probabilities.
+## Sources
+
+- https://en.wikipedia.org/wiki/Conditional_independence
+- https://en.wikipedia.org/wiki/Naive_Bayes_classifier

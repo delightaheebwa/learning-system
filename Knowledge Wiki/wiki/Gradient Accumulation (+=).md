@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/karpathy/micrograd ; https://pytorch.org/docs/stable/autograd.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Gradient Accumulation (+=)
 
@@ -25,6 +25,8 @@ This is the single most common bug in autograd engines — and the fix is always
 ## Source
 - Lesson: [teach/lessons/0003-value-class-and-operations.html](/home/workspace/teach/lessons/0003-value-class-and-operations.html)
 - Date learned: 2026-07-09
+- Karpathy micrograd (autograd engine): https://github.com/karpathy/micrograd
+- PyTorch autograd mechanics: https://pytorch.org/docs/stable/autograd.html
 
 ## Connections
 - Prerequisites: Chain Rule Decomposition, Value Class Architecture

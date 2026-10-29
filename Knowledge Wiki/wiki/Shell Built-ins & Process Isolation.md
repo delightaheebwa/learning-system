@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Shell Built-ins & Process Isolation
 
@@ -74,3 +74,5 @@ type grep      # "grep is /usr/bin/grep"
 
 - Source: Gemini conversation — Socratic tutoring on shell built-ins, child process isolation, internal state (2026-08-04)
 - Reference: https://missing.csail.mit.edu/2026/course-shell/
+- Bash built-in commands (manual): https://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html
+- fork/exec & process isolation (Wikipedia): https://en.wikipedia.org/wiki/Fork_(system_call)

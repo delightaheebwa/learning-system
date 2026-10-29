@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Testable Seam
 
@@ -47,4 +47,5 @@ Keeping the seam reproducible: vendor the test framework into the project (`curl
 ## Sources
 
 - Teach C Course — Lesson 2: Your First Tests; Lesson 3: Acutest and the Parser Seam
+- Acutest (mity/acutest): https://github.com/mity/acutest
 - Gemini Socratic tutoring on testable seams (notebook: https://gemini.google.com/app/e21b1624e3b156a0)

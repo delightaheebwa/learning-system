@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # C Pointers (&, *, ->)
 
@@ -88,3 +88,8 @@ int *p = &x;
 - Gemini C tutoring — pointers & memory lifetime / dangling pointers (notebook: https://gemini.google.com/app/ed55c6cdf10c8c2a)
 
 Related: [[Testable Seam]], [[Sentinel Values vs Presence Flags]], [[C Memory Regions (Stack vs Heap vs Swap)]]
+
+## References
+
+- https://en.wikipedia.org/wiki/Pointer_(computer_programming)
+- https://en.cppreference.com/w/c/language/pointer

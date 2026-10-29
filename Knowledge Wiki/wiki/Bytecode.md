@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bytecode
 
@@ -31,3 +31,10 @@
 ---
 
 *Source: [[2026-05-29 - compilers-interpreters-virtual-machines]]*
+
+## Sources
+
+- Bytecode: https://en.wikipedia.org/wiki/Bytecode
+- Java class file: https://en.wikipedia.org/wiki/Java_class_file
+- Python bytecode (.pyc): https://docs.python.org/3/library/py_compile.html
+- WebAssembly: https://webassembly.org/

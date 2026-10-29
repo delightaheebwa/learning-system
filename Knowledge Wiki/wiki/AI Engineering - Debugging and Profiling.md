@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/12-debugging-and-profiling/docs/en.md ; https://pytorch.org/docs/stable/amp.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineering — Debugging and Profiling
 
@@ -15,7 +15,7 @@ AI bugs are silent — they don't crash, they just train on garbage and produce 
 2. **Tensor Operations** — shapes, dtypes, devices, NaN/Inf values
 3. **Training Dynamics** — loss curves, gradient norms, activations
 
-80% of AI bugs live at levels 1 and 2. Don't jump straight to staring at TensorBoard.
+80% of AI bugs live at levels 1 and 2. Don't jump straight to staring at TensorBoard. (This is the lesson's rule of thumb, not a measured statistic.)
 
 ---
 
@@ -65,7 +65,7 @@ class Timer:
     def __exit__(self, *args): print(f"[{self.name}] {time.perf_counter() - self.start:.4f}s")
 ```
 
-Common finding: data loading takes 60% of training time. Fix: `num_workers > 0` in DataLoader.
+Common finding (lesson's heuristic, not a benchmark): data loading takes ~60% of training time. Fix: `num_workers > 0` in DataLoader.
 
 ### 5. cProfile & line_profiler
 
@@ -85,7 +85,7 @@ torch.cuda.memory_allocated() / 1e9  # GB
 torch.cuda.memory_reserved() / 1e9   # GB
 ```
 
-OOM fixes (in order): reduce batch size → `torch.cuda.empty_cache()` → `del tensor` + `empty_cache()` → mixed precision (`torch.cuda.amp`) → gradient checkpointing
+OOM fixes (in order): reduce batch size → `torch.cuda.empty_cache()` → `del tensor` + `empty_cache()` → mixed precision (`torch.amp.autocast("cuda")` + `torch.amp.GradScaler("cuda")`; the older `torch.cuda.amp` API is deprecated) → gradient checkpointing
 
 ---
 
@@ -140,6 +140,15 @@ Interpretation:
 5. **Performance** — Time data loading vs forward vs backward; profile memory near OOM
 
 ---
+
+## Sources
+
+- Rohit, *AI Engineering from Scratch* — Phase 0, Lesson 12 "Debugging & Profiling": https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/12-debugging-and-profiling/docs/en.md
+- PyTorch AMP (`torch.amp`, `torch.cuda.amp` deprecation warning): https://pytorch.org/docs/stable/amp.html
+- Python `cProfile`: https://docs.python.org/3/library/profile.html
+- `tracemalloc`: https://docs.python.org/3/library/tracemalloc.html
+- `line_profiler` / `memory_profiler`: https://github.com/pyutils/line_profiler · https://github.com/pythonprofilers/memory_profiler
+- PyTorch CUDA memory docs (`memory_allocated`, `memory_reserved`, `memory_summary`): https://pytorch.org/docs/stable/notes/cuda.html#memory-management
 
 ## Related Concepts
 

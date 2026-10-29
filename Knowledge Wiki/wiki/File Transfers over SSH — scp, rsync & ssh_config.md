@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://missing.csail.mit.edu/2020/command-line/ ; https://man7.org/linux/man-pages/man1/scp.1.html ; https://man7.org/linux/man-pages/man1/rsync.1.html ; https://man7.org/linux/man-pages/man5/ssh_config.5.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # File Transfers over SSH — scp, rsync & ssh_config
 
@@ -32,3 +32,10 @@ Host myserver
 Now `ssh myserver` — or `rsync file.txt myserver:` — expands to all those flags. Key advantage over shell aliases: this file is **not only read by `ssh`** — `scp`, `rsync`, `mosh`, etc. read it too and translate the settings into their corresponding flags.
 
 Related: [[SSH — Public-Key Auth & Remote Commands]] · [[MIT Missing Semester — Shell Configuration & Dotfiles]]
+
+## Sources
+
+- https://missing.csail.mit.edu/2020/command-line/
+- https://man7.org/linux/man-pages/man1/scp.1.html
+- https://man7.org/linux/man-pages/man1/rsync.1.html
+- https://man7.org/linux/man-pages/man5/ssh_config.5.html

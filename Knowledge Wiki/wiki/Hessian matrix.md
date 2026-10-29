@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Hessian_matrix | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Hessian matrix
 
@@ -18,7 +18,7 @@ The key condition is continuity of the mixed second partials, not just the exist
 
 ## Taylor-series view
 
-In the \[\[Multivariate Taylor series\]\], the Hessian is the second-order term:
+In the [[Multivariate Taylor series]], the Hessian is the second-order term:
 
 - (T_2(x) = f(x_0) + \\nabla f(x_0)(x-x_0) + \\tfrac{1}{2}(x-x_0)^\\top H(x_0)(x-x_0))
 
@@ -28,7 +28,7 @@ So the Hessian is what turns the linear approximation into a local quadratic bow
 
 The gradient tells you which way to move to decrease the function fastest. The Hessian tells you how the gradient itself changes locally, which is the curvature information.
 
-Building on \[\[Directional derivative\]\] and \[\[Jacobian matrix\]\], the Hessian is the second-order analogue: instead of describing local linear change, it describes local curvature.
+Building on [[Directional derivative]] and [[Jacobian matrix]], the Hessian is the second-order analogue: instead of describing local linear change, it describes local curvature.
 
 ## Why it matters for optimization
 
@@ -59,8 +59,12 @@ An HVP gives curvature along a chosen direction without explicitly forming the f
 
 ## Related pages
 
-- \[\[Jacobian matrix\]\]
-- \[\[Directional derivative\]\]
-- \[\[Gradient descent\]\]
-- \[\[Automatic differentiation\]\]
-- \[\[Backpropagation\]\]
+- [[Jacobian matrix]]
+- [[Directional derivative]]
+- [[Gradient descent]]
+- [[Automatic differentiation]]
+- [[Backpropagation]]
+
+## Sources
+- Wikipedia, "Hessian matrix": https://en.wikipedia.org/wiki/Hessian_matrix
+- DataCamp, "Hessian matrix": https://www.datacamp.com/tutorial/hessian-matrix

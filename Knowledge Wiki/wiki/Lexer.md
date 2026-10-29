@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Lexer
 
@@ -10,7 +10,7 @@ Source code enters the compiler as a single massive string of characters. The le
 
 When the lexer encounters a number like `42`, it does two things:
 1. Keeps the raw text string (`"42"` as the lexeme)
-2. Converts it into a live binary integer (`42`) stored as the literal value
+2. Records the token type (and often an attached value such as the integer `42`); the raw lexeme is `"42"`
 
 ## Key Insight
 
@@ -23,3 +23,7 @@ KEYWORD("int") → IDENTIFIER("age") → ASSIGN_OP("=") → INTEGER("25") → SE
 - [[Token]] — what the lexer produces
 - [[Compiler]] — the broader pipeline
 - [[Interpreter]] — also uses lexers for source processing
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Lexical_analysis

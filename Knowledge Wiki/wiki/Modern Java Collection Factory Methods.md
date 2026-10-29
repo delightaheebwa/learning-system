@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Modern Java Collection Factory Methods
 
@@ -65,3 +65,9 @@ This replaces static blocks when your initialization is a simple "create and pop
 
 - [[Java Static Initializer Block]]
 - [[Java Class Body Rules]]
+
+## Sources
+
+- OpenJDK JEP 269 — Convenience Factory Methods for Collections: https://openjdk.org/jeps/269
+- Oracle — Creating Immutable Lists, Sets, and Maps: https://docs.oracle.com/javase/9/core/creating-immutable-lists-sets-and-maps.htm
+- Baeldung — Java 9 Collections Factory Methods: https://www.baeldung.com/java-9-collections-factory-methods

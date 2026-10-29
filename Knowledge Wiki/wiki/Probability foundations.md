@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Probability foundations
 
@@ -118,3 +118,8 @@ That is the core message of the mind map.
 - [[Total differential]]
 - [[Cox-Jaynes view]]
 - [[Random variable]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Probability
+- Cox, R. T. "Probability, Frequency and Reasonable Expectation" — https://bayes.wustl.edu/etj/articles/probability.pdf

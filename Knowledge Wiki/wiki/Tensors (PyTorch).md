@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Tensors (PyTorch)
 
@@ -43,6 +43,11 @@ if torch.cuda.is_available():
 - **Date learned:** 2026-07-14
 - **DataCamp:** Introduction to Deep Learning with PyTorch (Ch. 1)
 - **Further reading:** [PyTorch Tensor Tutorial](https://pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html)
+
+## Sources
+
+- PyTorch — Tensor basics tutorial: https://pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html
+- PyTorch docs — torch.Tensor: https://pytorch.org/docs/stable/tensors.html
 
 ## Connections
 - Leads to: PyTorch Model Building, Training Loop Pattern

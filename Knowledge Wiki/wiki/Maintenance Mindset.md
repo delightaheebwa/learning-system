@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Maintenance Mindset
 
@@ -28,3 +28,4 @@ Instead of thinking "I'm building this and then it's done," think "I'm maintaini
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+- https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/

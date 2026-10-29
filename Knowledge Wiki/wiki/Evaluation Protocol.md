@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.eval ; https://pytorch.org/docs/stable/generated/torch.no_grad.html | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Evaluation Protocol
 
@@ -33,3 +33,8 @@ print(f"Accuracy: {100 * correct / total:.1f}%")
 
 ## Connections
 - Prerequisites: Training Loop Pattern
+
+## Sources
+
+- https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.eval
+- https://pytorch.org/docs/stable/generated/torch.no_grad.html

@@ -1,8 +1,8 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Token
 
-A **token** is the abstract unit of currency in compiler design — a package that bundles a raw text string with its identity and location. Tokens are produced by the \[\[Lexer\]\] and consumed by the parser.
+A **token** is the abstract unit of data in compiler design — a package that bundles a raw text string with its identity and location. Tokens are produced by the [[Lexer]] and consumed by the parser.
 
 ## Components
 
@@ -62,8 +62,12 @@ For a number:
 }
 ```
 
+## Sources
+
+- Wikipedia — Lexical analysis: https://en.wikipedia.org/wiki/Lexical_analysis
+
 ## Related
 
-- \[\[Lexer\]\] — produces tokens from source text
-- \[\[Compiler\]\] — the broader pipeline that uses tokens
-- \[\[Expressions and statements\]\] — tokens form expressions
+- [[Lexer]] — produces tokens from source text
+- [[Compiler]] — the broader pipeline that uses tokens
+- [[Expressions and statements]] — tokens form expressions

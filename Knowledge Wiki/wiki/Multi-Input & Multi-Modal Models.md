@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Multi-Input & Multi-Modal Models
 
@@ -37,6 +37,8 @@ Multi-input models are just **multiple pathways that merge**. Each pathway extra
 
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
+- PyTorch docs — `torch.cat`: https://pytorch.org/docs/stable/generated/torch.cat.html
+- PyTorch docs — `nn.Module`: https://pytorch.org/docs/stable/generated/torch.nn.Module.html
 
 ## Connections
 

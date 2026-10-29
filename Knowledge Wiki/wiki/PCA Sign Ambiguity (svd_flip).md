@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # PCA Sign Ambiguity (svd_flip)
 
@@ -44,3 +44,7 @@ scikit-learn's SVD-based solvers post-process components through `svd_flip`, whi
 ## Open questions
 
 - With **tied eigenvalues** the ambiguity is bigger than a per-component sign: the whole eigenspace is free to rotate within itself, so not even the *directions* are determined. Carried to CP3 with the round-cloud degenerate case.
+
+## Sources
+
+- scikit-learn svd_flip — https://scikit-learn.org/stable/modules/generated/sklearn.utils.extmath.svd_flip.html

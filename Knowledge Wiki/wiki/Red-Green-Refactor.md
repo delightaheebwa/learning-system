@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Red-Green-Refactor
 
@@ -37,3 +37,4 @@ The smoke-detector analogy: if you never expose the detector to smoke, you don't
 
 - Teach C Course — Lesson 2: Your First Tests; Lesson 3: Acutest and the Parser Seam
 - Gemini Socratic tutoring on testing (notebook: https://gemini.google.com/app/e21b1624e3b156a0)
+- https://martinfowler.com/bliki/TestDrivenDevelopment.html

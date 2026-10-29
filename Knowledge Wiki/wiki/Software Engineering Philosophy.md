@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Software Engineering Philosophy
 
@@ -31,7 +31,7 @@ Core principles about how to behave as an engineer:
 
 **Respond immediately to problems** — Fix issues while they're small. If you can't solve them immediately: acknowledge, communicate, show progress. People tolerate delays much better than silence.
 
-→ Related: \[\[Professional Responsibility\]\]
+→ Related: [[Professional Responsibility]]
 
 ---
 
@@ -39,19 +39,19 @@ Core principles about how to behave as an engineer:
 
 **Avoid collateral damage** (Broken Windows Theory) — Broken things encourage more broken things. If you inherit messy code: improve it slightly, leave it cleaner than you found it.
 
-→ Related: \[\[Broken Window Theory\]\]
+→ Related: [[Broken Window Theory]]
 
 **Know when to stop** — Perfect software doesn't exist. Eventually, diminishing returns appear and maintenance becomes more important than perfection.
 
-→ Related: \[\[Good Enough Software\]\]
+→ Related: [[Good Enough Software]]
 
 **We are always in maintenance mode** — Requirements change. Knowledge changes. Understanding changes. Design should assume change is inevitable.
 
-→ Related: \[\[Maintenance Mindset\]\]
+→ Related: [[Maintenance Mindset]]
 
 **Build for change** — Whenever adding code, ask: "Will this be easy to modify six months from now?" Good code is adaptable.
 
-→ Related: \[\[ETC (Easier To Change)\]\]
+→ Related: [[ETC (Easier To Change)]]
 
 ---
 
@@ -61,11 +61,11 @@ Core principles about how to behave as an engineer:
 
 **Success attracts people** — People prefer joining something already working. Show them progress, momentum, vision. A prototype is often more persuasive than a specification.
 
-→ Related: \[\[Tracer Bullets\]\]
+→ Related: [[Tracer Bullets]]
 
 **Define "good enough"** — Whenever possible, include users in deciding what quality means. Some systems (like medical devices) don't allow compromise. Most products do.
 
-→ Related: \[\[Good Enough Software\]\]
+→ Related: [[Good Enough Software]]
 
 ---
 
@@ -92,7 +92,7 @@ Core principles about how to behave as an engineer:
 
 **Read outside your bubble** — Don't only follow your own ecosystem. A Java developer should occasionally read about Rust. A Python developer should read about Go.
 
-→ Related: \[\[Knowledge Portfolio\]\]
+→ Related: [[Knowledge Portfolio]]
 
 ---
 
@@ -114,7 +114,7 @@ Core principles about how to behave as an engineer:
 
 **Make meetings dialogues** — Less presenting, more questioning. People support ideas they helped create.
 
-→ Related: \[\[Communication for Developers\]\]
+→ Related: [[Communication for Developers]]
 
 ---
 
@@ -124,7 +124,7 @@ Core principles about how to behave as an engineer:
 
 This is one of the core ideas from *The Pragmatic Programmer*. Good design is about adaptability, not beauty. Every design decision should make future changes cheaper. Ask before every change: "Is this the easiest thing to change later?"
 
-→ Related: \[\[ETC (Easier To Change)\]\]
+→ Related: [[ETC (Easier To Change)]]
 
 ### Good design is easy to change
 
@@ -142,7 +142,7 @@ Design isn't about aesthetics. It's about adaptability.
 
 **Breaking DRY intentionally:** Sometimes duplicate data for performance (e.g., caching expensive computations). The catch: **localize the violation** — hide the duplicated data inside one class that manages consistency.
 
-→ Related: \[\[DRY Principle\]\], \[\[Representational Duplication\]\], \[\[Interdeveloper Duplication\]\]
+→ Related: [[DRY Principle]], [[Representational Duplication]], [[Interdeveloper Duplication]]
 
 ---
 
@@ -154,7 +154,7 @@ Don't expose implementation details. Expose behavior.
 
 **Uniform Access Principle** — Users of a module shouldn't know whether data comes from memory, computation, cache, or database. The interface stays the same. Implementation stays flexible.
 
-→ Related: \[\[Uniform Access Principle\]\]
+→ Related: [[Uniform Access Principle]]
 
 ---
 
@@ -162,7 +162,7 @@ Don't expose implementation details. Expose behavior.
 
 Whenever software communicates with APIs, databases, or file formats: avoid manually duplicating schemas. Generate code from schemas or validate flexible structures. This reduces representational duplication.
 
-→ Related: \[\[Representational Duplication\]\]
+→ Related: [[Representational Duplication]]
 
 ---
 
@@ -170,7 +170,7 @@ Whenever software communicates with APIs, databases, or file formats: avoid manu
 
 Duplication also happens between people. Prevent it with: code reviews, shared libraries, communication, documentation, ownership. Knowledge should spread intentionally.
 
-→ Related: \[\[Interdeveloper Duplication\]\]
+→ Related: [[Interdeveloper Duplication]]
 
 ---
 
@@ -272,7 +272,8 @@ Experienced engineers prefer the safer default (`return self._items.copy()` or `
 
 ## Sources
 
-- *The Pragmatic Programmer* (Hunt & Thomas)
-- *Clean Architecture* (Robert C. Martin)
-- *Object-Oriented Software Construction* (Bertrand Meyer) — Uniform Access Principle
+- *The Pragmatic Programmer* (Hunt & Thomas): https://en.wikipedia.org/wiki/The_Pragmatic_Programmer
+- *Clean Architecture* (Robert C. Martin): https://en.wikipedia.org/wiki/Clean_architecture
+- *Object-Oriented Software Construction* (Bertrand Meyer) — Uniform Access Principle: https://en.wikipedia.org/wiki/Uniform_access_principle
+- Broken windows theory: https://en.wikipedia.org/wiki/Broken_windows_theory
 - Personal notes and code reviews

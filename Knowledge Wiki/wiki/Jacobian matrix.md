@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Jacobian matrix
 
@@ -39,3 +39,7 @@ That is the matrix shown in the earlier screenshots.
 
 - [[Local linearity]]
 - [[Jacobian determinant]]
+
+## Sources
+- Wikipedia, "Jacobian matrix and determinant": https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
+- Khan Academy, "The Jacobian": https://www.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/jacobian/v/the-jacobian-determinant

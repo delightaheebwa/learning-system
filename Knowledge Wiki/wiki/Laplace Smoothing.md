@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Laplace Smoothing (Add-1 Smoothing)
 
@@ -32,3 +32,7 @@ An unseen word gets `1/250 = 0.004` — small, but not zero. That nonzero floor 
 ## Why It Works
 
 The +1 is a small correction that prevents any probability from being exactly zero, while the denominator adjustment (adding vocabulary size) keeps the distribution properly normalized.
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Additive_smoothing

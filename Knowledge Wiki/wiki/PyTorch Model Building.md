@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # PyTorch Model Building
 
@@ -38,3 +38,8 @@ The output layer returns **raw logits** (no softmax) because `nn.CrossEntropyLos
 ## Connections
 - Prerequisites: Tensors (PyTorch)
 - Leads to: Training Loop Pattern, Activation Functions, Loss Functions (PyTorch)
+
+## Sources (verified)
+
+- https://pytorch.org/tutorials/beginner/nn_tutorial.html
+- https://pytorch.org/docs/stable/nn.html

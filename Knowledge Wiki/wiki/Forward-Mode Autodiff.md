@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Automatic_differentiation ; https://en.wikipedia.org/wiki/Dual_number | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Forward-Mode Autodiff
 
@@ -19,3 +19,8 @@ Forward-mode autodiff computes derivatives **alongside** values during the forwa
 ## Connections
 - Prerequisites: Computational Graphs, Two-Pass Autodiff Algorithm
 - Contrasts with: Reverse-Mode Autodiff & Backprop
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Automatic_differentiation
+- https://en.wikipedia.org/wiki/Dual_number

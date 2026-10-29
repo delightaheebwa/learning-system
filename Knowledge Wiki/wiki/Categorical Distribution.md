@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Categorical Distribution
 
@@ -32,3 +32,8 @@ Sampling from a Categorical is inverse transform sampling: build cumulative prob
 ## Source
 
 - Lesson: `Teach/ai-engineering/lessons/0002-probability-foundations.html`
+
+## Sources
+
+- Categorical distribution: https://en.wikipedia.org/wiki/Categorical_distribution
+- Multinomial distribution: https://en.wikipedia.org/wiki/Multinomial_distribution

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Strategy Pattern
 
@@ -47,3 +47,9 @@ Use:
 - You need to switch algorithms at runtime
 - A class has a large conditional (if/switch) picking between behaviors — each branch is a candidate strategy
 - You want to avoid exposing complex algorithm-specific data structures
+
+## Sources
+
+- Refactoring Guru — Strategy pattern: https://refactoring.guru/design-patterns/strategy
+- Wikipedia — Strategy pattern: https://en.wikipedia.org/wiki/Strategy_pattern
+- Gamma, Helm, Johnson & Vlissides, *Design Patterns: Elements of Reusable Object-Oriented Software* (GoF), 1994

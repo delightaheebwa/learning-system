@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Directional derivative
 
@@ -13,6 +13,11 @@ For \(f: \mathbb{R}^n \to \mathbb{R}^m\), the directional derivative at \(x\) in
 - A partial derivative is just a directional derivative along a coordinate axis.
 - Directional derivatives let you ask how the output changes along any direction in input space.
 - In forward-mode automatic differentiation, seeding the tangent with \(r\) computes this quantity directly.
+
+## Sources
+
+- Wikipedia — Directional derivative: https://en.wikipedia.org/wiki/Directional_derivative
+- Wikipedia — Jacobian matrix and determinant: https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
 
 ## Related pages
 

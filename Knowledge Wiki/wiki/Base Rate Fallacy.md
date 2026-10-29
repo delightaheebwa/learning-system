@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Base_rate_fallacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Base Rate Fallacy
 
@@ -22,6 +22,9 @@ A 99% accurate disease test on a 1/1000 prevalence disease → P(disease|positiv
 ## The Fix
 
 Always account for the prior. Bayes' Theorem forces you to incorporate base rates into your reasoning.
+
+## Sources
+- Wikipedia — Base rate fallacy: https://en.wikipedia.org/wiki/Base_rate_fallacy
 
 ## The 3-Step Method (concrete population)
 

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Bernoulli_distribution | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bernoulli Distribution
 
@@ -31,3 +31,6 @@ A Bernoulli sampler is trivial: generate a uniform random number u ∈ [0, 1], r
 ## Source
 
 - Lesson: `Teach/ai-engineering/lessons/0002-probability-foundations.html`
+
+## Sources
+- Wikipedia — Bernoulli distribution: https://en.wikipedia.org/wiki/Bernoulli_distribution

@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Cox-Jaynes view
 
@@ -29,3 +29,6 @@ A monotone re-labeling is allowed, so you can work in another scale such as log-
 - [[Bayes rule]]
 - [[Probability mass and density functions]]
 - [[Random variable]]
+## Sources
+
+- https://en.wikipedia.org/wiki/Cox%27s_theorem

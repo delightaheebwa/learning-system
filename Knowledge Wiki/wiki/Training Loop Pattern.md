@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Training Loop Pattern
 
@@ -62,6 +62,11 @@ for epoch in range(num_epochs):
 ## Source
 - **Lesson:** Marconi Lab DL — Day 1: Tensors, Neural Networks & the Training Loop
 - **Date learned:** 2026-07-14
+
+## Sources
+
+- PyTorch — Optimization tutorial: https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html
+- PyTorch — Training with PyTorch (YouTube series): https://pytorch.org/tutorials/beginner/introyt/trainingyt.html
 
 ## Connections
 - Prerequisites: PyTorch Model Building, Loss Functions (PyTorch)

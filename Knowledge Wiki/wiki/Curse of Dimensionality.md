@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Curse of Dimensionality
 
@@ -29,6 +29,11 @@ The learner's synthesis (2026-10-07), with the two corrections applied:
 - "since distances are getting less and less" — repaired to **concentration**: distances become more alike, not smaller; the contrast is what collapses.
 - "10 equal bars; cutting even one loses too much" and "the scree is a bunch of bars of equal height of 100" — the isotropic read was correct on both halves.
 - Micro-check passed (grade-audit agreed): `λ = (99, 1)` compresses to `k = 1` at 1% loss, while `λ = (50, 50)` — the same total — loses 50%.
+
+## Sources
+
+- Wikipedia — Curse of dimensionality: https://en.wikipedia.org/wiki/Curse_of_dimensionality
+- Aggarwal, Hinneburg & Keim (2001), "On the Surprising Behavior of Distance Metrics in High Dimensional Space": https://bib.dbvis.de/uploadedFiles/104.pdf
 
 ## Open questions
 

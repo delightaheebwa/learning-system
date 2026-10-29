@@ -1,8 +1,10 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Convolution Operation
 
 A **convolution** slides a small filter (kernel) across the image. At each position, it multiplies the filter values by the overlapping image pixels and sums them up. The result is a **feature map** — a new image where bright spots show where the filter detected its pattern.
+
+*(Note: deep-learning frameworks actually compute cross-correlation — the kernel is not flipped — but because the kernel is learned, this is conventionally called "convolution".)*
 
 CNNs solve two fatal problems with fully-connected networks on images:
 1. **Too many parameters** — a 256×256×3 image → 196,608 inputs → 196M params for one hidden layer
@@ -30,3 +32,8 @@ Each filter learns to detect a different pattern (edges, textures, blobs). Early
 ## Connections
 - Prerequisites: Tensors (PyTorch), PyTorch Model Building
 - Leads to: Convolution Parameters, Pooling (MaxPool2d), CNN Architecture Pattern
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Convolutional_neural_network
+- https://en.wikipedia.org/wiki/Convolutional_layer

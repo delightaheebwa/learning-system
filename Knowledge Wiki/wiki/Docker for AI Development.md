@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Docker for AI Development
 
@@ -26,7 +26,7 @@
 |-------|-----|------|
 | `nvidia/cuda:12.4.1-devel-ubuntu22.04` | Building packages needing nvcc (flash-attn, bitsandbytes) | ~4 GB |
 | `nvidia/cuda:12.4.1-runtime-ubuntu22.04` | Running pre-built code | ~1.5 GB |
-| `pytorch/pytorch:2.3.1-cuda12.4-cudnn9-runtime` | PyTorch pre-installed | ~6 GB |
+| `pytorch/pytorch:2.6.0-cuda12.4-cudnn9-runtime` | PyTorch pre-installed | ~3.6 GB |
 | `python:3.12-slim` | CPU-only inference, lightweight tools | ~150 MB |
 
 ## NVIDIA Container Toolkit
@@ -71,6 +71,13 @@ services:
 ```
 
 Services reach each other by name (`http://qdrant:6333`).
+
+## Sources
+
+- Docker docs — NVIDIA Container Toolkit: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/
+- Docker Hub — nvidia/cuda: https://hub.docker.com/r/nvidia/cuda
+- Docker Hub — pytorch/pytorch: https://hub.docker.com/r/pytorch/pytorch
+- Docker Hub — qdrant/qdrant: https://hub.docker.com/r/qdrant/qdrant
 
 ## Related
 - [[GPU Computing]]

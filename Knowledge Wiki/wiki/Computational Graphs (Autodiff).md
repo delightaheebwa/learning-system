@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Computational Graphs (Autodiff)
 
@@ -17,3 +17,8 @@ This is the universal data structure that powers every autodiff system — PyTor
 ## Connections
 - Prerequisites: Partial Derivatives & Gradient, Chain Rule & Backpropagation
 - Leads to: Two-Pass Autodiff Algorithm, Reverse-Mode Autodiff & Backprop
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Automatic_differentiation
+- https://en.wikipedia.org/wiki/Backpropagation

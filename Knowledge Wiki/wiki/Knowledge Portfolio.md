@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Knowledge Portfolio
 
@@ -27,3 +27,7 @@ Even if your project doesn't use the technology you're learning, the concepts, p
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+
+## Sources
+
+- https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/

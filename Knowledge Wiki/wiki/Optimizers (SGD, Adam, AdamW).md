@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Optimizers (SGD, Adam, AdamW)
 
@@ -24,6 +24,8 @@ Start with **Adam** (lr=0.001) — it works for most problems without tuning. Sw
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
 - **Further reading:** [PyTorch Optimizers Docs](https://pytorch.org/docs/stable/optim.html)
+- Adam paper (Kingma & Ba, 2014): https://arxiv.org/abs/1412.6980
+- AdamW paper (Loshchilov & Hutter, 2017): https://arxiv.org/abs/1711.05101
 
 ## Connections
 

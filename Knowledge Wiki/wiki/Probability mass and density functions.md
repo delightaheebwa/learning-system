@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Probability mass and density functions
 
@@ -61,3 +61,8 @@ P(4.9 \leq X \leq 5.1) = \int_{4.9}^{5.1} f(x) \, dx
 - [[Cumulative distribution function]]
 - [[Joint, marginal, and conditional probabilities]]
 - [[Independence of random variables]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Probability_density_function
+- https://en.wikipedia.org/wiki/Probability_mass_function

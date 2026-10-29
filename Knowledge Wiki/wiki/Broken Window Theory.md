@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Broken Window Theory
 
@@ -22,3 +22,8 @@ People are more likely to keep something neat if it's already neat. A clean code
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas)
+
+## Sources
+
+- Broken windows theory (criminology): https://en.wikipedia.org/wiki/Broken_windows_theory
+- The Pragmatic Programmer: https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/

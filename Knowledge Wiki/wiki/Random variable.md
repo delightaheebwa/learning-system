@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Random variable
 
@@ -60,3 +60,7 @@ Real-world sample spaces Ω are enormous (millions of pixels, sequences of words
 - [[Probability foundations]]
 - [[Probability mass and density functions]]
 - [[Cox-Jaynes view]]
+
+## Sources (verified)
+
+- https://en.wikipedia.org/wiki/Random_variable

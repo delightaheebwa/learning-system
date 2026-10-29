@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Mutual Information
 
@@ -178,3 +178,6 @@ Final cumulative quiz of P1 L09, Q3: the KL form (joint ∥ product of the margi
 ## Source
 
 Rohit P1 L09 `docs/en.md` (https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/09-information-theory/docs/en.md) + Olah, *Visual Information Theory* (https://colah.github.io/posts/2015-09-Visual-Information/) — the four forms, the bars picture and the variation of information follow Olah; Rohit supplies the ML framing and the feature-selection/decision-tree uses.
+
+- Wikipedia — Mutual information: https://en.wikipedia.org/wiki/Mutual_information
+- Meilă, M. (2007). Comparing clusterings—an information based distance. *Journal of Multivariate Analysis*, 98(5), 873–895: https://doi.org/10.1016/j.jmva.2006.11.013

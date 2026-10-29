@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # less — The Terminal Pager
 
@@ -26,3 +26,8 @@ curl -fsSL URL -o install.sh && less install.sh && bash install.sh
 ```
 
 Related: [[MIT Missing Semester — Shell]] · [[MIT Missing Semester — Command-line Environment]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Less_(Unix)
+- https://www.greenwoodsoftware.com/less/

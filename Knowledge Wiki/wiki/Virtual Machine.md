@@ -1,14 +1,14 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Virtual Machine
 
-A **Virtual Machine (VM)** is a program that emulates a hypothetical chip — a "fake chip" that acts as a lightning-fast translator on the user's computer.
+A **Virtual Machine (VM)** is a program that emulates a hypothetical chip — a "fake chip" that provides a portable execution environment for bytecode.
 
 ## How it works
 
-- Reads [[Bytecode]] line by line
-- Translates each bytecode instruction into native machine code for the real CPU
-- Executes the translated instructions
+- Reads [[Bytecode]] and executes it, typically via an interpreter loop (and, in many implementations, a JIT compiler that compiles hot paths to native machine code)
+- May translate bytecode to native machine code ahead of time or on demand, or interpret it directly
+- Executes the resulting instructions on the host CPU
 
 ## Why VMs exist
 
@@ -33,3 +33,6 @@ The hard work is building different VM implementations for every major device (W
 ---
 
 *Source: [[2026-05-29 - compilers-interpreters-virtual-machines]]*
+
+## Sources
+- https://en.wikipedia.org/wiki/Virtual_machine

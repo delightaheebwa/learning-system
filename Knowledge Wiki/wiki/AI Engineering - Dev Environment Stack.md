@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/01-dev-environment/docs/en.md ; https://docs.astral.sh/uv/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # AI Engineering — Dev Environment Stack
 
@@ -31,7 +31,16 @@ import torch
 print(f"CUDA available: {torch.cuda.is_available()}")
 ```
 
-If CUDA is available, you have GPU acceleration. If not, most lessons work on CPU; use Google Colab for GPU-heavy work.
+If CUDA is available, you have GPU acceleration. If not, most lessons work on CPU; use Google Colab for GPU-heavy work. (On Apple Silicon use MPS; `torch.cuda.is_available()` is expected to be `False` there.)
+
+The lesson installs Python 3.12 and Node 22 (via `fnm`); the diagram's "3.11+ / 20+" are minimums, not the pinned versions.
+
+## Sources
+
+- Rohit, *AI Engineering from Scratch* — Phase 0, Lesson 01 "Dev Environment" (four-layer diagram, uv/fnm/pnpm/rustup, GPU check): https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/00-setup-and-tooling/01-dev-environment/docs/en.md
+- uv docs ("10-100x faster than pip"): https://docs.astral.sh/uv/
+- fnm: https://github.com/Schniz/fnm · pnpm: https://pnpm.io/ · rustup: https://rustup.rs/
+- PyTorch CUDA/MPS notes: https://pytorch.org/docs/stable/notes/cuda.html
 
 ## Related
 - [[Python Virtual Environments]]

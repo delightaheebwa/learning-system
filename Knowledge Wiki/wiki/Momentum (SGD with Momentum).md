@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Momentum (SGD with Momentum)
 
@@ -32,7 +32,8 @@ Geometrically, this rescales the effective step size per eigenvector direction o
 
 - **Lesson:** Rohit P1 L08 — Optimization (Gradient Descent Family), 2026-09-07
 - **Source:** `phases/01-math-foundations/08-optimization/docs/en.md`
-- **Enrichment:** G. Goh, "Why Momentum Really Works" (Distill, 2017)
+- Wikipedia — Stochastic gradient descent (momentum): https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Momentum
+- **Enrichment:** G. Goh, "Why Momentum Really Works" (Distill, 2017) — https://distill.pub/2017/momentum/
 
 
 ## Rosenbrock race result (CP3, 2026-09-08)

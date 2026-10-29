@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Convenience Method
 
@@ -43,3 +43,8 @@ Used in formal API design documentation — Apple's developer docs, Java's inter
 - [[Delegation Pattern]] — convenience methods delegate to the full implementation
 - [[Single Responsibility Principle (SRP)]] — splitting into convenience + full version keeps each method's job singular
 - [[DRY Principle]] — convenience methods eliminate repetitive default-argument boilerplate
+
+## Sources
+
+- https://martinfowler.com/bliki/HumaneInterface.html
+- https://martinfowler.com/bliki/MinimalInterface.html

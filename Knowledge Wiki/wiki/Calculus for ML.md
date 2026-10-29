@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Calculus for Machine Learning
 
@@ -109,3 +109,9 @@ b -= lr * db
 
 ## Source
 [Full lesson →](https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/04-calculus-for-ml/docs/en.md)
+
+## Sources
+
+- Rohit lesson (calculus for ML): https://github.com/rohitg00/ai-engineering-from-scratch/blob/main/phases/01-math-foundations/04-calculus-for-ml/docs/en.md
+- Automatic differentiation (autograd): https://pytorch.org/docs/stable/autograd.html
+- Calculus (derivatives): https://en.wikipedia.org/wiki/Derivative

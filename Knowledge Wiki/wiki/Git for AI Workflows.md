@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://git-scm.com/docs ; https://git-scm.com/book/en/v2 | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Git for AI Workflows
 
@@ -49,3 +49,8 @@ models/
 
 ## Related
 - [[AI Engineering - Dev Environment Stack]]
+
+## Sources
+
+- https://git-scm.com/docs
+- https://git-scm.com/book/en/v2

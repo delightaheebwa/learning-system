@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Vanishing & Exploding Gradients
 
@@ -16,6 +16,7 @@ During backpropagation, gradients flow backward through every layer. With sigmoi
 
 ```python
 # Safe training setup
+import torch
 import torch.nn as nn
 import torch.nn.init as init
 
@@ -44,6 +45,8 @@ class WellBehavedModel(nn.Module):
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
 - **Further reading:** [Goodfellow §8.2.5](https://www.deeplearningbook.org/contents/optimization.html)
+- https://www.deeplearningbook.org/contents/optimization.html
+- https://pytorch.org/docs/stable/nn.html#torch.nn.utils.clip_grad_norm_
 
 ## Connections
 

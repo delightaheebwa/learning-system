@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # LSTM (Long Short-Term Memory)
 
@@ -42,6 +42,8 @@ class WeatherLSTM(nn.Module):
 - **Lesson:** Marconi Lab DL — Day 3: Advanced Training & Sequence Models
 - **Date learned:** 2026-07-15
 - **Further reading:** [Understanding LSTM Networks](https://colah.github.io/posts/2015-08-Understanding-LSTMs/) (Colah's blog)
+- https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html
+- https://pytorch.org/docs/stable/generated/torch.nn.GRU.html
 
 ## Connections
 

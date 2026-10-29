@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Probability & Distributions for ML
 
@@ -16,7 +16,7 @@ Everything in probability follows from 3 rules over a **sample space** $S$ (all 
 2. $P(S) = 1$ — something always happens
 3. $P(A \cup B) = P(A) + P(B)$ when $A \cap B = \varnothing$ — add probabilities for mutually exclusive events
 
-These single axiom generates Bayes' theorem, expectations, distributions, and the Central Limit Theorem.
+These three axioms generate Bayes' theorem, expectations, distributions, and the Central Limit Theorem.
 
 ---
 
@@ -147,3 +147,8 @@ See `Knowledge Wiki/wiki/Probability foundations` and `Knowledge Wiki/wiki/Proba
 - [[Gaussian distribution]]
 - [[Joint, marginal, and conditional probabilities]]
 - [[Cumulative distribution function]]
+
+## Sources
+
+- https://en.wikipedia.org/wiki/Probability
+- https://en.wikipedia.org/wiki/Central_limit_theorem

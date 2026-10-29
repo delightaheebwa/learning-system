@@ -1,10 +1,10 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Java Class Body Rules
 
 ## Key Insight
 
-Inside the main body of a Java class, you are **only allowed to declare things** (variables and methods). You are **not allowed to run action statements** (loops, prints, method calls, assignments outside declarations).
+Inside the main body of a Java class, top-level members must be **declarations** (fields, methods, constructors, nested types, and initializer blocks). You cannot write a bare **action statement** (a loop, print, method call, or assignment) directly in the class body. A field declaration may contain an initializer *expression* (for example `int x = foo();`), but a statement such as `System.out.println(...)` or `age = 10;` is illegal outside a method, constructor, or initializer block.
 
 ## The Golden Rule
 
@@ -39,3 +39,8 @@ This rule is the root reason why Java needs `static {}` blocks for complex stati
 
 - [[Java Static Initializer Block]]
 - [[Modern Java Collection Factory Methods]]
+
+## Sources
+
+- https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html
+- https://docs.oracle.com/javase/tutorial/java/javaOO/classdecl.html

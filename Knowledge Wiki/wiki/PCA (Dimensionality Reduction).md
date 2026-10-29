@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=— | date=2026-10-23 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-23, nothing overwritten) -->
+<!-- provenance: status=verified | source=Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - rohit.md (Rohit P1 L10) + Knowledge Wiki/raw/sources/2026-09-25 - dimensionality-reduction - shlens.md (Shlens, A Tutorial on PCA) + Knowledge Wiki/raw/sources/2026-10-13 - dimensionality-reduction - sklearn-kpca.md (scikit-learn KernelPCA) + Learning System/Lessons/Lesson — Dimensionality Reduction — 2026-09-26.md | verified-by=fact-check-agent | date=2026-10-26 | learner-note block: the "## My understanding" section is the learner's verbatim note (learner-note; thirteen statements as of 2026-10-23, nothing overwritten) -->
 
 
 
@@ -213,6 +213,12 @@ The learner's own understanding (2026-10-23, CP6 mini 1 Hidden Piece 2 Part 1 re
 
 - 3-point toy walk: distributing dot products along $v$ yields Column 1 / Row 1 of $\tilde{K}$ by symmetry, so dotting with Point 1 is equivalent to $(\tilde{K}\alpha)_1 = \lambda \alpha_1$.
 - Synthesizing dual coordinate extraction: multiplying eigenvector $\alpha$ by centered similarity table $\tilde{K}$ gives $\lambda \alpha$, directly providing projected coordinates.
+
+## Sources
+
+- Shlens, J. "A Tutorial on Principal Component Analysis" — https://arxiv.org/abs/1404.1100
+- scikit-learn PCA documentation — https://scikit-learn.org/stable/modules/decomposition.html#pca
+- scikit-learn KernelPCA documentation — https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.KernelPCA.html
 
 ## My understanding
 

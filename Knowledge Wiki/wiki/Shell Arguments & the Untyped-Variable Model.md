@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Shell Arguments & the Untyped-Variable Model
 
@@ -32,3 +32,8 @@ z=$(( x + 1 ))# z is the string "43"  (arithmetic expansion forced the math)
 - [[Command Substitution & Arithmetic Expansion]] — forcing math / capturing output
 - [[Parameter Expansion]] — string manipulation without spawning tools
 - [[MIT Missing Semester — Command-line Environment]] — environment variables, `$?`, `export`
+
+## Sources
+
+- Bash manual: https://www.gnu.org/software/bash/manual/bash.html
+- MIT Missing Semester 2026 — Command-line Environment: https://missing.csail.mit.edu/2026/command-line-environment/

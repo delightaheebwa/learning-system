@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # SSH — Public-Key Auth & Remote Commands
 
@@ -75,7 +75,7 @@ ssh user@server 'ls | wc -l'
 The lecture frames key-based SSH auth as a **challenge–response** proof that you hold the private key, without ever sending the key. The exchange:
 
 1. **Handshake / initiation.** The client tells the server which key-pair it wants to use, identifying itself with the **public key** it has placed in the server's `~/.ssh/authorized_keys`.
-2. **Challenge.** The server picks a **random value** (the challenge) and sends it to the client in the clear. No encryption is involved yet — the goal is a value only the client's **private key** can *sign*.
+2. **Challenge.** The server sends a challenge (bound to the session ID) to the client over the already-encrypted SSH transport — the goal is a value only the client's **private key** can *sign*. (The transport layer is encrypted by this point; the challenge is not sent in the clear.)
 3. **Response.** The client **signs** the challenge with its **private key** and sends the **signature** back to the server.
 4. **Verification.** The server verifies the signature using your **public key**. If it checks out, the server knows you possess the private key and grants access.
 
@@ -105,3 +105,9 @@ Host myserver
 `ssh myserver` now carries all of it. Bonus: the file is read not only by `ssh` but also `scp`, `rsync`, `mosh`, &c., which convert the settings into their corresponding flags — an edge shell aliases can't offer. *(Added 2026-08-24 from Lecture 2 notes; verified against MIT Missing Semester 2020 Command-line Environment.)*
 
 > Note (2026-08-24): fresh lecture notes again described the server *encrypting the challenge with the public key*. That framing does not match how SSH proves key possession — see the sign/verify handshake above.
+
+## Sources
+
+- MIT Missing Semester 2026 — Command-line Environment (SSH section): https://missing.csail.mit.edu/2026/command-line-environment/
+- RFC 4252 — SSH Authentication Protocol: https://www.rfc-editor.org/rfc/rfc4252
+- `ssh-keygen` man page: https://www.man7.org/linux/man-pages/man1/ssh-keygen.1.html

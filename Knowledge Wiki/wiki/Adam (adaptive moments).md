@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://arxiv.org/abs/1412.6980 ; https://arxiv.org/abs/1705.08292 ; https://www.ruder.io/optimizing-gradient-descent/ | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Adam (adaptive moments)
 
@@ -37,12 +37,12 @@ Both \(m\) and \(v\) are initialized to zero. On early steps, this zero-initiali
 
 On a clean, smooth, deterministic benchmark (Rosenbrock), **SGD with momentum converged first** (~2941 steps) while **Adam converged later** (~6156 steps). The per-weight adaptivity Adam provides is not needed on a two-dimensional problem with uniform curvature structure — the overhead costs time. But on real neural nets (sparse, high-dimensional, wildly different gradient scales per weight), Adam's self-tuning is a major practical advantage.
 
-SGD with momentum also achieves lower final loss on many practical tasks because its residual noise prevents settling into sharp minima (which generalize worse) — Adam's aggressive flattening can land in a sharp basin.
+A second, separate claim: tuned SGD + momentum *can* reach lower final loss / better test accuracy than Adam on some tasks, argued to be because adaptive methods find sharper minima that generalize worse (Wilson et al., 2017, "The Marginal Value of Adaptive Gradient Methods"). This is empirical and task-dependent, not a theorem — on many benchmarks Adam/AdamW matches or beats SGD. Note the sharp-minima explanation is a hypothesis under active debate (e.g. "sharp minima" reparameterization critiques), so treat it as one account, not settled fact.
 
 ## When to use
 
-- **Adam** is the robust default — good out of the box with no tuning.
-- **SGD + momentum** often achieves better final accuracy when tuning budget allows, because its noise aids generalization.
+- **Adam** is the robust default — good out of the box with little tuning (Kingma & Ba: "typically require little tuning").
+- **SGD + momentum** can achieve better final accuracy when tuning budget allows; Wilson et al. show adaptive methods can generalize worse on some problems, while other benchmarks show the opposite.
 - The choice is task-dependent, not a fixed hierarchy.
 
 ## Related pages
@@ -54,9 +54,14 @@ SGD with momentum also achieves lower final loss on many practical tasks because
 
 ## Sources
 
-- Kingma & Ba, "Adam: A Method for Stochastic Optimization" (2015)
-- Ruder, "An overview of gradient descent optimization algorithms"
+- Kingma & Ba, "Adam: A Method for Stochastic Optimization" (ICLR 2015), Algorithm 1 and §3.1 defaults (α=0.001, β₁=0.9, β₂=0.999, ε=1e-8): https://arxiv.org/abs/1412.6980
+- Ruder, "An overview of gradient descent optimization algorithms": https://www.ruder.io/optimizing-gradient-descent/
+- Wilson, Roelofs, Stern, Srebro & Recht, "The Marginal Value of Adaptive Gradient Methods in Machine Learning" (NeurIPS 2017): https://arxiv.org/abs/1705.08292
+- PyTorch `Adam` implementation defaults: https://pytorch.org/docs/stable/generated/torch.optim.Adam.html
 - Lesson: Phase 1 L08 — Optimization (Gradient Descent Family), 2026-09-07/08
+- Note: the Rosenbrock step counts (~2941 vs ~6156) are a local experiment (CP3), not independently reproducible from these sources.
+
+**Corrections (2026-10-26):** softened the SGD-vs-Adam generalization claim — "achieves lower final loss on many practical tasks" is too strong; it is an empirical, task-dependent finding (Wilson et al.) and the sharp-minima account is contested. Equations and defaults checked against the paper and match.
 
 
 ## Role summary (handwritten notes, 2026-09-08)

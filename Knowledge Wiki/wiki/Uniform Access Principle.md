@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Uniform Access Principle
 
@@ -28,3 +28,7 @@ Languages like Python (`@property`), JavaScript (get/set), Swift, and C# impleme
 ## Source
 
 The Pragmatic Programmer (Hunt & Thomas), citing Meyer's *Object-Oriented Software Construction*
+
+## Sources
+- https://en.wikipedia.org/wiki/Uniform_access_principle
+- Meyer, B. Object-Oriented Software Construction (origin of the Uniform Access Principle)

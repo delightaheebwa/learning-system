@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Topological Sort for Backprop
 
@@ -19,6 +19,10 @@ The entire `backward()` method is ~8 lines: build topo, seed output.grad=1, iter
 ## Source
 - Lesson: [teach/lessons/0004-backward-pass-and-topological-sort.html](/home/workspace/teach/lessons/0004-backward-pass-and-topological-sort.html)
 - Date learned: 2026-07-09
+
+## Sources
+
+- Wikipedia — Topological sorting: https://en.wikipedia.org/wiki/Topological_sorting
 
 ## Connections
 - Prerequisites: Computational Graphs, Gradient Accumulation (+=), Value Class Architecture

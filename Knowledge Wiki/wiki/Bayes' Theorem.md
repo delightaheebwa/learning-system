@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=https://en.wikipedia.org/wiki/Bayes%27_theorem | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Bayes' Theorem
 
@@ -50,6 +50,9 @@ A disease affects 1 in 1000 people. A test is 99% sensitive, 1% false positive r
 ## Key Insight
 
 The prior dominates when a condition is rare — even accurate tests produce mostly false positives.
+
+## Sources
+- Wikipedia — Bayes' theorem: https://en.wikipedia.org/wiki/Bayes%27_theorem
 
 ## The Forgotten Term
 

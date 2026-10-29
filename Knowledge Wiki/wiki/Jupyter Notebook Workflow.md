@@ -1,4 +1,4 @@
-<!-- provenance: status=unverified | source=legacy | verified-by=— | date=2026-10-08 -->
+<!-- provenance: status=verified | source=legacy | verified-by=fact-check-agent | date=2026-10-26 -->
 
 # Jupyter Notebook Workflow
 
@@ -68,3 +68,8 @@ Free Jupyter in the cloud with a T4 GPU. Pre-installed libraries. Files don't pe
 ## Related
 - [[Python Virtual Environments]]
 - [[GPU Computing]]
+
+## Sources
+
+- https://docs.jupyter.org/en/latest/
+- https://colab.research.google.com/
