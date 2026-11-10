@@ -1,12 +1,12 @@
-<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md (Step 3 simulator) + outlines-paper.md + outlines-github.md + xgrammar.md + lmql.md + guidance.md + openai.md + anthropic-structured.md | verified-by=— (review gate pending) | date=2026-11-09 -->
+<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md (Step 3 simulator) + outlines-paper.md + outlines-github.md + xgrammar.md + lmql.md + guidance.md + openai.md + anthropic-structured.md | verified-by=— (review gate pending; the 2026-11-10 v2 additions are unreviewed) | date=2026-11-10 -->
 
 # Constrained Decoding (parser-state masking)
 
-**Insight:** at every step the sampler does not pick from the whole vocabulary — the decoder asks a **parser** *"given the state I am in, which tokens keep the string inside the grammar?"*, sets every other token's probability to **zero**, and renormalises over the survivors. The answer is a property of the **state transition** (state × token → new state), not of the string's last character. So "masking" is not "check the output afterwards" and not "look at the tail of the prefix": it is a lookup in a machine that has been reading the prefix all along and remembers what it has not finished. Rohit's own Step-3 simulator is a *last-character rule*, and the whole discrimination this page exists to teach is **rule vs decider** — the rule happens to be right at most structural positions and is wrong at exactly the positions that matter: a value that just closed, a literal in progress, and a schema that is still missing a required key.
+**Insight:** at every step the sampler does not pick from the whole vocabulary — the decoder asks a **parser** *"given the state I am in, which tokens keep the string inside the grammar?"*, sets every other token's probability to **zero**, and renormalises over the survivors. The answer is a property of the **state transition** (state × token → new state), not of the string's last character. So "masking" is not "check the output afterwards" and not "look at the tail of the prefix": it is a lookup in a machine that has been reading the prefix all along and remembers what it has not finished. Rohit's own Step-3 simulator is a *last-character rule*, and the whole discrimination this page exists to teach is **rule vs decider** — the rule happens to be right at most structural positions and is wrong at exactly the positions that matter: a value that just closed, a literal in progress, and a schema that is still missing a required key. **2026-11-10:** that discrimination closed, and the same page now carries the per-rung answer to *which rung kills an out-of-enum string* — the masking rung deletes it before the sampler, the prompting rung only lowers its probability.
 
 ## My understanding
 
-> status=learner-note — the learner's own words, verbatim, preserved in order. Never paraphrased, polished, or merged below. These are in-session repair fragments (the session paused before a v2 was captured), so they are fragments of a model under construction, not a finished statement.
+> status=learner-note — the learner's own words, verbatim, preserved in order. Never paraphrased, polished, or merged below. The first three are in-session repair fragments from 2026-11-09 (that session paused before a v2 was captured); **v2** was added 2026-11-10 from the resumed session and is scoped to the enum rung and the pipeline order. None of it is polished: the evolution scar is the point.
 
 **Fragment 1 — the flag read** (at `{"product": "in_stock": tru`, after one delivered nomenclature patch):
 
@@ -23,6 +23,30 @@
 **Annotation (the AI's, not the learner's words):** fragment 2 is *right about the masked set* and *wrong about the reason* — `e` does not have "high probability" because the model likes it; it has **all** the probability because everything else was zeroed and the survivors were renormalised. Fragment 3 is *right about the rule* — `["any"]` really is what Rohit's simulator returns at `tru` — and is the correct entailment the learner produced that day. Keeping both fragments is the point: the fusion between the three layers (flag layer, rule layer, distribution layer) is the live gap, and the closing fresh-surface check on it **failed** (see `## What is still open`).
 
 **Difficulty readout carried with the fragments (not learner words):** the repair ladder consumed R3+ source returns on this gap and the spend exceeded budget — the diagnosis regime (last-char rule internals) sat over the edge for self-repair. Recorded as a difficulty signal, not as a learner failing.
+
+**Version 2 — the enum seam and the pipeline order** (2026-11-10, resumed session; verbatim. This is a *patch*, not a consolidation of the page — it covers the enum rung and the order of the pipeline only).
+
+*The masking-rung chain* (enum `["in_stock","out_of_stock","preorder"]`, off-enum candidate `"available"`):
+
+> "constrained decoding masks \"available\" and hence high probability for \"in_stock\", \"out_of_stock\", \"preorder\" to be sampled from. constrained decoding is the one that hands the valid distribution to the sampler"
+
+*The prompting rung, first attempt* (graded `fail`, `[miss: structural]`, repaired by perturbation):
+
+> "the prompt lowers \"available's probability"
+
+— patched in-session to **lowered ≠ zero**, so the sampler can still emit it. The component that would have zeroed it — **FSM/CFG** — is the one this rung does not have, and the learner named it in their own v1 vocabulary.
+
+*The pipeline order* (after resolving a clash with their own earlier words):
+
+> "raw distibuton → constrained decoding(fsm/cfg) → sampler"
+
+*The no-op argument* for putting the zeroing anywhere after the sampler:
+
+> "its zeroing wouldnt be worth anything since the impure distribution has already been sampled from."
+
+**Annotation around v2** (the AI's, not the learner's words): the pipeline claim is the one that fixed the session's worst slip. "it sits after the sampler" contradicted the learner's own "hands the valid distribution to the sampler", and the no-op sentence above is the reason the contradiction matters — a mask applied after sampling deletes nothing. Two other slips in this stretch were **agent swaps**, not model gaps ("the sampler can still mask it to zero"): the sampler samples, the decoder masks.
+
+
 
 ## The decider, spelled out
 
@@ -84,9 +108,28 @@ The grammar is defined over **characters**; generation emits **tokens**. One tok
 
 It enforces the **grammar**, which is exactly the class of failure it was built for: syntax, missing required keys, extra keys when `additionalProperties: false`, enum membership, array length where the provider enforces it. It says nothing about the **value**: a grammar has no opinion about whether `348` appears in the document being extracted. And it only enforces the subset the provider accepts — a constraint silently dropped before compilation (Anthropic's `minimum`/`maxLength`) is invisible to the mask. Both limits are spelled out on [[Structured Outputs (JSON contract)]] and [[JSON Schema Validation & Retry (Pydantic + Instructor)]].
 
+## Where the mask sits — the enum seam, rung by rung
+
+The enum is the cleanest place to see that the ladder is *where the constraint acts*, not a list of four equal tricks. Same schema (`in_stock` ∈ three legal strings), same off-enum candidate (`"available"`):
+
+| Rung | What happens to `"available"` | Why | Source |
+|---|---|---|---|
+| Prompt-based ("respond in JSON", "use one of these three values") | its **probability is lowered**, not zeroed — it remains samplable | a prompt re-weights the distribution; it cannot delete an arm | rohit: *"Prompt-based approaches do not"* prevent enum confusion |
+| JSON mode | nothing specific — the text still only has to *parse* | no schema, so no allowed set | — |
+| Schema mode / constrained decoding | **masked to exactly 0 before the sampler runs**, so the survivors are the three legal strings and the renormalised mass sits on them | the enum is a finite language; membership is decidable from the grammar | rohit: *"Good constrained decoding prevents this"* |
+| Validator / Instructor retry | catches it **after** generation and repairs by resampling — legality, not truth; costs a call; can return different data | the validator's oracle is the schema | [[JSON Schema Validation & Retry (Pydantic + Instructor)]] |
+
+## Pipeline order — why the mask must precede the sampler
+
+The learner's own words, 2026-11-10: **"raw distibuton → constrained decoding(fsm/cfg) → sampler."**
+
+The order is load-bearing, and the no-op argument proves it: **"its zeroing wouldnt be worth anything since the impure distribution has already been sampled from."** If the zeroing sat after the sampler, the token would already be drawn from the unrestricted distribution and deleting it afterwards changes nothing about what was emitted. So masking is not a post-filter, a repair, or a validity check on the *output*: it is a modification of the *input to the sampler*. That is also why an off-enum string is impossible at the masking rung rather than unlikely — the arm does not exist by the time the sampler looks.
+
+⚠️ Two agent confusions this seam produces, both observed and both repaired in-session (2026-11-10): *"the sampler can still mask it to zero"* (the sampler samples; the decoder masks) and *"it sits after the sampler"* (which the learner's own "hands the valid distribution to the sampler" already refuted).
+
 ## What is still open
 
-- **Row 4 repair is not closed.** The last fresh-surface discriminator (`{"product": "Sony", "price": 348}`, decider vs the last-char rule) was graded **fail** (`miss_class: discrimination`): `,` was right, and the two *reasons* were answered from the rule. Resume there — a fresh surface after a flags × schema mask re-cap — before any new attack on this concept. 13 graded items on this page's content this session: 3 pass / 10 fail, `interval_index` 0, `consecutive_wrong` 3.
+- **Row 4 repair is CLOSED (2026-11-10).** The resumed session ran a **new** fresh-surface both-sides check on the decider-vs-rule discrimination and then the own-words restatement of *"flags × schema → mask + renormalise, ≠ the last-char rule"*. The one closing item that still failed tested **Build-It** grains (`part 1 execution-incomplete (garbled set, question-side not assertion-side); part 2 cue/unread-source`) — outside the learner's declared read scope — so it is **banked out of scope** and must not be re-issued. Ledger for this concept after 2026-11-10: 21 graded items, 6 pass / 15 fail, `interval_index` 1, `consecutive_wrong` 0, `next_review` 2026-11-17, mastery 0.50 advisory.
 - **The flag set has never been run closed-book as a whole.** `in_string`, `expect`, `required_left`, `literal` were each pressed separately (one pass, several fails); no item has yet asked for the full tuple at one position.
 - **Calibration.** Confidence was `sure` at the spine check and the first predict probe, yet 9 of 11 attack/check items failed — an illusion-of-competence signal recorded in `🧯 Mistakes.md`.
 
@@ -102,11 +145,12 @@ What was tried on this gap, in order, so the resume does not repeat it:
 - **Contrast rounds 2/2 fail** — the three layers fused again (*"the flag is any; e has high probability"*).
 - **Closing fresh surface 1/3** at `{"product": "Sony", "price": 348}` — `,` right, both reasons taken from the rule.
 
-Ladder spend exceeded budget (the branch table and `else → ["any"]` were handed over) — a **difficulty signal** about the diagnosis regime, not a learner verdict. Resume rung: a **new** fresh surface after a flags × schema mask re-cap, then an own-words restatement of *"flags × schema → mask + renormalise, ≠ the last-char rule"*.
+Ladder spend exceeded budget (the branch table and `else → ["any"]` were handed over) — a **difficulty signal** about the diagnosis regime, not a learner verdict. Resume rung: a **new** fresh surface after a flags × schema mask re-cap, then an own-words restatement of *"flags × schema → mask + renormalise, ≠ the last-char rule"*. **Executed 2026-11-10 and CLOSED** — the resumed session ran exactly that rung (new fresh surface → own-words restatement), and the one item that still failed tested Build-It grains outside the learner's declared read scope (banked out of scope, never to be re-issued). See `## What is still open`.
 
 ## Sources
 
 - `raw/sources/2026-11-09 - structured-outputs - rohit.md` — the spectrum's decoding rung, the Step-3 `next_valid_tokens` simulator and its `["any"]` catch-all (the rule this page contrasts).
+- `raw/sources/2026-11-10 - structured-outputs - rohit.md` — the 2026-11-10 re-fetch; its Concept section's enum and pipeline wording ("Good constrained decoding prevents this. Prompt-based approaches do not.") is the source for the per-rung table above.
 - `raw/sources/2026-11-09 - structured-outputs - outlines-paper.md`, `… - outlines-github.md` — FSM compilation + vocabulary index, `O(N)` naive baseline.
 - `raw/sources/2026-11-09 - structured-outputs - xgrammar.md` — byte-level PDA, adaptive token mask cache, <1% context-dependent tokens, <40 µs/token, parallel stacks.
 - `raw/sources/2026-11-09 - structured-outputs - lmql.md` — eager partial evaluation, over-approximate masks, backtracking as the completeness price.

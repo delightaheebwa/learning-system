@@ -1,4 +1,4 @@
-# Learner History — compact tutor context (generated 2026-11-09)
+# Learner History — compact tutor context (generated 2026-11-10)
 
 > **For models: read THIS file for learner background, not `Archive/`.**
 > One row per concept ever studied: strict `solid` / `neutral` / `fuzzy` tag +
@@ -25,7 +25,7 @@ Totals: 325 concepts (96 with attempt history + 229 paused) — aiefs 47 · swe 
 | Chain Rule for Neural Networks | procedure | fuzzy |  | 2026-10-20 | Learning System/Reviews/Review — Chain Rule for Neural Networks — 2026-10-20.md |
 | Conditional Independence | concept | fuzzy |  | 2026-11-08 | Learning System/Reviews/Review — Conditional Independence — 2026-11-08.md |
 | Conjugate Priors | concept | fuzzy |  | 2026-11-04 | Learning System/Reviews/Review — Conjugate Priors — 2026-11-04.md |
-| Constrained Decoding (parser-state masking) | concept | fuzzy |  | 2026-11-09 | last reviewed 2026-11-09 |
+| Constrained Decoding (parser-state masking) | concept | fuzzy |  | 2026-11-10 | last reviewed 2026-11-10 |
 | Cosine Similarity | concept | fuzzy |  | 2026-10-20 | Learning System/Reviews/Review — Cosine Similarity — 2026-10-20 (II).md |
 | Entropy (Average Surprise) | concept | fuzzy |  | 2026-11-04 | Learning System/Reviews/Review — Entropy (Average Surprise) — 2026-11-04.md |
 | KL Divergence | concept | fuzzy |  | 2026-10-22 | Learning System/Reviews/Review — KL Divergence — 2026-10-22.md |
@@ -64,7 +64,7 @@ Totals: 325 concepts (96 with attempt history + 229 paused) — aiefs 47 · swe 
 | Posterior Probability | concept | solid |  | 2026-10-08 | Learning System/Reviews/Review — Posterior Probability — 2026-10-08.md |
 | Prior Probability | concept | solid |  | 2026-10-17 | Learning System/Reviews/Review — Prior Probability — 2026-10-17.md |
 | Software Architecture — failure-list placement of 'non-functional' | concept | neutral |  | 2026-11-06 | last reviewed 2026-11-06 |
-| Structured Outputs (JSON contract) | concept | neutral |  | 2026-11-09 | last reviewed 2026-11-09 |
+| Structured Outputs (JSON contract) | concept | neutral |  | 2026-11-10 | last reviewed 2026-11-10 |
 | t-SNE (Dimensionality Reduction) | concept | neutral | KL Divergence: fuzzy | 2026-10-12 | last reviewed 2026-10-12 |
 | Variation of Information | concept | neutral |  | 2026-09-24 | last reviewed 2026-09-24 |
 

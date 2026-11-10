@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + openai.md + anthropic-structured.md + anthropic-tool-use.md + instructor.md + jsonschema.md + jsonschema-object.md + outlines-paper.md + xgrammar.md + lmql.md + guidance.md | verified-by=— (review gate pending) | date=2026-11-09 -->
+<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + openai.md + anthropic-structured.md + anthropic-tool-use.md + instructor.md + jsonschema.md + jsonschema-object.md + outlines-paper.md + xgrammar.md + lmql.md + guidance.md | verified-by=— (review gate pending; the 2026-11-10 v2 additions are unreviewed) | date=2026-11-10 -->
 
 # Structured Outputs (JSON contract)
 
@@ -6,7 +6,7 @@
 
 ## My understanding
 
-> status=learner-note — the learner's own words, verbatim, preserved. Never paraphrased or polished below. Version 1 only: the lesson was paused before graduation, so no v2 exists. Annotations *around* the text are the AI's; the `[?]` blanks are the learner's and are left exactly as written.
+> status=learner-note — the learner's own words, verbatim, preserved. Never paraphrased or polished below. Versioned in order, never merged: **v1** (2026-11-09, the closed-book spine check) → a labeled breaking case → **v2** (2026-11-10, the catchability axis). v2 is a patch over one member of v1's failure-mode lump, not a rewrite of it; the lump's remaining members are named as open. Annotations *around* the text are the AI's; the `[?]` blanks are the learner's and are left exactly as written.
 
 **Version 1** — 2026-11-09, first closed-book model from the learner's handwritten/typed page (confidence `sure`; the exit ticket was declined):
 
@@ -16,9 +16,19 @@
 
 - **Solid (no repair needed).** The ~90% + fences/preamble failure of prompting (row 1); "this is a decoding problem" (row 2); the four-rung ladder (row 3); Pydantic → schema, Instructor → validate-and-feed-back (row 6). Rohit's naive-solution paragraph matches the learner almost clause for clause, including the markdown-fence and preamble examples.
 - **Blanks never re-worded.** `[?] of JSON` (twice) and `ways to [?]` were left open on the page and were never filled in by the learner afterwards. They are recorded as blanks, **not** filled in here — the session repaired the *mechanism* (below), not the wording.
-- **Suspect, repaired in session (row 4).** "we mask tokens that would break the JSON schema" is the right headline but was attached to a *decider* the learner could not yet run: the collapse into Rohit's last-character rule is documented on [[Constrained Decoding (parser-state masking)]]. The closing discriminator check is still **open**.
-- **Suspect, unattacked (row 5).** The failure modes arrive as one lump. The split that matters — which failures an enforcement tier can catch and which it cannot — is in `## Failure modes` below, and was **never attacked** this session (paused before it).
+- **Suspect, repaired in session (row 4).** "we mask tokens that would break the JSON schema" is the right headline but was attached to a *decider* the learner could not yet run: the collapse into Rohit's last-character rule is documented on [[Constrained Decoding (parser-state masking)]]. The closing discriminator check was still **open when session 1 paused** — it closed in session 2 (see the v2 block above and `### Row-5 attack log`).
+- **Suspect, unattacked (row 5).** The failure modes arrive as one lump. The split that matters — which failures an enforcement tier can catch and which it cannot — is in `## Failure modes` below, and was **unattacked when session 1 paused**; it was attacked in session 2 and is now half-split (see `### Row-5 attack log`).
 - **Missing (row 7).** "Schema mode guarantees the output matches it" carries an unflagged scope limit: every provider enforces only a *subset* of JSON Schema. Recorded off-path this session.
+
+**Breaking case between v1 and v2** (the attack that forced the split, 2026-11-10): the invoice extraction where the source text says **$348** and the object carries `{"price": 299.99}`. The value is a legal `number`, the key set is right, the schema is satisfied — and the number is invented. v1 named "hallucinated values" as a failure mode and said nothing about its fate; the attack asked *where* such a value would be stopped, and nothing in the loop stops it.
+
+**Version 2 — the catchability axis** (2026-11-10, after the row-5 attack; the learner's words, verbatim):
+
+> "the machine knows the schema and legal set. what it would have to know is the exact value for the price key of this particular json object. it slips through since it is a valid entry(number)."
+
+> (through Instructor) "what it validates against is whether this breaks the schema or not. the info needed to flag this output doesnt exist anywhere in that loop."
+
+**Annotation around v2** (the AI's, not the learner's words). v2 is **not** a rewrite of v1's lump: it pins the fate of exactly one member. The claim it makes is an *information* claim, not an effort claim — the loop holds the schema, and the schema is a statement about shape, so "is this the value the document contained?" is not a question the loop can pose. **What v2 does not yet carry:** array length (the source's own caveat is about *providers* enforcing `minItems`/`maxItems` at decode — dropped from the lump), nested-object depth (4+ levels), and optional-field omission. Those three are open; the lump is half-split. The Instructor clause above is the learner's and is also preserved verbatim on [[JSON Schema Validation & Retry (Pydantic + Instructor)]].
 
 ## The gap, in Rohit's own example
 
@@ -72,7 +82,7 @@ Two more exclusions that are easy to miss and both documented by OpenAI: **key o
 
 ## Failure modes, and which tier can catch them
 
-Rohit lists five. Sorted by *what can catch it*, which is the split the learner had not yet made (triage row 5, **unattacked**):
+Rohit lists five. Sorted by *what can catch it*, which is the split the learner had not yet made at first writing and **now half owns** (triage row 5: attacked 2026-11-10 — one mode closed, four open; see `### Row-5 attack log` below):
 
 | Failure | Caught by | Why |
 |---|---|---|
@@ -83,6 +93,22 @@ Rohit lists five. Sorted by *what can catch it*, which is the split the learner 
 | **Deep nesting (4+ levels)** | nothing reliable — error rate rises with depth | each level is another place to lose the structural state |
 
 The one-line version: **enforcement tiers catch grammar failures, not semantic ones.** That is the misapplication the digest flags for the invoice pipeline — `total` straight into an accounting table because the schema was "guaranteed".
+
+### Row-5 attack log (2026-11-10) — the lump half-split
+
+The catchability split this page already carried was **attacked** in session 2 and the learner now owns it in their own words:
+
+- **Hallucinated values — CLOSED.** Two graded items, both pass, both on the learner's articulation *before* any reveal: predict where the invented price escapes the mask machine, then the same question through Instructor's validate-and-retry loop. The held claim is an information claim: the loop holds the schema, never the source document (v2 verbatim under `## My understanding`). Nothing in the stack catches it — an eval harness holding the document, a cross-field identity, or a human spot check are the only guards.
+- **Enum confusion — CLOSED per rung.** At the masking rung the legal set is a grammar fact and the off-enum string is masked *before* the sampler; at the prompting rung the prompt only **lowers** its probability (lowered ≠ zero) and the component that would zero it — an **FSM/CFG** — is absent, so the sampler can still emit it. Source agreement: *"Good constrained decoding prevents this. Prompt-based approaches do not."*
+- **Array length — OPEN, and it is the next attack.** The source's caveat is attached to **providers**, not to the mode: *"Schemas support minItems and maxItems but not all providers enforce them at the decoding level."* The open question is therefore not "can the mode catch it" but "whose property is the failure — the mode's or the provider choice's". The learner's lump dropped this condition entirely.
+- **Nested-object depth (4+ levels) — never listed by the learner.** Source: *"deeply nested schemas (4+ levels) produce more errors. Each level of nesting is another place where the model can lose track of structure."*
+- **Optional-field omission — never listed by the learner.** Source: *"the model omits fields that are technically optional but semantically important for your use case. Set them as required in the schema … force the model to produce null explicitly."* Note the shape of the source's fix: it is a **schema-side** fix (make it required), which is exactly the catchability axis again — the fix works because presence is decidable from the grammar.
+
+Both unlisted modes stayed **unreached** at the pause; they are `full_teach` candidates after one perturbation probe each.
+
+**Scope recalibration (learner directive, session invariant):** mental-model attacks on this lesson cover the source's **Problem** and **Concept** sections only. The Build-It code and the provider-doc rules (triage row 7 — all-fields-required, schema subset) are **out of attack scope permanently** for this lesson and must not be re-issued.
+
+
 
 ## Three doors to the same contract
 
@@ -134,11 +160,12 @@ Ladder spend exceeded budget on this gap (source returns including the branch ta
 
 - ~~Does schema mode mean what the docs say?~~ Resolved above: the guarantee is over the sent subset.
 - What is the *right* catch for a hallucinated value in a one-off pipeline — a second extraction and a diff, a cross-field identity, or a human spot check? (Not taught this session; the lesson names an eval suite of hand-labelled pairs.)
-- Do `minItems`/`maxItems` actually hold at decode time on the models in use, or only in the validator? Provider- and tier-specific; unchecked.
+- **Next attack (2026-11-10 pause):** do `minItems`/`maxItems` hold at decode time on the models in use, or only in the validator? The source attaches the caveat to **providers**, so the real question is whose property the failure is — the mode's or the provider choice's. Unchecked.
 
 ## Sources
 
 - `raw/sources/2026-11-09 - structured-outputs - rohit.md` — the lesson (spectrum, schema, Pydantic, tool use, five failure modes).
+- `raw/sources/2026-11-10 - structured-outputs - rohit.md` — the 2026-11-10 re-fetch of the same page; its **Problem + Concept** sections are the learner's declared read scope for this session (the Build-It code is out of attack scope).
 - `raw/sources/2026-11-09 - structured-outputs - openai.md` — supported subset, all-required rule, `additionalProperties: false`, root-object rule, key ordering, refusals/`max_tokens`.
 - `raw/sources/2026-11-09 - structured-outputs - anthropic-structured.md`, `… - anthropic-tool-use.md` — native tier, stripped constraints, grammar cache/compile limits; tool use as the earlier surface.
 - `raw/sources/2026-11-09 - structured-outputs - instructor.md`, `… - jsonschema.md`, `… - jsonschema-object.md` — retry loop; the spec's defaults.

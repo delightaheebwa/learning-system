@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis (`## My understanding` block status=learner-note — a verbatim excerpt of the same v1 block carried on [[Structured Outputs (JSON contract)]]) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + instructor.md + jsonschema.md + jsonschema-object.md + openai.md + anthropic-structured.md + anthropic-tool-use.md | verified-by=— (review gate pending) | date=2026-11-09 -->
+<!-- provenance: status=synthesis (`## My understanding` block status=learner-note — a verbatim excerpt of the same v1 block carried on [[Structured Outputs (JSON contract)]]) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + instructor.md + jsonschema.md + jsonschema-object.md + openai.md + anthropic-structured.md + anthropic-tool-use.md | verified-by=— (review gate pending; the 2026-11-10 v2 fragment is unreviewed) | date=2026-11-10 -->
 
 # JSON Schema Validation & Retry (Pydantic + Instructor)
 
@@ -11,6 +11,14 @@
 > "5. JSON is the control language. Pydantic makes JSON schemas automatically from data models typed in Python, and Instructor is what validates the schema generated and feeds the errors back into the LLM automatically for it to self-correct."
 
 **Reading** (annotation, not the learner's words): both halves are correct and both were triaged `solid`. Two things the sentence does not yet carry — *what the validator actually checks* (below) and *what the retry loop costs* (below). Neither was attacked before the pause.
+
+**Version 2 fragment — what the loop cannot see** (2026-11-10; the learner's Instructor half of the catchability axis, verbatim):
+
+> "what it validates against is whether this breaks the schema or not. the info needed to flag this output doesnt exist anywhere in that loop."
+
+**Source framing:** rohit — *"Schema validation cannot catch this -- the type is correct, the value is wrong."*
+
+**Annotation around it** (the AI's, not the learner's words): the claim is an **information** claim, not an effort claim. The loop's oracle is the schema; the schema is a statement about shape. So "is this value the one the document contained?" is not a question the loop can pose, no matter how many retries it spends — which is why an Instructor retry on a schema-valid invented price returns a *different invented price*, not an error. It is also the precise sense in which Instructor's `validate` half is a **predicate over keywords** (below) and never a check against reality.
 
 ## Pydantic: the contract is written once
 
@@ -91,6 +99,7 @@ The middle row is the one that surprises people: `client.messages.parse()`-style
 
 ## Sources
 
+- `raw/sources/2026-11-10 - structured-outputs - rohit.md` — the 2026-11-10 re-fetch; its Concept section's failure-mode paragraph is the source for the catchability fragment ("Schema validation cannot catch this -- the type is correct, the value is wrong.").
 - `raw/sources/2026-11-09 - structured-outputs - rohit.md` — Step 1 validator, Step 2 model→schema converter, Step 4 validate-and-retry pipeline, `## Use It` Instructor section.
 - `raw/sources/2026-11-09 - structured-outputs - instructor.md` — retry defaults (`max_retries = 3`), `ValidationError → context` loop.
 - `raw/sources/2026-11-09 - structured-outputs - jsonschema.md`, `… - jsonschema-object.md` — the spec: `additionalProperties` default, type lattice, keyword families.
