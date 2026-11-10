@@ -4,8 +4,9 @@
 - **Track:** aiefs · Phase 11 · L03
 - **Source:** https://aiengineeringfromscratch.com/lesson?path=phases/11-llm-engineering/03-structured-outputs (raw: `Knowledge Wiki/raw/sources/2026-11-09 - structured-outputs - rohit.md`; secondary: `... - openai.md`)
 - **Session:** `Learning System/Sessions/Session — Structured Outputs (JSON, schema validation, constrained decoding) — 2026-11-09.md`
-- **Status:** PAUSED — mid-repair (partial close)
-- **Resume from:** fresh-surface closing check of the row-4 repair — decider-vs-rule discrimination at `{"product": "Sony", "price": 348}`. On resume: re-anchor the two deciders on a NEW surface, close the gap with a fresh-surface pass + own-words restatement, then attack row 5, then graduation.
+- **Status:** PAUSED — partial (session 2 banked 2026-11-10; second consecutive pause, exit ticket declined)
+- **Resume from:** row 5, next attack — the array-length seam (learner's lump dropped the provider condition: "Schemas support minItems and maxItems but not all providers enforce them at the decoding level"). Then the two never-listed modes (nested-object depth, optional-field omission), then graduation for the catchability axis (entailment check → naive-student clone → battery remainder).
+- **Session 2 (2026-11-10) outcome:** scope recalibrated by learner directive — attacks target ONLY the Problem + Concept sections of the source site; Build-It code and row 7 (provider-doc rules) banked OUT of scope permanently. Row 4 CLOSED (concept-level; the build-it-dependent grain banked out of scope). Row 5 half-closed: hallucinated-values seam and enum rung-dependence seam closed in learner's own words (catchability axis + pipeline order raw → FSM/CFG mask → sampler); open attacks logged in the 2026-11-10 session note.
 
 ## v1 (learner's model, verbatim, [?] per their page)
 
