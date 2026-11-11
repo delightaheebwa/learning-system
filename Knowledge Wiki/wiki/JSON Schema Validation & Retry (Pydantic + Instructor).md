@@ -1,4 +1,4 @@
-<!-- provenance: status=synthesis (`## My understanding` block status=learner-note — a verbatim excerpt of the same v1 block carried on [[Structured Outputs (JSON contract)]]) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + instructor.md + jsonschema.md + jsonschema-object.md + openai.md + anthropic-structured.md + anthropic-tool-use.md | verified-by=— (review gate pending; the 2026-11-10 v2 fragment is unreviewed) | date=2026-11-10 -->
+<!-- provenance: status=synthesis (`## My understanding` block status=learner-note — a verbatim excerpt of the same v1 block carried on [[Structured Outputs (JSON contract)]]) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md + instructor.md + jsonschema.md + jsonschema-object.md + openai.md + anthropic-structured.md + anthropic-tool-use.md | verified-by=— (review gate pending; the 2026-11-10 v2 and 2026-11-11 v3 fragments are unreviewed) | date=2026-11-11 -->
 
 # JSON Schema Validation & Retry (Pydantic + Instructor)
 
@@ -19,6 +19,14 @@
 **Source framing:** rohit — *"Schema validation cannot catch this -- the type is correct, the value is wrong."*
 
 **Annotation around it** (the AI's, not the learner's words): the claim is an **information** claim, not an effort claim. The loop's oracle is the schema; the schema is a statement about shape. So "is this value the one the document contained?" is not a question the loop can pose, no matter how many retries it spends — which is why an Instructor retry on a schema-valid invented price returns a *different invented price*, not an error. It is also the precise sense in which Instructor's `validate` half is a **predicate over keywords** (below) and never a check against reality.
+
+**Version 3 — where the loop's verdict lands** (2026-11-11, verbatim):
+
+> "the ground truth comparison will have to sit after the post sampler validator step"
+
+> (two-blank fill, into "the validator is idle on the ___ path and catching on the ___ path") "enforced path, non-enforced"
+
+**Annotation around v3** (the AI's, not the learner's words): these two are this row's **path-dependence half** — the first statements in this branch that are about *this layer* rather than about the schema as a whole. On the **enforcing** path the validator is a **no-op** for legality (the mask already deleted every illegal continuation), so a ground-truth comparison cannot live there and has to sit *after* it, outside the output path entirely. On the **non-enforcing** path it is the **only** thing that will ever see a length violation. Both are *locational* claims: the validator is the same code on both paths, and what changes is whether anything is left for it to catch. ⚠️ **Still no graded attempt under this row's own name** — both statements were graded under `Structured Outputs (JSON contract)`, so this row's dates do not move and its mastery stays unevidenced.
 
 ## Pydantic: the contract is written once
 
@@ -81,6 +89,23 @@ Three properties worth stating plainly:
 2. **It can mutate the data.** Attempt 2 is a new sample conditioned on an error message, so a value that was right in attempt 1 can come back different — which is exactly the *consistency* problem the lesson's intro names ("The retry sometimes produces different data"). Anything downstream of the extraction inherits that non-determinism.
 3. **It is the seam where syntax and subset failures get fixed.** Which is why it belongs to the third of three guards, not to all of them.
 
+## Where the validator's verdict lands — path-dependent (2026-11-11)
+
+The same validator, two paths, two jobs:
+
+| Path | Is the mask enforcing legality? | What the validator has left to catch | Learner's words |
+|---|---|---|---|
+| **Enforced** (the provider compiled the schema's length keywords into grammar state) | yes — illegal continuations are never sampled | **nothing about legality** (a no-op for shape), and value truth was never in its oracle either, so any ground-truth comparison has to sit *outside* the output path | "the ground truth comparison will have to sit after the post sampler validator step" |
+| **Non-enforced** (the provider silently did not compile `minItems`/`maxItems`) | no — the array can be too short or too long | **the only catcher** of length legality anywhere in the stack | "enforced path, non-enforced" |
+
+Three claims worth keeping separate:
+
+- **The no-op belongs to the path, not to the validator.** "The validator is null and void" is true only on the enforced path; the same code on the non-enforced path is the last line of defence. The session's self-contradiction (`"null and void"` and `"the array is in an invalid state"` one sentence apart) is exactly what this distinction repairs.
+- **Ownership sits one level down.** Whether a length keyword becomes grammar state at all is a **provider** property (compile coverage). That is why the table's path column can be filled in at all — and why "which provider am I on?" is an operational question, not a detail. See [[Structured Outputs (JSON contract)]].
+- **A no-op is not a defect.** On the enforced path the validator is redundant *by construction*; the mistake is to conclude from that redundancy that the layer is pointless, since the same code is load-bearing the moment the provider's coverage drops.
+
+⚠️ **The deictic trap** (observed 2026-11-11): on a deleted-validator scenario the learner had the path and the consequence right and still swapped the roles — "otherwise it would be idle". The **idle** path is the one where the mask already did the work; the path where the validator is **deleted** is the one where nothing catches the violation at all.
+
 ## Three guards for three failure classes
 
 | Failure class | Guard | Who owns it |
@@ -93,7 +118,7 @@ The middle row is the one that surprises people: `client.messages.parse()`-style
 
 ## Open questions
 
-- Does a single `max_retries=3` loop reliably converge for a **semantic** failure (a hallucinated value)? It cannot — the error message says nothing about the document — but the number of pipelines that still try is the lesson's practical warning. Unattacked; it is the row-5 attack (`requires: row 4 closure`).
+- Does a single `max_retries=3` loop reliably converge for a **semantic** failure (a hallucinated value)? It cannot — the error message says nothing about the document — but the number of pipelines that still try is the lesson's practical warning. Unattacked; it is the row-5 attack (`requires: row 4 closure`). **Update 2026-11-11:** the semantic half was attacked and closed in the learner's own words (*"the ground truth comparison will have to sit after the post sampler validator step"*), and this row's **path-dependence half** was supplied in the same session — but **no attempt has yet been graded under this concept name**, so its dates have not moved and its mastery is still unevidenced (a dimension with no evidencing attempt shows `—`, never 0).
 - Where should the validator live when the schema is generated from a Pydantic model *and* transformed for the provider — validate against the model (authoritative) or the sent schema (what the grammar enforced)? Standard answer is the model; not yet discussed with the learner.
 - `oneOf` (exactly-one) vs `anyOf` (at-least-one) as a discriminated-union pattern, and why OpenAI rejects a root-level `anyOf` — banked as an exercise from Rohit's Exercise 1.
 

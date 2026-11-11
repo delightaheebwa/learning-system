@@ -1,12 +1,12 @@
-<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md (Step 3 simulator) + outlines-paper.md + outlines-github.md + xgrammar.md + lmql.md + guidance.md + openai.md + anthropic-structured.md | verified-by=— (review gate pending; the 2026-11-10 v2 additions are unreviewed) | date=2026-11-10 -->
+<!-- provenance: status=synthesis (`## My understanding` block status=learner-note) | source=raw/sources/2026-11-09 - structured-outputs - rohit.md (Step 3 simulator) + outlines-paper.md + outlines-github.md + xgrammar.md + lmql.md + guidance.md + openai.md + anthropic-structured.md | verified-by=— (review gate pending; the 2026-11-10 v2 and 2026-11-11 v3 additions are unreviewed) | date=2026-11-11 -->
 
 # Constrained Decoding (parser-state masking)
 
-**Insight:** at every step the sampler does not pick from the whole vocabulary — the decoder asks a **parser** *"given the state I am in, which tokens keep the string inside the grammar?"*, sets every other token's probability to **zero**, and renormalises over the survivors. The answer is a property of the **state transition** (state × token → new state), not of the string's last character. So "masking" is not "check the output afterwards" and not "look at the tail of the prefix": it is a lookup in a machine that has been reading the prefix all along and remembers what it has not finished. Rohit's own Step-3 simulator is a *last-character rule*, and the whole discrimination this page exists to teach is **rule vs decider** — the rule happens to be right at most structural positions and is wrong at exactly the positions that matter: a value that just closed, a literal in progress, and a schema that is still missing a required key. **2026-11-10:** that discrimination closed, and the same page now carries the per-rung answer to *which rung kills an out-of-enum string* — the masking rung deletes it before the sampler, the prompting rung only lowers its probability.
+**Insight:** at every step the sampler does not pick from the whole vocabulary — the decoder asks a **parser** *"given the state I am in, which tokens keep the string inside the grammar?"*, sets every other token's probability to **zero**, and renormalises over the survivors. The answer is a property of the **state transition** (state × token → new state), not of the string's last character. So "masking" is not "check the output afterwards" and not "look at the tail of the prefix": it is a lookup in a machine that has been reading the prefix all along and remembers what it has not finished. Rohit's own Step-3 simulator is a *last-character rule*, and the whole discrimination this page exists to teach is **rule vs decider** — the rule happens to be right at most structural positions and is wrong at exactly the positions that matter: a value that just closed, a literal in progress, and a schema that is still missing a required key. **2026-11-10:** that discrimination closed, and the same page now carries the per-rung answer to *which rung kills an out-of-enum string* — the masking rung deletes it before the sampler, the prompting rung only lowers its probability. **2026-11-11:** the state is not only flags. `minItems`/`maxItems` need a **counter** of items emitted in the current array — numeric state, not a boolean — because the flag tuple is literally identical at positions where `]` legality differs.
 
 ## My understanding
 
-> status=learner-note — the learner's own words, verbatim, preserved in order. Never paraphrased, polished, or merged below. The first three are in-session repair fragments from 2026-11-09 (that session paused before a v2 was captured); **v2** was added 2026-11-10 from the resumed session and is scoped to the enum rung and the pipeline order. None of it is polished: the evolution scar is the point.
+> status=learner-note — the learner's own words, verbatim, preserved in order. Never paraphrased, polished, or merged below. The first three are in-session repair fragments from 2026-11-09 (that session paused before a v2 was captured); **v2** was added 2026-11-10 from the resumed session and is scoped to the enum rung and the pipeline order; **v3** was added 2026-11-11 and is scoped to the array-length counter. None of it is polished: the evolution scar is the point.
 
 **Fragment 1 — the flag read** (at `{"product": "in_stock": tru`, after one delivered nomenclature patch):
 
@@ -45,6 +45,22 @@
 > "its zeroing wouldnt be worth anything since the impure distribution has already been sampled from."
 
 **Annotation around v2** (the AI's, not the learner's words): the pipeline claim is the one that fixed the session's worst slip. "it sits after the sampler" contradicted the learner's own "hands the valid distribution to the sampler", and the no-op sentence above is the reason the contradiction matters — a mask applied after sampling deletes nothing. Two other slips in this stretch were **agent swaps**, not model gaps ("the sampler can still mask it to zero"): the sampler samples, the decoder masks.
+
+**Version 3 — the counter** (2026-11-11; verbatim, in the order the session produced them. Scoped to array length: what the enforcing mask must carry for `minItems`/`maxItems`).
+
+*Failed candidates first* (each graded fail, each narrowing the gap):
+
+> "it has to be tracking the flags and the schema"   (tagged `sure`)
+
+> "it is tracking ]"
+
+> ", vs ] is the difference"
+
+*The patch, and the fresh-surface answer that closed it* (`maxItems: 2` after item 2):
+
+> "the counter says 2 which means , is invalid while ] is valid"
+
+**Annotation around v3** (the AI's, not the learner's words): the three failed candidates share one shape — each names a **token** (or a token pair, or the flag tuple) where the answer is a **property of the prefix**: how many items this array has emitted so far. `]` had not been emitted at any of the counterexample positions, so "it is tracking `]`" is circular; the flags really are identical there, so "flags and the schema" cannot be the whole state. The patch is one clause — *a number, not a boolean* — and it is the first place in this branch where the model needed state that is neither a flag nor a set of literals.
 
 
 
@@ -127,11 +143,34 @@ The order is load-bearing, and the no-op argument proves it: **"its zeroing woul
 
 ⚠️ Two agent confusions this seam produces, both observed and both repaired in-session (2026-11-10): *"the sampler can still mask it to zero"* (the sampler samples; the decoder masks) and *"it sits after the sampler"* (which the learner's own "hands the valid distribution to the sampler" already refuted).
 
+## Array length: why flags × schema is not enough (2026-11-11, CLOSED)
+
+Rohit's caveat — *"Schemas support minItems and maxItems, but not all providers enforce them at the decoding level"* — hides a state question. Take `{minItems: 3, maxItems: 5}` on an array and look at three positions:
+
+| Position | `in_string` | `expect` | `required_left` | `literal` | Legal set for the next token? |
+|---|---|---|---|---|---|
+| after item 1 | closed | separator-or-close | unchanged | none | `,` **and** `]` — too short, so `]` is illegal |
+| after item 2 | closed | separator-or-close | unchanged | none | `,` **and** `]` — too short, so `]` is illegal |
+| after item 3 | closed | separator-or-close | unchanged | none | `,` **and** `]` — **`]` just became legal** |
+
+Every flag in the tuple is identical at all three positions, and the legal set changes underneath it. No boolean can express that, so the mask needs one more piece of state:
+
+- a **counter** of items emitted in this array;
+- `]` is legal **iff** `count ≥ minItems`;
+- `,` is legal **only while** `count < maxItems` (which is also why the `maxItems` direction is the cleanest probe: `"the counter says 2 which means , is invalid while ] is valid"`).
+
+The learner's own summary of the step: *"a number, not a boolean"*. Two consequences worth keeping:
+
+- **It is state, not a check.** The counter lives in the mask's own bookkeeping — incremented on each completed item, read before each separator/close decision — so it is part of what makes `"the rest are masked"` true, not an after-the-fact review of the emitted string.
+- **Its existence is a provider property.** A keyword the provider does not compile never becomes grammar state, so the counter is only there when the provider compiled `minItems`/`maxItems` at all. That is the bridge to [[Structured Outputs (JSON contract)]] and [[JSON Schema Validation & Retry (Pydantic + Instructor)]]: where the counter exists the validator is idle; where it does not, the validator is the only catcher. See the session-3 chain on the first of those pages.
+
+The counterexample trap is what separated a real state model from a slogan: five candidates failed before the patch (flags × schema, "tracking `]`", "`, vs ]`"), and the patch then held on a fresh surface in the untouched `maxItems` direction.
+
 ## What is still open
 
-- **Row 4 repair is CLOSED (2026-11-10).** The resumed session ran a **new** fresh-surface both-sides check on the decider-vs-rule discrimination and then the own-words restatement of *"flags × schema → mask + renormalise, ≠ the last-char rule"*. The one closing item that still failed tested **Build-It** grains (`part 1 execution-incomplete (garbled set, question-side not assertion-side); part 2 cue/unread-source`) — outside the learner's declared read scope — so it is **banked out of scope** and must not be re-issued. Ledger for this concept after 2026-11-10: 21 graded items, 6 pass / 15 fail, `interval_index` 1, `consecutive_wrong` 0, `next_review` 2026-11-17, mastery 0.50 advisory.
-- **The flag set has never been run closed-book as a whole.** `in_string`, `expect`, `required_left`, `literal` were each pressed separately (one pass, several fails); no item has yet asked for the full tuple at one position.
-- **Calibration.** Confidence was `sure` at the spine check and the first predict probe, yet 9 of 11 attack/check items failed — an illusion-of-competence signal recorded in `🧯 Mistakes.md`. **2026-11-10 second data point:** both row-5 catchability items were tagged `hunch` and both **passed** — the first evidence in the other direction (hedged confidence tracking the item). Whether it holds once the array-length seam and the two unlisted failure modes raise the difficulty is still unanswered, and the flags tuple has not been run closed-book at all.
+- **Row 4 repair is CLOSED (2026-11-10).** The resumed session ran a **new** fresh-surface both-sides check on the decider-vs-rule discrimination and then the own-words restatement of *"flags × schema → mask + renormalise, ≠ the last-char rule"*. The one closing item that still failed tested **Build-It** grains (`part 1 execution-incomplete (garbled set, question-side not assertion-side); part 2 cue/unread-source`) — outside the learner's declared read scope — so it is **banked out of scope** and must not be re-issued. Ledger for this concept after 2026-11-10: 21 graded items, 6 pass / 15 fail, `interval_index` 1, `consecutive_wrong` 0, `next_review` 2026-11-17, mastery 0.50 advisory. **2026-11-11: the array-length seam closed on this page's state** — six graded items on the counter question (2 pass / 4 fail), including the `maxItems` fresh-surface pass that closed it. Ledger after the session: **27 graded items, 9 pass / 18 fail, `interval_index` 2, `consecutive_wrong` 0, `next_review` 2026-11-25**, mastery 0.50 advisory. The model now carries **flags + counter**.
+- **The flag set has never been run closed-book as a whole.** `in_string`, `expect`, `required_left`, `literal` were each pressed separately (one pass, several fails); no item has yet asked for the full tuple at one position — and the counter now sits beside the flags, so the state that has never been run as one object is **flags × counter**, not just the flags.
+- **Calibration.** Confidence was `sure` at the spine check and the first predict probe, yet 9 of 11 attack/check items failed — an illusion-of-competence signal recorded in `🧯 Mistakes.md`. **2026-11-10 second data point:** both row-5 catchability items were tagged `hunch` and both **passed** — the first evidence in the other direction (hedged confidence tracking the item). Whether it holds once the array-length seam and the two unlisted failure modes raise the difficulty is still unanswered, and the flags tuple has not been run closed-book at all. **2026-11-11 — third data point, and it complicates the picture:** across the session's 24 graded items, `sure` went 4 pass / 3 fail, `hunch` 1 pass / 6 fail, untagged 3 pass / 7 fail. Both `sure` tags that closed a repair were earned (the counter, the two-blank path fill); one `sure` on the half-answered invoice check was not. Hedged confidence is tracking the items better than unhedged confidence, but neither is calibrated enough to trust as a substitute for the trace.
 
 ### Row-4 repair log (2026-11-09, reconciled from the Tutor's lesson file)
 
